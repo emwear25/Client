@@ -145,7 +145,11 @@ const slides = ref([
     left: 0;
     right: 0;
     bottom: 0;
-    background: linear-gradient(to bottom, rgba(47, 58, 42, 0.5), rgba(47, 58, 42, 0.7));
+    background: linear-gradient(
+      to bottom,
+      rgba(0, 0, 0, 0.4),
+      rgba(0, 0, 0, 0.6)
+    );
     z-index: 1;
   }
 
@@ -153,7 +157,7 @@ const slides = ref([
     position: relative;
     z-index: 2;
     text-align: center;
-    color: $color-white;
+    color: #ffffff;
     max-width: 800px;
     padding: 2rem 1rem;
 
@@ -168,8 +172,13 @@ const slides = ref([
     font-weight: 700;
     line-height: 1.1;
     margin-bottom: 1rem;
-    text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.3);
+    color: #ffffff;
+    text-shadow:
+      2px 2px 8px rgba(0, 0, 0, 0.8),
+      0 0 20px rgba(0, 0, 0, 0.5),
+      0 0 40px rgba(0, 0, 0, 0.3);
     letter-spacing: 0.02em;
+    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.5));
 
     @include up(md) {
       margin-bottom: 1.5rem;
@@ -182,8 +191,11 @@ const slides = ref([
     font-weight: 400;
     line-height: 1.6;
     margin-bottom: 2rem;
-    opacity: 0.95;
-    text-shadow: 1px 1px 4px rgba(0, 0, 0, 0.3);
+    color: #ffffff;
+    text-shadow:
+      1px 1px 6px rgba(0, 0, 0, 0.8),
+      0 0 15px rgba(0, 0, 0, 0.4);
+    filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.5));
 
     @include up(md) {
       font-size: 1.25rem;
