@@ -68,7 +68,7 @@ const categories: Category[] = [
   background-color: #f8f9fa;
 
   &__container {
-    max-width: 1200px;
+    max-width: 1380px;
     margin: 0 auto;
     padding: 0 1rem;
 

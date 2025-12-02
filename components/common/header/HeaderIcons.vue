@@ -20,7 +20,7 @@
     <div v-if="showProfileIcon" class="user-menu">
       <button
         class="site-header__cart"
-        @click="isUserMenuOpen = !isUserMenuOpen"
+        @click.stop="toggleUserMenu"
         @blur="handleBlur"
         :aria-expanded="isUserMenuOpen"
         aria-label="User menu"
@@ -117,22 +117,26 @@ onMounted(() => {
 })
 
 // Use a computed to check auth state more reliably
+// Use isAuthenticated which works for both cookie-based (Google) and token-based (email/password) auth
 const showProfileIcon = computed(() => {
-  if (process.server) return false // Never show on server
-  return !!(authStore.accessToken && authStore.user)
+  if (import.meta.server) return false // Never show on server
+  return authStore.isAuthenticated && !!authStore.user
 })
 
 const showLoginIcon = computed(() => {
-  if (process.server) return false // Never show on server
-  return !authStore.accessToken || !authStore.user
+  if (import.meta.server) return false // Never show on server
+  // Only show login icon if profile icon is not shown (prevents both showing at once)
+  return (
+    !showProfileIcon.value && (!authStore.isAuthenticated || !authStore.user)
+  )
 })
 
 // Debug auth state changes
 watch(
-  () => [authStore.accessToken, authStore.user, showProfileIcon.value],
-  ([token, user, showProfile]) => {
+  () => [authStore.isAuthenticated, authStore.user, showProfileIcon.value],
+  ([isAuth, user, showProfile]) => {
     console.log('[HeaderIcons] Auth state changed:', {
-      hasToken: !!token,
+      isAuthenticated: isAuth,
       hasUser: !!user,
       showProfileIcon: showProfile,
       userEmail: user?.email,
@@ -143,6 +147,25 @@ watch(
 
 // User menu state
 const isUserMenuOpen = ref(false)
+
+// Watch for auth state changes and ensure user is loaded
+watch(
+  () => authStore.isAuthenticated,
+  async (isAuth) => {
+    console.log('[HeaderIcons] Auth state changed:', {
+      isAuthenticated: isAuth,
+      hasUser: !!authStore.user,
+      userEmail: authStore.user?.email,
+    })
+
+    // If authenticated but no user, fetch user (shouldn't happen, but safety check)
+    if (isAuth && !authStore.user) {
+      console.log('[HeaderIcons] Authenticated but no user, fetching...')
+      await authStore.fetchUser()
+    }
+  },
+  { immediate: true }
+)
 
 // Define props
 defineProps<{
@@ -160,6 +183,17 @@ const handleLogout = async () => {
   await authStore.logout()
   toast.success('Успешно излизане')
   router.push('/')
+}
+
+// Toggle user menu
+const toggleUserMenu = () => {
+  console.log('[HeaderIcons] Toggling user menu:', {
+    currentState: isUserMenuOpen.value,
+    isAuthenticated: authStore.isAuthenticated,
+    hasUser: !!authStore.user,
+    userEmail: authStore.user?.email,
+  })
+  isUserMenuOpen.value = !isUserMenuOpen.value
 }
 
 // Handle blur to close menu

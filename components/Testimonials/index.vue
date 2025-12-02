@@ -5,7 +5,8 @@
         <span class="testimonials__eyebrow">Отзиви</span>
         <h2 class="testimonials__heading">Какво казват нашите клиенти</h2>
         <p class="testimonials__intro">
-          Радваме се да споделим историите на хората, които избраха да направят своите моменти специални с emWear
+          Радваме се да споделим историите на хората, които избраха да направят
+          своите моменти специални с emWear
         </p>
       </div>
 
@@ -26,9 +27,13 @@
             <div class="testimonial-card__info">
               <h3 class="testimonial-card__name">{{ testimonial.name }}</h3>
               <div class="testimonial-card__meta">
-                <span class="testimonial-card__product">{{ testimonial.product }}</span>
+                <span class="testimonial-card__product">{{
+                  testimonial.product
+                }}</span>
                 <span class="testimonial-card__separator">•</span>
-                <span class="testimonial-card__date">{{ testimonial.date }}</span>
+                <span class="testimonial-card__date">{{
+                  testimonial.date
+                }}</span>
               </div>
             </div>
           </div>
@@ -39,26 +44,38 @@
               :key="star"
               name="mdi:star"
               class="testimonial-card__star"
-              :class="{ 'testimonial-card__star--filled': star <= testimonial.rating }"
+              :class="{
+                'testimonial-card__star--filled': star <= testimonial.rating,
+              }"
             />
           </div>
 
           <blockquote class="testimonial-card__quote">
-            <Icon name="mdi:format-quote-open" class="testimonial-card__quote-icon" />
+            <Icon
+              name="mdi:format-quote-open"
+              class="testimonial-card__quote-icon"
+            />
             <p class="testimonial-card__text">{{ testimonial.text }}</p>
           </blockquote>
 
           <div class="testimonial-card__footer" v-if="testimonial.verified">
             <div class="testimonial-card__badge">
-              <Icon name="mdi:check-decagram" class="testimonial-card__badge-icon" />
-              <span class="testimonial-card__badge-text">Потвърдена покупка</span>
+              <Icon
+                name="mdi:check-decagram"
+                class="testimonial-card__badge-icon"
+              />
+              <span class="testimonial-card__badge-text"
+                >Потвърдена покупка</span
+              >
             </div>
           </div>
         </article>
       </div>
 
       <div class="testimonials__cta">
-        <p class="testimonials__cta-text">Искате да споделите вашето преживяване?</p>
+        <p class="testimonials__cta-text">
+          Искате да споделите вашето преживяване?
+        </p>
         <a href="#contact" class="btn btn--ghost">Напишете ни отзив</a>
       </div>
     </div>
@@ -168,7 +185,11 @@ const testimonials: Testimonial[] = [
     right: -8%;
     width: 400px;
     height: 400px;
-    background: radial-gradient(circle, rgba($brand-accent-2, 0.12) 0%, transparent 70%);
+    background: radial-gradient(
+      circle,
+      rgba($brand-accent-2, 0.12) 0%,
+      transparent 70%
+    );
     border-radius: 50%;
     pointer-events: none;
   }
@@ -180,23 +201,23 @@ const testimonials: Testimonial[] = [
     position: relative;
     z-index: 1;
 
-    @include up(md) { 
-      max-width: 960px; 
-      padding-inline: 20px; 
+    @include up(md) {
+      max-width: 1104px;
+      padding-inline: 20px;
     }
-    @include up(lg) { 
-      max-width: 1280px; 
-      padding-inline: 24px; 
+    @include up(lg) {
+      max-width: 1472px;
+      padding-inline: 24px;
     }
-    @include up(xl) { 
-      max-width: 1440px; 
-      padding-inline: 32px; 
+    @include up(xl) {
+      max-width: 1656px;
+      padding-inline: 32px;
     }
   }
 
   &__header {
     text-align: center;
-    max-width: 720px;
+    max-width: 828px;
     margin: 0 auto 3rem;
 
     @include up(md) {
@@ -256,7 +277,7 @@ const testimonials: Testimonial[] = [
     background: $bg-card;
     border-radius: 16px;
     border: 2px dashed $border-base;
-    max-width: 600px;
+    max-width: 690px;
     margin: 0 auto;
 
     @include up(md) {
@@ -299,7 +320,11 @@ const testimonials: Testimonial[] = [
     right: 0;
     width: 60px;
     height: 60px;
-    background: linear-gradient(135deg, transparent 50%, rgba($brand, 0.08) 50%);
+    background: linear-gradient(
+      135deg,
+      transparent 50%,
+      rgba($brand, 0.08) 50%
+    );
     border-top-right-radius: 14px;
   }
 

@@ -1,9 +1,9 @@
 <template>
   <div class="home-page">
     <HeroSlider />
+    <CategoryPromos />
     <FeatureHighlights />
-    <CategoryGrid />
-    <BestSellers />
+    <BannerSection />
     <Testimonials />
     <NewsletterSignup />
   </div>
@@ -17,7 +17,7 @@
 .home-page {
   margin: 0;
   padding: 0;
-  
+
   > * {
     margin: 0;
   }

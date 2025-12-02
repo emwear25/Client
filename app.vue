@@ -1,5 +1,7 @@
 <template>
-  <NuxtLayout>
-    <NuxtPage />
-  </NuxtLayout>
+  <ErrorBoundary>
+    <NuxtLayout>
+      <NuxtPage />
+    </NuxtLayout>
+  </ErrorBoundary>
 </template>

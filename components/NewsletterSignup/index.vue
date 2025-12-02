@@ -8,9 +8,12 @@
           </div>
         </div>
         <div class="newsletter__text">
-          <h2 class="newsletter__heading">Присъединете се към нашето семейство</h2>
+          <h2 class="newsletter__heading">
+            Присъединете се към нашето семейство
+          </h2>
           <p class="newsletter__subtext">
-            Бъдете първи, които научават за нови колекции, специални оферти и ексклузивни дизайни
+            Бъдете първи, които научават за нови колекции, специални оферти и
+            ексклузивни дизайни
           </p>
         </div>
         <form @submit.prevent="handleSubmit" class="newsletter__form">
@@ -24,7 +27,10 @@
               required
             />
           </div>
-          <button type="submit" class="newsletter__button btn btn--primary btn--large">
+          <button
+            type="submit"
+            class="newsletter__button btn btn--primary btn--large"
+          >
             Абонирай се
             <Icon name="mdi:arrow-right" class="newsletter__button-icon" />
           </button>
@@ -88,13 +94,17 @@ const handleSubmit = () => {
     left: -5%;
     width: 300px;
     height: 300px;
-    background: radial-gradient(circle, rgba($brand-ink, 0.08) 0%, transparent 70%);
+    background: radial-gradient(
+      circle,
+      rgba($brand-ink, 0.08) 0%,
+      transparent 70%
+    );
     border-radius: 50%;
     pointer-events: none;
   }
 
   &__container {
-    max-width: 900px;
+    max-width: 1035px;
     margin: 0 auto;
     padding: 0 16px;
     position: relative;
@@ -174,7 +184,7 @@ const handleSubmit = () => {
     font-size: 1rem;
     color: $text-secondary;
     line-height: 1.7;
-    max-width: 560px;
+    max-width: 644px;
     margin: 0 auto;
 
     @include up(md) {

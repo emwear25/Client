@@ -14,7 +14,9 @@
         <div class="pdp-error__card">
           <h2>Продуктът не е намерен</h2>
           <p>{{ error }}</p>
-          <NuxtLink to="/products" class="btn btn--primary">Към продукти</NuxtLink>
+          <NuxtLink to="/products" class="btn btn--primary"
+            >Към продукти</NuxtLink
+          >
         </div>
       </div>
     </div>
@@ -26,7 +28,9 @@
         <div class="container">
           <NuxtLink to="/" class="pdp-breadcrumbs__link">Начало</NuxtLink>
           <span class="pdp-breadcrumbs__sep">/</span>
-          <NuxtLink to="/products" class="pdp-breadcrumbs__link">Продукти</NuxtLink>
+          <NuxtLink to="/products" class="pdp-breadcrumbs__link"
+            >Продукти</NuxtLink
+          >
           <span class="pdp-breadcrumbs__sep">/</span>
           <span class="pdp-breadcrumbs__current">{{ product.name }}</span>
         </div>
@@ -40,24 +44,33 @@
             <div class="pdp-gallery">
               <div class="pdp-gallery__main">
                 <NuxtImg
-                  :src="selectedImage?.url || product.images?.[0]?.url || '/img/placeholder.png'"
+                  :src="
+                    selectedImage?.url ||
+                    product.images?.[0]?.url ||
+                    '/img/placeholder.png'
+                  "
                   :alt="product.name"
                   class="pdp-gallery__img"
                   format="webp"
                   quality="80"
                 />
               </div>
-              <div v-if="product.images && product.images.length > 1" class="pdp-gallery__thumbs">
+              <div
+                v-if="product.images && product.images.length > 1"
+                class="pdp-gallery__thumbs"
+              >
                 <button
                   v-for="(img, index) in product.images"
                   :key="index"
                   class="pdp-gallery__thumb"
-                  :class="{ 'pdp-gallery__thumb--active': selectedImageIndex === index }"
+                  :class="{
+                    'pdp-gallery__thumb--active': selectedImageIndex === index,
+                  }"
                   @click="selectImage(index)"
                 >
-                  <NuxtImg 
-                    :src="img.url" 
-                    :alt="`${product.name} - ${index + 1}`" 
+                  <NuxtImg
+                    :src="img.url"
+                    :alt="`${product.name} - ${index + 1}`"
                     format="webp"
                     quality="60"
                     width="100"
@@ -71,22 +84,40 @@
               <!-- Title & Price -->
               <div class="pdp-header">
                 <h1 class="pdp-title">{{ product.name }}</h1>
-                
+
                 <!-- Social Share -->
                 <div class="pdp-social">
-                  <button class="pdp-social__btn" @click="shareOn('facebook')" title="Сподели във Facebook">
+                  <button
+                    class="pdp-social__btn"
+                    @click="shareOn('facebook')"
+                    title="Сподели във Facebook"
+                  >
                     <svg viewBox="0 0 24 24" fill="currentColor">
-                      <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
+                      <path
+                        d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"
+                      />
                     </svg>
                   </button>
-                  <button class="pdp-social__btn" @click="shareOn('instagram')" title="Сподели в Instagram">
+                  <button
+                    class="pdp-social__btn"
+                    @click="shareOn('instagram')"
+                    title="Сподели в Instagram"
+                  >
                     <svg viewBox="0 0 24 24" fill="currentColor">
-                      <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/>
+                      <path
+                        d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"
+                      />
                     </svg>
                   </button>
-                  <button class="pdp-social__btn" @click="shareOn('tiktok')" title="Сподели в TikTok">
+                  <button
+                    class="pdp-social__btn"
+                    @click="shareOn('tiktok')"
+                    title="Сподели в TikTok"
+                  >
                     <svg viewBox="0 0 24 24" fill="currentColor">
-                      <path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-5.2 1.74 2.89 2.89 0 0 1 2.31-4.64 2.93 2.93 0 0 1 .88.13V9.4a6.84 6.84 0 0 0-1-.05A6.33 6.33 0 0 0 5 20.1a6.34 6.34 0 0 0 10.86-4.43v-7a8.16 8.16 0 0 0 4.77 1.52v-3.4a4.85 4.85 0 0 1-1-.1z"/>
+                      <path
+                        d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-5.2 1.74 2.89 2.89 0 0 1 2.31-4.64 2.93 2.93 0 0 1 .88.13V9.4a6.84 6.84 0 0 0-1-.05A6.33 6.33 0 0 0 5 20.1a6.34 6.34 0 0 0 10.86-4.43v-7a8.16 8.16 0 0 0 4.77 1.52v-3.4a4.85 4.85 0 0 1-1-.1z"
+                      />
                     </svg>
                   </button>
                 </div>
@@ -94,29 +125,39 @@
 
               <!-- Reviews Placeholder -->
               <div class="pdp-reviews">
-                <div class="pdp-reviews__stars">
-                  ★★★★★
-                </div>
-                <span class="pdp-reviews__count">(Скоро ще добавим отзиви)</span>
+                <div class="pdp-reviews__stars">★★★★★</div>
+                <span class="pdp-reviews__count"
+                  >(Скоро ще добавим отзиви)</span
+                >
               </div>
 
               <!-- Price -->
               <div class="pdp-price">
-                <span class="pdp-price__current">{{ formatPrice(product.price) }}</span>
-                <span v-if="product.compareAt" class="pdp-price__old">{{ formatPrice(product.compareAt) }}</span>
+                <span class="pdp-price__current">{{
+                  formatPrice(currentPrice)
+                }}</span>
+                <span v-if="product.compareAt" class="pdp-price__old">{{
+                  formatPrice(product.compareAt)
+                }}</span>
               </div>
 
               <!-- Stock Status -->
-              <div v-if="product.stock > 0" class="pdp-stock pdp-stock--in">
-                На склад ({{ product.stock }} бр.)
+              <div v-if="currentStock > 0" class="pdp-stock pdp-stock--in">
+                Налично
               </div>
-              <div v-else class="pdp-stock pdp-stock--out">
-                Изчерпан
-              </div>
+              <div v-else class="pdp-stock pdp-stock--out">Не е Налично</div>
 
               <!-- Colors -->
-              <div v-if="product.colors && product.colors.length" class="pdp-option">
-                <label class="pdp-option__label">Цвят: <strong>{{ selectedColor || product.colors[0] }}</strong></label>
+              <div
+                v-if="product.colors && product.colors.length"
+                class="pdp-option"
+              >
+                <label class="pdp-option__label"
+                  >Цвят:
+                  <strong>{{
+                    selectedColor || product.colors[0]
+                  }}</strong></label
+                >
                 <div class="pdp-option__swatches">
                   <button
                     v-for="color in product.colors"
@@ -131,14 +172,22 @@
               </div>
 
               <!-- Sizes -->
-              <div v-if="product.sizes && product.sizes.length" class="pdp-option">
-                <label class="pdp-option__label">Размер: <strong>{{ selectedSize || product.sizes[0] }}</strong></label>
+              <div
+                v-if="product.sizes && product.sizes.length"
+                class="pdp-option"
+              >
+                <label class="pdp-option__label"
+                  >Размер:
+                  <strong>{{ selectedSize || product.sizes[0] }}</strong></label
+                >
                 <div class="pdp-option__buttons">
                   <button
                     v-for="size in product.sizes"
                     :key="size"
                     class="pdp-option__btn"
-                    :class="{ 'pdp-option__btn--active': selectedSize === size }"
+                    :class="{
+                      'pdp-option__btn--active': selectedSize === size,
+                    }"
                     @click="selectedSize = size"
                   >
                     {{ size }}
@@ -147,7 +196,14 @@
               </div>
 
               <!-- Embroidery Customization -->
-              <div v-if="product.customEmbroidery && (product.embroideryFonts?.length || product.embroideryColors?.length)" class="pdp-custom">
+              <div
+                v-if="
+                  product.customEmbroidery &&
+                  (product.embroideryFonts?.length ||
+                    product.embroideryColors?.length)
+                "
+                class="pdp-custom"
+              >
                 <div class="pdp-custom__item">
                   <input
                     type="checkbox"
@@ -156,9 +212,18 @@
                     class="pdp-custom__checkbox"
                   />
                   <label for="embroidery-enable" class="pdp-custom__label">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                      <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
-                      <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
+                    <svg
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="2"
+                    >
+                      <path
+                        d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"
+                      />
+                      <path
+                        d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"
+                      />
                     </svg>
                     Бродерия с име (+ 10.00 лв)
                   </label>
@@ -166,7 +231,9 @@
 
                 <div v-if="embroideryEnabled" class="pdp-custom__fields">
                   <div class="pdp-custom__field">
-                    <label class="pdp-custom__field-label">Име за бродерия</label>
+                    <label class="pdp-custom__field-label"
+                      >Име за бродерия</label
+                    >
                     <input
                       type="text"
                       v-model="embroideryName"
@@ -177,14 +244,21 @@
                   </div>
 
                   <!-- Font Selection -->
-                  <div v-if="product.embroideryFonts && product.embroideryFonts.length" class="pdp-custom__field">
+                  <div
+                    v-if="
+                      product.embroideryFonts && product.embroideryFonts.length
+                    "
+                    class="pdp-custom__field"
+                  >
                     <label class="pdp-custom__field-label">Шрифт</label>
                     <div class="pdp-option__buttons">
                       <button
                         v-for="font in product.embroideryFonts"
                         :key="font"
                         class="pdp-option__btn"
-                        :class="{ 'pdp-option__btn--active': embroideryFont === font }"
+                        :class="{
+                          'pdp-option__btn--active': embroideryFont === font,
+                        }"
                         @click="embroideryFont = font"
                       >
                         {{ font }}
@@ -193,14 +267,24 @@
                   </div>
 
                   <!-- Color Selection -->
-                  <div v-if="product.embroideryColors && product.embroideryColors.length" class="pdp-custom__field">
-                    <label class="pdp-custom__field-label">Цвят на бродерията</label>
+                  <div
+                    v-if="
+                      product.embroideryColors &&
+                      product.embroideryColors.length
+                    "
+                    class="pdp-custom__field"
+                  >
+                    <label class="pdp-custom__field-label"
+                      >Цвят на бродерията</label
+                    >
                     <div class="pdp-option__swatches">
                       <button
                         v-for="color in product.embroideryColors"
                         :key="color.value"
                         class="pdp-swatch"
-                        :class="{ 'pdp-swatch--active': embroideryColor === color.value }"
+                        :class="{
+                          'pdp-swatch--active': embroideryColor === color.value,
+                        }"
                         :style="{ background: color.value }"
                         @click="embroideryColor = color.value"
                         :title="color.name"
@@ -216,17 +300,19 @@
               <div class="pdp-actions">
                 <button
                   class="pdp-add-cart btn btn--primary"
-                  :disabled="product.stock === 0"
+                  :disabled="currentStock === 0"
                   @click="addToCart"
                 >
-                  {{ product.stock > 0 ? 'Добави в количката' : 'Изчерпан' }}
+                  {{ currentStock > 0 ? 'Добави в количката' : 'Не е Налично' }}
                 </button>
-                
+
                 <button
                   class="pdp-wishlist-btn"
                   :class="{ 'pdp-wishlist-btn--active': isInWishlist }"
                   @click="wishlistStore.toggle(product._id)"
-                  :title="isInWishlist ? 'Премахни от любими' : 'Добави в любими'"
+                  :title="
+                    isInWishlist ? 'Премахни от любими' : 'Добави в любими'
+                  "
                 >
                   <svg viewBox="0 0 24 24" class="pdp-wishlist-icon">
                     <path
@@ -242,25 +328,42 @@
               <!-- Trust Badges -->
               <div class="pdp-trust">
                 <div class="pdp-trust__item">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <rect x="1" y="3" width="15" height="13"/>
-                    <polygon points="16 8 20 8 23 11 23 16 16 16 16 8"/>
-                    <circle cx="5.5" cy="18.5" r="2.5"/>
-                    <circle cx="18.5" cy="18.5" r="2.5"/>
+                  <svg
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                  >
+                    <rect x="1" y="3" width="15" height="13" />
+                    <polygon points="16 8 20 8 23 11 23 16 16 16 16 8" />
+                    <circle cx="5.5" cy="18.5" r="2.5" />
+                    <circle cx="18.5" cy="18.5" r="2.5" />
                   </svg>
                   <span>Безплатна доставка над 50 лв</span>
                 </div>
                 <div class="pdp-trust__item">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <polyline points="23 4 23 10 17 10"/>
-                    <polyline points="1 20 1 14 7 14"/>
-                    <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/>
+                  <svg
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                  >
+                    <polyline points="23 4 23 10 17 10" />
+                    <polyline points="1 20 1 14 7 14" />
+                    <path
+                      d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"
+                    />
                   </svg>
                   <span>Лесно връщане до 30 дни</span>
                 </div>
                 <div class="pdp-trust__item">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+                  <svg
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                  >
+                    <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
                   </svg>
                   <span>Безопасни материали</span>
                 </div>
@@ -294,30 +397,49 @@
         <div class="container">
           <!-- Description -->
           <div class="pdp-accordion__item">
-            <button 
+            <button
               class="pdp-accordion__trigger"
-              :class="{ 'pdp-accordion__trigger--open': openSection === 'description' }"
+              :class="{
+                'pdp-accordion__trigger--open': openSection === 'description',
+              }"
               @click="toggleSection('description')"
             >
               <span class="pdp-accordion__title">Описание</span>
-              <svg class="pdp-accordion__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <svg
+                class="pdp-accordion__icon"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+              >
                 <polyline points="6 9 12 15 18 9"></polyline>
               </svg>
             </button>
-            <div v-show="openSection === 'description'" class="pdp-accordion__content">
+            <div
+              v-show="openSection === 'description'"
+              class="pdp-accordion__content"
+            >
               <p>{{ product.description }}</p>
             </div>
           </div>
 
           <!-- Materials & Care -->
           <div class="pdp-accordion__item">
-            <button 
+            <button
               class="pdp-accordion__trigger"
-              :class="{ 'pdp-accordion__trigger--open': openSection === 'care' }"
+              :class="{
+                'pdp-accordion__trigger--open': openSection === 'care',
+              }"
               @click="toggleSection('care')"
             >
               <span class="pdp-accordion__title">Материали и грижа</span>
-              <svg class="pdp-accordion__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <svg
+                class="pdp-accordion__icon"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+              >
                 <polyline points="6 9 12 15 18 9"></polyline>
               </svg>
             </button>
@@ -334,17 +456,28 @@
 
           <!-- Shipping & Returns -->
           <div class="pdp-accordion__item">
-            <button 
+            <button
               class="pdp-accordion__trigger"
-              :class="{ 'pdp-accordion__trigger--open': openSection === 'shipping' }"
+              :class="{
+                'pdp-accordion__trigger--open': openSection === 'shipping',
+              }"
               @click="toggleSection('shipping')"
             >
               <span class="pdp-accordion__title">Доставка и връщане</span>
-              <svg class="pdp-accordion__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <svg
+                class="pdp-accordion__icon"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+              >
                 <polyline points="6 9 12 15 18 9"></polyline>
               </svg>
             </button>
-            <div v-show="openSection === 'shipping'" class="pdp-accordion__content">
+            <div
+              v-show="openSection === 'shipping'"
+              class="pdp-accordion__content"
+            >
               <div class="pdp-shipping">
                 <div class="pdp-shipping__item">
                   <strong>Безплатна доставка</strong>
@@ -364,13 +497,19 @@
 
           <!-- FAQ -->
           <div class="pdp-accordion__item">
-            <button 
+            <button
               class="pdp-accordion__trigger"
               :class="{ 'pdp-accordion__trigger--open': openSection === 'faq' }"
               @click="toggleSection('faq')"
             >
               <span class="pdp-accordion__title">Често задавани въпроси</span>
-              <svg class="pdp-accordion__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <svg
+                class="pdp-accordion__icon"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+              >
                 <polyline points="6 9 12 15 18 9"></polyline>
               </svg>
             </button>
@@ -382,11 +521,16 @@
                 </div>
                 <div class="pdp-faq__item">
                   <strong>Мога ли да върна персонализиран продукт?</strong>
-                  <p>Персонализираните продукти могат да бъдат върнати само при производствен дефект</p>
+                  <p>
+                    Персонализираните продукти могат да бъдат върнати само при
+                    производствен дефект
+                  </p>
                 </div>
                 <div class="pdp-faq__item">
                   <strong>Как да избера размер?</strong>
-                  <p>Препоръчваме да изберете размера според възрастта на детето</p>
+                  <p>
+                    Препоръчваме да изберете размера според възрастта на детето
+                  </p>
                 </div>
               </div>
             </div>
@@ -399,11 +543,21 @@
         <div class="container">
           <h2 class="pdp-section-title">Отзиви на клиенти</h2>
           <div class="pdp-reviews-placeholder">
-            <svg class="pdp-reviews-placeholder__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
+            <svg
+              class="pdp-reviews-placeholder__icon"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+            >
+              <polygon
+                points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"
+              />
             </svg>
             <h3>Скоро ще добавим система за отзиви!</h3>
-            <p>Бъдете първите, които ще споделят мнението си за този продукт.</p>
+            <p>
+              Бъдете първите, които ще споделят мнението си за този продукт.
+            </p>
           </div>
         </div>
       </section>
@@ -417,6 +571,7 @@ import { useRoute, useRouter } from 'vue-router'
 import { useHead } from '#app'
 import { useCartStore } from '~/stores/cart'
 import { useWishlist } from '~/stores/useWishlist'
+import { useApi } from '~/composables/useApi'
 
 interface ProductImage {
   url: string
@@ -428,6 +583,15 @@ interface EmbroideryColor {
   value: string
 }
 
+interface Variant {
+  size: string
+  color: string
+  stock: number
+  price?: number
+  reserved?: number
+  lowStockThreshold?: number
+}
+
 interface Product {
   _id: string
   slug?: string
@@ -435,18 +599,21 @@ interface Product {
   description: string
   price: number
   compareAt?: number | null
-  category: string | {
-    _id: string
-    name: string
-    defaultWeight: number
-    defaultDimensions: {
-      length: number
-      width: number
-      height: number
-    }
-  }
+  category:
+    | string
+    | {
+        _id: string
+        name: string
+        defaultWeight: number
+        defaultDimensions: {
+          length: number
+          width: number
+          height: number
+        }
+      }
   sizes: string[]
   colors: string[]
+  variants?: Variant[]
   images?: ProductImage[]
   stock: number
   weight?: number // Weight in kg for shipping
@@ -482,12 +649,70 @@ const embroideryFont = ref('')
 const openSection = ref<string>('description')
 
 // Wishlist computed
-const isInWishlist = computed(() => product.value ? wishlistStore.ids.includes(product.value._id) : false)
+const isInWishlist = computed(() =>
+  product.value ? wishlistStore.ids.includes(product.value._id) : false
+)
 
 // Computed
 const selectedImage = computed(() => {
   if (!product.value?.images) return null
   return product.value.images[selectedImageIndex.value]
+})
+
+// Get current variant price based on selected size and color
+const currentPrice = computed(() => {
+  if (!product.value) return 0
+
+  const currentColor = selectedColor.value || (product.value.colors?.[0] ?? '')
+  const currentSize = selectedSize.value || (product.value.sizes?.[0] ?? '')
+
+  // If product has variants, find the specific variant price
+  if (
+    product.value.variants &&
+    product.value.variants.length > 0 &&
+    currentSize &&
+    currentColor
+  ) {
+    const variant = product.value.variants.find(
+      (v: Variant) => v.size === currentSize && v.color === currentColor
+    )
+
+    // Return variant-specific price if set, otherwise fall back to base price
+    if (variant && variant.price !== undefined && variant.price !== null) {
+      return variant.price
+    }
+  }
+
+  // Fall back to base product price
+  return product.value.price
+})
+
+// Get current variant stock based on selected size and color
+const currentStock = computed(() => {
+  if (!product.value) return 0
+
+  const currentColor = selectedColor.value || (product.value.colors?.[0] ?? '')
+  const currentSize = selectedSize.value || (product.value.sizes?.[0] ?? '')
+
+  // If product has variants, find the specific variant stock
+  if (
+    product.value.variants &&
+    product.value.variants.length > 0 &&
+    currentSize &&
+    currentColor
+  ) {
+    const variant = product.value.variants.find(
+      (v: Variant) => v.size === currentSize && v.color === currentColor
+    )
+
+    if (variant) {
+      // Return available stock (stock - reserved)
+      return Math.max(0, variant.stock - (variant.reserved || 0))
+    }
+  }
+
+  // Fall back to base product stock
+  return product.value.stock || 0
 })
 
 // Methods
@@ -505,32 +730,32 @@ const formatCategory = (category: string | { name: string } | undefined) => {
   const categoryName = typeof category === 'string' ? category : category.name
   const map: Record<string, string> = {
     't-shirts': 'Тениски',
-    'hoodies': 'Суитчъри',
-    'sweatshirts': 'Блузи',
-    'bags': 'Чанти',
-    'accessories': 'Аксесоари',
+    hoodies: 'Суитчъри',
+    sweatshirts: 'Блузи',
+    bags: 'Чанти',
+    accessories: 'Аксесоари',
   }
   return map[categoryName] || categoryName
 }
 
 const getColorHex = (color: string) => {
   const colorMap: Record<string, string> = {
-    'червен': '#EF4444',
-    'червено': '#EF4444',
-    'син': '#3B82F6',
-    'синьо': '#3B82F6',
-    'зелен': '#10B981',
-    'зелено': '#10B981',
-    'жълт': '#F59E0B',
-    'жълто': '#F59E0B',
-    'бял': '#F9FAFB',
-    'бяло': '#F9FAFB',
-    'черен': '#1F2937',
-    'черно': '#1F2937',
-    'розов': '#EC4899',
-    'розово': '#EC4899',
-    'сив': '#6B7280',
-    'синьо': '#3B82F6',
+    червен: '#EF4444',
+    червено: '#EF4444',
+    син: '#3B82F6',
+    синьо: '#3B82F6',
+    зелен: '#10B981',
+    зелено: '#10B981',
+    жълт: '#F59E0B',
+    жълто: '#F59E0B',
+    бял: '#F9FAFB',
+    бяло: '#F9FAFB',
+    черен: '#1F2937',
+    черно: '#1F2937',
+    розов: '#EC4899',
+    розово: '#EC4899',
+    сив: '#6B7280',
+    синьо: '#3B82F6',
   }
   return colorMap[color.toLowerCase()] || '#9CA3AF'
 }
@@ -546,17 +771,24 @@ const shareOn = (platform: string) => {
 
   switch (platform) {
     case 'facebook':
-      window.open(`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}`, '_blank')
+      window.open(
+        `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}`,
+        '_blank'
+      )
       break
     case 'instagram':
       // Instagram doesn't support direct URL sharing, so copy to clipboard
       navigator.clipboard.writeText(url)
-      toast.success('Линкът е копиран! Споделете го в Instagram Stories или Bio.')
+      toast.success(
+        'Линкът е копиран! Споделете го в Instagram Stories или Bio.'
+      )
       break
     case 'tiktok':
       // TikTok doesn't support direct URL sharing, so copy to clipboard
       navigator.clipboard.writeText(url)
-      toast.success('Линкът е копиран! Споделете го в TikTok Bio или видео описание.')
+      toast.success(
+        'Линкът е копиран! Споделете го в TikTok Bio или видео описание.'
+      )
       break
   }
 }
@@ -564,28 +796,34 @@ const shareOn = (platform: string) => {
 const addToCart = () => {
   if (!product.value) return
 
-  // Calculate final price (add embroidery cost if enabled)
-  let finalPrice = product.value.price
+  // Calculate final price (use variant price or base price, then add embroidery cost if enabled)
+  let finalPrice = currentPrice.value
   if (embroideryEnabled.value) {
-    finalPrice += 10.00 // Embroidery cost
+    finalPrice += 10.0 // Embroidery cost
   }
 
   // Add to cart
-  cartStore.addItem({
-    id: product.value._id,
-    name: product.value.name,
-    price: finalPrice,
-    image: product.value.images?.[0]?.url,
-    size: selectedSize.value,
-    color: selectedColor.value,
-    weight: product.value.weight || 0.5, // Include weight for shipping calculation
-    category: typeof product.value.category === 'object' ? product.value.category : undefined // Include category for shipping
-  }, 1)
+  cartStore.addItem(
+    {
+      id: product.value._id,
+      name: product.value.name,
+      price: finalPrice,
+      image: product.value.images?.[0]?.url,
+      size: selectedSize.value,
+      color: selectedColor.value,
+      weight: product.value.weight || 0.5, // Include weight for shipping calculation
+      category:
+        typeof product.value.category === 'object'
+          ? product.value.category
+          : undefined, // Include category for shipping
+    },
+    1
+  )
 
   // Show success toast
   const toast = useToast()
   toast.success(`${product.value.name} е добавен в количката!`, 3000)
-  
+
   // Navigate to cart after a short delay
   setTimeout(() => {
     router.push('/cart')
@@ -598,33 +836,40 @@ const fetchProduct = async () => {
   error.value = null
 
   try {
-    const response = await fetch(`http://127.0.0.1:3030/api/products/${id}`)
+    const api = useApi()
+    const response = await api.get(`products/${id}`)
 
-    if (!response.ok) {
+    if (response.success && response.data) {
+      product.value = response.data
+    } else {
       throw new Error('Продуктът не е намерен')
     }
 
-    const data = await response.json()
-    product.value = data.data
-
     // Set defaults
     if (product.value) {
-      selectedColor.value = product.value.colors[0] || ''
+      selectedColor.value =
+        product.value.colors && product.value.colors.length > 0
+          ? product.value.colors[0]
+          : ''
       selectedSize.value = product.value.sizes[0] || ''
-      
+
       // Set default embroidery options
-      if (product.value.embroideryFonts && product.value.embroideryFonts.length) {
+      if (
+        product.value.embroideryFonts &&
+        product.value.embroideryFonts.length
+      ) {
         embroideryFont.value = product.value.embroideryFonts[0]
       }
-      if (product.value.embroideryColors && product.value.embroideryColors.length) {
+      if (
+        product.value.embroideryColors &&
+        product.value.embroideryColors.length
+      ) {
         embroideryColor.value = product.value.embroideryColors[0].value
       }
 
       useHead({
         title: `${product.value.name} - emWear`,
-        meta: [
-          { name: 'description', content: product.value.description }
-        ]
+        meta: [{ name: 'description', content: product.value.description }],
       })
     }
   } catch (err) {
@@ -838,7 +1083,7 @@ onMounted(() => {
   gap: 0.5rem;
 
   &__stars {
-    color: #F59E0B;
+    color: #f59e0b;
     font-size: 1.125rem;
   }
 
@@ -881,13 +1126,13 @@ onMounted(() => {
   display: inline-block;
 
   &--in {
-    background: rgba(#10B981, 0.1);
-    color: #10B981;
+    background: rgba(#10b981, 0.1);
+    color: #10b981;
   }
 
   &--out {
-    background: rgba(#EF4444, 0.1);
-    color: #EF4444;
+    background: rgba(#ef4444, 0.1);
+    color: #ef4444;
   }
 }
 
@@ -1068,10 +1313,10 @@ onMounted(() => {
 
   &--active {
     background: $color-white;
-    border-color: #EF4444;
-    
+    border-color: #ef4444;
+
     .pdp-wishlist-icon {
-      color: #EF4444;
+      color: #ef4444;
     }
   }
 }
@@ -1334,7 +1579,8 @@ onMounted(() => {
 }
 
 @keyframes spin {
-  to { transform: rotate(360deg); }
+  to {
+    transform: rotate(360deg);
+  }
 }
 </style>
-

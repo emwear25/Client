@@ -1,27 +1,14 @@
 <template>
   <div class="topbar">
     <div class="topbar__container">
-      <div class="topbar__content">
-        <!-- Left side - Shipping info -->
-        <div class="topbar__left">
-          <span class="topbar__info">
-            Безплатна доставка над 50лв
-          </span>
-        </div>
+      <!-- Left side - Shipping info -->
+      <div class="topbar__left">
+        <span class="topbar__info"> Безплатна доставка над 50лв </span>
+      </div>
 
-        <!-- Center - Main promotional text -->
-        <div class="topbar__center">
-          <span class="topbar__promo">
-            Ръчно бродирани изделия с любов ✨
-          </span>
-        </div>
-
-        <!-- Right side - Contact or extra info -->
-        <div class="topbar__right">
-          <span class="topbar__contact">
-            <!-- Can add contact info if needed -->
-          </span>
-        </div>
+      <!-- Center - Main promotional text -->
+      <div class="topbar__center">
+        <span class="topbar__promo"> Ръчно бродирани изделия с любов ✨ </span>
       </div>
     </div>
   </div>
@@ -46,50 +33,58 @@
     width: 100%;
     margin-inline: auto;
     padding-inline: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    min-height: 40px;
 
-    @include up(md) { 
-      max-width: 960px; 
-      padding-inline: 20px; 
+    @include up(md) {
+      max-width: 1104px;
+      padding-inline: 20px;
     }
-    @include up(lg) { 
-      max-width: 1280px; 
-      padding-inline: 24px; 
+    @include up(lg) {
+      max-width: 1472px;
+      padding-inline: 24px;
     }
-    @include up(xl) { 
-      max-width: 1440px; 
-      padding-inline: 32px; 
+    @include up(xl) {
+      max-width: 1656px;
+      padding-inline: 32px;
     }
   }
 
   &__content {
-    display: grid;
-    grid-template-columns: 1fr auto 1fr;
+    display: flex;
     align-items: center;
-    min-height: 40px;
+    justify-content: space-between;
+    width: 100%;
     gap: 1rem;
 
     @media (max-width: 767px) {
-      grid-template-columns: 1fr;
-      justify-items: center;
+      flex-direction: column;
+      justify-content: center;
     }
   }
 
   &__left {
+    flex: 0 0 auto;
+
     @media (max-width: 767px) {
       display: none;
     }
   }
 
   &__center {
-    text-align: center;
-  }
-
-  &__right {
+    flex: 0 0 auto;
+    margin-left: auto;
     text-align: right;
 
     @media (max-width: 767px) {
-      display: none;
+      margin-left: 0;
     }
+  }
+
+  &__right {
+    display: none;
   }
 
   &__info {

@@ -1,5 +1,5 @@
 <template>
-  <div class="profile-page">
+  <div v-if="isAuthChecked" class="profile-page">
     <div class="profile-page__container">
       <h1 class="profile-page__title">Моят профил</h1>
 
@@ -62,29 +62,35 @@
                 <span v-if="address.isDefault" class="address-card__badge">
                   По подразбиране
                 </span>
-                <span 
-                  v-if="address.type === 'econt_office'" 
+                <span
+                  v-if="address.type === 'econt_office'"
                   class="address-card__type-badge address-card__type-badge--econt"
                 >
                   📦 Офис на Еконт
                 </span>
-                <span 
-                  v-else-if="address.type === 'econt_automat'" 
+                <span
+                  v-else-if="address.type === 'econt_automat'"
                   class="address-card__type-badge address-card__type-badge--econt"
                 >
                   🤖 Еконтомат
                 </span>
               </div>
               <p class="address-card__street">{{ address.street }}</p>
-              <p class="address-card__city">{{ address.city }}, {{ address.postalCode }}</p>
+              <p class="address-card__city">
+                {{ address.city }}, {{ address.postalCode }}
+              </p>
               <p class="address-card__country">{{ address.country }}</p>
-              <p v-if="address.econtOfficeName" class="address-card__econt-name">
+              <p
+                v-if="address.econtOfficeName"
+                class="address-card__econt-name"
+              >
                 {{ address.econtOfficeName }}
               </p>
             </div>
           </div>
           <p v-else class="profile-card__empty">
-            Нямате запазени адреси. Адресите се запазват автоматично при поръчка.
+            Нямате запазени адреси. Адресите се запазват автоматично при
+            поръчка.
           </p>
         </div>
 
@@ -124,9 +130,35 @@ definePageMeta({
 })
 
 const authStore = useAuthStore()
+const router = useRouter()
+const route = useRoute()
 
-// Refresh user data on mount
+// Prevent rendering until auth is confirmed to avoid flash
+const isAuthChecked = ref(false)
+
+// Check auth state before allowing render
 onMounted(async () => {
+  // Wait for auth to initialize
+  if (!authStore.isInitialized) {
+    let attempts = 0
+    while (!authStore.isInitialized && attempts < 30) {
+      await new Promise((resolve) => setTimeout(resolve, 50))
+      attempts++
+    }
+  }
+
+  // If not authenticated, redirect immediately without rendering
+  if (!authStore.isAuthenticated) {
+    await router.replace(
+      `/login?redirect=${encodeURIComponent(route.fullPath)}`
+    )
+    return
+  }
+
+  // Only allow rendering after auth is confirmed
+  isAuthChecked.value = true
+
+  // Refresh user data
   console.log('[Profile Page] Refreshing user data...')
   await authStore.fetchUser()
   console.log('[Profile Page] User data:', authStore.user)
@@ -301,9 +333,9 @@ useHead({
     border-radius: 4px;
 
     &--econt {
-      background: rgba(#B9C6AA, 0.2);
-      color: #2F3A2A;
-      border: 1px solid #B9C6AA;
+      background: rgba(#b9c6aa, 0.2);
+      color: #2f3a2a;
+      border: 1px solid #b9c6aa;
     }
   }
 
@@ -326,7 +358,7 @@ useHead({
 
   &__econt-name {
     font-weight: 500;
-    color: #2F3A2A;
+    color: #2f3a2a;
     font-style: italic;
   }
 }
@@ -352,4 +384,3 @@ useHead({
   }
 }
 </style>
-```

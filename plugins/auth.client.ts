@@ -1,30 +1,33 @@
 import { useAuthStore } from '~/stores/auth'
 
 export default defineNuxtPlugin(async () => {
+  // Only run on client side
+  if (!import.meta.client) return
   const authStore = useAuthStore()
   
   console.log('[Auth Plugin] BEFORE loadFromStorage:')
-  console.log('  - accessToken:', !!authStore.accessToken)
+  console.log('  - isAuthenticated:', authStore.isAuthenticated)
   console.log('  - user:', !!authStore.user)
   console.log('  - localStorage accessToken:', !!localStorage.getItem('accessToken'))
   
-  // CRITICAL: Load tokens from localStorage on client side
+  // CRITICAL: Load tokens from localStorage on client side (for email/password users)
   authStore.loadFromStorage()
   
   console.log('[Auth Plugin] AFTER loadFromStorage:')
-  console.log('  - accessToken:', !!authStore.accessToken)
+  console.log('  - isAuthenticated:', authStore.isAuthenticated)
   console.log('  - user:', !!authStore.user)
   
-  // Load user if token exists
-  if (authStore.accessToken && !authStore.user) {
-    console.log('[Auth Plugin] Token found, fetching user...')
-    await authStore.fetchUser()
-    console.log('[Auth Plugin] User fetched:', !!authStore.user)
-  } else if (authStore.accessToken && authStore.user) {
-    console.log('[Auth Plugin] User already loaded:', authStore.user.email)
-  } else {
-    console.log('[Auth Plugin] No token found - cannot fetch user')
-  }
+  // Always try to fetch user (works for both cookie-based and token-based auth)
+  // Cookie-based auth (Google OAuth) doesn't need a token in localStorage
+  // After Google OAuth redirect, user won't be loaded yet, so fetchUser will get it from cookie
+  // IMPORTANT: Always fetch user on page load to check for cookie-based auth (Google OAuth)
+  console.log('[Auth Plugin] Fetching user (cookie or token)...')
+  await authStore.fetchUser()
+  console.log('[Auth Plugin] User fetch completed:', {
+    hasUser: !!authStore.user,
+    userEmail: authStore.user?.email,
+    isAuthenticated: authStore.isAuthenticated
+  })
   
   // Mark as initialized
   authStore.isInitialized = true

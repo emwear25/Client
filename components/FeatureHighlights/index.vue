@@ -1,16 +1,17 @@
 <template>
   <section class="feature-highlights">
     <div class="feature-highlights__container">
-      <h2 class="feature-highlights__heading">Защо да изберете emWear?</h2>
-
+      <!-- Desktop: Grid Layout -->
       <div class="feature-highlights__grid">
         <div
           v-for="feature in features"
           :key="feature.id"
           class="feature-highlights__card"
         >
-          <div class="feature-highlights__icon">
-            <Icon :name="feature.icon" />
+          <div class="feature-highlights__icon-wrapper">
+            <div class="feature-highlights__icon-circle">
+              <Icon :name="feature.icon" class="feature-highlights__icon" />
+            </div>
           </div>
           <h3 class="feature-highlights__title">
             {{ feature.title }}
@@ -20,11 +21,55 @@
           </p>
         </div>
       </div>
+
+      <!-- Mobile: Slider -->
+      <div class="feature-highlights__slider">
+        <Swiper
+          :modules="modules"
+          :slides-per-view="1"
+          :space-between="24"
+          :loop="false"
+          :grab-cursor="true"
+          :pagination="{
+            clickable: true,
+            el: '.feature-highlights__pagination',
+          }"
+          class="feature-highlights__swiper"
+        >
+          <SwiperSlide
+            v-for="feature in features"
+            :key="feature.id"
+            class="feature-highlights__slide"
+          >
+            <div class="feature-highlights__card">
+              <div class="feature-highlights__icon-wrapper">
+                <div class="feature-highlights__icon-circle">
+                  <Icon :name="feature.icon" class="feature-highlights__icon" />
+                </div>
+              </div>
+              <h3 class="feature-highlights__title">
+                {{ feature.title }}
+              </h3>
+              <p class="feature-highlights__text">
+                {{ feature.text }}
+              </p>
+            </div>
+          </SwiperSlide>
+        </Swiper>
+        <div class="feature-highlights__pagination"></div>
+      </div>
     </div>
   </section>
 </template>
 
 <script setup lang="ts">
+import { Swiper, SwiperSlide } from 'swiper/vue'
+import { Pagination } from 'swiper/modules'
+import 'swiper/css'
+import 'swiper/css/pagination'
+
+const modules = [Pagination]
+
 // Static feature data
 const features = ref([
   {
@@ -60,15 +105,15 @@ const features = ref([
 @use '~/assets/styles/fonts' as *;
 
 .feature-highlights {
-  background: $bg-card;
-  padding: 3rem 0;
+  background: #ffffff;
+  padding: 1.5rem 0;
 
   @include up(md) {
-    padding: 5rem 0;
+    padding: 2rem 0;
   }
 
   @include up(lg) {
-    padding: 6rem 0;
+    padding: 2rem 0;
   }
 
   &__container {
@@ -76,45 +121,26 @@ const features = ref([
     margin-inline: auto;
     padding-inline: 16px;
 
-    @include up(md) { 
-      max-width: 960px; 
-      padding-inline: 20px; 
-    }
-    @include up(lg) { 
-      max-width: 1280px; 
-      padding-inline: 24px; 
-    }
-    @include up(xl) { 
-      max-width: 1440px; 
-      padding-inline: 32px; 
-    }
-  }
-
-  &__heading {
-    font-family: $font-heading;
-    font-size: clamp(2rem, 6vw, 2.75rem);
-    font-weight: 700;
-    text-align: center;
-    color: $brand-ink;
-    margin-bottom: 3rem;
-    line-height: 1.2;
-    letter-spacing: 0.02em;
-
     @include up(md) {
-      margin-bottom: 4rem;
+      max-width: 1104px;
+      padding-inline: 20px;
     }
-
     @include up(lg) {
-      margin-bottom: 5rem;
+      max-width: 1472px;
+      padding-inline: 24px;
+    }
+    @include up(xl) {
+      max-width: 1656px;
+      padding-inline: 32px;
     }
   }
 
+  // Desktop: Grid Layout
   &__grid {
-    display: grid;
-    grid-template-columns: 1fr;
-    gap: 2rem;
+    display: none;
 
     @include up(md) {
+      display: grid;
       grid-template-columns: repeat(2, 1fr);
       gap: 2.5rem;
     }
@@ -125,76 +151,162 @@ const features = ref([
     }
   }
 
-  &__card {
-    background: $bg-page;
-    padding: 2rem 1.5rem;
-    border-radius: 14px;
-    text-align: center;
-    box-shadow: 0 6px 16px $shadow-soft;
-    transition: all 0.2s ease;
-    border: 1px solid $border-base;
-
-    &:hover {
-      transform: translateY(-5px);
-      box-shadow: 0 8px 20px $shadow-med;
-      border-color: $brand;
-    }
+  // Mobile: Slider
+  &__slider {
+    display: block;
+    width: 100%;
 
     @include up(md) {
-      padding: 2.5rem 2rem;
+      display: none;
     }
   }
 
-  &__icon {
+  &__swiper {
+    padding: 0.5rem 0 3rem;
+    overflow: visible;
+  }
+
+  &__slide {
+    height: auto;
+  }
+
+  &__pagination {
+    position: relative;
+    bottom: 0;
+    margin-top: 1.5rem;
+    display: flex;
+    justify-content: center;
+    gap: 0.5rem;
+
+    :deep(.swiper-pagination-bullet) {
+      width: 8px;
+      height: 8px;
+      background: rgba(185, 198, 170, 0.4);
+      opacity: 1;
+      transition: all 0.3s ease;
+
+      &.swiper-pagination-bullet-active {
+        background: rgba(185, 198, 170, 0.8);
+        width: 24px;
+        border-radius: 4px;
+      }
+    }
+  }
+
+  &__card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    padding: 0;
+    background: transparent;
+    border: none;
+    box-shadow: none;
+    transition: none;
+  }
+
+  &__icon-wrapper {
+    margin-bottom: 1rem;
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 80px;
-    height: 80px;
-    margin: 0 auto 1.5rem;
-    background: $grad-brand-b;
-    border-radius: 50%;
-    color: $color-white;
-    font-size: 2rem;
-    transition: all 0.2s ease;
 
     @include up(md) {
-      width: 90px;
-      height: 90px;
-      font-size: 2.25rem;
-      margin-bottom: 2rem;
-    }
-
-    .feature-highlights__card:hover & {
-      transform: scale(1.1);
-      box-shadow: 0 8px 20px rgba(185, 198, 170, 0.4);
-    }
-  }
-
-  &__title {
-    font-family: $font-heading;
-    font-size: 1.25rem;
-    font-weight: 500;
-    color: $brand-ink;
-    margin-bottom: 1rem;
-    line-height: 1.3;
-
-    @include up(md) {
-      font-size: 1.375rem;
       margin-bottom: 1.25rem;
     }
   }
 
-  &__text {
-    font-family: $font-body;
-    font-size: 0.95rem;
-    font-weight: 400;
-    color: $text-secondary;
-    line-height: 1.7;
-    margin: 0;
+  &__icon-circle {
+    position: relative;
+    width: 60px;
+    height: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 2px dashed rgba(185, 198, 170, 0.6);
+    border-radius: 50%;
+    background: transparent;
 
     @include up(md) {
-      font-size: 1rem;
+      width: 70px;
+      height: 70px;
+    }
+
+    @include up(lg) {
+      width: 80px;
+      height: 80px;
+    }
+  }
+
+  &__icon {
+    font-size: 1.5rem;
+    color: rgba(185, 198, 170, 0.8);
+    width: 1em;
+    height: 1em;
+
+    @include up(md) {
+      font-size: 1.75rem;
+    }
+
+    @include up(lg) {
+      font-size: 2rem;
+    }
+  }
+
+  &__title {
+    font-family:
+      system-ui,
+      -apple-system,
+      'Segoe UI',
+      Roboto,
+      'Helvetica Neue',
+      'Noto Sans',
+      'Liberation Sans',
+      Arial,
+      sans-serif,
+      'Apple Color Emoji',
+      'Segoe UI Emoji',
+      'Segoe UI Symbol',
+      'Noto Color Emoji';
+    font-size: 13px;
+    font-weight: 700;
+    color: rgba(47, 58, 42, 0.9);
+    margin: 0 0 0.75rem;
+    line-height: 16px;
+
+    @include up(md) {
+      margin-bottom: 1rem;
+    }
+  }
+
+  &__text {
+    font-family:
+      system-ui,
+      -apple-system,
+      'Segoe UI',
+      Roboto,
+      'Helvetica Neue',
+      'Noto Sans',
+      'Liberation Sans',
+      Arial,
+      sans-serif,
+      'Apple Color Emoji',
+      'Segoe UI Emoji',
+      'Segoe UI Symbol',
+      'Noto Color Emoji';
+    font-size: 13px;
+    font-weight: 400;
+    color: rgba(47, 58, 42, 0.7);
+    line-height: 23px;
+    margin: 0;
+    max-width: 280px;
+
+    @include up(md) {
+      max-width: 300px;
+    }
+
+    @include up(lg) {
+      max-width: none;
     }
   }
 }

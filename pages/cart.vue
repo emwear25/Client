@@ -5,7 +5,8 @@
       <div class="cart-page__container">
         <h1 class="cart-page__title">Количка</h1>
         <p class="cart-page__subtitle" v-if="!cartStore.isEmpty">
-          {{ cartStore.itemCount }} {{ cartStore.itemCount === 1 ? 'продукт' : 'продукта' }}
+          {{ cartStore.itemCount }}
+          {{ cartStore.itemCount === 1 ? 'продукт' : 'продукта' }}
         </p>
       </div>
     </header>
@@ -16,18 +17,40 @@
         <!-- Empty Cart State -->
         <div v-if="cartStore.isEmpty" class="empty-cart">
           <div class="empty-cart__icon">
-            <svg width="120" height="120" viewBox="0 0 120 120" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <circle cx="60" cy="60" r="58" stroke="currentColor" stroke-width="2" opacity="0.2"/>
-              <path d="M40 45L45 30H75L80 45M40 45H80M40 45L45 85H75L80 45" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-              <circle cx="50" cy="92" r="3" fill="currentColor"/>
-              <circle cx="70" cy="92" r="3" fill="currentColor"/>
+            <svg
+              width="120"
+              height="120"
+              viewBox="0 0 120 120"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <circle
+                cx="60"
+                cy="60"
+                r="58"
+                stroke="currentColor"
+                stroke-width="2"
+                opacity="0.2"
+              />
+              <path
+                d="M40 45L45 30H75L80 45M40 45H80M40 45L45 85H75L80 45"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              />
+              <circle cx="50" cy="92" r="3" fill="currentColor" />
+              <circle cx="70" cy="92" r="3" fill="currentColor" />
             </svg>
           </div>
           <h2 class="empty-cart__title">Вашата количка е празна</h2>
           <p class="empty-cart__message">
             Добавете продукти, за да започнете пазаруването
           </p>
-          <NuxtLink to="/products" class="btn btn--primary btn--large empty-cart__cta">
+          <NuxtLink
+            to="/products"
+            class="btn btn--primary btn--large empty-cart__cta"
+          >
             Разгледай Продукти
           </NuxtLink>
         </div>
@@ -37,15 +60,15 @@
           <!-- Cart Items Section -->
           <section class="cart-page__items">
             <TransitionGroup name="cart-item" tag="div" class="cart-items-list">
-              <article 
-                v-for="item in cartStore.items" 
+              <article
+                v-for="item in cartStore.items"
                 :key="`${item.id}-${item.size}-${item.color}`"
                 class="cart-item"
               >
                 <!-- Product Image -->
                 <div class="cart-item__image">
-                  <img 
-                    :src="item.image || '/placeholder-product.jpg'" 
+                  <img
+                    :src="item.image || '/placeholder-product.jpg'"
                     :alt="item.name"
                     loading="lazy"
                   />
@@ -54,7 +77,7 @@
                 <!-- Product Details -->
                 <div class="cart-item__details">
                   <h3 class="cart-item__name">{{ item.name }}</h3>
-                  
+
                   <div class="cart-item__meta">
                     <span v-if="item.size" class="cart-item__meta-item">
                       <strong>Размер:</strong> {{ item.size }}
@@ -73,30 +96,50 @@
                 <div class="cart-item__quantity">
                   <label class="cart-item__quantity-label">Количество</label>
                   <div class="cart-item__quantity-controls">
-                    <button 
+                    <button
                       class="cart-item__quantity-btn"
                       @click="decrementQuantity(item)"
                       :aria-label="`Намали количеството на ${item.name}`"
                     >
-                      <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-                        <path d="M3 8H13" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                      <svg
+                        width="16"
+                        height="16"
+                        viewBox="0 0 16 16"
+                        fill="none"
+                      >
+                        <path
+                          d="M3 8H13"
+                          stroke="currentColor"
+                          stroke-width="2"
+                          stroke-linecap="round"
+                        />
                       </svg>
                     </button>
-                    <input 
-                      type="number" 
+                    <input
+                      type="number"
                       class="cart-item__quantity-input"
                       :value="item.quantity"
                       @change="updateQuantityInput($event, item)"
                       min="1"
                       :aria-label="`Количество за ${item.name}`"
                     />
-                    <button 
+                    <button
                       class="cart-item__quantity-btn"
                       @click="incrementQuantity(item)"
                       :aria-label="`Увеличи количеството на ${item.name}`"
                     >
-                      <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-                        <path d="M8 3V13M3 8H13" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                      <svg
+                        width="16"
+                        height="16"
+                        viewBox="0 0 16 16"
+                        fill="none"
+                      >
+                        <path
+                          d="M8 3V13M3 8H13"
+                          stroke="currentColor"
+                          stroke-width="2"
+                          stroke-linecap="round"
+                        />
                       </svg>
                     </button>
                   </div>
@@ -111,13 +154,18 @@
                 </div>
 
                 <!-- Remove Button -->
-                <button 
+                <button
                   class="cart-item__remove"
                   @click="removeItem(item)"
                   :aria-label="`Премахни ${item.name} от количката`"
                 >
                   <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
-                    <path d="M5 5L15 15M5 15L15 5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                    <path
+                      d="M5 5L15 15M5 15L15 5"
+                      stroke="currentColor"
+                      stroke-width="2"
+                      stroke-linecap="round"
+                    />
                   </svg>
                 </button>
               </article>
@@ -128,51 +176,72 @@
           <aside class="order-summary">
             <div class="order-summary__sticky">
               <h2 class="order-summary__title">Обобщение</h2>
-              
+
               <!-- Coupon Input -->
               <div class="order-summary__coupon">
                 <CouponInput />
               </div>
-              
+
               <div class="order-summary__content">
                 <!-- Show subtotal before discount if discount is applied -->
-                <div v-if="cartStore.discountTotal > 0" class="order-summary__row order-summary__row--strikethrough">
+                <div
+                  v-if="cartStore.discountTotal > 0"
+                  class="order-summary__row order-summary__row--strikethrough"
+                >
                   <span class="order-summary__label">Междинна сума</span>
-                  <span class="order-summary__value">{{ formatPrice(cartStore.subtotalBeforeDiscount) }} лв.</span>
+                  <span class="order-summary__value"
+                    >{{
+                      formatPrice(cartStore.subtotalBeforeDiscount)
+                    }}
+                    лв.</span
+                  >
                 </div>
-                
+
                 <!-- Discount row -->
-                <div v-if="cartStore.discountTotal > 0" class="order-summary__row order-summary__row--discount">
+                <div
+                  v-if="cartStore.discountTotal > 0"
+                  class="order-summary__row order-summary__row--discount"
+                >
                   <span class="order-summary__label">
                     Отстъпка
-                    <span v-if="cartStore.hasCoupon" class="order-summary__coupon-code">({{ cartStore.appliedCoupon }})</span>
+                    <span
+                      v-if="cartStore.hasCoupon"
+                      class="order-summary__coupon-code"
+                      >({{ cartStore.appliedCoupon }})</span
+                    >
                   </span>
-                  <span class="order-summary__value order-summary__discount-amount">-{{ formatPrice(cartStore.discountTotal) }} лв.</span>
-                </div>
-                
-                <div class="order-summary__row">
-                  <span class="order-summary__label">Междинна сума</span>
-                  <span class="order-summary__value">{{ formatPrice(cartStore.totalPrice) }} лв.</span>
+                  <span
+                    class="order-summary__value order-summary__discount-amount"
+                    >-{{ formatPrice(cartStore.discountTotal) }} лв.</span
+                  >
                 </div>
 
                 <div class="order-summary__row">
-                  <span class="order-summary__label">Доставка</span>
-                  <span class="order-summary__value">{{ shippingCost === 0 ? 'Безплатна' : formatPrice(shippingCost) + ' лв.' }}</span>
+                  <span class="order-summary__label">Междинна сума</span>
+                  <span class="order-summary__value"
+                    >{{ formatPrice(cartStore.totalPrice) }} лв.</span
+                  >
                 </div>
 
                 <div class="order-summary__divider"></div>
-                
+
                 <!-- Savings summary -->
-                <div v-if="cartStore.discountTotal > 0" class="order-summary__savings">
-                  🎉 Спестявате {{ formatPrice(cartStore.discountTotal) }} лв. ({{ cartStore.savingsPercentage }}%)
+                <div
+                  v-if="cartStore.discountTotal > 0"
+                  class="order-summary__savings"
+                >
+                  🎉 Спестявате {{ formatPrice(cartStore.discountTotal) }} лв.
+                  ({{ cartStore.savingsPercentage }}%)
                 </div>
 
                 <div class="order-summary__row order-summary__total">
                   <span class="order-summary__label">Общо</span>
-                  <span class="order-summary__value">{{ formatPrice(totalWithShipping) }} лв.</span>
+                  <span class="order-summary__value"
+                    >{{ formatPrice(cartStore.totalPrice) }} лв.</span
+                  >
                 </div>
 
-                <button 
+                <button
                   class="btn btn--primary btn--large order-summary__cta"
                   @click="goToCheckout"
                   :disabled="cartStore.isEmpty"
@@ -250,11 +319,20 @@ const decrementQuantity = (item: any) => {
 const updateQuantityInput = (event: Event, item: any) => {
   const target = event.target as HTMLInputElement
   const newQuantity = parseInt(target.value) || 1
-  cartStore.updateQuantity(item.id, Math.max(1, newQuantity), item.size, item.color)
+  cartStore.updateQuantity(
+    item.id,
+    Math.max(1, newQuantity),
+    item.size,
+    item.color
+  )
 }
 
 const removeItem = (item: any) => {
-  if (confirm(`Сигурни ли сте, че искате да премахнете "${item.name}" от количката?`)) {
+  if (
+    confirm(
+      `Сигурни ли сте, че искате да премахнете "${item.name}" от количката?`
+    )
+  ) {
     cartStore.removeItem(item.id, item.size, item.color)
   }
 }
@@ -263,8 +341,11 @@ const removeItem = (item: any) => {
 useHead({
   title: 'Количка - emWear',
   meta: [
-    { name: 'description', content: 'Прегледайте вашата количка и завършете поръчката си от emWear.' }
-  ]
+    {
+      name: 'description',
+      content: 'Прегледайте вашата количка и завършете поръчката си от emWear.',
+    },
+  ],
 })
 </script>
 
@@ -416,10 +497,10 @@ useHead({
   display: grid;
   grid-template-columns: 80px 1fr;
   grid-template-areas:
-    "image details"
-    "image quantity"
-    "subtotal subtotal"
-    "remove remove";
+    'image details'
+    'image quantity'
+    'subtotal subtotal'
+    'remove remove';
   gap: 1rem;
   position: relative;
   transition: all 0.2s ease;
@@ -428,15 +509,15 @@ useHead({
   @include up(sm) {
     grid-template-columns: 100px 1fr auto;
     grid-template-areas:
-      "image details quantity"
-      "image details subtotal"
-      "remove remove remove";
+      'image details quantity'
+      'image details subtotal'
+      'remove remove remove';
     padding: 1.25rem;
   }
 
   @include up(md) {
     grid-template-columns: 120px 1fr auto auto auto;
-    grid-template-areas: "image details quantity subtotal remove";
+    grid-template-areas: 'image details quantity subtotal remove';
     gap: 1.5rem;
     padding: 1.5rem;
   }

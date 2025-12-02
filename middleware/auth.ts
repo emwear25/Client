@@ -4,7 +4,7 @@ export default defineNuxtRouteMiddleware(async (to, from) => {
     const authStore = useAuthStore()
 
     // On SSR, skip auth check - let client-side handle it
-    if (process.server) {
+    if (import.meta.server) {
         console.log('[Auth Middleware] Running on server, skipping auth check')
         return
     }
@@ -31,8 +31,8 @@ export default defineNuxtRouteMiddleware(async (to, from) => {
     // Check if user is authenticated
     if (!authStore.isAuthenticated) {
         console.log('[Auth Middleware] Not authenticated, redirecting to login')
-        // Redirect to login page with return URL
-        return navigateTo(`/login?redirect=${to.fullPath}`)
+        // Use replace instead of navigateTo to prevent page flash
+        return navigateTo(`/login?redirect=${encodeURIComponent(to.fullPath)}`, { replace: true })
     }
     
     console.log('[Auth Middleware] Access granted to:', to.fullPath)

@@ -904,20 +904,54 @@
 
         <!-- Right Column - Payment Method & Order Summary -->
         <div class="checkout__summary">
-          <!-- Payment Method -->
+          <!-- Payment Method ---->
           <div class="checkout__summary-card checkout__payment-card">
             <h2 class="checkout__summary-title">Метод на плащане</h2>
 
-            <div class="checkout__payment-method">
-              <div
-                class="checkout__payment-option checkout__payment-option--selected"
+            <div class="checkout__payment-methods">
+              <!-- Cash on Delivery Option -->
+              <label
+                class="checkout__payment-option"
+                :class="{
+                  'checkout__payment-option--selected':
+                    selectedPaymentMethod === 'cod',
+                }"
               >
+                <input
+                  type="radio"
+                  v-model="selectedPaymentMethod"
+                  value="cod"
+                  name="paymentMethod"
+                  class="checkout__payment-radio"
+                />
                 <div class="checkout__payment-icon">💵</div>
                 <div class="checkout__payment-info">
                   <h3 class="checkout__payment-title">Наложен платеж</h3>
                   <p class="checkout__payment-desc">Плащате при доставка</p>
                 </div>
-              </div>
+              </label>
+
+              <!-- Stripe Card Payment Option -->
+              <label
+                class="checkout__payment-option"
+                :class="{
+                  'checkout__payment-option--selected':
+                    selectedPaymentMethod === 'stripe_card',
+                }"
+              >
+                <input
+                  type="radio"
+                  v-model="selectedPaymentMethod"
+                  value="stripe_card"
+                  name="paymentMethod"
+                  class="checkout__payment-radio"
+                />
+                <div class="checkout__payment-icon">💳</div>
+                <div class="checkout__payment-info">
+                  <h3 class="checkout__payment-title">Карта / Apple Pay</h3>
+                  <p class="checkout__payment-desc">Сигурно плащане с Stripe</p>
+                </div>
+              </label>
             </div>
           </div>
 
@@ -1050,6 +1084,7 @@
 import { useCartStore } from '~/stores/cart'
 import { useAuthStore } from '~/stores/auth'
 import { useToast } from '~/composables/useToast'
+import { useApi } from '~/composables/useApi'
 
 // No middleware - checkout supports both guest and authenticated users
 
@@ -1057,6 +1092,7 @@ const cartStore = useCartStore()
 const authStore = useAuthStore()
 const router = useRouter()
 const toast = useToast()
+const api = useApi()
 
 // State
 const isGuest = ref(!authStore.isAuthenticated) // Start in guest mode if not authenticated
@@ -1084,6 +1120,10 @@ const errorMessage = ref('')
 const selectedAddressId = ref<string | null>(null)
 const saveNewAddress = ref(false)
 const showAllAddresses = ref(false)
+
+// Payment method selection
+const selectedPaymentMethod = ref<'cod' | 'stripe_card'>('cod')
+const isProcessingPayment = ref(false)
 
 // Computed property to show only default and last created addresses initially
 const displayedAddresses = computed(() => {
@@ -1203,7 +1243,7 @@ const loadEcontCities = async () => {
   loadingCities.value = true
   console.log('[Checkout] Starting to load Econt cities...')
   try {
-    const response = await $fetch('http://localhost:3030/api/econt/cities')
+    const response = await api.get('econt/cities')
     console.log('[Checkout] Cities response:', response)
     console.log('[Checkout] Response.success:', response.success)
     console.log('[Checkout] Response.data length:', response.data?.length)
@@ -1239,9 +1279,7 @@ const loadOfficesForCity = async () => {
   selectedOffice.value = null
 
   try {
-    const response = await $fetch(
-      `http://localhost:3030/api/econt/offices/${selectedCity.value.id}`
-    )
+    const response = await api.get(`econt/offices/${selectedCity.value.id}`)
     if (response.success) {
       econtOffices.value = response.data
       console.log(
@@ -1409,13 +1447,7 @@ const calculateEcontShipping = async () => {
       return
     }
 
-    const response = await $fetch(
-      'http://localhost:3030/api/econt/calculate-price',
-      {
-        method: 'POST',
-        body: requestData,
-      }
-    )
+    const response = await api.post('econt/calculate-price', requestData)
 
     console.log('[Checkout] Shipping calculation response:', response)
 
@@ -1575,13 +1607,7 @@ const calculateSpeedyShipping = async () => {
       )
     }
 
-    const response = await $fetch(
-      'http://localhost:3030/api/speedy/calculate',
-      {
-        method: 'POST',
-        body: requestData,
-      }
-    )
+    const response = await api.post('speedy/calculate', requestData)
 
     console.log('[Checkout] Speedy shipping calculation response:', response)
 
@@ -2073,6 +2099,49 @@ const calculateShippingManually = async () => {
   }
 }
 
+// Handle Stripe Checkout
+const handleStripeCheckout = async (orderData: any) => {
+  isProcessingPayment.value = true
+  errorMessage.value = ''
+
+  try {
+    console.log('[Checkout] Creating Stripe Checkout Session...')
+
+    // Prepare headers
+    const headers: any = {}
+    if (authStore.accessToken) {
+      headers.Authorization = `Bearer ${authStore.accessToken}`
+    }
+
+    // Call backend to create Checkout Session
+    const response: any = await api.post(
+      'payments/create-checkout-session',
+      orderData,
+      {
+        headers,
+      }
+    )
+
+    if (response.success && response.data.sessionUrl) {
+      console.log('[Checkout] Stripe session created:', response.data.sessionId)
+      console.log('[Checkout] Redirecting to Stripe Checkout...')
+
+      // Redirect to Stripe Checkout
+      window.location.href = response.data.sessionUrl
+    } else {
+      throw new Error(response.message || 'Failed to create checkout session')
+    }
+  } catch (error: any) {
+    console.error('[Checkout] Stripe checkout error:', error)
+    errorMessage.value =
+      error.data?.message ||
+      error.message ||
+      'Грешка при създаване на плащане. Моля, опитайте отново.'
+    isProcessingPayment.value = false
+    isSubmitting.value = false
+  }
+}
+
 // Submit order
 const handleSubmit = async () => {
   if (isSubmitting.value) return
@@ -2205,9 +2274,13 @@ const handleSubmit = async () => {
       color: item.color,
     })),
     shippingAddress,
-    paymentMethod: 'cash_on_delivery',
+    paymentMethod:
+      selectedPaymentMethod.value === 'cod'
+        ? 'cash_on_delivery'
+        : 'stripe_card',
     deliveryMethod: deliveryMethod.value,
     deliveryProvider: deliveryProvider.value,
+    shippingCost: shippingCost.value || 0, // Include calculated shipping cost
     econtCustomerInfoId: econtCustomerInfoId.value || null, // Add Econt customer info ID
     isGuest: isGuest.value && !authStore.isAuthenticated, // Add guest flag
     guestInfo:
@@ -2242,6 +2315,14 @@ const handleSubmit = async () => {
   }
 
   try {
+    // Check payment method and route accordingly
+    if (selectedPaymentMethod.value === 'stripe_card') {
+      // Handle Stripe checkout (redirects to Stripe)
+      await handleStripeCheckout(orderData)
+      return // Exit here as we're redirecting to Stripe
+    }
+
+    // COD flow (existing logic)
     // Submit order
     // Prepare headers - only include Authorization if user is authenticated
     const headers: any = {}
@@ -2249,9 +2330,7 @@ const handleSubmit = async () => {
       headers.Authorization = `Bearer ${authStore.accessToken}`
     }
 
-    const response = await $fetch('http://localhost:3030/api/orders', {
-      method: 'POST',
-      body: orderData,
+    const response = await api.post('orders', orderData, {
       headers,
     })
 
@@ -2299,20 +2378,19 @@ const handleSubmit = async () => {
           if (!hasMatchingAddress) {
             console.log('[Checkout] Saving new courier address...')
             try {
-              const addressResult = await $fetch(
-                'http://localhost:3030/api/users/addresses',
+              const addressResult = await api.post(
+                'users/addresses',
                 {
-                  method: 'POST',
+                  type: 'home',
+                  street: shippingForm.value.street,
+                  city: shippingForm.value.city,
+                  postalCode: shippingForm.value.postalCode,
+                  country: shippingForm.value.country,
+                  isDefault: !authStore.user?.addresses?.length,
+                },
+                {
                   headers: {
                     Authorization: `Bearer ${authStore.accessToken}`,
-                  },
-                  body: {
-                    type: 'home',
-                    street: shippingForm.value.street,
-                    city: shippingForm.value.city,
-                    postalCode: shippingForm.value.postalCode,
-                    country: shippingForm.value.country,
-                    isDefault: !authStore.user?.addresses?.length,
                   },
                 }
               )
@@ -2345,25 +2423,24 @@ const handleSubmit = async () => {
         if (!hasMatchingOfficeAddress) {
           console.log('[Checkout] Saving Econt office address...')
           try {
-            const addressResult = await $fetch(
-              'http://localhost:3030/api/users/addresses',
+            const addressResult = await api.post(
+              'users/addresses',
               {
-                method: 'POST',
+                type:
+                  deliveryMethod.value === 'econt_automat'
+                    ? 'econt_automat'
+                    : 'econt_office',
+                street: officeAddressStreet,
+                city: officeCity,
+                postalCode: officePostalCode,
+                country: 'България',
+                isDefault: !authStore.user?.addresses?.length,
+                econtOfficeCode: selectedOffice.value.code,
+                econtOfficeName: selectedOffice.value.name,
+              },
+              {
                 headers: {
                   Authorization: `Bearer ${authStore.accessToken}`,
-                },
-                body: {
-                  type:
-                    deliveryMethod.value === 'econt_automat'
-                      ? 'econt_automat'
-                      : 'econt_office',
-                  street: officeAddressStreet,
-                  city: officeCity,
-                  postalCode: officePostalCode,
-                  country: 'България',
-                  isDefault: !authStore.user?.addresses?.length,
-                  econtOfficeCode: selectedOffice.value.code,
-                  econtOfficeName: selectedOffice.value.name,
                 },
               }
             )
@@ -2397,8 +2474,14 @@ const handleSubmit = async () => {
         authStore.user
       )
 
-      // Redirect to success page
-      await navigateTo(`/order-success?orderId=${response.data._id}`)
+      // Redirect to success page with secure token
+      const token = response.data.successToken
+      if (token) {
+        await navigateTo(`/order-success?token=${token}`)
+      } else {
+        // Fallback to orderId for backward compatibility
+        await navigateTo(`/order-success?orderId=${response.data._id}`)
+      }
     }
   } catch (error: any) {
     console.error('Order submission error:', error)
@@ -2414,9 +2497,7 @@ const handleSubmit = async () => {
       if (refreshed) {
         // Retry the order submission
         try {
-          const response = await $fetch('http://localhost:3030/api/orders', {
-            method: 'POST',
-            body: orderData,
+          const response = await api.post('orders', orderData, {
             headers: {
               Authorization: `Bearer ${authStore.accessToken}`,
             },
@@ -2424,7 +2505,12 @@ const handleSubmit = async () => {
 
           if (response.success) {
             cartStore.clearCart()
-            router.push(`/order-success?orderId=${response.data._id}`)
+            const token = response.data.successToken
+            if (token) {
+              router.push(`/order-success?token=${token}`)
+            } else {
+              router.push(`/order-success?orderId=${response.data._id}`)
+            }
             return
           }
         } catch (retryError: any) {

@@ -32,11 +32,17 @@ interface AuthState {
     isLoading: boolean
 }
 
-const API_URL = 'http://localhost:3030/api/auth'
+// Get API base URL from runtime config
+const getApiBase = () => {
+  const config = useRuntimeConfig()
+  return config.public.apiBase || 'http://localhost:3030'
+}
 
-// Load tokens from localStorage
+const getApiUrl = () => `${getApiBase()}/api/auth`
+
+// Load tokens from localStorage (for backward compatibility with token-based auth)
 const loadTokens = () => {
-    if (typeof window === 'undefined') return { accessToken: null, refreshToken: null }
+    if (!import.meta.client) return { accessToken: null, refreshToken: null }
 
     try {
         const accessToken = localStorage.getItem('accessToken')
@@ -48,9 +54,9 @@ const loadTokens = () => {
     }
 }
 
-// Save tokens to localStorage
+// Save tokens to localStorage (for backward compatibility with token-based auth)
 const saveTokens = (accessToken: string | null, refreshToken: string | null) => {
-    if (typeof window === 'undefined') return
+    if (!import.meta.client) return
 
     try {
         if (accessToken) {
@@ -79,7 +85,7 @@ export const useAuthStore = defineStore('auth', () => {
     const isInitialized = ref(false) // Track if plugin has run
 
     // Debug logging
-    if (process.client) {
+    if (import.meta.client) {
         console.log('[Auth Store] Initialized with token:', !!savedAccessToken)
         if (savedAccessToken) {
             console.log('[Auth Store] Token preview:', savedAccessToken.substring(0, 20) + '...')
@@ -87,7 +93,8 @@ export const useAuthStore = defineStore('auth', () => {
     }
 
     // Getters
-    const isAuthenticated = computed(() => !!user.value && !!accessToken.value)
+    // User is authenticated if they have a user object (from cookie or token)
+    const isAuthenticated = computed(() => !!user.value)
     const isAdmin = computed(() => user.value?.role === 'admin')
     const fullName = computed(() => {
         if (!user.value) return null
@@ -103,7 +110,7 @@ export const useAuthStore = defineStore('auth', () => {
         isLoading.value = true
 
         try {
-            const response = await $fetch(`${API_URL}/register`, {
+            const response = await $fetch(`${getApiUrl()}/register`, {
                 method: 'POST',
                 body: { email, password }
             })
@@ -131,7 +138,7 @@ export const useAuthStore = defineStore('auth', () => {
         isLoading.value = true
 
         try {
-            const response = await $fetch(`${API_URL}/login`, {
+            const response = await $fetch(`${getApiUrl()}/login`, {
                 method: 'POST',
                 body: { email, password }
             })
@@ -155,9 +162,24 @@ export const useAuthStore = defineStore('auth', () => {
         }
     }
 
+    // Google OAuth login - redirects to backend which handles the OAuth flow
+    const loginWithGoogle = async (redirectPath: string = '/') => {
+        const config = useRuntimeConfig()
+        const apiBase = config.public.apiBase || 'http://localhost:3030'
+        
+        // Build URL to backend OAuth initiation endpoint
+        const oauthUrl = `${apiBase}/api/auth/google?redirect=${encodeURIComponent(redirectPath)}`
+        
+        // Full page redirect to backend (which will redirect to Google)
+        if (import.meta.client) {
+            window.location.href = oauthUrl
+        }
+    }
+
+
     const loadFromStorage = () => {
-        console.log('[Auth loadFromStorage] Called, process.client:', process.client)
-        if (process.client) {
+        console.log('[Auth loadFromStorage] Called, import.meta.client:', import.meta.client)
+        if (import.meta.client) {
             const tokens = loadTokens()
             console.log('[Auth loadFromStorage] Tokens loaded:', {
                 accessToken: !!tokens.accessToken,
@@ -176,11 +198,20 @@ export const useAuthStore = defineStore('auth', () => {
 
     const logout = async () => {
         try {
-            if (refreshToken.value) {
-                await $fetch(`${API_URL}/logout`, {
+            // Try cookie-based logout first (for Google OAuth users)
+            try {
+                await $fetch(`${getApiUrl()}/logout-cookie`, {
                     method: 'POST',
-                    body: { refreshToken: refreshToken.value }
+                    credentials: 'include' // Include cookies
                 })
+            } catch (cookieError) {
+                // Fallback to token-based logout (for email/password users)
+                if (refreshToken.value) {
+                    await $fetch(`${getApiUrl()}/logout`, {
+                        method: 'POST',
+                        body: { refreshToken: refreshToken.value }
+                    })
+                }
             }
         } catch (error) {
             console.error('Logout error:', error)
@@ -194,25 +225,46 @@ export const useAuthStore = defineStore('auth', () => {
     }
 
     const fetchUser = async () => {
-        if (!accessToken.value) {
-            console.log('[Auth] No access token, skipping fetch')
-            return
-        }
-
         isLoading.value = true
-        console.log('[Auth] Fetching user with token:', accessToken.value.substring(0, 20) + '...')
+        console.log('[Auth] Fetching user...')
 
         try {
-            const response = await $fetch(`${API_URL}/me`, {
-                headers: {
-                    Authorization: `Bearer ${accessToken.value}`
-                }
-            })
+            // Try cookie-based auth first (for Google OAuth users)
+            try {
+                const response = await $fetch(`${getApiUrl()}/me`, {
+                    credentials: 'include', // Include cookies - CRITICAL for Google OAuth
+                    headers: accessToken.value ? {
+                        Authorization: `Bearer ${accessToken.value}`
+                    } : {}
+                })
 
-            if (response.success && response.data) {
-                user.value = response.data.user
-                console.log('[Auth] User fetched successfully:', user.value.email)
-                return { success: true, user: response.data.user }
+                if (response.success && response.data) {
+                    user.value = response.data.user
+                    console.log('[Auth] User fetched successfully (cookie):', user.value.email)
+                    return { success: true, user: response.data.user }
+                }
+            } catch (cookieError: any) {
+                console.log('[Auth] Cookie-based auth failed:', cookieError.status, cookieError.message)
+                
+                // Fallback to token-based auth (for email/password users)
+                if (accessToken.value) {
+                    console.log('[Auth] Cookie auth failed, trying token:', accessToken.value.substring(0, 20) + '...')
+                    const response = await $fetch(`${getApiUrl()}/me-token`, {
+                        headers: {
+                            Authorization: `Bearer ${accessToken.value}`
+                        }
+                    })
+
+                    if (response.success && response.data) {
+                        user.value = response.data.user
+                        console.log('[Auth] User fetched successfully (token):', user.value.email)
+                        return { success: true, user: response.data.user }
+                    }
+                } else {
+                    // No token and cookie failed - user is not authenticated
+                    console.log('[Auth] No token and cookie auth failed - user not authenticated')
+                    throw cookieError
+                }
             }
         } catch (error: any) {
             console.error('[Auth] Fetch user error:', error)
@@ -226,9 +278,12 @@ export const useAuthStore = defineStore('auth', () => {
                 }
             }
 
-            // If refresh failed, logout
-            console.log('[Auth] Auth failed, logging out')
-            await logout()
+            // If refresh failed or no token, clear user but don't logout (cookie might still be valid)
+            // Only logout if we're sure there's no valid auth
+            if (error.status === 401 && !refreshToken.value) {
+                console.log('[Auth] No valid auth found, clearing user state')
+                user.value = null
+            }
         } finally {
             isLoading.value = false
         }
@@ -238,7 +293,7 @@ export const useAuthStore = defineStore('auth', () => {
         if (!refreshToken.value) return false
 
         try {
-            const response = await $fetch(`${API_URL}/refresh`, {
+            const response = await $fetch(`${getApiUrl()}/refresh`, {
                 method: 'POST',
                 body: { refreshToken: refreshToken.value }
             })
@@ -266,7 +321,7 @@ export const useAuthStore = defineStore('auth', () => {
         console.log('[Auth] Updating profile with data:', data)
 
         try {
-            const response = await $fetch(`${API_URL}/profile`, {
+            const response = await $fetch(`${getApiUrl()}/profile`, {
                 method: 'PUT',
                 headers: {
                     Authorization: `Bearer ${accessToken.value}`
@@ -297,7 +352,7 @@ export const useAuthStore = defineStore('auth', () => {
         isLoading.value = true
 
         try {
-            const response = await $fetch(`${API_URL}/change-password`, {
+            const response = await $fetch(`${getApiUrl()}/change-password`, {
                 method: 'PUT',
                 headers: {
                     Authorization: `Bearer ${accessToken.value}`
@@ -335,6 +390,7 @@ export const useAuthStore = defineStore('auth', () => {
         loadFromStorage,
         register,
         login,
+        loginWithGoogle,
         logout,
         fetchUser,
         refreshAccessToken,

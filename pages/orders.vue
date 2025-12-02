@@ -3,7 +3,9 @@
     <div class="container">
       <div class="orders-page__header">
         <h1 class="orders-page__title">Моите Поръчки</h1>
-        <p class="orders-page__subtitle">Прегледайте историята на вашите поръчки</p>
+        <p class="orders-page__subtitle">
+          Прегледайте историята на вашите поръчки
+        </p>
       </div>
 
       <div v-if="isLoading" class="orders-page__loading">
@@ -13,7 +15,9 @@
       <div v-else-if="error" class="orders-page__error">
         <h2>Грешка</h2>
         <p>{{ error }}</p>
-        <button class="btn btn--primary" @click="fetchOrders">Опитай отново</button>
+        <button class="btn btn--primary" @click="fetchOrders">
+          Опитай отново
+        </button>
       </div>
 
       <div v-else-if="orders.length === 0" class="orders-page__empty">
@@ -28,21 +32,30 @@
         <div v-for="order in orders" :key="order._id" class="order-card">
           <div class="order-card__header">
             <div class="order-card__info">
-              <h3 class="order-card__number">Поръчка #{{ order.orderNumber }}</h3>
+              <h3 class="order-card__number">
+                Поръчка #{{ order.orderNumber }}
+              </h3>
               <p class="order-card__date">{{ formatDate(order.createdAt) }}</p>
             </div>
-            <span class="order-card__status" :class="`order-card__status--${order.orderStatus}`">
+            <span
+              class="order-card__status"
+              :class="`order-card__status--${order.orderStatus}`"
+            >
               {{ getStatusLabel(order.orderStatus) }}
             </span>
           </div>
 
           <div class="order-card__items">
             <div v-for="item in order.items" :key="item._id" class="order-item">
-              <img 
-                :src="getItemImage(item)" 
-                :alt="item.name" 
+              <img
+                :src="getItemImage(item)"
+                :alt="item.name"
                 class="order-item__image"
-                @error="(e) => (e.target as HTMLImageElement).src = '/img/placeholder.png'"
+                @error="
+                  (e) =>
+                    ((e.target as HTMLImageElement).src =
+                      '/img/placeholder.png')
+                "
               />
               <div class="order-item__info">
                 <h4 class="order-item__name">{{ item.name }}</h4>
@@ -52,7 +65,9 @@
                   <span> • Количество: {{ item.quantity }}</span>
                 </p>
               </div>
-              <div class="order-item__price">{{ (item.price * item.quantity).toFixed(2) }} лв</div>
+              <div class="order-item__price">
+                {{ (item.price * item.quantity).toFixed(2) }} лв
+              </div>
             </div>
           </div>
 
@@ -73,13 +88,15 @@ console.log('[Orders Page] Component loading...')
 
 import { useAuthStore } from '~/stores/auth'
 import { useToast } from '~/composables/useToast'
+import { useApi } from '~/composables/useApi'
 
 definePageMeta({
-  middleware: 'auth'
+  middleware: 'auth',
 })
 
 const authStore = useAuthStore()
 const toast = useToast()
+const api = useApi()
 
 const orders = ref<any[]>([])
 const isLoading = ref(true)
@@ -88,7 +105,7 @@ const pagination = ref({
   page: 1,
   limit: 10,
   total: 0,
-  pages: 1
+  pages: 1,
 })
 
 const fetchOrders = async () => {
@@ -97,15 +114,24 @@ const fetchOrders = async () => {
   error.value = null
 
   try {
-    if (!authStore.accessToken) {
+    // Check if user is authenticated (works for both token-based and cookie-based auth)
+    if (!authStore.isAuthenticated) {
       throw new Error('Не сте удостоверени')
     }
 
-    const response = await $fetch('http://localhost:3030/api/orders', {
-      headers: {
-        Authorization: `Bearer ${authStore.accessToken}`
+    // Build request options - use token if available, otherwise use cookies
+    const requestOptions: any = {
+      credentials: 'include', // Always include cookies for cookie-based auth (Google OAuth)
+    }
+
+    // Add Bearer token if available (for email/password users)
+    if (authStore.accessToken) {
+      requestOptions.headers = {
+        Authorization: `Bearer ${authStore.accessToken}`,
       }
-    })
+    }
+
+    const response = await api.get('orders', requestOptions)
 
     console.log('[Orders Page] Response:', response)
 
@@ -117,7 +143,8 @@ const fetchOrders = async () => {
     }
   } catch (err: any) {
     console.error('[Orders Page] Error:', err)
-    error.value = err.data?.message || err.message || 'Грешка при зареждане на поръчките'
+    error.value =
+      err.data?.message || err.message || 'Грешка при зареждане на поръчките'
   } finally {
     isLoading.value = false
   }
@@ -128,7 +155,7 @@ const formatDate = (dateString: string) => {
   return date.toLocaleDateString('bg-BG', {
     year: 'numeric',
     month: 'long',
-    day: 'numeric'
+    day: 'numeric',
   })
 }
 
@@ -138,7 +165,7 @@ const getStatusLabel = (status: string) => {
     processing: 'Обработва се',
     shipped: 'Изпратена',
     delivered: 'Доставена',
-    cancelled: 'Отменена'
+    cancelled: 'Отменена',
   }
   return labels[status] || status
 }
@@ -152,17 +179,17 @@ const getItemImage = (item: any) => {
     }
     return '/img/placeholder.png'
   }
-  
+
   // Handle if image is an object with url property
   if (typeof item.image === 'object' && item.image.url) {
     return item.image.url
   }
-  
+
   // Handle if image is a string
   if (typeof item.image === 'string') {
     return item.image
   }
-  
+
   return '/img/placeholder.png'
 }
 
@@ -172,7 +199,7 @@ onMounted(() => {
 })
 
 useHead({
-  title: 'Моите Поръчки - emWear'
+  title: 'Моите Поръчки - emWear',
 })
 </script>
 
@@ -340,4 +367,3 @@ useHead({
   }
 }
 </style>
-

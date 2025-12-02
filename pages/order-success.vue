@@ -4,31 +4,158 @@
       <div class="order-success__card">
         <!-- Success Icon -->
         <div class="order-success__icon">
-          <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <circle cx="12" cy="12" r="10" fill="#27ae60"/>
-            <path d="M8 12L11 15L16 9" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          <svg
+            viewBox="0 0 24 24"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <circle cx="12" cy="12" r="10" fill="#27ae60" />
+            <path
+              d="M8 12L11 15L16 9"
+              stroke="white"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            />
           </svg>
         </div>
 
         <!-- Success Message -->
         <h1 class="order-success__title">Поръчката е приета успешно!</h1>
         <p class="order-success__message">
-          Благодарим Ви за поръчката. Ще получите потвърждение на имейл адреса, който сте посочили.
+          Благодарим Ви за поръчката. Ще получите потвърждение на имейл адреса,
+          който сте посочили.
         </p>
 
         <!-- Order Details -->
         <div v-if="order" class="order-success__details">
           <div class="order-success__detail-row">
             <span class="order-success__detail-label">Номер на поръчка:</span>
-            <span class="order-success__detail-value">{{ order.orderNumber }}</span>
+            <span class="order-success__detail-value">{{
+              order.orderNumber
+            }}</span>
           </div>
-          <div class="order-success__detail-row">
-            <span class="order-success__detail-label">Обща сума:</span>
-            <span class="order-success__detail-value">{{ order.total?.toFixed(2) }} лв</span>
-          </div>
+
+          <!-- For Stripe payments, show breakdown -->
+          <template v-if="order.paymentMethod === 'stripe_card'">
+            <div
+              v-if="
+                order.subtotalBeforeDiscount &&
+                order.subtotalBeforeDiscount !== order.subtotal
+              "
+              class="order-success__detail-row"
+            >
+              <span class="order-success__detail-label"
+                >Стойност на продуктите:</span
+              >
+              <span class="order-success__detail-value"
+                >{{ (order.subtotalBeforeDiscount || 0).toFixed(2) }} лв</span
+              >
+            </div>
+            <div
+              v-if="order.discountTotal && order.discountTotal > 0"
+              class="order-success__detail-row"
+            >
+              <span class="order-success__detail-label"
+                >Отстъпка{{
+                  order.couponCode ? ` (${order.couponCode})` : ''
+                }}:</span
+              >
+              <span class="order-success__detail-value" style="color: #e74c3c"
+                >-{{ (order.discountTotal || 0).toFixed(2) }} лв</span
+              >
+            </div>
+            <div class="order-success__detail-row">
+              <span class="order-success__detail-label"
+                >Стойност на продуктите:</span
+              >
+              <span
+                class="order-success__detail-value order-success__paid-amount"
+                >{{ (order.subtotal || 0).toFixed(2) }} лв</span
+              >
+            </div>
+            <div class="order-success__detail-row">
+              <span class="order-success__detail-label"
+                >Доставка (при получаване):</span
+              >
+              <span class="order-success__detail-value"
+                >{{ (order.shippingCost || 0).toFixed(2) }} лв</span
+              >
+            </div>
+            <div class="order-success__detail-row order-success__total-row">
+              <span class="order-success__detail-label"
+                >Обща стойност (вкл. ДДС):</span
+              >
+              <span class="order-success__detail-value"
+                >{{ order.total?.toFixed(2) }} лв</span
+              >
+            </div>
+          </template>
+
+          <!-- For COD, show breakdown -->
+          <template v-else>
+            <div
+              v-if="
+                order.subtotalBeforeDiscount &&
+                order.subtotalBeforeDiscount !== order.subtotal
+              "
+              class="order-success__detail-row"
+            >
+              <span class="order-success__detail-label"
+                >Стойност на продуктите:</span
+              >
+              <span class="order-success__detail-value"
+                >{{ (order.subtotalBeforeDiscount || 0).toFixed(2) }} лв</span
+              >
+            </div>
+            <div
+              v-if="order.discountTotal && order.discountTotal > 0"
+              class="order-success__detail-row"
+            >
+              <span class="order-success__detail-label"
+                >Отстъпка{{
+                  order.couponCode ? ` (${order.couponCode})` : ''
+                }}:</span
+              >
+              <span class="order-success__detail-value" style="color: #e74c3c"
+                >-{{ (order.discountTotal || 0).toFixed(2) }} лв</span
+              >
+            </div>
+            <div class="order-success__detail-row">
+              <span class="order-success__detail-label"
+                >Стойност на продуктите:</span
+              >
+              <span class="order-success__detail-value"
+                >{{ (order.subtotal || 0).toFixed(2) }} лв</span
+              >
+            </div>
+            <div class="order-success__detail-row">
+              <span class="order-success__detail-label"
+                >Доставка (при получаване):</span
+              >
+              <span class="order-success__detail-value"
+                >{{ (order.shippingCost || 0).toFixed(2) }} лв</span
+              >
+            </div>
+            <div class="order-success__detail-row order-success__total-row">
+              <span class="order-success__detail-label"
+                >Обща сума (вкл. ДДС):</span
+              >
+              <span class="order-success__detail-value"
+                >{{ order.total?.toFixed(2) }} лв</span
+              >
+            </div>
+          </template>
+
           <div class="order-success__detail-row">
             <span class="order-success__detail-label">Метод на плащане:</span>
-            <span class="order-success__detail-value">Наложен платеж</span>
+            <span class="order-success__detail-value">
+              {{
+                order.paymentMethod === 'stripe_card'
+                  ? 'Карта (Stripe)'
+                  : 'Наложен платеж'
+              }}
+            </span>
           </div>
           <div class="order-success__detail-row">
             <span class="order-success__detail-label">Статус:</span>
@@ -39,12 +166,18 @@
         </div>
 
         <!-- Guest Account Creation (only for guest orders) -->
-        <div v-if="isGuestOrder && !accountCreated" class="order-success__account-creation">
-          <h2 class="order-success__account-title">📧 Създайте акаунт за по-лесно проследяване</h2>
+        <div
+          v-if="isGuestOrder && !accountCreated"
+          class="order-success__account-creation"
+        >
+          <h2 class="order-success__account-title">
+            📧 Създайте акаунт за по-лесно проследяване
+          </h2>
           <p class="order-success__account-desc">
-            Създайте акаунт, за да проследявате поръчката си и да пазарувате по-бързо следващия път.
+            Създайте акаунт, за да проследявате поръчката си и да пазарувате
+            по-бързо следващия път.
           </p>
-          
+
           <form @submit.prevent="handleCreateAccount" class="account-form">
             <div class="form-group">
               <label class="form-label">Имейл</label>
@@ -56,9 +189,11 @@
                 disabled
               />
             </div>
-            
+
             <div class="form-group">
-              <label class="form-label">Парола <span class="required">*</span></label>
+              <label class="form-label"
+                >Парола <span class="required">*</span></label
+              >
               <input
                 v-model="accountForm.password"
                 type="password"
@@ -68,9 +203,11 @@
                 minlength="6"
               />
             </div>
-            
+
             <div class="form-group">
-              <label class="form-label">Потвърди парола <span class="required">*</span></label>
+              <label class="form-label"
+                >Потвърди парола <span class="required">*</span></label
+              >
               <input
                 v-model="accountForm.confirmPassword"
                 type="password"
@@ -79,11 +216,11 @@
                 required
               />
             </div>
-            
+
             <div v-if="accountError" class="account-error">
               {{ accountError }}
             </div>
-            
+
             <button
               type="submit"
               class="account-submit-btn"
@@ -92,7 +229,7 @@
               <span v-if="!isCreatingAccount">✨ Създай акаунт</span>
               <span v-else>Създаване...</span>
             </button>
-            
+
             <div class="account-benefits">
               <p class="benefits-title">Предимства:</p>
               <ul>
@@ -116,7 +253,9 @@
           <h2 class="order-success__next-title">Следващи стъпки:</h2>
           <ul class="order-success__steps-list">
             <li>Ще получите имейл с потвърждение на поръчката</li>
-            <li>Нашият екип ще обработи поръчката Ви в рамките на 1-2 работни дни</li>
+            <li>
+              Нашият екип ще обработи поръчката Ви в рамките на 1-2 работни дни
+            </li>
             <li>Ще Ви уведомим, когато поръчката бъде изпратена</li>
             <li>Очаквайте доставка в рамките на 3-5 работни дни</li>
           </ul>
@@ -124,13 +263,24 @@
 
         <!-- Actions -->
         <div class="order-success__actions">
-          <NuxtLink v-if="!isGuestOrder" to="/orders" class="order-success__btn order-success__btn--primary">
+          <NuxtLink
+            v-if="!isGuestOrder"
+            to="/orders"
+            class="order-success__btn order-success__btn--primary"
+          >
             Виж моите поръчки
           </NuxtLink>
-          <NuxtLink v-else to="/track-order" class="order-success__btn order-success__btn--primary">
+          <NuxtLink
+            v-else
+            to="/track-order"
+            class="order-success__btn order-success__btn--primary"
+          >
             🔍 Проследи поръчката
           </NuxtLink>
-          <NuxtLink to="/products" class="order-success__btn order-success__btn--secondary">
+          <NuxtLink
+            to="/products"
+            class="order-success__btn order-success__btn--secondary"
+          >
             Продължи пазаруването
           </NuxtLink>
         </div>
@@ -142,6 +292,7 @@
 <script setup lang="ts">
 import { useAuthStore } from '~/stores/auth'
 import { useToast } from '~/composables/useToast'
+import { useApi } from '~/composables/useApi'
 
 // No auth middleware - support both guest and authenticated users
 
@@ -149,48 +300,133 @@ const route = useRoute()
 const router = useRouter()
 const authStore = useAuthStore()
 const toast = useToast()
+const api = useApi()
 
 const order = ref<any>(null)
 const loading = ref(true)
 const error = ref('')
 
 // Guest account creation
-const isGuestOrder = computed(() => order.value && !order.value.user && order.value.guestEmail)
+const isGuestOrder = computed(
+  () => order.value && !order.value.user && order.value.guestEmail
+)
 const accountCreated = ref(false)
 const isCreatingAccount = ref(false)
 const accountError = ref('')
 const accountForm = ref({
   email: '',
   password: '',
-  confirmPassword: ''
+  confirmPassword: '',
 })
 
 // Fetch order details
 onMounted(async () => {
+  const token = route.query.token as string
   const orderId = route.query.orderId as string
-  
+  const isStripePayment = route.query.stripe === 'true'
+
+  // Token-based access is preferred (secure, time-limited)
+  if (token) {
+    try {
+      console.log('[OrderSuccess] Fetching order by secure token')
+
+      // Clear cart
+      const { useCartStore } = await import('~/stores/cart')
+      const cartStore = useCartStore()
+      cartStore.clearCart()
+
+      // Fetch order using secure token endpoint
+      const response = await api.get(`orders/success/${token}`)
+
+      if (response.success) {
+        order.value = response.data
+        // Pre-fill email for guest orders
+        if (order.value.guestEmail) {
+          accountForm.value.email = order.value.guestEmail
+        }
+      } else {
+        error.value =
+          response.message || 'Не успяхме да заредим детайлите на поръчката'
+      }
+    } catch (err: any) {
+      console.error('Failed to fetch order by token:', err)
+      error.value =
+        err.data?.message ||
+        'Връзката е изтекла или е невалидна. Моля, използвайте проследяване на поръчка, за да видите детайлите.'
+    } finally {
+      loading.value = false
+    }
+    return
+  }
+
+  // Fallback to legacy orderId-based access (backward compatibility)
   if (!orderId) {
-    error.value = 'Невалиден номер на поръчка'
+    error.value =
+      'Невалиден номер на поръчка. Моля, използвайте линка от имейла за потвърждение.'
     loading.value = false
     return
   }
 
   try {
-    // Try to fetch with auth if available, otherwise fetch without
-    const headers: any = {}
-    if (authStore.accessToken) {
-      headers.Authorization = `Bearer ${authStore.accessToken}`
-    }
+    // For Stripe payments, orderId is actually the session_id
+    // We need to fetch the order using the session endpoint
+    if (isStripePayment) {
+      console.log(
+        '[OrderSuccess] Stripe payment detected, fetching session:',
+        orderId
+      )
 
-    const response = await $fetch(`http://localhost:3030/api/orders/${orderId}`, {
-      headers
-    })
+      // Clear cart for Stripe payments
+      const { useCartStore } = await import('~/stores/cart')
+      const cartStore = useCartStore()
+      cartStore.clearCart()
 
-    if (response.success) {
-      order.value = response.data
-      // Pre-fill email for guest orders
-      if (order.value.guestEmail) {
-        accountForm.value.email = order.value.guestEmail
+      // Fetch order via Stripe session
+      const sessionResponse = await api.get(
+        `payments/checkout-session/${orderId}`
+      )
+
+      if (sessionResponse.success && sessionResponse.data.order) {
+        order.value = sessionResponse.data.order
+        // Pre-fill email for guest orders
+        if (order.value.guestEmail) {
+          accountForm.value.email = order.value.guestEmail
+        }
+
+        // If token exists, redirect to token-based URL for better security
+        if (order.value.successToken) {
+          router.replace(`/order-success?token=${order.value.successToken}`)
+          return
+        }
+      }
+    } else {
+      // Regular COD order - fetch by orderId (legacy method)
+      console.log(
+        '[OrderSuccess] COD payment, fetching order (legacy method):',
+        orderId
+      )
+
+      const headers: any = {}
+      if (authStore.accessToken) {
+        headers.Authorization = `Bearer ${authStore.accessToken}`
+      }
+
+      const response = await api.get(`orders/${orderId}`, {
+        headers,
+      })
+
+      if (response.success) {
+        order.value = response.data
+        // Pre-fill email for guest orders
+        if (order.value.guestEmail) {
+          accountForm.value.email = order.value.guestEmail
+        }
+
+        // If token exists, redirect to token-based URL for better security
+        if (order.value.successToken) {
+          router.replace(`/order-success?token=${order.value.successToken}`)
+          return
+        }
       }
     }
   } catch (err: any) {
@@ -204,36 +440,33 @@ onMounted(async () => {
 // Handle account creation for guest orders
 const handleCreateAccount = async () => {
   accountError.value = ''
-  
+
   // Validate passwords match
   if (accountForm.value.password !== accountForm.value.confirmPassword) {
     accountError.value = 'Паролите не съвпадат'
     return
   }
-  
+
   if (accountForm.value.password.length < 6) {
     accountError.value = 'Паролата трябва да бъде поне 6 символа'
     return
   }
-  
+
   isCreatingAccount.value = true
-  
+
   try {
-    const response = await $fetch('http://localhost:3030/api/auth/register', {
-      method: 'POST',
-      body: {
-        email: accountForm.value.email,
-        password: accountForm.value.password,
-        firstName: order.value.guestInfo?.firstName || '',
-        lastName: order.value.guestInfo?.lastName || '',
-        phone: order.value.guestInfo?.phone || ''
-      }
+    const response = await api.post('auth/register', {
+      email: accountForm.value.email,
+      password: accountForm.value.password,
+      firstName: order.value.guestInfo?.firstName || '',
+      lastName: order.value.guestInfo?.lastName || '',
+      phone: order.value.guestInfo?.phone || '',
     })
-    
+
     if (response.success) {
       accountCreated.value = true
       toast.success('Акаунтът е създаден успешно! Моля, влезте.')
-      
+
       // Redirect to login after 2 seconds
       setTimeout(() => {
         router.push('/login')
@@ -241,7 +474,9 @@ const handleCreateAccount = async () => {
     }
   } catch (err: any) {
     console.error('Account creation error:', err)
-    accountError.value = err.data?.message || 'Грешка при създаване на акаунт. Възможно е имейлът вече да е регистриран.'
+    accountError.value =
+      err.data?.message ||
+      'Грешка при създаване на акаунт. Възможно е имейлът вече да е регистриран.'
   } finally {
     isCreatingAccount.value = false
   }
@@ -255,7 +490,7 @@ const getStatusLabel = (status: string) => {
     processing: 'В обработка',
     shipped: 'Изпратена',
     delivered: 'Доставена',
-    cancelled: 'Отказана'
+    cancelled: 'Отказана',
   }
   return labels[status] || status
 }
@@ -270,7 +505,12 @@ const getStatusLabel = (status: string) => {
   align-items: center;
   justify-content: center;
   padding: 2rem 1rem;
-  background: linear-gradient(135deg, $color-linen 0%, $color-sage 50%, $color-forest 100%);
+  background: linear-gradient(
+    135deg,
+    $color-linen 0%,
+    $color-sage 50%,
+    $color-forest 100%
+  );
 
   &__container {
     width: 100%;
@@ -344,6 +584,18 @@ const getStatusLabel = (status: string) => {
 
   &__status {
     color: $color-success;
+  }
+
+  &__paid-amount {
+    color: #27ae60;
+    font-weight: 700;
+  }
+
+  &__total-row {
+    border-top: 2px solid $color-sage;
+    padding-top: 0.75rem;
+    margin-top: 0.5rem;
+    font-weight: 600;
   }
 
   &__next-steps {

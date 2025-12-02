@@ -6,14 +6,6 @@ export default defineNuxtConfig({
   devtools: false,
 
   // Disable Vue DevTools integration
-  vite: {
-    vue: {
-      script: {
-        defineModel: true,
-        propsDestructure: true
-      }
-    }
-  },
 
   modules: [
     '@nuxt/content',
@@ -41,13 +33,36 @@ export default defineNuxtConfig({
 
   css: ['~/assets/styles/main.scss'],
 
+  // Disable Vue DevTools integration
+  vite: {
+    vue: {
+      script: {
+        defineModel: true,
+        propsDestructure: true
+      }
+    }
+  },
+
   // Proxy API requests to backend server
   nitro: {
     devProxy: {
       '/api': {
-        target: 'http://localhost:3030/api',
-        changeOrigin: true
+        target: process.env.NUXT_PUBLIC_API_BASE || 'http://localhost:3030',
+        changeOrigin: true,
+        cookieDomainRewrite: 'localhost',
+        // Forward cookies for Google OAuth
+        headers: {
+          'Access-Control-Allow-Credentials': 'true'
+        }
       }
+    }
+  },
+
+  // Runtime config for API base URL
+  runtimeConfig: {
+    public: {
+      apiBase: process.env.NUXT_PUBLIC_API_BASE || 'http://localhost:3030',
+      frontendUrl: process.env.NUXT_PUBLIC_FRONTEND_URL || 'http://localhost:3000'
     }
   }
 })

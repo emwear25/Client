@@ -76,6 +76,7 @@
 
 <script setup lang="ts">
 import { z } from 'zod'
+import { useApi } from '~/composables/useApi'
 
 // Form validation schema
 const contactSchema = z.object({
@@ -115,14 +116,9 @@ const handleSubmit = async () => {
 
     isSubmitting.value = true
 
-    // Simulate API call (replace with actual endpoint)
-    await $fetch('http://localhost:3030/api/contact', {
-      method: 'POST',
-      body: formData,
-    }).catch(() => {
-      // If API doesn't exist, just simulate success
-      return new Promise((resolve) => setTimeout(resolve, 1000))
-    })
+    // Call contact API endpoint
+    const api = useApi()
+    await api.post('contact', formData)
 
     // Show success message
     showSuccess.value = true

@@ -4,7 +4,8 @@
       <div class="container">
         <h1 class="favorites-hero__title">Моите Любими</h1>
         <p class="favorites-hero__subtitle">
-          {{ wishlistStore.count }} {{ wishlistStore.count === 1 ? 'продукт' : 'продукта' }}
+          {{ wishlistStore.count }}
+          {{ wishlistStore.count === 1 ? 'продукт' : 'продукта' }}
         </p>
       </div>
     </section>
@@ -16,7 +17,8 @@
           <Icon name="mdi:heart-outline" class="favorites-empty__icon" />
           <h2 class="favorites-empty__title">Списъкът с любими е празен</h2>
           <p class="favorites-empty__text">
-            Започнете да добавяте продукти, които харесвате, за да ги проследявате тук.
+            Започнете да добавяте продукти, които харесвате, за да ги
+            проследявате тук.
           </p>
           <NuxtLink to="/catalog" class="btn btn--primary">
             Разгледай Продукти
@@ -46,6 +48,7 @@
 
 <script setup lang="ts">
 import { useWishlist } from '~/stores/useWishlist'
+import { useApi } from '~/composables/useApi'
 
 interface ProductImage {
   url: string
@@ -87,9 +90,9 @@ const fetchFavoriteProducts = async () => {
 
   isLoading.value = true
   try {
-    // Fetch all products using native fetch instead of useFetch
-    const response = await fetch('http://localhost:3030/api/products')
-    const apiData = await response.json()
+    // Fetch all products using API utility
+    const api = useApi()
+    const apiData = await api.get('products')
 
     if (apiData?.success && Array.isArray(apiData.data)) {
       // Filter to only show favorited products
@@ -110,9 +113,13 @@ const fetchFavoriteProducts = async () => {
 }
 
 // Watch for changes in wishlist
-watch(() => wishlistStore.ids, async () => {
-  await fetchFavoriteProducts()
-}, { deep: true })
+watch(
+  () => wishlistStore.ids,
+  async () => {
+    await fetchFavoriteProducts()
+  },
+  { deep: true }
+)
 
 // Quick view handlers
 const handleQuickView = (product: Product) => {
@@ -133,9 +140,9 @@ useHead({
   meta: [
     {
       name: 'description',
-      content: 'Разгледайте и управлявайте любимите си продукти в emWear.'
-    }
-  ]
+      content: 'Разгледайте и управлявайте любимите си продукти в emWear.',
+    },
+  ],
 })
 </script>
 

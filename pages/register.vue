@@ -53,33 +53,66 @@
                 @click="showPassword = !showPassword"
                 :aria-label="showPassword ? 'Скрий парола' : 'Покажи парола'"
               >
-                <svg v-if="showPassword" width="20" height="20" viewBox="0 0 20 20" fill="none">
-                  <path d="M2 10C2 10 5 4 10 4C15 4 18 10 18 10C18 10 15 16 10 16C5 16 2 10 2 10Z" stroke="currentColor" stroke-width="2"/>
-                  <circle cx="10" cy="10" r="3" stroke="currentColor" stroke-width="2"/>
+                <svg
+                  v-if="showPassword"
+                  width="20"
+                  height="20"
+                  viewBox="0 0 20 20"
+                  fill="none"
+                >
+                  <path
+                    d="M2 10C2 10 5 4 10 4C15 4 18 10 18 10C18 10 15 16 10 16C5 16 2 10 2 10Z"
+                    stroke="currentColor"
+                    stroke-width="2"
+                  />
+                  <circle
+                    cx="10"
+                    cy="10"
+                    r="3"
+                    stroke="currentColor"
+                    stroke-width="2"
+                  />
                 </svg>
-                <svg v-else width="20" height="20" viewBox="0 0 20 20" fill="none">
-                  <path d="M3 3L17 17M10 7C11.66 7 13 8.34 13 10C13 10.35 12.94 10.69 12.83 11M7 10C7 8.34 8.34 7 10 7M7 10C7 11.66 8.34 13 10 13C10.35 13 10.69 12.94 11 12.83M2 10C2 10 5 4 10 4C11.33 4 12.55 4.36 13.61 4.93M18 10C18 10 15 16 10 16C8.67 16 7.45 15.64 6.39 15.07" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                <svg
+                  v-else
+                  width="20"
+                  height="20"
+                  viewBox="0 0 20 20"
+                  fill="none"
+                >
+                  <path
+                    d="M3 3L17 17M10 7C11.66 7 13 8.34 13 10C13 10.35 12.94 10.69 12.83 11M7 10C7 8.34 8.34 7 10 7M7 10C7 11.66 8.34 13 10 13C10.35 13 10.69 12.94 11 12.83M2 10C2 10 5 4 10 4C11.33 4 12.55 4.36 13.61 4.93M18 10C18 10 15 16 10 16C8.67 16 7.45 15.64 6.39 15.07"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                  />
                 </svg>
               </button>
             </div>
-            <span v-if="passwordError" class="form-error">{{ passwordError }}</span>
-            
+            <span v-if="passwordError" class="form-error">{{
+              passwordError
+            }}</span>
+
             <!-- Password Strength Indicator -->
             <div v-if="password" class="password-strength">
               <div class="password-strength__bar">
-                <div 
+                <div
                   class="password-strength__fill"
                   :class="`password-strength__fill--${passwordStrength}`"
                   :style="{ width: passwordStrengthWidth }"
                 ></div>
               </div>
-              <span class="password-strength__label">{{ passwordStrengthLabel }}</span>
+              <span class="password-strength__label">{{
+                passwordStrengthLabel
+              }}</span>
             </div>
           </div>
 
           <!-- Confirm Password Input -->
           <div class="form-group">
-            <label for="confirmPassword" class="form-label">Потвърдете паролата</label>
+            <label for="confirmPassword" class="form-label"
+              >Потвърдете паролата</label
+            >
             <input
               id="confirmPassword"
               v-model="confirmPassword"
@@ -92,17 +125,23 @@
               :disabled="isLoading"
               @blur="validateConfirmPassword"
             />
-            <span v-if="confirmPasswordError" class="form-error">{{ confirmPasswordError }}</span>
+            <span v-if="confirmPasswordError" class="form-error">{{
+              confirmPasswordError
+            }}</span>
           </div>
 
           <!-- Terms & Conditions -->
           <label class="checkbox-label">
             <input type="checkbox" v-model="acceptTerms" required />
             <span>
-              Приемам 
-              <NuxtLink to="/terms" class="link-primary" target="_blank">Условията за ползване</NuxtLink>
+              Приемам
+              <NuxtLink to="/terms" class="link-primary" target="_blank"
+                >Условията за ползване</NuxtLink
+              >
               и
-              <NuxtLink to="/privacy" class="link-primary" target="_blank">Политиката за поверителност</NuxtLink>
+              <NuxtLink to="/privacy" class="link-primary" target="_blank"
+                >Политиката за поверителност</NuxtLink
+              >
             </span>
           </label>
 
@@ -115,7 +154,16 @@
             <span v-if="!isLoading">Регистрация</span>
             <span v-else class="loading-spinner">
               <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
-                <circle cx="10" cy="10" r="8" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-dasharray="50" stroke-dashoffset="25"/>
+                <circle
+                  cx="10"
+                  cy="10"
+                  r="8"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-dasharray="50"
+                  stroke-dashoffset="25"
+                />
               </svg>
               Регистриране...
             </span>
@@ -127,13 +175,45 @@
           <span>или</span>
         </div>
 
+        <!-- Google Register Button -->
+        <button
+          type="button"
+          class="btn btn--google btn--large btn--full"
+          :disabled="isLoading"
+          @click="handleGoogleLogin"
+        >
+          <svg
+            class="google-icon"
+            width="20"
+            height="20"
+            viewBox="0 0 24 24"
+            fill="none"
+          >
+            <path
+              d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"
+              fill="#4285F4"
+            />
+            <path
+              d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"
+              fill="#34A853"
+            />
+            <path
+              d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"
+              fill="#FBBC05"
+            />
+            <path
+              d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"
+              fill="#EA4335"
+            />
+          </svg>
+          <span>Регистрирайте се с Google</span>
+        </button>
+
         <!-- Login Link -->
         <div class="auth-card__footer">
           <p>
             Вече имате профил?
-            <NuxtLink to="/login" class="link-primary">
-              Влезте
-            </NuxtLink>
+            <NuxtLink to="/login" class="link-primary"> Влезте </NuxtLink>
           </p>
         </div>
       </div>
@@ -166,14 +246,14 @@ const confirmPasswordError = ref('')
 // Password strength
 const passwordStrength = computed(() => {
   if (!password.value) return 'weak'
-  
+
   let strength = 0
   if (password.value.length >= 8) strength++
   if (password.value.length >= 12) strength++
   if (/[a-z]/.test(password.value) && /[A-Z]/.test(password.value)) strength++
   if (/\d/.test(password.value)) strength++
   if (/[^a-zA-Z0-9]/.test(password.value)) strength++
-  
+
   if (strength <= 2) return 'weak'
   if (strength <= 3) return 'medium'
   return 'strong'
@@ -209,7 +289,7 @@ const validatePassword = () => {
   } else {
     passwordError.value = ''
   }
-  
+
   // Re-validate confirm password if it's filled
   if (confirmPassword.value) {
     validateConfirmPassword()
@@ -227,13 +307,15 @@ const validateConfirmPassword = () => {
 }
 
 const isFormValid = computed(() => {
-  return email.value && 
-         password.value && 
-         confirmPassword.value && 
-         !emailError.value && 
-         !passwordError.value && 
-         !confirmPasswordError.value &&
-         acceptTerms.value
+  return (
+    email.value &&
+    password.value &&
+    confirmPassword.value &&
+    !emailError.value &&
+    !passwordError.value &&
+    !confirmPasswordError.value &&
+    acceptTerms.value
+  )
 })
 
 // Handle registration
@@ -242,7 +324,7 @@ const handleRegister = async () => {
   validateEmail()
   validatePassword()
   validateConfirmPassword()
-  
+
   if (!isFormValid.value) {
     toast.error('Моля, попълнете всички полета правилно')
     return
@@ -252,9 +334,9 @@ const handleRegister = async () => {
 
   try {
     await authStore.register(email.value, password.value)
-    
+
     toast.success('Успешна регистрация! Добре дошли!')
-    
+
     // Redirect to home
     router.push('/')
   } catch (error: any) {
@@ -264,12 +346,25 @@ const handleRegister = async () => {
   }
 }
 
+// Handle Google login/register - redirects to backend which handles OAuth flow
+const handleGoogleLogin = async () => {
+  try {
+    await authStore.loginWithGoogle('/')
+  } catch (error: any) {
+    toast.error(error.message || 'Грешка при регистрация с Google')
+  }
+}
+
 // SEO
 useHead({
   title: 'Регистрация - emWear',
   meta: [
-    { name: 'description', content: 'Създайте профил в emWear и започнете да пазарувате персонализирани бродирани изделия.' }
-  ]
+    {
+      name: 'description',
+      content:
+        'Създайте профил в emWear и започнете да пазарувате персонализирани бродирани изделия.',
+    },
+  ],
 })
 
 // Redirect if already logged in
@@ -362,6 +457,12 @@ if (authStore.isAuthenticated) {
   gap: 1.25rem;
 }
 
+.btn {
+  &--full {
+    width: 100%;
+  }
+}
+
 .form-group {
   display: flex;
   flex-direction: column;
@@ -404,7 +505,7 @@ if (authStore.isAuthenticated) {
 
   &--error {
     border-color: $error;
-    
+
     &:focus {
       border-color: $error;
       box-shadow: 0 0 0 3px rgba($error, 0.1);
@@ -503,7 +604,7 @@ if (authStore.isAuthenticated) {
   cursor: pointer;
   line-height: 1.5;
 
-  input[type="checkbox"] {
+  input[type='checkbox'] {
     width: 18px;
     height: 18px;
     cursor: pointer;
@@ -573,6 +674,41 @@ if (authStore.isAuthenticated) {
   }
   to {
     transform: rotate(360deg);
+  }
+}
+
+.btn--google {
+  background: $color-white;
+  color: $text-primary;
+  border: 1px solid $border-base;
+  font-weight: 500;
+  box-shadow: 0 2px 8px $shadow-soft;
+  padding: 16px 32px;
+  font-size: 1.125rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+
+  &:hover {
+    background: $bg-page;
+    border-color: $brand;
+    box-shadow: 0 2px 12px $shadow-soft;
+  }
+
+  &:active {
+    transform: translateY(1px);
+  }
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+
+  .google-icon {
+    flex-shrink: 0;
+    width: 20px;
+    height: 20px;
   }
 }
 </style>

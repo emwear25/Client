@@ -7,33 +7,16 @@
         class="product-card__img"
         loading="lazy"
       />
-      
-      <!-- Heart/Wishlist Icon -->
-      <button 
-        class="product-card__heart"
-        :class="{ 'product-card__heart--active': isFav }"
-        @click.stop="toggleFav"
-        :title="isFav ? 'Премахни от любими' : 'Добави в любими'"
-      >
-        <svg viewBox="0 0 24 24" class="product-card__heart-icon">
-          <path
-            :fill="isFav ? 'currentColor' : 'none'"
-            stroke="currentColor"
-            stroke-width="1.5"
-            d="M12.1 20.1s-7.1-4.3-9.1-8.1A5.4 5.4 0 0 1 12 6.2a5.4 5.4 0 0 1 9 5.8c-2 3.8-9 8.1-9 8.1z"
-          />
-        </svg>
-      </button>
-      
+
       <!-- Quick View Button -->
-      <button 
-        class="product-card__quick" 
+      <button
+        class="product-card__quick"
         @click.stop="$emit('quick-view', product)"
       >
         Бърз Преглед
       </button>
 
-      <!-- Badges -->
+      <!-- Badges (top-left) -->
       <div class="product-card__badges" v-if="badges.length">
         <span
           v-for="badge in badges"
@@ -44,15 +27,45 @@
           {{ badge.label }}
         </span>
       </div>
+
+      <!-- Discount Badge (top-right corner) -->
+      <div v-if="isSale" class="product-card__discount">
+        <div class="product-card__discount-circle">
+          <div class="product-card__discount-text">
+            <span class="product-card__discount-value">{{ savePercent }}%</span>
+            <span class="product-card__discount-label">OFF</span>
+          </div>
+        </div>
+      </div>
     </div>
 
     <div class="product-card__body">
       <h3 class="product-card__title">{{ product.name }}</h3>
-      <div class="product-card__price">
-        <span class="product-card__price-current">{{ formatPrice(product.price) }}</span>
-        <span v-if="product.compareAt" class="product-card__price-old">
-          {{ formatPrice(product.compareAt) }}
-        </span>
+      <div class="product-card__price-wrapper">
+        <div class="product-card__price">
+          <span class="product-card__price-current">{{
+            formatPrice(product.price)
+          }}</span>
+          <span v-if="product.compareAt" class="product-card__price-old">
+            {{ formatPrice(product.compareAt) }}
+          </span>
+        </div>
+        <!-- Heart/Wishlist Icon -->
+        <button
+          class="product-card__heart"
+          :class="{ 'product-card__heart--active': isFav }"
+          @click.stop="toggleFav"
+          :title="isFav ? 'Премахни от любими' : 'Добави в любими'"
+        >
+          <svg viewBox="0 0 24 24" class="product-card__heart-icon">
+            <path
+              :fill="isFav ? 'currentColor' : 'none'"
+              stroke="currentColor"
+              stroke-width="1.5"
+              d="M12.1 20.1s-7.1-4.3-9.1-8.1A5.4 5.4 0 0 1 12 6.2a5.4 5.4 0 0 1 9 5.8c-2 3.8-9 8.1-9 8.1z"
+            />
+          </svg>
+        </button>
       </div>
     </div>
   </article>
@@ -101,11 +114,12 @@ const toggleFav = () => {
 
 const badges = computed(() => {
   const arr: Array<{ key: string; label: string }> = []
-  
+
+  // Don't show sale badge in top-left since we have discount badge in top-right
   if (isNew.value) arr.push({ key: 'new', label: 'Ново' })
-  if (isSale.value) arr.push({ key: 'sale', label: `${savePercent.value}%` })
-  if (props.product.customEmbroidery) arr.push({ key: 'personal', label: 'Персонализация' })
-  
+  if (props.product.customEmbroidery)
+    arr.push({ key: 'personal', label: 'Персонализация' })
+
   return arr
 })
 
@@ -118,7 +132,10 @@ const isNew = computed(() => {
 })
 
 const isSale = computed(() => {
-  return props.product.compareAt != null && props.product.compareAt > props.product.price
+  return (
+    props.product.compareAt != null &&
+    props.product.compareAt > props.product.price
+  )
 })
 
 const savePercent = computed(() => {
@@ -151,6 +168,9 @@ const goToPDP = () => {
   overflow: hidden;
   border: 1px solid $border-base;
   transition: all 0.25s ease;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
 
   &:hover {
     box-shadow: 0 2px 12px rgba(0, 0, 0, 0.1);
@@ -167,10 +187,12 @@ const goToPDP = () => {
 
   &__media {
     position: relative;
-    aspect-ratio: 1 / 1.2;
+    width: 100%;
+    aspect-ratio: 1 / 1; // Square image - same width and height
     background: $bg-page;
-    overflow: hidden;
+    overflow: visible; // Allow discount badge to be visible
     cursor: pointer;
+    flex-shrink: 0;
   }
 
   &__img {
@@ -181,11 +203,8 @@ const goToPDP = () => {
     transition: transform 0.4s ease;
   }
 
-  // Heart/Wishlist Icon (top-right)
+  // Heart/Wishlist Icon (bottom-right in body)
   &__heart {
-    position: absolute;
-    top: 8px;
-    right: 8px;
     width: 32px;
     height: 32px;
     background: rgba(255, 255, 255, 0.9);
@@ -194,7 +213,7 @@ const goToPDP = () => {
     align-items: center;
     justify-content: center;
     cursor: pointer;
-    z-index: 6;
+    flex-shrink: 0;
     transition: all 0.2s ease;
 
     &:hover {
@@ -205,7 +224,7 @@ const goToPDP = () => {
     &--active {
       background: $color-white;
       .product-card__heart-icon {
-        color: #EF4444;
+        color: #ef4444;
       }
     }
   }
@@ -269,7 +288,7 @@ const goToPDP = () => {
     }
 
     &--sale {
-      background: #DC4F3E;
+      background: #dc4f3e;
       color: $color-white;
     }
 
@@ -279,15 +298,81 @@ const goToPDP = () => {
     }
   }
 
+  // Discount Badge (top-right corner) - Clean circular design
+  &__discount {
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 115px; // Increased by 15%
+    height: 115px; // Increased by 15%
+    z-index: 10;
+    overflow: hidden;
+    pointer-events: none;
+  }
+
+  &__discount-circle {
+    position: absolute;
+    top: -57.5px; // Adjusted for 115px size
+    right: -57.5px; // Adjusted for 115px size
+    width: 115px; // Increased by 15%
+    height: 115px; // Increased by 15%
+    background: #dc4f3e;
+    border-radius: 50%;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.25);
+  }
+
+  &__discount-text {
+    position: absolute;
+    bottom: 15px; // Adjusted as requested
+    left: 20px;   // Adjusted as requested
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+  }
+
+  &__discount-value {
+    font-size: 1.25rem;
+    font-weight: 900;
+    color: $color-white;
+    line-height: 1;
+    font-family: $font-body;
+    display: block;
+  }
+
+  &__discount-label {
+    font-size: 0.625rem;
+    font-weight: 800;
+    color: $color-white;
+    line-height: 1;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-top: 2px;
+    display: block;
+  }
+
   &__body {
     padding: 12px 8px;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+
+  &__price-wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    margin-top: auto;
   }
 
   &__title {
     font-family: $font-heading;
     color: $brand-ink;
     font-size: 0.9375rem;
-    margin: 0 0 8px;
+    margin: 0 0 10px;
     display: -webkit-box;
     -webkit-line-clamp: 2;
     -webkit-box-orient: vertical;
@@ -303,15 +388,17 @@ const goToPDP = () => {
 
   &__price {
     display: flex;
-    gap: 6px;
+    gap: 8px;
     align-items: baseline;
-    flex-wrap: wrap;
+    flex-wrap: nowrap;
+    flex: 1;
   }
 
   &__price-current {
     font-weight: 600;
     font-size: 0.9375rem;
     color: $brand-ink;
+    white-space: nowrap;
 
     @include up(md) {
       font-size: 1rem;
@@ -322,6 +409,7 @@ const goToPDP = () => {
     color: $text-secondary;
     text-decoration: line-through;
     font-size: 0.8125rem;
+    white-space: nowrap;
 
     @include up(md) {
       font-size: 0.875rem;
@@ -329,4 +417,3 @@ const goToPDP = () => {
   }
 }
 </style>
-

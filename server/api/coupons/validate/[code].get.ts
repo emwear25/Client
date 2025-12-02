@@ -1,5 +1,7 @@
 export default defineEventHandler(async (event) => {
     const code = getRouterParam(event, 'code')
+    const config = useRuntimeConfig()
+    const backendUrl = config.public.apiBase || 'http://localhost:3030'
 
     if (!code) {
         throw createError({
@@ -9,7 +11,7 @@ export default defineEventHandler(async (event) => {
     }
 
     try {
-        const response = await $fetch(`http://localhost:3030/api/coupons/validate/${code}`, {
+        const response = await $fetch(`${backendUrl}/api/coupons/validate/${code}`, {
             method: 'GET'
         })
 

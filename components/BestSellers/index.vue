@@ -29,13 +29,12 @@
 
             <div class="product-card__body">
               <h3 class="product-card__title">{{ product.name }}</h3>
-              
+
               <div class="product-card__footer">
-                <span class="product-card__price">{{ product.price.toFixed(2) }} лв.</span>
-                <span
-                  v-if="product.stock > 0"
-                  class="badge badge--in-stock"
+                <span class="product-card__price"
+                  >{{ product.price.toFixed(2) }} лв.</span
                 >
+                <span v-if="product.stock > 0" class="badge badge--in-stock">
                   На Склад
                 </span>
               </div>
@@ -56,6 +55,7 @@
 
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
+import { useApi } from '~/composables/useApi'
 
 interface ProductImage {
   url: string
@@ -82,13 +82,8 @@ const fetchBestSellers = async () => {
   isLoading.value = true
 
   try {
-    const response = await fetch('http://localhost:3030/api/products?active=true&limit=4')
-
-    if (!response.ok) {
-      throw new Error('Failed to fetch products')
-    }
-
-    const data = await response.json()
+    const api = useApi()
+    const data = await api.get('products?active=true&limit=4')
     products.value = data.data?.slice(0, 4) || []
   } catch (error) {
     console.error('Error fetching best sellers:', error)
@@ -123,17 +118,17 @@ onMounted(() => {
     margin-inline: auto;
     padding-inline: 16px;
 
-    @include up(md) { 
-      max-width: 960px; 
-      padding-inline: 20px; 
+    @include up(md) {
+      max-width: 1104px;
+      padding-inline: 20px;
     }
-    @include up(lg) { 
-      max-width: 1280px; 
-      padding-inline: 24px; 
+    @include up(lg) {
+      max-width: 1472px;
+      padding-inline: 24px;
     }
-    @include up(xl) { 
-      max-width: 1440px; 
-      padding-inline: 32px; 
+    @include up(xl) {
+      max-width: 1656px;
+      padding-inline: 32px;
     }
   }
 

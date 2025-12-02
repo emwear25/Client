@@ -3,7 +3,9 @@
     <div class="track-order__container">
       <div class="track-order__header">
         <h1 class="track-order__title">Проследяване на поръчка</h1>
-        <p class="track-order__subtitle">Въведете номера на поръчката и имейл адреса, използван при поръчката</p>
+        <p class="track-order__subtitle">
+          Въведете номера на поръчката и имейл адреса, използван при поръчката
+        </p>
       </div>
 
       <div class="track-order__form-card">
@@ -53,7 +55,10 @@
       <div v-if="order" class="track-order__details">
         <div class="order-header">
           <h2 class="order-title">Поръчка {{ order.orderNumber }}</h2>
-          <span class="order-status" :class="`order-status--${order.orderStatus}`">
+          <span
+            class="order-status"
+            :class="`order-status--${order.orderStatus}`"
+          >
             {{ getStatusLabel(order.orderStatus) }}
           </span>
         </div>
@@ -61,17 +66,23 @@
         <div class="order-info-grid">
           <div class="info-card">
             <div class="info-card__label">Дата на поръчка</div>
-            <div class="info-card__value">{{ formatDate(order.createdAt) }}</div>
+            <div class="info-card__value">
+              {{ formatDate(order.createdAt) }}
+            </div>
           </div>
 
           <div class="info-card">
             <div class="info-card__label">Метод на доставка</div>
-            <div class="info-card__value">{{ getDeliveryMethodLabel(order.deliveryMethod) }}</div>
+            <div class="info-card__value">
+              {{ getDeliveryMethodLabel(order.deliveryMethod) }}
+            </div>
           </div>
 
           <div class="info-card">
             <div class="info-card__label">Метод на плащане</div>
-            <div class="info-card__value">{{ getPaymentMethodLabel(order.paymentMethod) }}</div>
+            <div class="info-card__value">
+              {{ getPaymentMethodLabel(order.paymentMethod) }}
+            </div>
           </div>
 
           <div class="info-card">
@@ -94,7 +105,8 @@
               <div class="order-item__details">
                 <div class="order-item__name">{{ item.name }}</div>
                 <div class="order-item__meta">
-                  Количество: {{ item.quantity }} × {{ item.price.toFixed(2) }} лв
+                  Количество: {{ item.quantity }} ×
+                  {{ item.price.toFixed(2) }} лв
                 </div>
               </div>
               <div class="order-item__total">
@@ -108,9 +120,17 @@
         <div class="shipping-address">
           <h3 class="section-title">Адрес за доставка</h3>
           <div class="address-card">
-            <p><strong>{{ order.shippingAddress.firstName }} {{ order.shippingAddress.lastName }}</strong></p>
+            <p>
+              <strong
+                >{{ order.shippingAddress.firstName }}
+                {{ order.shippingAddress.lastName }}</strong
+              >
+            </p>
             <p>{{ order.shippingAddress.street }}</p>
-            <p>{{ order.shippingAddress.city }}, {{ order.shippingAddress.postalCode }}</p>
+            <p>
+              {{ order.shippingAddress.city }},
+              {{ order.shippingAddress.postalCode }}
+            </p>
             <p>{{ order.shippingAddress.country }}</p>
             <p>Телефон: {{ order.shippingAddress.phone }}</p>
             <p>Имейл: {{ order.shippingAddress.email }}</p>
@@ -128,9 +148,15 @@
             >
               <div class="timeline-dot"></div>
               <div class="timeline-content">
-                <div class="timeline-status">{{ getStatusLabel(status.status) }}</div>
-                <div class="timeline-date">{{ formatDate(status.timestamp) }}</div>
-                <div v-if="status.note" class="timeline-note">{{ status.note }}</div>
+                <div class="timeline-status">
+                  {{ getStatusLabel(status.status) }}
+                </div>
+                <div class="timeline-date">
+                  {{ formatDate(status.timestamp) }}
+                </div>
+                <div v-if="status.note" class="timeline-note">
+                  {{ status.note }}
+                </div>
               </div>
             </div>
           </div>
@@ -141,6 +167,9 @@
 </template>
 
 <script setup lang="ts">
+import { useApi } from '~/composables/useApi'
+
+const api = useApi()
 const orderNumber = ref('')
 const email = ref('')
 const isLoading = ref(false)
@@ -158,12 +187,11 @@ const handleTrackOrder = async () => {
   order.value = null
 
   try {
-    const response = await $fetch(`http://localhost:3030/api/orders/track`, {
-      method: 'GET',
+    const response = await api.get('orders/track', {
       params: {
         orderNumber: orderNumber.value,
-        email: email.value
-      }
+        email: email.value,
+      },
     })
 
     if (response.success) {
@@ -173,7 +201,9 @@ const handleTrackOrder = async () => {
     }
   } catch (error: any) {
     console.error('Track order error:', error)
-    errorMessage.value = error.data?.message || 'Поръчката не е намерена. Моля, проверете номера и имейла.'
+    errorMessage.value =
+      error.data?.message ||
+      'Поръчката не е намерена. Моля, проверете номера и имейла.'
   } finally {
     isLoading.value = false
   }
@@ -186,7 +216,7 @@ const getStatusLabel = (status: string) => {
     processing: 'В обработка',
     shipped: 'Изпратена',
     delivered: 'Доставена',
-    cancelled: 'Отказана'
+    cancelled: 'Отказана',
   }
   return labels[status] || status
 }
@@ -197,7 +227,7 @@ const getDeliveryMethodLabel = (method: string) => {
     econt_office: 'Офис на Еконт',
     econt_automat: 'Еконтомат',
     speedy_office: 'Офис на Speedy',
-    speedy_apt: 'Speedy APT'
+    speedy_apt: 'Speedy APT',
   }
   return labels[method] || method
 }
@@ -205,7 +235,7 @@ const getDeliveryMethodLabel = (method: string) => {
 const getPaymentMethodLabel = (method: string) => {
   const labels: Record<string, string> = {
     cash_on_delivery: 'Наложен платеж',
-    card_online: 'Онлайн с карта'
+    card_online: 'Онлайн с карта',
   }
   return labels[method] || method
 }
@@ -216,7 +246,7 @@ const formatDate = (date: string) => {
     month: 'long',
     day: 'numeric',
     hour: '2-digit',
-    minute: '2-digit'
+    minute: '2-digit',
   })
 }
 </script>
@@ -289,14 +319,14 @@ const formatDate = (date: string) => {
 
   &:focus {
     outline: none;
-    border-color: #B9C6AA;
+    border-color: #b9c6aa;
     box-shadow: 0 0 0 3px rgba(185, 198, 170, 0.1);
   }
 }
 
 .track-order__submit-btn {
   padding: 1rem;
-  background: #B9C6AA;
+  background: #b9c6aa;
   color: white;
   border: none;
   border-radius: 8px;
@@ -306,7 +336,7 @@ const formatDate = (date: string) => {
   transition: all 0.2s ease;
 
   &:hover:not(:disabled) {
-    background: #A8B599;
+    background: #a8b599;
     transform: translateY(-2px);
     box-shadow: 0 4px 12px rgba(185, 198, 170, 0.3);
   }
@@ -512,10 +542,10 @@ const formatDate = (date: string) => {
   top: 0.25rem;
   width: 12px;
   height: 12px;
-  background: #B9C6AA;
+  background: #b9c6aa;
   border-radius: 50%;
   border: 2px solid white;
-  box-shadow: 0 0 0 2px #B9C6AA;
+  box-shadow: 0 0 0 2px #b9c6aa;
 }
 
 .timeline-content {
