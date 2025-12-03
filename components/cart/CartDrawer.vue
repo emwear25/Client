@@ -69,6 +69,9 @@
                   <span v-if="item.color" class="cart-item__attr">
                     Цвят: {{ getColorDisplayName(item.color) }}
                   </span>
+                  <span v-if="item.embroidery?.name" class="cart-item__attr">
+                    Бродерия: {{ item.embroidery.name }}
+                  </span>
                 </div>
                 <div class="cart-item__footer">
                   <div class="cart-item__quantity">

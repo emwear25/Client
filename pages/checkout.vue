@@ -76,8 +76,9 @@
             </div>
 
             <!-- Saved Addresses Component (for authenticated users) -->
+            <!-- Only show address selection when courier delivery is selected, not for office/automat -->
             <CheckoutSavedAddresses
-              v-if="!isGuest && deliveryProvider === 'econt' && authStore.user?.addresses?.length"
+              v-if="!isGuest && deliveryMethod === 'courier_address' && authStore.user?.addresses?.length"
               :displayed-addresses="displayedAddresses"
               :selected-address-id="selectedAddressId"
               :has-more-addresses="hasMoreAddresses"
@@ -278,17 +279,35 @@ const selectedPaymentMethod = ref<"cod" | "stripe_card">("cod");
 const isProcessingPayment = ref(false);
 
 // Computed property to show only default and last created addresses initially
+// Filter out office/automat addresses when office delivery is selected to avoid duplication
 const displayedAddresses = computed(() => {
   if (!authStore.user?.addresses || authStore.user.addresses.length === 0) {
     return [];
   }
 
-  if (showAllAddresses.value || authStore.user.addresses.length <= 2) {
-    return authStore.user.addresses;
+  // Filter out office/automat addresses when office delivery is selected
+  let addresses = [...authStore.user.addresses];
+  if (
+    deliveryMethod.value === "econt_office" ||
+    deliveryMethod.value === "econt_automat" ||
+    deliveryMethod.value === "speedy_office" ||
+    deliveryMethod.value === "speedy_apt"
+  ) {
+    // Only show regular addresses, not office/automat addresses
+    addresses = addresses.filter(
+      (addr) =>
+        addr.type !== "econt_office" &&
+        addr.type !== "econt_automat" &&
+        addr.type !== "speedy_office" &&
+        addr.type !== "speedy_apt"
+    );
+  }
+
+  if (showAllAddresses.value || addresses.length <= 2) {
+    return addresses;
   }
 
   // Show default address and last created address
-  const addresses = [...authStore.user.addresses];
   const defaultAddr = addresses.find((addr) => addr.isDefault);
   const lastCreated = addresses[addresses.length - 1];
 

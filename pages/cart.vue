@@ -78,6 +78,9 @@
                     <span v-if="item.color" class="cart-item__meta-item">
                       <strong>Цвят:</strong> {{ item.color }}
                     </span>
+                    <span v-if="item.embroidery?.name" class="cart-item__meta-item">
+                      <strong>Бродерия:</strong> {{ item.embroidery.name }}
+                    </span>
                   </div>
 
                   <div class="cart-item__price">{{ formatPrice(item.price) }} лв.</div>
