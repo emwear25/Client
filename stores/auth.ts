@@ -150,6 +150,13 @@ export const useAuthStore = defineStore("auth", () => {
 
         saveTokens(response.data.accessToken, response.data.refreshToken);
 
+        // Merge guest wishlist with backend wishlist after login
+        if (import.meta.client) {
+          const { useWishlist } = await import("~/stores/useWishlist");
+          const wishlistStore = useWishlist();
+          await wishlistStore.mergeWithBackend();
+        }
+
         return { success: true, user: response.data.user };
       }
 
@@ -262,6 +269,14 @@ export const useAuthStore = defineStore("auth", () => {
           if (response.success && response.data) {
             user.value = response.data.user;
             console.log("[Auth] User fetched successfully (token):", user.value.email);
+            
+            // Merge guest wishlist if user just authenticated (e.g., after Google OAuth redirect)
+            if (import.meta.client && !authStore.isInitialized) {
+              const { useWishlist } = await import("~/stores/useWishlist");
+              const wishlistStore = useWishlist();
+              await wishlistStore.mergeWithBackend();
+            }
+            
             return { success: true, user: response.data.user };
           }
         } else {
