@@ -8,7 +8,6 @@ export default defineNuxtConfig({
   // Disable Vue DevTools integration
 
   modules: [
-    "@nuxt/content",
     "@nuxt/eslint",
     "@nuxt/icon",
     "@nuxt/image",

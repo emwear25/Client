@@ -14,16 +14,11 @@
     "lint:fix": "eslint . --fix"
   },
   "dependencies": {
-    "@fontsource/inter": "^5.2.6",
-    "@fontsource/poppins": "^5.2.6",
-    "@nuxt/content": "^3.6.1",
     "@nuxt/eslint": "^1.4.1",
     "@nuxt/icon": "^1.14.0",
     "@nuxt/image": "^1.10.0",
     "@pinia/nuxt": "^0.11.3",
     "@vueuse/nuxt": "^13.4.0",
-    "better-sqlite3": "^12.4.1",
-    "eslint": "^9.29.0",
     "leaflet": "^1.9.4",
     "leaflet.markercluster": "^1.5.3",
     "nuxt": "^4.2.1",
@@ -41,6 +36,7 @@
     "eslint-config-prettier": "^10.1.5",
     "eslint-plugin-prettier": "^5.5.0",
     "prettier": "^3.5.3",
-    "sass": "^1.89.2"
+    "sass": "^1.89.2",
+    "eslint": "^9.29.0"
   }
 }
