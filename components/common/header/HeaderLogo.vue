@@ -5,8 +5,8 @@
         src="/logo-dark.png"
         alt="emWear"
         class="site-header__logo-img"
-        width="150"
-        height="45"
+        width="195"
+        height="59"
         loading="eager"
       />
     </NuxtLink>
@@ -41,12 +41,12 @@
     }
 
     &-img {
-      height: 40px;
+      height: 54px; // 40px * 1.35 = 54px (35% increase on mobile)
       width: auto;
       display: block;
 
       @media (min-width: 768px) {
-        height: 45px;
+        height: 59px; // 45px * 1.3 = 58.5px rounded to 59px (30% increase on desktop)
       }
     }
   }
