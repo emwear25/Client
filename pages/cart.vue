@@ -158,39 +158,7 @@
             <div class="order-summary__sticky">
               <h2 class="order-summary__title">Обобщение</h2>
 
-              <!-- Coupon Input -->
-              <div class="order-summary__coupon">
-                <CouponInput />
-              </div>
-
               <div class="order-summary__content">
-                <!-- Show subtotal before discount if discount is applied -->
-                <div
-                  v-if="cartStore.discountTotal > 0"
-                  class="order-summary__row order-summary__row--strikethrough"
-                >
-                  <span class="order-summary__label">Междинна сума</span>
-                  <span class="order-summary__value"
-                    >{{ formatPrice(cartStore.subtotalBeforeDiscount) }} лв.</span
-                  >
-                </div>
-
-                <!-- Discount row -->
-                <div
-                  v-if="cartStore.discountTotal > 0"
-                  class="order-summary__row order-summary__row--discount"
-                >
-                  <span class="order-summary__label">
-                    Отстъпка
-                    <span v-if="cartStore.hasCoupon" class="order-summary__coupon-code"
-                      >({{ cartStore.appliedCoupon }})</span
-                    >
-                  </span>
-                  <span class="order-summary__value order-summary__discount-amount"
-                    >-{{ formatPrice(cartStore.discountTotal) }} лв.</span
-                  >
-                </div>
-
                 <div class="order-summary__row">
                   <span class="order-summary__label">Междинна сума</span>
                   <span class="order-summary__value"
@@ -199,13 +167,6 @@
                 </div>
 
                 <div class="order-summary__divider"/>
-
-                <!-- Savings summary -->
-                <div v-if="cartStore.discountTotal > 0" class="order-summary__savings">
-                  🎉 Спестявате {{ formatPrice(cartStore.discountTotal) }} лв. ({{
-                    cartStore.savingsPercentage
-                  }}%)
-                </div>
 
                 <div class="order-summary__row order-summary__total">
                   <span class="order-summary__label">Общо</span>

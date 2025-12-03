@@ -164,31 +164,59 @@ const finalTotal = computed(() => {
 
 <style scoped lang="scss">
 .checkout-order-summary {
+  background: white;
+  padding: 1.25rem;
+  border-radius: 8px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+
+  @media (min-width: 768px) {
+    padding: 1.5rem;
+  }
+
   &__title {
-    font-size: 1.25rem;
+    font-size: 1rem;
     font-weight: 600;
-    margin-bottom: 1.5rem;
+    margin: 0 0 0.875rem 0;
     color: #1a1a1a;
+
+    @media (min-width: 768px) {
+      font-size: 1.0625rem;
+      margin-bottom: 1rem;
+    }
   }
 
   &__empty {
     text-align: center;
-    padding: 2rem;
+    padding: 1.5rem;
     color: #666;
+
+    @media (min-width: 768px) {
+      padding: 2rem;
+    }
   }
 
   &__items {
-    border-bottom: 1px solid #eee;
-    margin-bottom: 1.5rem;
-    padding-bottom: 1.5rem;
+    border-bottom: 1px solid #f0f0f0;
+    margin-bottom: 0.875rem;
+    padding-bottom: 0.875rem;
+
+    @media (min-width: 768px) {
+      margin-bottom: 1rem;
+      padding-bottom: 1rem;
+    }
   }
 
   &__item {
     display: flex;
-    gap: 1rem;
-    margin-bottom: 1rem;
+    gap: 0.625rem;
+    margin-bottom: 0.75rem;
     width: 100%;
     box-sizing: border-box;
+
+    @media (min-width: 768px) {
+      gap: 0.75rem;
+      margin-bottom: 0.875rem;
+    }
 
     &:last-child {
       margin-bottom: 0;
@@ -196,11 +224,17 @@ const finalTotal = computed(() => {
   }
 
   &__item-image {
-    width: 60px;
-    height: 60px;
+    width: 45px;
+    height: 45px;
     object-fit: cover;
-    border-radius: 8px;
+    border-radius: 4px;
     flex-shrink: 0;
+
+    @media (min-width: 768px) {
+      width: 50px;
+      height: 50px;
+      border-radius: 6px;
+    }
   }
 
   &__item-info {
@@ -210,46 +244,79 @@ const finalTotal = computed(() => {
 
   &__item-name {
     font-weight: 600;
-    margin-bottom: 0.25rem;
-    font-size: 0.9rem;
+    margin: 0 0 0.125rem 0;
+    font-size: 0.8125rem;
     word-wrap: break-word;
+    line-height: 1.3;
+    color: #1a1a1a;
+
+    @media (min-width: 768px) {
+      font-size: 0.875rem;
+    }
   }
 
   &__item-details,
   &__item-quantity {
-    font-size: 0.8rem;
-    color: #666;
+    font-size: 0.6875rem;
+    color: #6b7280;
+    line-height: 1.4;
+    margin: 0;
+
+    @media (min-width: 768px) {
+      font-size: 0.75rem;
+    }
   }
 
   &__item-price {
     font-weight: 600;
     color: #1a1a1a;
     flex-shrink: 0;
+    font-size: 0.8125rem;
+
+    @media (min-width: 768px) {
+      font-size: 0.875rem;
+    }
   }
 
   &__coupon-section {
-    margin-bottom: 1.5rem;
+    margin-bottom: 0.875rem;
+
+    @media (min-width: 768px) {
+      margin-bottom: 1rem;
+    }
   }
 
   &__totals {
-    border-bottom: 1px solid #eee;
-    margin-bottom: 1.5rem;
-    padding-bottom: 1.5rem;
+    border-bottom: 1px solid #f0f0f0;
+    margin-bottom: 0.875rem;
+    padding-bottom: 0.875rem;
+
+    @media (min-width: 768px) {
+      margin-bottom: 1rem;
+      padding-bottom: 1rem;
+    }
   }
 
   &__total-row {
     display: flex;
     justify-content: space-between;
-    margin-bottom: 0.75rem;
-    font-size: 0.9rem;
+    margin-bottom: 0.5rem;
+    font-size: 0.8125rem;
+    gap: 0.5rem;
+    align-items: center;
+
+    @media (min-width: 768px) {
+      font-size: 0.875rem;
+      margin-bottom: 0.625rem;
+    }
 
     &--strikethrough {
       text-decoration: line-through;
-      color: #999;
+      color: #9ca3af;
     }
 
     &--discount {
-      color: #27ae60;
+      color: #10b981;
     }
 
     &--highlighted {
@@ -258,22 +325,32 @@ const finalTotal = computed(() => {
     }
 
     &--info {
-      color: #666;
-      font-size: 0.85rem;
+      color: #6b7280;
+      font-size: 0.75rem;
+
+      @media (min-width: 768px) {
+        font-size: 0.8125rem;
+      }
     }
 
     &--final {
-      font-size: 1.1rem;
+      font-size: 0.9375rem;
       font-weight: 700;
       color: #1a1a1a;
-      margin-top: 1rem;
-      padding-top: 1rem;
-      border-top: 2px solid #eee;
+      margin-top: 0.625rem;
+      padding-top: 0.625rem;
+      border-top: 1.5px solid #e5e7eb;
+
+      @media (min-width: 768px) {
+        font-size: 1rem;
+        margin-top: 0.75rem;
+        padding-top: 0.75rem;
+      }
     }
   }
 
   &__discount-amount {
-    color: #27ae60;
+    color: #10b981;
   }
 
   &__new-price {
@@ -281,21 +358,27 @@ const finalTotal = computed(() => {
   }
 
   &__info-price {
-    color: #666;
+    color: #6b7280;
   }
 
   &__submit-btn {
     width: 100%;
-    padding: 1rem;
+    padding: 0.75rem;
     background: #b9c6aa;
     color: #2f3a2a;
     border: none;
-    border-radius: 8px;
-    font-size: 1rem;
+    border-radius: 6px;
+    font-size: 0.9375rem;
     font-weight: 600;
     cursor: pointer;
     transition: all 0.2s;
     box-sizing: border-box;
+    min-height: 44px;
+
+    @media (min-width: 768px) {
+      padding: 0.875rem;
+      font-size: 1rem;
+    }
 
     &:hover:not(:disabled) {
       background: #a8b599;
@@ -310,12 +393,18 @@ const finalTotal = computed(() => {
   }
 
   &__error {
-    margin-top: 1rem;
-    padding: 1rem;
-    background: #fee;
-    color: #c33;
-    border-radius: 8px;
-    font-size: 0.9rem;
+    margin-top: 0.75rem;
+    padding: 0.75rem;
+    background: #fef2f2;
+    color: #dc2626;
+    border-radius: 6px;
+    font-size: 0.8125rem;
+
+    @media (min-width: 768px) {
+      margin-top: 0.875rem;
+      padding: 0.875rem;
+      font-size: 0.875rem;
+    }
   }
 }
 </style>

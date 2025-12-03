@@ -429,8 +429,9 @@ const speedyIframeUrl = computed(() => {
   }
 
   &__provider-selection {
-    display: flex;
-    gap: 1rem;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.625rem;
     margin-bottom: 1.5rem;
     padding: 1rem;
     background: #f9fafb;
@@ -438,16 +439,9 @@ const speedyIframeUrl = computed(() => {
     width: 100%;
     box-sizing: border-box;
     overflow-x: hidden;
-    flex-wrap: wrap;
-
-    @media (max-width: 640px) {
-      flex-direction: column;
-      gap: 0.75rem;
-    }
   }
 
   &__provider-radio {
-    flex: 1;
     display: flex;
     align-items: center;
     gap: 0.75rem;
@@ -459,11 +453,6 @@ const speedyIframeUrl = computed(() => {
     transition: all 0.2s ease;
     min-width: 0;
     box-sizing: border-box;
-
-    @media (max-width: 640px) {
-      width: 100%;
-      flex: none;
-    }
 
     &:hover {
       border-color: #b9c6aa;
@@ -501,7 +490,11 @@ const speedyIframeUrl = computed(() => {
   &__methods-grid {
     display: grid;
     grid-template-columns: 1fr;
-    gap: 0.75rem;
+    gap: 0.625rem;
+
+    @media (min-width: 640px) {
+      grid-template-columns: repeat(2, 1fr);
+    }
 
     @media (min-width: 768px) {
       grid-template-columns: repeat(3, 1fr);
@@ -509,47 +502,51 @@ const speedyIframeUrl = computed(() => {
   }
 
   &__method {
-    background: white;
-    border: 2px solid #e5e7eb;
-    border-radius: 8px;
-    padding: 1rem;
+    background: #fafafa;
+    border: 1.5px solid #e5e7eb;
+    border-radius: 6px;
+    padding: 0.625rem;
     cursor: pointer;
-    transition: all 0.2s ease;
+    transition: all 0.15s ease;
     display: flex;
-    flex-direction: column;
     align-items: center;
-    gap: 0.5rem;
-    text-align: center;
+    gap: 0.625rem;
+    text-align: left;
     width: 100%;
     box-sizing: border-box;
 
     &:hover {
       border-color: #b9c6aa;
-      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+      background: white;
     }
 
     &--active {
       border-color: #b9c6aa;
-      background: rgba(185, 198, 170, 0.1);
-      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+      background: rgba(185, 198, 170, 0.08);
+      box-shadow: 0 0 0 1px rgba(185, 198, 170, 0.2);
     }
   }
 
   &__method-icon {
-    width: 32px;
-    height: 32px;
-    color: #666;
+    width: 20px;
+    height: 20px;
+    color: #6b7280;
+    flex-shrink: 0;
   }
 
   &__method-name {
     font-weight: 600;
     color: #1a1a1a;
-    font-size: 0.9375rem;
+    font-size: 0.875rem;
+    line-height: 1.3;
+    margin: 0 0 0.125rem 0;
   }
 
   &__method-desc {
-    font-size: 0.8125rem;
-    color: #666;
+    font-size: 0.75rem;
+    color: #6b7280;
+    line-height: 1.3;
+    margin: 0;
   }
 
   &__office-summary {

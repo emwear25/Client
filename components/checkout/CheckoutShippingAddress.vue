@@ -1,6 +1,6 @@
 <template>
   <form class="checkout-shipping-address" @submit.prevent="$emit('submit')">
-    <div class="checkout-shipping-address__row">
+    <div class="checkout-shipping-address__row checkout-shipping-address__row--names">
       <div class="checkout-shipping-address__group">
         <label for="firstName" class="checkout-shipping-address__label">
           Име <span class="checkout-shipping-address__required">*</span>
@@ -62,7 +62,7 @@
 
     <!-- Address fields (only for courier delivery) -->
     <template v-if="deliveryMethod === 'courier_address'">
-      <div class="checkout-shipping-address__group">
+      <div class="checkout-shipping-address__group checkout-shipping-address__group--address">
         <label for="street" class="checkout-shipping-address__label">
           Адрес <span class="checkout-shipping-address__required">*</span>
         </label>
@@ -84,8 +84,8 @@
         </small>
       </div>
 
-      <div class="checkout-shipping-address__row">
-        <div class="checkout-shipping-address__group">
+      <div class="checkout-shipping-address__row checkout-shipping-address__row--city-postal">
+        <div class="checkout-shipping-address__group checkout-shipping-address__group--city">
           <label for="city" class="checkout-shipping-address__label">
             Град <span class="checkout-shipping-address__required">*</span>
           </label>
@@ -106,7 +106,7 @@
           </small>
         </div>
 
-        <div class="checkout-shipping-address__group">
+        <div class="checkout-shipping-address__group checkout-shipping-address__group--postal">
           <label for="postalCode" class="checkout-shipping-address__label">
             Пощенски код <span class="checkout-shipping-address__required">*</span>
           </label>
@@ -118,6 +118,7 @@
               'checkout-shipping-address__input',
               { 'checkout-shipping-address__input--error': validationErrors.shippingPostalCode },
             ]"
+            maxlength="5"
             :required="deliveryMethod === 'courier_address'"
             @blur="$emit('validate-field', 'shippingPostalCode', shippingForm.postalCode)"
             @input="updateField('postalCode', $event)"
@@ -213,10 +214,36 @@ const updateField = (field: keyof ShippingForm, event: Event) => {
     @media (max-width: 640px) {
       grid-template-columns: 1fr;
     }
+
+    &--names {
+      @media (max-width: 640px) {
+        grid-template-columns: 1fr 1fr;
+        gap: 0.75rem;
+      }
+    }
+
+    &--city-postal {
+      grid-template-columns: 60% 40%;
+      gap: 0.75rem;
+
+      @media (max-width: 640px) {
+        grid-template-columns: 1fr 1fr;
+        gap: 0.75rem;
+      }
+    }
   }
 
   &__group {
     margin-bottom: 1.25rem;
+
+    &--address {
+      margin-bottom: 1.25rem;
+    }
+
+    &--city,
+    &--postal {
+      margin-bottom: 1.25rem;
+    }
   }
 
   &__label {

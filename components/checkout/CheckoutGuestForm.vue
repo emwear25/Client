@@ -24,9 +24,29 @@
           >Ще получите потвърждение на този имейл</small
         >
       </div>
+      <div class="checkout-guest-form__group">
+        <label class="checkout-guest-form__label">
+          Телефон <span class="checkout-guest-form__required">*</span>
+        </label>
+        <input
+          :model-value="guestForm.phone"
+          type="tel"
+          :class="[
+            'checkout-guest-form__input',
+            { 'checkout-guest-form__input--error': validationErrors.guestPhone },
+          ]"
+          placeholder="+359 888 123 456"
+          required
+          @blur="$emit('validate-field', 'guestPhone', guestForm.phone)"
+          @input="updateField('phone', $event)"
+        />
+        <small v-if="validationErrors.guestPhone" class="checkout-guest-form__error">
+          {{ validationErrors.guestPhone }}
+        </small>
+      </div>
     </div>
 
-    <div class="checkout-guest-form__row">
+    <div class="checkout-guest-form__row checkout-guest-form__row--names">
       <div class="checkout-guest-form__group">
         <label class="checkout-guest-form__label">
           Име <span class="checkout-guest-form__required">*</span>
@@ -69,56 +89,31 @@
       </div>
     </div>
 
-    <div class="checkout-guest-form__row">
-      <div class="checkout-guest-form__group">
-        <label class="checkout-guest-form__label">
-          Телефон <span class="checkout-guest-form__required">*</span>
-        </label>
-        <input
-          :model-value="guestForm.phone"
-          type="tel"
-          :class="[
-            'checkout-guest-form__input',
-            { 'checkout-guest-form__input--error': validationErrors.guestPhone },
-          ]"
-          placeholder="+359 888 123 456"
-          required
-          @blur="$emit('validate-field', 'guestPhone', guestForm.phone)"
-          @input="updateField('phone', $event)"
-        />
-        <small v-if="validationErrors.guestPhone" class="checkout-guest-form__error">
-          {{ validationErrors.guestPhone }}
-        </small>
-      </div>
-    </div>
-
     <!-- Address fields for guest courier delivery -->
     <template v-if="deliveryMethod === 'courier_address'">
-      <div class="checkout-guest-form__row">
-        <div class="checkout-guest-form__group">
-          <label class="checkout-guest-form__label">
-            Адрес <span class="checkout-guest-form__required">*</span>
-          </label>
-          <input
-            :model-value="shippingForm.street"
-            type="text"
-            :class="[
-              'checkout-guest-form__input',
-              { 'checkout-guest-form__input--error': validationErrors.shippingStreet },
-            ]"
-            placeholder="Улица, номер, етаж, апартамент"
-            required
-            @blur="$emit('validate-field', 'shippingStreet', shippingForm.street)"
-            @input="updateShippingField('street', $event)"
-          />
-          <small v-if="validationErrors.shippingStreet" class="checkout-guest-form__error">
-            {{ validationErrors.shippingStreet }}
-          </small>
-        </div>
+      <div class="checkout-guest-form__group checkout-guest-form__group--address">
+        <label class="checkout-guest-form__label">
+          Адрес <span class="checkout-guest-form__required">*</span>
+        </label>
+        <input
+          :model-value="shippingForm.street"
+          type="text"
+          :class="[
+            'checkout-guest-form__input',
+            { 'checkout-guest-form__input--error': validationErrors.shippingStreet },
+          ]"
+          placeholder="Улица, номер, етаж, апартамент"
+          required
+          @blur="$emit('validate-field', 'shippingStreet', shippingForm.street)"
+          @input="updateShippingField('street', $event)"
+        />
+        <small v-if="validationErrors.shippingStreet" class="checkout-guest-form__error">
+          {{ validationErrors.shippingStreet }}
+        </small>
       </div>
 
-      <div class="checkout-guest-form__row">
-        <div class="checkout-guest-form__group">
+      <div class="checkout-guest-form__row checkout-guest-form__row--city-postal">
+        <div class="checkout-guest-form__group checkout-guest-form__group--city">
           <label class="checkout-guest-form__label">
             Град <span class="checkout-guest-form__required">*</span>
           </label>
@@ -137,7 +132,7 @@
             {{ validationErrors.shippingCity }}
           </small>
         </div>
-        <div class="checkout-guest-form__group">
+        <div class="checkout-guest-form__group checkout-guest-form__group--postal">
           <label class="checkout-guest-form__label">
             Пощенски код <span class="checkout-guest-form__required">*</span>
           </label>
@@ -148,6 +143,7 @@
               'checkout-guest-form__input',
               { 'checkout-guest-form__input--error': validationErrors.shippingPostalCode },
             ]"
+            maxlength="5"
             required
             @blur="$emit('validate-field', 'shippingPostalCode', shippingForm.postalCode)"
             @input="updateShippingField('postalCode', $event)"
@@ -221,10 +217,36 @@ const updateShippingField = (field: keyof ShippingForm, event: Event) => {
     @media (max-width: 640px) {
       grid-template-columns: 1fr;
     }
+
+    &--names {
+      @media (max-width: 640px) {
+        grid-template-columns: 1fr 1fr;
+        gap: 0.75rem;
+      }
+    }
+
+    &--city-postal {
+      grid-template-columns: 60% 40%;
+      gap: 0.75rem;
+
+      @media (max-width: 640px) {
+        grid-template-columns: 1fr 1fr;
+        gap: 0.75rem;
+      }
+    }
   }
 
   &__group {
     margin-bottom: 1.25rem;
+
+    &--address {
+      margin-bottom: 1.25rem;
+    }
+
+    &--city,
+    &--postal {
+      margin-bottom: 1.25rem;
+    }
   }
 
   &__label {
