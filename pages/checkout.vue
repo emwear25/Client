@@ -1363,6 +1363,9 @@ const handleSubmit = async () => {
       quantity: item.quantity,
       size: item.size,
       color: item.color,
+      customization: item.embroidery
+        ? `Бродерия: ${item.embroidery.name}${item.embroidery.color ? `, Цвят: ${item.embroidery.color}` : ""}${item.embroidery.font ? `, Шрифт: ${item.embroidery.font}` : ""}`
+        : null,
     })),
     shippingAddress,
     paymentMethod: selectedPaymentMethod.value === "cod" ? "cash_on_delivery" : "stripe_card",

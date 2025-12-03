@@ -81,43 +81,39 @@
               <!-- Title & Price -->
               <div class="pdp-header">
                 <h1 class="pdp-title">{{ product.name }}</h1>
+              </div>
 
-                <!-- Social Share -->
-                <div class="pdp-social">
-                  <button
-                    class="pdp-social__btn"
-                    title="Сподели във Facebook"
-                    @click="shareOn('facebook')"
-                  >
-                    <svg viewBox="0 0 24 24" fill="currentColor">
-                      <path
-                        d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"
-                      />
-                    </svg>
-                  </button>
-                  <button
-                    class="pdp-social__btn"
-                    title="Сподели в Instagram"
-                    @click="shareOn('instagram')"
-                  >
-                    <svg viewBox="0 0 24 24" fill="currentColor">
-                      <path
-                        d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"
-                      />
-                    </svg>
-                  </button>
-                  <button
-                    class="pdp-social__btn"
-                    title="Сподели в TikTok"
-                    @click="shareOn('tiktok')"
-                  >
-                    <svg viewBox="0 0 24 24" fill="currentColor">
-                      <path
-                        d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-5.2 1.74 2.89 2.89 0 0 1 2.31-4.64 2.93 2.93 0 0 1 .88.13V9.4a6.84 6.84 0 0 0-1-.05A6.33 6.33 0 0 0 5 20.1a6.34 6.34 0 0 0 10.86-4.43v-7a8.16 8.16 0 0 0 4.77 1.52v-3.4a4.85 4.85 0 0 1-1-.1z"
-                      />
-                    </svg>
-                  </button>
-                </div>
+              <!-- Social Share -->
+              <div class="pdp-social">
+                <button
+                  class="pdp-social__btn"
+                  title="Сподели във Facebook"
+                  @click="shareOn('facebook')"
+                >
+                  <svg viewBox="0 0 24 24" fill="currentColor">
+                    <path
+                      d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"
+                    />
+                  </svg>
+                </button>
+                <button
+                  class="pdp-social__btn"
+                  title="Сподели в Instagram"
+                  @click="shareOn('instagram')"
+                >
+                  <svg viewBox="0 0 24 24" fill="currentColor">
+                    <path
+                      d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"
+                    />
+                  </svg>
+                </button>
+                <button class="pdp-social__btn" title="Сподели в TikTok" @click="shareOn('tiktok')">
+                  <svg viewBox="0 0 24 24" fill="currentColor">
+                    <path
+                      d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-5.2 1.74 2.89 2.89 0 0 1 2.31-4.64 2.93 2.93 0 0 1 .88.13V9.4a6.84 6.84 0 0 0-1-.05A6.33 6.33 0 0 0 5 20.1a6.34 6.34 0 0 0 10.86-4.43v-7a8.16 8.16 0 0 0 4.77 1.52v-3.4a4.85 4.85 0 0 1-1-.1z"
+                    />
+                  </svg>
+                </button>
               </div>
 
               <!-- Reviews Summary -->
@@ -154,9 +150,18 @@
               <!-- Price -->
               <div class="pdp-price">
                 <span class="pdp-price__current">{{ formatPrice(currentPrice) }}</span>
-                <span v-if="product.compareAt" class="pdp-price__old">{{
-                  formatPrice(product.compareAt)
-                }}</span>
+                <span
+                  v-if="product.compareAt && product.compareAt > currentPrice"
+                  class="pdp-price__old"
+                  >{{ formatPrice(product.compareAt) }}</span
+                >
+                <span
+                  v-if="product.compareAt && product.compareAt > currentPrice"
+                  class="pdp-price__badge"
+                >
+                  Спести
+                  {{ Math.round(((product.compareAt - currentPrice) / product.compareAt) * 100) }}%
+                </span>
               </div>
 
               <!-- Stock Status -->
@@ -208,14 +213,18 @@
                 </div>
               </div>
 
-              <!-- Embroidery Customization -->
+              <!-- Embroidery Name Display (if enabled and name entered) -->
               <div
-                v-if="
-                  product.customEmbroidery &&
-                  (product.embroideryFonts?.length || product.embroideryColors?.length)
-                "
-                class="pdp-custom"
+                v-if="product.customEmbroidery && embroideryEnabled && embroideryName.trim()"
+                class="pdp-option"
               >
+                <label class="pdp-option__label"
+                  >Име за бродерия: <strong>{{ embroideryName.trim() }}</strong></label
+                >
+              </div>
+
+              <!-- Embroidery Customization -->
+              <div v-if="product.customEmbroidery" class="pdp-custom">
                 <div class="pdp-custom__item">
                   <input
                     id="embroidery-enable"
@@ -224,68 +233,31 @@
                     class="pdp-custom__checkbox"
                   />
                   <label for="embroidery-enable" class="pdp-custom__label">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                      <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />
-                      <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" />
-                    </svg>
-                    Бродерия с име (+ 10.00 лв)
+                    <img src="/img/embroidered.svg" alt="Бродерия" class="pdp-custom__icon" />
+                    Добави име за бродерия
                   </label>
                 </div>
 
                 <div v-if="embroideryEnabled" class="pdp-custom__fields">
+                  <p class="pdp-custom__note">
+                    Забележка: Персонализираните артикули се нуждаят от допълнително време за
+                    обработка.
+                  </p>
                   <div class="pdp-custom__field">
                     <label class="pdp-custom__field-label">Име за бродерия</label>
                     <input
                       v-model="embroideryName"
                       type="text"
-                      placeholder="Въведете име..."
+                      placeholder="Въведете име"
                       class="pdp-custom__input"
+                      :class="{ 'pdp-custom__input--error': embroideryError }"
                       maxlength="15"
+                      required
+                      @blur="validateEmbroidery"
                     />
-                  </div>
-
-                  <!-- Font Selection -->
-                  <div
-                    v-if="product.embroideryFonts && product.embroideryFonts.length"
-                    class="pdp-custom__field"
-                  >
-                    <label class="pdp-custom__field-label">Шрифт</label>
-                    <div class="pdp-option__buttons">
-                      <button
-                        v-for="font in product.embroideryFonts"
-                        :key="font"
-                        class="pdp-option__btn"
-                        :class="{
-                          'pdp-option__btn--active': embroideryFont === font,
-                        }"
-                        @click="embroideryFont = font"
-                      >
-                        {{ font }}
-                      </button>
-                    </div>
-                  </div>
-
-                  <!-- Color Selection -->
-                  <div
-                    v-if="product.embroideryColors && product.embroideryColors.length"
-                    class="pdp-custom__field"
-                  >
-                    <label class="pdp-custom__field-label">Цвят на бродерията</label>
-                    <div class="pdp-option__swatches">
-                      <button
-                        v-for="color in product.embroideryColors"
-                        :key="color.value"
-                        class="pdp-swatch"
-                        :class="{
-                          'pdp-swatch--active': embroideryColor === color.value,
-                        }"
-                        :style="{ background: color.value }"
-                        :title="color.name"
-                        @click="embroideryColor = color.value"
-                      >
-                        <span class="sr-only">{{ color.name }}</span>
-                      </button>
-                    </div>
+                    <span v-if="embroideryError" class="pdp-custom__error">{{
+                      embroideryError
+                    }}</span>
                   </div>
                 </div>
               </div>
@@ -660,6 +632,17 @@ const embroideryEnabled = ref(false);
 const embroideryName = ref("");
 const embroideryColor = ref("");
 const embroideryFont = ref("");
+const embroideryError = ref("");
+
+// Validation for embroidery
+const validateEmbroidery = () => {
+  if (embroideryEnabled.value && !embroideryName.value.trim()) {
+    embroideryError.value = "Това поле е задължително.";
+    return false;
+  }
+  embroideryError.value = "";
+  return true;
+};
 
 // Accordion state
 const openSection = ref<string>("description");
@@ -771,49 +754,119 @@ const getColorName = (color: string | { name: string; hex?: string }) => {
   return typeof color === "string" ? color : color.name;
 };
 
-const getColorDisplayName = (color: string | { name: string; hex?: string }) => {
-  return typeof color === "string" ? color : color.name;
+// Color translation map: English to Bulgarian
+const colorTranslationMap: Record<string, string> = {
+  // English to Bulgarian
+  black: "Черен",
+  white: "Бял",
+  red: "Червен",
+  blue: "Син",
+  green: "Зелен",
+  yellow: "Жълт",
+  purple: "Лилав",
+  pink: "Розов",
+  gray: "Сив",
+  grey: "Сив",
+  navy: "Морско синьо",
+  // Already Bulgarian or custom colors - return as is
 };
 
-const getColorHexValue = (color: string | { name: string; hex?: string }) => {
-  // If color is an object with hex, use it directly
-  if (typeof color === "object" && color.hex) {
-    return color.hex;
+const getColorDisplayName = (color: string | { name: string; hex?: string }) => {
+  const colorName = typeof color === "string" ? color : color.name;
+
+  if (!colorName) return "";
+
+  // Normalize to lowercase for matching
+  const normalizedName = colorName.toLowerCase().trim();
+
+  // Check if we have a translation
+  if (colorTranslationMap[normalizedName]) {
+    return colorTranslationMap[normalizedName];
   }
 
-  // Otherwise, try to map the color name (backward compatibility)
-  const colorName = typeof color === "string" ? color : color.name;
+  // Return original name if no translation found (could be custom color already in Bulgarian)
+  return colorName;
+};
+
+const getColorHexValue = (color: string | { name: string; hex?: string } | null | undefined) => {
+  const DEFAULT_GREY = "#9CA3AF";
+
+  // Handle null/undefined cases
+  if (!color) {
+    return DEFAULT_GREY;
+  }
+
+  // Get color name regardless of format (normalized to lowercase for matching)
+  const colorName = typeof color === "string" ? color : color?.name;
+
+  // Handle cases where colorName might be undefined/null/empty
+  if (!colorName || typeof colorName !== "string") {
+    // If it's an object with hex, try to use that
+    if (typeof color === "object" && color?.hex) {
+      return color.hex;
+    }
+    return DEFAULT_GREY;
+  }
+
+  const normalizedName = colorName.toLowerCase().trim();
+
+  // Comprehensive color map matching dashboard available colors
   const colorMap: Record<string, string> = {
-    червен: "#EF4444",
-    червено: "#EF4444",
-    син: "#3B82F6",
-    синьо: "#3B82F6",
-    зелен: "#10B981",
-    зелено: "#10B981",
-    жълт: "#F59E0B",
-    жълто: "#F59E0B",
-    бял: "#F9FAFB",
-    бяло: "#F9FAFB",
-    черен: "#1F2937",
-    черно: "#1F2937",
-    розов: "#EC4899",
-    розово: "#EC4899",
-    сив: "#6B7280",
-    // English color names
+    // Bulgarian color names
+    червен: "#ef4444",
+    червено: "#ef4444",
+    син: "#3b82f6",
+    синьо: "#3b82f6",
+    зелен: "#10b981",
+    зелено: "#10b981",
+    жълт: "#f59e0b",
+    жълто: "#f59e0b",
+    бял: "#ffffff",
+    бяло: "#ffffff",
+    черен: "#000000",
+    черно: "#000000",
+    розов: "#ec4899",
+    розово: "#ec4899",
+    сив: "#6b7280",
+    коричнев: "#8b4513",
+    коричнево: "#8b4513",
+    // English color names (matching dashboard exactly)
     black: "#000000",
-    white: "#FFFFFF",
-    red: "#EF4444",
-    blue: "#3B82F6",
-    green: "#10B981",
-    yellow: "#F59E0B",
-    purple: "#8B5CF6",
-    pink: "#EC4899",
-    gray: "#6B7280",
-    grey: "#6B7280",
-    navy: "#1E40AF",
-    crew: "#C5A572",
+    white: "#ffffff",
+    red: "#ef4444",
+    blue: "#3b82f6",
+    green: "#10b981",
+    yellow: "#f59e0b",
+    purple: "#8b5cf6",
+    pink: "#ec4899",
+    gray: "#6b7280",
+    grey: "#6b7280",
+    navy: "#1e40af",
+    crew: "#c5a572",
+    beige: "#f5f5dc",
+    brown: "#8b4513",
   };
-  return colorMap[colorName.toLowerCase()] || "#9CA3AF";
+
+  // First, try to map from color name (most reliable if name matches)
+  const mappedFromName = colorMap[normalizedName];
+  if (mappedFromName) {
+    return mappedFromName;
+  }
+
+  // If color is an object with hex value
+  if (typeof color === "object" && color.hex) {
+    const hexValue = color.hex.trim().toLowerCase();
+    // Use hex if it exists and is not the default grey
+    // (we already tried name mapping above, so if hex is default, name didn't match)
+    if (hexValue && hexValue !== DEFAULT_GREY.toLowerCase()) {
+      return color.hex; // Return original with original case/format
+    }
+    // If hex is default grey and name didn't match, return default grey
+    return hexValue === DEFAULT_GREY.toLowerCase() ? DEFAULT_GREY : color.hex;
+  }
+
+  // Fallback to default grey
+  return DEFAULT_GREY;
 };
 
 const toggleSection = (section: string) => {
@@ -847,23 +900,61 @@ const shareOn = (platform: string) => {
 const addToCart = () => {
   if (!product.value) return;
 
-  // Calculate final price (use variant price or base price, then add embroidery cost if enabled)
-  let finalPrice = currentPrice.value;
-  if (embroideryEnabled.value) {
-    finalPrice += 10.0; // Embroidery cost
+  // Validate color selection if MORE than 1 color exists (if exactly 1, it's auto-selected)
+  if (product.value.colors && product.value.colors.length > 1 && !selectedColor.value) {
+    const toast = useToast();
+    toast.error("Моля изберете цвят", 3000);
+    return;
   }
 
+  // Validate size selection if sizes exist
+  if (product.value.sizes && product.value.sizes.length > 0 && !selectedSize.value) {
+    const toast = useToast();
+    toast.error("Моля изберете размер", 3000);
+    return;
+  }
+
+  // Validate embroidery if enabled
+  if (embroideryEnabled.value && !validateEmbroidery()) {
+    return;
+  }
+
+  // Calculate final price (use variant price or base price, NO embroidery cost)
+  const finalPrice = currentPrice.value;
+
+  // Prepare embroidery data if enabled
+  const embroidery = embroideryEnabled.value
+    ? {
+        name: embroideryName.value.trim(),
+        color: embroideryColor.value || undefined,
+        font: embroideryFont.value || undefined,
+      }
+    : undefined;
+
   // Add to cart
+  // Get color display name for cart
+  let colorForCart: string | undefined = undefined;
+  if (selectedColor.value) {
+    // Find the color object from product colors
+    const colorObj = product.value.colors?.find((c) => getColorName(c) === selectedColor.value);
+    if (colorObj) {
+      colorForCart = getColorDisplayName(colorObj);
+    } else if (selectedColor.value) {
+      colorForCart = selectedColor.value;
+    }
+  }
+
   cartStore.addItem(
     {
       id: product.value._id,
       name: product.value.name,
       price: finalPrice,
       image: product.value.images?.[0]?.url,
-      size: selectedSize.value,
-      color: selectedColor.value,
+      size: selectedSize.value || undefined,
+      color: colorForCart,
       weight: product.value.weight || 0.5, // Include weight for shipping calculation
       category: typeof product.value.category === "object" ? product.value.category : undefined, // Include category for shipping
+      embroidery, // Include embroidery data
     },
     1
   );
@@ -938,11 +1029,25 @@ const fetchProduct = async () => {
 
     // Set defaults
     if (product.value) {
-      selectedColor.value =
-        product.value.colors && product.value.colors.length > 0
-          ? product.value.colors[0] || ""
-          : "";
-      selectedSize.value = product.value.sizes[0] || "";
+      // Auto-select first color ONLY if exactly 1 color exists
+      if (product.value.colors && product.value.colors.length === 1) {
+        const firstColor = product.value.colors[0];
+        if (firstColor) {
+          const colorName = getColorName(firstColor);
+          selectedColor.value = colorName || "";
+        } else {
+          selectedColor.value = "";
+        }
+      } else {
+        selectedColor.value = "";
+      }
+
+      // Auto-select first size if sizes exist (always if there's at least 1)
+      if (product.value.sizes && product.value.sizes.length > 0 && product.value.sizes[0]) {
+        selectedSize.value = product.value.sizes[0];
+      } else {
+        selectedSize.value = "";
+      }
 
       // Set default embroidery options
       if (product.value.embroideryFonts && product.value.embroideryFonts.length > 0) {
@@ -1125,14 +1230,11 @@ onMounted(() => {
 .pdp-details {
   display: flex;
   flex-direction: column;
-  gap: 1.5rem;
+  gap: 0.75rem;
 }
 
 .pdp-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-  gap: 1rem;
+  margin-bottom: 0;
 }
 
 .pdp-title {
@@ -1140,10 +1242,9 @@ onMounted(() => {
   font-size: 36px;
   font-weight: 300;
   line-height: 40px;
-  color: rgb(51, 51, 51);
+  color: #333333;
   letter-spacing: -0.8px;
-  margin: 0;
-  flex: 1;
+  margin: 0 0 0.25rem 0;
 
   @media (max-width: 767px) {
     font-size: 28px;
@@ -1156,6 +1257,7 @@ onMounted(() => {
 .pdp-social {
   display: flex;
   gap: 0.5rem;
+  margin-bottom: 0.25rem;
 
   &__btn {
     width: 36px;
@@ -1230,14 +1332,14 @@ onMounted(() => {
   display: flex;
   align-items: baseline;
   gap: 1rem;
-  margin: 0.5rem 0 1rem;
+  margin: 0 0 0.75rem 0;
 
   &__current {
     font-family: $font-body;
-    font-size: 24px;
-    font-weight: 600;
-    line-height: 32px;
-    color: rgb(51, 51, 51);
+    font-size: 23px;
+    font-weight: 400;
+    line-height: 40px;
+    color: #2f3a2a;
   }
 
   &__old {
@@ -1245,8 +1347,21 @@ onMounted(() => {
     font-size: 18px;
     font-weight: 400;
     line-height: 28px;
-    color: rgb(145, 123, 105);
+    color: #917b69;
     text-decoration: line-through;
+  }
+
+  &__badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.25rem 0.75rem;
+    background: $color-honey;
+    color: $brand-ink;
+    font-family: $font-body;
+    font-size: 0.875rem;
+    font-weight: 600;
+    border-radius: 4px;
+    white-space: nowrap;
   }
 }
 
@@ -1276,7 +1391,7 @@ onMounted(() => {
     font-size: 14px;
     font-weight: 600;
     line-height: 20px;
-    color: rgb(51, 51, 51);
+    color: #333333;
     margin-bottom: 0.75rem;
     text-transform: uppercase;
     letter-spacing: 0.05em;
@@ -1324,6 +1439,7 @@ onMounted(() => {
   width: 40px;
   height: 40px;
   border: 2px solid $border-base;
+  border-radius: 50%;
   cursor: pointer;
   transition: all 0.2s;
 
@@ -1341,7 +1457,7 @@ onMounted(() => {
 .pdp-custom {
   background: $bg-card;
   border: 1px solid $border-base;
-  padding: 1.25rem;
+  padding: 0.5rem 1.25rem;
 
   &__item {
     display: flex;
@@ -1353,21 +1469,27 @@ onMounted(() => {
     width: 20px;
     height: 20px;
     cursor: pointer;
+    accent-color: $brand;
+    flex-shrink: 0;
   }
 
   &__label {
     display: flex;
     align-items: center;
     gap: 0.5rem;
-    font-size: 0.9375rem;
-    font-weight: 500;
+    font-family: $font-body;
+    font-size: 15px;
+    font-weight: 400;
+    line-height: 26px;
+    color: #333333;
     cursor: pointer;
+    user-select: none;
+  }
 
-    svg {
-      width: 18px;
-      height: 18px;
-      color: $brand;
-    }
+  &__icon {
+    width: 50px;
+    height: 50px;
+    flex-shrink: 0;
   }
 
   &__fields {
@@ -1388,15 +1510,40 @@ onMounted(() => {
 
   &__input {
     width: 100%;
-    padding: 0.75rem;
-    border: 1px solid $border-base;
+    padding: 0.5rem 0;
+    border: none;
+    border-bottom: 1px solid $border-base;
+    background: transparent;
     font-family: $font-body;
     font-size: 0.9375rem;
+    border-radius: 0;
 
     &:focus {
       outline: none;
-      border-color: $brand;
+      border-bottom-color: $brand;
+      border-bottom-width: 2px;
     }
+
+    &--error {
+      border-bottom-color: $error;
+      border-bottom-width: 2px;
+    }
+  }
+
+  &__note {
+    font-family: $font-body;
+    font-size: 12px;
+    font-weight: 400;
+    line-height: 14px;
+    color: #333333;
+    margin: 0 0 1rem 0;
+  }
+
+  &__error {
+    display: block;
+    font-size: 0.875rem;
+    color: $error;
+    margin-top: 0.25rem;
   }
 }
 
@@ -1617,7 +1764,7 @@ onMounted(() => {
     font-size: 16px;
     font-weight: 400;
     line-height: 27.7px;
-    color: rgb(51, 51, 51);
+    color: #333333;
   }
 }
 

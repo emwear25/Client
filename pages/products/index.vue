@@ -164,7 +164,9 @@ const fetchProducts = async () => {
 
   try {
     const api = useApi();
-    const response = await api.get("products?active=true");
+    // Add cache-busting timestamp to ensure fresh data
+    const timestamp = Date.now();
+    const response = await api.get(`products?active=true&_t=${timestamp}`);
 
     if (response && response.success && response.data) {
       products.value = Array.isArray(response.data) ? response.data : [];

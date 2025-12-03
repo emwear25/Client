@@ -20,6 +20,11 @@ export interface CartItem {
       height: number;
     };
   };
+  embroidery?: {
+    name: string;
+    color?: string | null;
+    font?: string | null;
+  };
 }
 
 export interface AppliedDiscount {

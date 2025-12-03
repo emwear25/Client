@@ -28,6 +28,7 @@
           <p class="checkout-order-summary__item-details">
             <span v-if="item.size">Размер: {{ item.size }}</span>
             <span v-if="item.color"> • Цвят: {{ item.color }}</span>
+            <span v-if="item.embroidery?.name"> • Бродерия: {{ item.embroidery.name }}</span>
           </p>
           <p class="checkout-order-summary__item-quantity">Количество: {{ item.quantity }}</p>
         </div>
@@ -129,6 +130,11 @@ interface CartItem {
   color?: string;
   quantity: number;
   price: number;
+  embroidery?: {
+    name: string;
+    color?: string | null;
+    font?: string | null;
+  };
 }
 
 interface Props {
