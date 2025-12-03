@@ -3,17 +3,14 @@
     <div class="what-makes-different__container">
       <div class="what-makes-different__header">
         <span class="what-makes-different__eyebrow">Нашите стойности</span>
-      <h2 class="what-makes-different__heading">Какво ни прави различни</h2>
+        <h2 class="what-makes-different__heading">Какво ни прави различни</h2>
         <p class="what-makes-different__intro">
-          Комбинираме традиционно майсторство с модерни технологии, за да създадем продукти, които ще бъдат ценени за дълги години
+          Комбинираме традиционно майсторство с модерни технологии, за да създадем продукти, които
+          ще бъдат ценени за дълги години
         </p>
       </div>
       <div class="what-makes-different__grid">
-        <article
-          v-for="feature in features"
-          :key="feature.title"
-          class="feature-card"
-        >
+        <article v-for="feature in features" :key="feature.title" class="feature-card">
           <div class="feature-card__icon-wrapper">
             <Icon :name="feature.icon" class="feature-card__icon" />
           </div>
@@ -27,46 +24,46 @@
 
 <script setup lang="ts">
 interface Feature {
-  icon: string
-  title: string
-  text: string
+  icon: string;
+  title: string;
+  text: string;
 }
 
 const features: Feature[] = [
   {
-    icon: 'mdi:account-heart-outline',
-    title: 'Персонализация с име и цвят',
-    text: 'Всеки продукт може да бъде персонализиран с името на детето и любимия му цвят за уникален подарък.',
+    icon: "mdi:account-heart-outline",
+    title: "Персонализация с име и цвят",
+    text: "Всеки продукт може да бъде персонализиран с името на детето и любимия му цвят за уникален подарък.",
   },
   {
-    icon: 'mdi:creation',
-    title: 'Прецизна машинна изработка',
-    text: 'Използваме най-модерни машини за качествена и дълготрайна изработка на всяка бродерия.',
+    icon: "mdi:creation",
+    title: "Прецизна машинна изработка",
+    text: "Използваме най-модерни машини за качествена и дълготрайна изработка на всяка бродерия.",
   },
   {
-    icon: 'mdi:flag-outline',
-    title: 'Произведено в България',
-    text: 'Гордеем се, че всички наши продукти се произвеждат в България с грижа и внимание.',
+    icon: "mdi:flag-outline",
+    title: "Произведено в България",
+    text: "Гордеем се, че всички наши продукти се произвеждат в България с грижа и внимание.",
   },
   {
-    icon: 'mdi:gift-outline',
-    title: 'Идеални за подарък',
-    text: 'Всеки продукт се опакова красиво и е готов да зарадва получателя при всяка специална случка.',
+    icon: "mdi:gift-outline",
+    title: "Идеални за подарък",
+    text: "Всеки продукт се опакова красиво и е готов да зарадва получателя при всяка специална случка.",
   },
-]
+];
 </script>
 
 <style scoped lang="scss">
-@use '~/assets/styles/colors' as *;
-@use '~/assets/styles/breakpoints' as *;
-@use '~/assets/styles/fonts' as *;
+@use "~/assets/styles/colors" as *;
+@use "~/assets/styles/breakpoints" as *;
+@use "~/assets/styles/fonts" as *;
 
 .what-makes-different {
   padding: 4rem 0;
   background: $bg-page;
 
   @include up(md) {
-  padding: 5rem 0;
+    padding: 5rem 0;
   }
 
   @include up(lg) {
@@ -78,17 +75,17 @@ const features: Feature[] = [
     margin-inline: auto;
     padding-inline: 16px;
 
-    @include up(md) { 
-      max-width: 960px; 
-      padding-inline: 20px; 
+    @include up(md) {
+      max-width: 960px;
+      padding-inline: 20px;
     }
-    @include up(lg) { 
-      max-width: 1280px; 
-      padding-inline: 24px; 
+    @include up(lg) {
+      max-width: 1280px;
+      padding-inline: 24px;
     }
-    @include up(xl) { 
-      max-width: 1440px; 
-      padding-inline: 32px; 
+    @include up(xl) {
+      max-width: 1440px;
+      padding-inline: 32px;
     }
   }
 
@@ -143,19 +140,19 @@ const features: Feature[] = [
     @include up(lg) {
       grid-template-columns: repeat(4, 1fr);
     }
-    }
   }
+}
 
 .feature-card {
   background: $bg-card;
-    padding: 2rem 1.5rem;
-    border-radius: 16px;
-    text-align: center;
+  padding: 2rem 1.5rem;
+  border-radius: 16px;
+  text-align: center;
   border: 2px solid $border-base;
   box-shadow: 0 6px 16px $shadow-soft;
   transition: all 0.3s ease;
 
-    &:hover {
+  &:hover {
     transform: translateY(-8px);
     box-shadow: 0 12px 24px $shadow-med;
     border-color: $brand;

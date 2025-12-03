@@ -4,11 +4,11 @@
  */
 
 export default defineNuxtPlugin((nuxtApp) => {
-  const isDev = process.env.NODE_ENV === 'development'
+  const isDev = process.env.NODE_ENV === "development";
 
   // Handle Vue errors
   nuxtApp.vueApp.config.errorHandler = (error: Error, instance, info) => {
-    console.error('Global Vue error handler:', error, info)
+    console.error("Global Vue error handler:", error, info);
 
     // Log to error tracking service in production
     if (!isDev) {
@@ -17,27 +17,27 @@ export default defineNuxtPlugin((nuxtApp) => {
 
     // Show user-friendly error message
     // You can use a toast or error notification system here
-  }
+  };
 
   // Handle unhandled promise rejections
-  if (typeof window !== 'undefined') {
-    window.addEventListener('unhandledrejection', (event) => {
-      console.error('Unhandled promise rejection:', event.reason)
+  if (typeof window !== "undefined") {
+    window.addEventListener("unhandledrejection", (event) => {
+      console.error("Unhandled promise rejection:", event.reason);
 
       // Prevent default browser error handling
-      event.preventDefault()
+      event.preventDefault();
 
       // Log to error tracking service
       if (!isDev) {
         // logErrorToService(event.reason, { type: 'unhandledRejection' })
       }
-    })
+    });
   }
 
   // Handle global JavaScript errors
-  if (typeof window !== 'undefined') {
-    window.addEventListener('error', (event) => {
-      console.error('Global JavaScript error:', event.error)
+  if (typeof window !== "undefined") {
+    window.addEventListener("error", (event) => {
+      console.error("Global JavaScript error:", event.error);
 
       // Log to error tracking service
       if (!isDev) {
@@ -48,7 +48,6 @@ export default defineNuxtPlugin((nuxtApp) => {
         //   colno: event.colno,
         // })
       }
-    })
+    });
   }
-})
-
+});

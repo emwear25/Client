@@ -3,19 +3,16 @@
     <div
       class="banner-section__background"
       :style="{ backgroundImage: `url('/img/banners/banner5.jpg')` }"
-    ></div>
-    <div class="banner-section__overlay"></div>
+    />
+    <div class="banner-section__overlay"/>
     <div class="banner-section__container">
       <div class="banner-section__content">
         <h2 class="banner-section__title">Дрехи с бродерия и без бродерия</h2>
         <p class="banner-section__subtitle">
-          Изберете между персонализирани бродирани дрехи или класически модели
-          без бродерия. Всички наши продукти са изработени с внимание към
-          детайла и качеството.
+          Изберете между персонализирани бродирани дрехи или класически модели без бродерия. Всички
+          наши продукти са изработени с внимание към детайла и качеството.
         </p>
-        <NuxtLink to="/products" class="banner-section__button">
-          Разгледай колекцията
-        </NuxtLink>
+        <NuxtLink to="/products" class="banner-section__button"> Разгледай колекцията </NuxtLink>
       </div>
     </div>
   </section>
@@ -26,9 +23,9 @@
 </script>
 
 <style scoped lang="scss">
-@use '~/assets/styles/colors' as *;
-@use '~/assets/styles/breakpoints' as *;
-@use '~/assets/styles/fonts' as *;
+@use "~/assets/styles/colors" as *;
+@use "~/assets/styles/breakpoints" as *;
+@use "~/assets/styles/fonts" as *;
 
 .banner-section {
   position: relative;
@@ -109,7 +106,7 @@
   }
 
   &__title {
-    font-family: 'Outfit', sans-serif;
+    font-family: "Outfit", sans-serif;
     font-size: 48px;
     font-weight: 300;
     color: #b9c6aa;
@@ -130,17 +127,17 @@
     font-family:
       system-ui,
       -apple-system,
-      'Segoe UI',
+      "Segoe UI",
       Roboto,
-      'Helvetica Neue',
-      'Noto Sans',
-      'Liberation Sans',
+      "Helvetica Neue",
+      "Noto Sans",
+      "Liberation Sans",
       Arial,
       sans-serif,
-      'Apple Color Emoji',
-      'Segoe UI Emoji',
-      'Segoe UI Symbol',
-      'Noto Color Emoji';
+      "Apple Color Emoji",
+      "Segoe UI Emoji",
+      "Segoe UI Symbol",
+      "Noto Color Emoji";
     font-size: 16px;
     font-weight: 400;
     color: rgb(255, 255, 255);
@@ -162,17 +159,17 @@
     font-family:
       system-ui,
       -apple-system,
-      'Segoe UI',
+      "Segoe UI",
       Roboto,
-      'Helvetica Neue',
-      'Noto Sans',
-      'Liberation Sans',
+      "Helvetica Neue",
+      "Noto Sans",
+      "Liberation Sans",
       Arial,
       sans-serif,
-      'Apple Color Emoji',
-      'Segoe UI Emoji',
-      'Segoe UI Symbol',
-      'Noto Color Emoji';
+      "Apple Color Emoji",
+      "Segoe UI Emoji",
+      "Segoe UI Symbol",
+      "Noto Color Emoji";
     font-size: 14px;
     font-weight: 400;
     line-height: 22px;

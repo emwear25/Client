@@ -12,13 +12,13 @@
 </template>
 
 <script setup lang="ts">
-import FooterNav from './FooterNav.vue'
-import FooterBottom from './FooterBottom.vue'
+import FooterNav from "./FooterNav.vue";
+import FooterBottom from "./FooterBottom.vue";
 </script>
 
 <style scoped lang="scss">
-@use '~/assets/styles/colors' as *;
-@use '~/assets/styles/breakpoints' as *;
+@use "~/assets/styles/colors" as *;
+@use "~/assets/styles/breakpoints" as *;
 
 .footer {
   width: 100%;
@@ -35,17 +35,17 @@ import FooterBottom from './FooterBottom.vue'
     margin-inline: auto;
     padding-inline: 16px;
 
-    @include up(md) { 
-      max-width: 960px; 
-      padding-inline: 20px; 
+    @include up(md) {
+      max-width: 960px;
+      padding-inline: 20px;
     }
-    @include up(lg) { 
-      max-width: 1280px; 
-      padding-inline: 24px; 
+    @include up(lg) {
+      max-width: 1280px;
+      padding-inline: 24px;
     }
-    @include up(xl) { 
-      max-width: 1440px; 
-      padding-inline: 32px; 
+    @include up(xl) {
+      max-width: 1440px;
+      padding-inline: 32px;
     }
   }
 

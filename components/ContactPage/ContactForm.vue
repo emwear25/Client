@@ -1,7 +1,7 @@
 <template>
   <section class="contact-form-section">
     <div class="contact-form-section__container">
-      <form @submit.prevent="handleSubmit" class="contact-form">
+      <form class="contact-form" @submit.prevent="handleSubmit">
         <div class="contact-form__field">
           <label for="name" class="contact-form__label">Име *</label>
           <input
@@ -11,10 +11,8 @@
             class="contact-form__input"
             :class="{ 'contact-form__input--error': errors.name }"
             placeholder="Вашето име"
-          />
-          <span v-if="errors.name" class="contact-form__error">{{
-            errors.name
-          }}</span>
+          >
+          <span v-if="errors.name" class="contact-form__error">{{ errors.name }}</span>
         </div>
 
         <div class="contact-form__field">
@@ -26,10 +24,8 @@
             class="contact-form__input"
             :class="{ 'contact-form__input--error': errors.email }"
             placeholder="your@email.com"
-          />
-          <span v-if="errors.email" class="contact-form__error">{{
-            errors.email
-          }}</span>
+          >
+          <span v-if="errors.email" class="contact-form__error">{{ errors.email }}</span>
         </div>
 
         <div class="contact-form__field">
@@ -40,7 +36,7 @@
             type="tel"
             class="contact-form__input"
             placeholder="+359 ..."
-          />
+          >
         </div>
 
         <div class="contact-form__field">
@@ -52,18 +48,12 @@
             :class="{ 'contact-form__input--error': errors.message }"
             placeholder="Вашето съобщение..."
             rows="5"
-          ></textarea>
-          <span v-if="errors.message" class="contact-form__error">{{
-            errors.message
-          }}</span>
+          />
+          <span v-if="errors.message" class="contact-form__error">{{ errors.message }}</span>
         </div>
 
-        <button
-          type="submit"
-          class="contact-form__button"
-          :disabled="isSubmitting"
-        >
-          {{ isSubmitting ? 'Изпраща се...' : 'Изпрати съобщение' }}
+        <button type="submit" class="contact-form__button" :disabled="isSubmitting">
+          {{ isSubmitting ? "Изпраща се..." : "Изпрати съобщение" }}
         </button>
 
         <div v-if="showSuccess" class="contact-form__success">
@@ -75,30 +65,30 @@
 </template>
 
 <script setup lang="ts">
-import { z } from 'zod'
-import { useApi } from '~/composables/useApi'
+import { z } from "zod";
+import { useApi } from "~/composables/useApi";
 
 // Form validation schema
 const contactSchema = z.object({
-  name: z.string().min(2, 'Името трябва да е поне 2 символа'),
-  email: z.string().email('Моля въведете валиден имейл адрес'),
+  name: z.string().min(2, "Името трябва да е поне 2 символа"),
+  email: z.string().email("Моля въведете валиден имейл адрес"),
   phone: z.string().optional(),
-  message: z.string().min(10, 'Съобщението трябва да е поне 10 символа'),
-})
+  message: z.string().min(10, "Съобщението трябва да е поне 10 символа"),
+});
 
-type ContactFormData = z.infer<typeof contactSchema>
+type ContactFormData = z.infer<typeof contactSchema>;
 
 // Reactive data
 const formData = reactive<ContactFormData>({
-  name: '',
-  email: '',
-  phone: '',
-  message: '',
-})
+  name: "",
+  email: "",
+  phone: "",
+  message: "",
+});
 
-const errors = reactive<Partial<Record<keyof ContactFormData, string>>>({})
-const isSubmitting = ref(false)
-const showSuccess = ref(false)
+const errors = reactive<Partial<Record<keyof ContactFormData, string>>>({});
+const isSubmitting = ref(false);
+const showSuccess = ref(false);
 
 // Form submission handler
 const handleSubmit = async () => {
@@ -108,45 +98,45 @@ const handleSubmit = async () => {
     email: undefined,
     phone: undefined,
     message: undefined,
-  })
+  });
 
   try {
     // Validate form data
-    contactSchema.parse(formData)
+    contactSchema.parse(formData);
 
-    isSubmitting.value = true
+    isSubmitting.value = true;
 
     // Call contact API endpoint
-    const api = useApi()
-    await api.post('contact', formData)
+    const api = useApi();
+    await api.post("contact", formData);
 
     // Show success message
-    showSuccess.value = true
+    showSuccess.value = true;
 
     // Reset form
     Object.assign(formData, {
-      name: '',
-      email: '',
-      phone: '',
-      message: '',
-    })
+      name: "",
+      email: "",
+      phone: "",
+      message: "",
+    });
 
     // Hide success message after 5 seconds
     setTimeout(() => {
-      showSuccess.value = false
-    }, 5000)
+      showSuccess.value = false;
+    }, 5000);
   } catch (error) {
     if (error instanceof z.ZodError) {
       // Handle validation errors
       error.errors.forEach((err) => {
-        const field = err.path[0] as keyof ContactFormData
-        errors[field] = err.message
-      })
+        const field = err.path[0] as keyof ContactFormData;
+        errors[field] = err.message;
+      });
     }
   } finally {
-    isSubmitting.value = false
+    isSubmitting.value = false;
   }
-}
+};
 </script>
 
 <style scoped lang="scss">
@@ -172,7 +162,7 @@ const handleSubmit = async () => {
 
   &__label {
     display: block;
-    font-family: 'Poppins', sans-serif;
+    font-family: "Poppins", sans-serif;
     font-weight: 700;
     font-size: 0.9rem;
     color: #333;
@@ -184,7 +174,7 @@ const handleSubmit = async () => {
     padding: 0.75rem 1rem;
     border: 2px solid #e0e0e0;
     border-radius: 8px;
-    font-family: 'Inter', sans-serif;
+    font-family: "Inter", sans-serif;
     font-weight: 400;
     font-size: 1rem;
     color: #333;
@@ -211,7 +201,7 @@ const handleSubmit = async () => {
 
   &__error {
     display: block;
-    font-family: 'Inter', sans-serif;
+    font-family: "Inter", sans-serif;
     font-weight: 400;
     font-size: 0.875rem;
     color: #e74c3c;
@@ -222,7 +212,7 @@ const handleSubmit = async () => {
     width: 100%;
     background: linear-gradient(135deg, #e67e22, #f39c12);
     color: #fff;
-    font-family: 'Poppins', sans-serif;
+    font-family: "Poppins", sans-serif;
     font-weight: 700;
     font-size: 1rem;
     padding: 1rem 2rem;
@@ -256,7 +246,7 @@ const handleSubmit = async () => {
     color: #155724;
     border: 1px solid #c3e6cb;
     border-radius: 8px;
-    font-family: 'Inter', sans-serif;
+    font-family: "Inter", sans-serif;
     font-weight: 400;
     text-align: center;
   }

@@ -3,14 +3,9 @@
     <div class="success-container">
       <!-- Success Icon -->
       <div class="success-icon">
-        <svg
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          stroke-width="2"
-        >
-          <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
-          <polyline points="22 4 12 14.01 9 11.01"></polyline>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
+          <polyline points="22 4 12 14.01 9 11.01"/>
         </svg>
       </div>
 
@@ -25,9 +20,7 @@
         <p class="order-number">
           Номер на поръчка: <strong>{{ orderNumber }}</strong>
         </p>
-        <p class="order-info">
-          Ще получите имейл с потвърждение и детайли за доставката.
-        </p>
+        <p class="order-info">Ще получите имейл с потвърждение и детайли за доставката.</p>
       </div>
 
       <!-- Loading State -->
@@ -37,9 +30,7 @@
 
       <!-- Actions -->
       <div class="success-actions">
-        <NuxtLink to="/products" class="btn btn--primary">
-          Продължи пазаруването
-        </NuxtLink>
+        <NuxtLink to="/products" class="btn btn--primary"> Продължи пазаруването </NuxtLink>
         <NuxtLink v-if="!isGuest" to="/profile" class="btn btn--secondary">
           Виж моите поръчки
         </NuxtLink>
@@ -49,45 +40,43 @@
 </template>
 
 <script setup lang="ts">
-import { useAuthStore } from '~/stores/auth'
-import { useCartStore } from '~/stores/cart'
-import { useApi } from '~/composables/useApi'
+import { useAuthStore } from "~/stores/auth";
+import { useCartStore } from "~/stores/cart";
+import { useApi } from "~/composables/useApi";
 
-const route = useRoute()
-const authStore = useAuthStore()
-const cartStore = useCartStore()
+const route = useRoute();
+const authStore = useAuthStore();
+const cartStore = useCartStore();
 
-const sessionId = ref<string | null>(null)
-const orderNumber = ref<string | null>(null)
-const loading = ref(false)
-const isGuest = computed(() => !authStore.isAuthenticated)
+const sessionId = ref<string | null>(null);
+const orderNumber = ref<string | null>(null);
+const loading = ref(false);
+const isGuest = computed(() => !authStore.isAuthenticated);
 
 onMounted(async () => {
   // Get session ID from query params
-  sessionId.value = route.query.session_id as string
+  sessionId.value = route.query.session_id as string;
 
   // Clear cart (payment successful)
-  cartStore.clearCart()
+  cartStore.clearCart();
 
   // Optionally fetch session details from backend
   if (sessionId.value) {
-    loading.value = true
+    loading.value = true;
     try {
-      const api = useApi()
-      const response: any = await api.get(
-        `payments/checkout-session/${sessionId.value}`
-      )
+      const api = useApi();
+      const response: any = await api.get(`payments/checkout-session/${sessionId.value}`);
       if (response.success && response.data.order) {
-        orderNumber.value = response.data.order.orderNumber
+        orderNumber.value = response.data.order.orderNumber;
       }
     } catch (error) {
-      console.error('[Success] Failed to fetch session details:', error)
+      console.error("[Success] Failed to fetch session details:", error);
       // Don't show error to user, just skip order number display
     } finally {
-      loading.value = false
+      loading.value = false;
     }
   }
-})
+});
 </script>
 
 <style scoped lang="scss">

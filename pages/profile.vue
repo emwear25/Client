@@ -10,42 +10,37 @@
           <div class="profile-info">
             <div class="profile-info__item">
               <span class="profile-info__label">Имейл</span>
-              <span class="profile-info__value">{{
-                authStore.user?.email
-              }}</span>
+              <span class="profile-info__value">{{ authStore.user?.email }}</span>
             </div>
 
             <div class="profile-info__item">
               <span class="profile-info__label">Име</span>
               <span class="profile-info__value">
-                {{ authStore.fullName || 'Не е посочено' }}
+                {{ authStore.fullName || "Не е посочено" }}
               </span>
             </div>
 
             <div class="profile-info__item">
               <span class="profile-info__label">Телефон</span>
               <span class="profile-info__value">
-                {{ authStore.user?.phone || 'Не е посочен' }}
+                {{ authStore.user?.phone || "Не е посочен" }}
               </span>
             </div>
 
             <div class="profile-info__item">
               <span class="profile-info__label">Роля</span>
               <span class="profile-info__value">
-                {{
-                  authStore.user?.role === 'admin' ? 'Администратор' : 'Клиент'
-                }}
+                {{ authStore.user?.role === "admin" ? "Администратор" : "Клиент" }}
               </span>
             </div>
           </div>
 
           <p class="profile-card__note">
-            💡 Вашето име и телефон ще бъдат попълнени автоматично при първата
-            поръчка.
+            💡 Вашето име и телефон ще бъдат попълнени автоматично при първата поръчка.
           </p>
         </div>
 
-        <div class="profile-card__divider"></div>
+        <div class="profile-card__divider"/>
 
         <!-- Saved Addresses Section -->
         <div class="profile-card__section">
@@ -59,9 +54,7 @@
               :class="{ 'address-card--default': address.isDefault }"
             >
               <div class="address-card__badge-container">
-                <span v-if="address.isDefault" class="address-card__badge">
-                  По подразбиране
-                </span>
+                <span v-if="address.isDefault" class="address-card__badge"> По подразбиране </span>
                 <span
                   v-if="address.type === 'econt_office'"
                   class="address-card__type-badge address-card__type-badge--econt"
@@ -76,25 +69,19 @@
                 </span>
               </div>
               <p class="address-card__street">{{ address.street }}</p>
-              <p class="address-card__city">
-                {{ address.city }}, {{ address.postalCode }}
-              </p>
+              <p class="address-card__city">{{ address.city }}, {{ address.postalCode }}</p>
               <p class="address-card__country">{{ address.country }}</p>
-              <p
-                v-if="address.econtOfficeName"
-                class="address-card__econt-name"
-              >
+              <p v-if="address.econtOfficeName" class="address-card__econt-name">
                 {{ address.econtOfficeName }}
               </p>
             </div>
           </div>
           <p v-else class="profile-card__empty">
-            Нямате запазени адреси. Адресите се запазват автоматично при
-            поръчка.
+            Нямате запазени адреси. Адресите се запазват автоматично при поръчка.
           </p>
         </div>
 
-        <div class="profile-card__divider"></div>
+        <div class="profile-card__divider"/>
 
         <div class="profile-card__section">
           <h2 class="profile-card__heading">Бързи действия</h2>
@@ -122,61 +109,57 @@
 </template>
 
 <script setup lang="ts">
-import { useAuthStore } from '~/stores/auth'
+import { useAuthStore } from "~/stores/auth";
 
 // Middleware to check authentication
 definePageMeta({
-  middleware: 'auth',
-})
+  middleware: "auth",
+});
 
-const authStore = useAuthStore()
-const router = useRouter()
-const route = useRoute()
+const authStore = useAuthStore();
+const router = useRouter();
+const route = useRoute();
 
 // Prevent rendering until auth is confirmed to avoid flash
-const isAuthChecked = ref(false)
+const isAuthChecked = ref(false);
 
 // Check auth state before allowing render
 onMounted(async () => {
   // Wait for auth to initialize
   if (!authStore.isInitialized) {
-    let attempts = 0
+    let attempts = 0;
     while (!authStore.isInitialized && attempts < 30) {
-      await new Promise((resolve) => setTimeout(resolve, 50))
-      attempts++
+      await new Promise((resolve) => setTimeout(resolve, 50));
+      attempts++;
     }
   }
 
   // If not authenticated, redirect immediately without rendering
   if (!authStore.isAuthenticated) {
-    await router.replace(
-      `/login?redirect=${encodeURIComponent(route.fullPath)}`
-    )
-    return
+    await router.replace(`/login?redirect=${encodeURIComponent(route.fullPath)}`);
+    return;
   }
 
   // Only allow rendering after auth is confirmed
-  isAuthChecked.value = true
+  isAuthChecked.value = true;
 
   // Refresh user data
-  console.log('[Profile Page] Refreshing user data...')
-  await authStore.fetchUser()
-  console.log('[Profile Page] User data:', authStore.user)
-})
+  console.log("[Profile Page] Refreshing user data...");
+  await authStore.fetchUser();
+  console.log("[Profile Page] User data:", authStore.user);
+});
 
 // SEO
 useHead({
-  title: 'Профил - emWear',
-  meta: [
-    { name: 'description', content: 'Управлявайте вашия профил в emWear' },
-  ],
-})
+  title: "Профил - emWear",
+  meta: [{ name: "description", content: "Управлявайте вашия профил в emWear" }],
+});
 </script>
 
 <style lang="scss" scoped>
-@use '~/assets/styles/colors' as *;
-@use '~/assets/styles/fonts' as *;
-@use '~/assets/styles/breakpoints' as *;
+@use "~/assets/styles/colors" as *;
+@use "~/assets/styles/fonts" as *;
+@use "~/assets/styles/breakpoints" as *;
 
 .profile-page {
   min-height: 100vh;

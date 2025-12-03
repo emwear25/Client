@@ -1,46 +1,39 @@
 <template>
   <div class="snow-container" aria-hidden="true">
-    <div
-      v-for="i in snowflakeCount"
-      :key="i"
-      class="snowflake"
-      :style="getSnowflakeStyle(i)"
-    >
+    <div v-for="i in snowflakeCount" :key="i" class="snowflake" :style="getSnowflakeStyle(i)">
       ❄
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
+const snowflakeCount = 50; // Number of snowflakes
 
-const snowflakeCount = 50 // Number of snowflakes
-
-const getSnowflakeStyle = (index: number) => {
+const getSnowflakeStyle = (_index: number) => {
   // Random horizontal position
-  const left = Math.random() * 100
-  
+  const left = Math.random() * 100;
+
   // Random animation duration (slower = more variation)
-  const duration = 5 + Math.random() * 10 // 5-15 seconds
-  
+  const duration = 5 + Math.random() * 10; // 5-15 seconds
+
   // Random delay for staggered start
-  const delay = Math.random() * 5
-  
+  const delay = Math.random() * 5;
+
   // Random size
-  const size = 0.5 + Math.random() * 1 // 0.5-1.5em
-  
+  const size = 0.5 + Math.random() * 1; // 0.5-1.5em
+
   // Random horizontal drift
-  const drift = -20 + Math.random() * 40 // -20px to 20px
-  
+  const drift = -20 + Math.random() * 40; // -20px to 20px
+
   return {
     left: `${left}%`,
     animationDuration: `${duration}s`,
     animationDelay: `${delay}s`,
     fontSize: `${size}em`,
-    '--drift': `${drift}px`,
+    "--drift": `${drift}px`,
     opacity: 0.6 + Math.random() * 0.4, // 0.6 to 1
-  }
-}
+  };
+};
 </script>
 
 <style scoped lang="scss">
@@ -81,5 +74,3 @@ const getSnowflakeStyle = (index: number) => {
   }
 }
 </style>
-
-

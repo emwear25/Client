@@ -8,15 +8,12 @@
           </div>
         </div>
         <div class="newsletter__text">
-          <h2 class="newsletter__heading">
-            Присъединете се към нашето семейство
-          </h2>
+          <h2 class="newsletter__heading">Присъединете се към нашето семейство</h2>
           <p class="newsletter__subtext">
-            Бъдете първи, които научават за нови колекции, специални оферти и
-            ексклузивни дизайни
+            Бъдете първи, които научават за нови колекции, специални оферти и ексклузивни дизайни
           </p>
         </div>
-        <form @submit.prevent="handleSubmit" class="newsletter__form">
+        <form class="newsletter__form" @submit.prevent="handleSubmit">
           <div class="newsletter__input-group">
             <Icon name="mdi:email-outline" class="newsletter__input-icon" />
             <input
@@ -25,12 +22,9 @@
               placeholder="вашия@имейл.com"
               class="newsletter__input"
               required
-            />
+            >
           </div>
-          <button
-            type="submit"
-            class="newsletter__button btn btn--primary btn--large"
-          >
+          <button type="submit" class="newsletter__button btn btn--primary btn--large">
             Абонирай се
             <Icon name="mdi:arrow-right" class="newsletter__button-icon" />
           </button>
@@ -44,20 +38,20 @@
 </template>
 
 <script setup lang="ts">
-const email = ref('')
+const email = ref("");
 
 const handleSubmit = () => {
   // Newsletter signup logic placeholder
-  console.log('Newsletter signup:', email.value)
+  console.log("Newsletter signup:", email.value);
   // TODO: Add success message
-  email.value = ''
-}
+  email.value = "";
+};
 </script>
 
 <style scoped lang="scss">
-@use '~/assets/styles/colors' as *;
-@use '~/assets/styles/breakpoints' as *;
-@use '~/assets/styles/fonts' as *;
+@use "~/assets/styles/colors" as *;
+@use "~/assets/styles/breakpoints" as *;
+@use "~/assets/styles/fonts" as *;
 
 .newsletter {
   width: 100%;
@@ -76,7 +70,7 @@ const handleSubmit = () => {
 
   // Decorative elements
   &::before {
-    content: '';
+    content: "";
     position: absolute;
     top: -50%;
     right: -10%;
@@ -88,17 +82,13 @@ const handleSubmit = () => {
   }
 
   &::after {
-    content: '';
+    content: "";
     position: absolute;
     bottom: -30%;
     left: -5%;
     width: 300px;
     height: 300px;
-    background: radial-gradient(
-      circle,
-      rgba($brand-ink, 0.08) 0%,
-      transparent 70%
-    );
+    background: radial-gradient(circle, rgba($brand-ink, 0.08) 0%, transparent 70%);
     border-radius: 50%;
     pointer-events: none;
   }
@@ -283,7 +273,7 @@ const handleSubmit = () => {
     gap: 6px;
 
     &::before {
-      content: '🔒';
+      content: "🔒";
       font-size: 0.875rem;
     }
   }

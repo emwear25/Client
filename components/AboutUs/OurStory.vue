@@ -6,10 +6,13 @@
           <span class="our-story__eyebrow">Нашето начало</span>
           <h2 class="our-story__heading">Историята зад emWear</h2>
           <p class="our-story__paragraph">
-            emWear започна с желанието да създаваме не просто продукти, а специални спомени. Всеки наш артикул е създаден с мисъл за индивидуалността и усмивката на детето.
+            emWear започна с желанието да създаваме не просто продукти, а специални спомени. Всеки
+            наш артикул е създаден с мисъл за индивидуалността и усмивката на детето.
           </p>
           <p class="our-story__paragraph">
-            С любов към детайлите и отдаденост към качеството, ние вярваме, че всеки персонализиран продукт носи частица от уникалността на всяко дете. Това е нашата мисия - да създаваме радост чрез ръчно бродирани изделия.
+            С любов към детайлите и отдаденост към качеството, ние вярваме, че всеки персонализиран
+            продукт носи частица от уникалността на всяко дете. Това е нашата мисия - да създаваме
+            радост чрез ръчно бродирани изделия.
           </p>
           <div class="our-story__stats">
             <div class="our-story__stat">
@@ -24,12 +27,12 @@
         </div>
         <div class="our-story__image">
           <div class="our-story__img-wrapper">
-          <img
+            <img
               src="https://images.unsplash.com/photo-1556911220-bff31c812dba?w=800&h=600&fit=crop"
-            alt="Нашата история"
-            class="our-story__img"
-          />
-            <div class="our-story__img-overlay"></div>
+              alt="Нашата история"
+              class="our-story__img"
+            >
+            <div class="our-story__img-overlay"/>
           </div>
         </div>
       </div>
@@ -40,16 +43,16 @@
 <script setup lang="ts"></script>
 
 <style scoped lang="scss">
-@use '~/assets/styles/colors' as *;
-@use '~/assets/styles/breakpoints' as *;
-@use '~/assets/styles/fonts' as *;
+@use "~/assets/styles/colors" as *;
+@use "~/assets/styles/breakpoints" as *;
+@use "~/assets/styles/fonts" as *;
 
 .our-story {
   padding: 4rem 0;
   background: $bg-card;
 
   @include up(md) {
-  padding: 5rem 0;
+    padding: 5rem 0;
   }
 
   @include up(lg) {
@@ -61,17 +64,17 @@
     margin-inline: auto;
     padding-inline: 16px;
 
-    @include up(md) { 
-      max-width: 960px; 
-      padding-inline: 20px; 
+    @include up(md) {
+      max-width: 960px;
+      padding-inline: 20px;
     }
-    @include up(lg) { 
-      max-width: 1280px; 
-      padding-inline: 24px; 
+    @include up(lg) {
+      max-width: 1280px;
+      padding-inline: 24px;
     }
-    @include up(xl) { 
-      max-width: 1440px; 
-      padding-inline: 32px; 
+    @include up(xl) {
+      max-width: 1440px;
+      padding-inline: 32px;
     }
   }
 
@@ -152,7 +155,7 @@
     color: $brand-ink;
     line-height: 1;
     margin-bottom: 0.5rem;
-    }
+  }
 
   &__stat-label {
     display: block;
@@ -177,7 +180,7 @@
     box-shadow: 0 20px 40px rgba($brand-ink, 0.15);
 
     &::before {
-      content: '';
+      content: "";
       position: absolute;
       inset: 0;
       background: linear-gradient(135deg, rgba($brand, 0.1) 0%, transparent 100%);
@@ -198,4 +201,3 @@
   }
 }
 </style>
-

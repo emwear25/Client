@@ -12,28 +12,28 @@
 <script setup lang="ts">
 // Set page meta
 useHead({
-  title: 'За нас - emWear | Персонализирани подаръци',
+  title: "За нас - emWear | Персонализирани подаръци",
   meta: [
     {
-      name: 'description',
+      name: "description",
       content:
-        'Научете повече за emWear - създаваме персонализирани подаръци с внимание към всеки детайл. Произведено в България с много грижа и любов.',
+        "Научете повече за emWear - създаваме персонализирани подаръци с внимание към всеки детайл. Произведено в България с много грижа и любов.",
     },
     {
-      property: 'og:title',
-      content: 'За нас - emWear | Персонализирани подаръци',
+      property: "og:title",
+      content: "За нас - emWear | Персонализирани подаръци",
     },
     {
-      property: 'og:description',
+      property: "og:description",
       content:
-        'Научете повече за emWear - създаваме персонализирани подаръци с внимание към всеки детайл. Произведено в България с много грижа и любов.',
+        "Научете повече за emWear - създаваме персонализирани подаръци с внимание към всеки детайл. Произведено в България с много грижа и любов.",
     },
     {
-      property: 'og:type',
-      content: 'website',
+      property: "og:type",
+      content: "website",
     },
   ],
-})
+});
 </script>
 
 <style scoped lang="scss">

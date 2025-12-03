@@ -10,16 +10,14 @@
         <details>
           <summary>Детайли за грешката</summary>
           <pre class="error-boundary__error">{{ error }}</pre>
-          <pre v-if="errorInfo.componentStack" class="error-boundary__stack">
-{{ errorInfo.componentStack }}
+          <pre v-if="errorInfo.componentStack" class="error-boundary__stack"
+            >{{ errorInfo.componentStack }}
           </pre>
         </details>
       </div>
       <div class="error-boundary__actions">
-        <button @click="handleReset" class="error-boundary__button">
-          Опитай отново
-        </button>
-        <button @click="goHome" class="error-boundary__button error-boundary__button--secondary">
+        <button class="error-boundary__button" @click="handleReset">Опитай отново</button>
+        <button class="error-boundary__button error-boundary__button--secondary" @click="goHome">
           Начало
         </button>
       </div>
@@ -29,51 +27,51 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onErrorCaptured, provide, inject } from 'vue'
-import { useRouter } from 'vue-router'
+import { ref, onErrorCaptured, provide } from "vue";
+import { useRouter } from "vue-router";
 
 interface ErrorInfo {
-  componentStack?: string
-  errorBoundary?: boolean
+  componentStack?: string;
+  errorBoundary?: boolean;
 }
 
-const error = ref<Error | null>(null)
-const errorInfo = ref<ErrorInfo | null>(null)
-const router = useRouter()
+const error = ref<Error | null>(null);
+const errorInfo = ref<ErrorInfo | null>(null);
+const router = useRouter();
 
 // Capture errors from child components
 onErrorCaptured((err: Error, instance, info) => {
-  error.value = err
+  error.value = err;
   errorInfo.value = {
     componentStack: info,
     errorBoundary: true,
-  }
+  };
 
   // Log error for debugging
-  console.error('ErrorBoundary caught an error:', err, info)
+  console.error("ErrorBoundary caught an error:", err, info);
 
   // You can also send error to logging service here
   // logErrorToService(err, info)
 
   // Return false to prevent error from propagating
-  return false
-})
+  return false;
+});
 
 const handleReset = () => {
-  error.value = null
-  errorInfo.value = null
+  error.value = null;
+  errorInfo.value = null;
   // Force component to re-render
-  window.location.reload()
-}
+  window.location.reload();
+};
 
 const goHome = () => {
-  router.push('/')
-}
+  router.push("/");
+};
 
 // Provide error handling context to child components
-provide('errorBoundary', {
+provide("errorBoundary", {
   reset: handleReset,
-})
+});
 </script>
 
 <style scoped lang="scss">
@@ -188,4 +186,3 @@ provide('errorBoundary', {
   }
 }
 </style>
-

@@ -70,16 +70,16 @@
 </template>
 
 <script setup lang="ts">
-import { useRoute } from 'vue-router'
+import { useRoute } from "vue-router";
 
 // Get current route for active link highlighting
-const route = useRoute()
+const route = useRoute();
 </script>
 
 <style scoped lang="scss">
-@use '~/assets/styles/colors' as *;
-@use '~/assets/styles/breakpoints' as *;
-@use '~/assets/styles/fonts' as *;
+@use "~/assets/styles/colors" as *;
+@use "~/assets/styles/breakpoints" as *;
+@use "~/assets/styles/fonts" as *;
 
 .site-header {
   &__nav {
@@ -122,7 +122,7 @@ const route = useRoute()
         font-weight: 500;
 
         &::after {
-          content: '';
+          content: "";
           position: absolute;
           bottom: -0.25rem;
           left: 0;

@@ -6,18 +6,15 @@
         :alt="product.name"
         class="product-card__img"
         loading="lazy"
-      />
+      >
 
       <!-- Quick View Button -->
-      <button
-        class="product-card__quick"
-        @click.stop="$emit('quick-view', product)"
-      >
+      <button class="product-card__quick" @click.stop="$emit('quick-view', product)">
         Бърз Преглед
       </button>
 
       <!-- Badges (top-left) -->
-      <div class="product-card__badges" v-if="badges.length">
+      <div v-if="badges.length" class="product-card__badges">
         <span
           v-for="badge in badges"
           :key="badge.key"
@@ -43,9 +40,7 @@
       <h3 class="product-card__title">{{ product.name }}</h3>
       <div class="product-card__price-wrapper">
         <div class="product-card__price">
-          <span class="product-card__price-current">{{
-            formatPrice(product.price)
-          }}</span>
+          <span class="product-card__price-current">{{ formatPrice(product.price) }}</span>
           <span v-if="product.compareAt" class="product-card__price-old">
             {{ formatPrice(product.compareAt) }}
           </span>
@@ -54,8 +49,8 @@
         <button
           class="product-card__heart"
           :class="{ 'product-card__heart--active': isFav }"
-          @click.stop="toggleFav"
           :title="isFav ? 'Премахни от любими' : 'Добави в любими'"
+          @click.stop="toggleFav"
         >
           <svg viewBox="0 0 24 24" class="product-card__heart-icon">
             <path
@@ -72,92 +67,88 @@
 </template>
 
 <script setup lang="ts">
-import { computed } from 'vue'
-import { useRouter } from 'vue-router'
-import { useWishlist } from '~/stores/useWishlist'
+import { computed } from "vue";
+import { useRouter } from "vue-router";
+import { useWishlist } from "~/stores/useWishlist";
 
 interface ProductImage {
-  url: string
-  publicId: string
+  url: string;
+  publicId: string;
 }
 
 interface Product {
-  _id: string
-  slug?: string
-  name: string
-  description: string
-  price: number
-  compareAt?: number | null
-  category: string
-  images?: ProductImage[]
-  stock: number
-  customEmbroidery?: boolean
-  createdAt: string
+  _id: string;
+  slug?: string;
+  name: string;
+  description: string;
+  price: number;
+  compareAt?: number | null;
+  category: string;
+  images?: ProductImage[];
+  stock: number;
+  customEmbroidery?: boolean;
+  createdAt: string;
 }
 
 const props = defineProps<{
-  product: Product
-}>()
+  product: Product;
+}>();
 
 defineEmits<{
-  'quick-view': [product: Product]
-}>()
+  "quick-view": [product: Product];
+}>();
 
-const router = useRouter()
-const wishlist = useWishlist()
+const router = useRouter();
+const wishlist = useWishlist();
 
-const isFav = computed(() => wishlist.ids.includes(props.product._id))
+const isFav = computed(() => wishlist.ids.includes(props.product._id));
 
 const toggleFav = () => {
-  wishlist.toggle(props.product._id)
-}
+  wishlist.toggle(props.product._id);
+};
 
 const badges = computed(() => {
-  const arr: Array<{ key: string; label: string }> = []
+  const arr: Array<{ key: string; label: string }> = [];
 
   // Don't show sale badge in top-left since we have discount badge in top-right
-  if (isNew.value) arr.push({ key: 'new', label: 'Ново' })
-  if (props.product.customEmbroidery)
-    arr.push({ key: 'personal', label: 'Персонализация' })
+  if (isNew.value) arr.push({ key: "new", label: "Ново" });
+  if (props.product.customEmbroidery) arr.push({ key: "personal", label: "Персонализация" });
 
-  return arr
-})
+  return arr;
+});
 
 const isNew = computed(() => {
-  const productDate = new Date(props.product.createdAt)
-  const now = new Date()
-  const diffTime = Math.abs(now.getTime() - productDate.getTime())
-  const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24))
-  return diffDays <= 30
-})
+  const productDate = new Date(props.product.createdAt);
+  const now = new Date();
+  const diffTime = Math.abs(now.getTime() - productDate.getTime());
+  const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+  return diffDays <= 30;
+});
 
 const isSale = computed(() => {
-  return (
-    props.product.compareAt != null &&
-    props.product.compareAt > props.product.price
-  )
-})
+  return props.product.compareAt != null && props.product.compareAt > props.product.price;
+});
 
 const savePercent = computed(() => {
-  if (!props.product.compareAt) return 0
-  return Math.round(100 - (props.product.price / props.product.compareAt) * 100)
-})
+  if (!props.product.compareAt) return 0;
+  return Math.round(100 - (props.product.price / props.product.compareAt) * 100);
+});
 
 const formatPrice = (price?: number | null) => {
-  if (price == null) return ''
-  return `${price.toFixed(2)} лв.`
-}
+  if (price == null) return "";
+  return `${price.toFixed(2)} лв.`;
+};
 
 const goToPDP = () => {
-  const slug = props.product.slug || props.product._id
-  router.push(`/products/${slug}`)
-}
+  const slug = props.product.slug || props.product._id;
+  router.push(`/products/${slug}`);
+};
 </script>
 
 <style scoped lang="scss">
-@use '~/assets/styles/colors' as *;
-@use '~/assets/styles/breakpoints' as *;
-@use '~/assets/styles/fonts' as *;
+@use "~/assets/styles/colors" as *;
+@use "~/assets/styles/breakpoints" as *;
+@use "~/assets/styles/fonts" as *;
 
 // ═══════════════════════════════════════════════════
 // PRODUCT CARD - Moonkie Sharp Corners Design
@@ -324,7 +315,7 @@ const goToPDP = () => {
   &__discount-text {
     position: absolute;
     bottom: 15px; // Adjusted as requested
-    left: 20px;   // Adjusted as requested
+    left: 20px; // Adjusted as requested
     display: flex;
     flex-direction: column;
     align-items: center;

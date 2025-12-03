@@ -8,7 +8,8 @@
             <span class="contact__eyebrow">Нека се свържем</span>
             <h1 class="contact__heading">Свържете се с нас</h1>
             <p class="contact__intro">
-              Имате въпрос или искате да създадете персонализиран продукт? Очакваме вашето съобщение!
+              Имате въпрос или искате да създадете персонализиран продукт? Очакваме вашето
+              съобщение!
             </p>
           </div>
 
@@ -19,9 +20,7 @@
               </div>
               <div class="contact__detail-text">
                 <h3 class="contact__detail-title">Имейл</h3>
-                <a href="mailto:info@emwear.bg" class="contact__detail-link">
-                  info@emwear.bg
-                </a>
+                <a href="mailto:info@emwear.bg" class="contact__detail-link"> info@emwear.bg </a>
               </div>
             </div>
 
@@ -31,9 +30,7 @@
               </div>
               <div class="contact__detail-text">
                 <h3 class="contact__detail-title">Телефон</h3>
-                <a href="tel:+359890927520" class="contact__detail-link">
-                  +359 89 092 7520
-                </a>
+                <a href="tel:+359890927520" class="contact__detail-link"> +359 89 092 7520 </a>
               </div>
             </div>
 
@@ -44,7 +41,7 @@
               <div class="contact__detail-text">
                 <h3 class="contact__detail-title">Работно време</h3>
                 <p class="contact__detail-info">
-                  Пон - Пет: 9:00 - 18:00<br />
+                  Пон - Пет: 9:00 - 18:00<br >
                   Съб: 10:00 - 14:00
                 </p>
               </div>
@@ -54,13 +51,28 @@
           <div class="contact__social">
             <h3 class="contact__social-title">Последвайте ни</h3>
             <div class="contact__social-links">
-              <a href="https://facebook.com/emwear" target="_blank" rel="noopener" class="contact__social-link">
+              <a
+                href="https://facebook.com/emwear"
+                target="_blank"
+                rel="noopener"
+                class="contact__social-link"
+              >
                 <Icon name="mdi:facebook" />
               </a>
-              <a href="https://instagram.com/emwear" target="_blank" rel="noopener" class="contact__social-link">
+              <a
+                href="https://instagram.com/emwear"
+                target="_blank"
+                rel="noopener"
+                class="contact__social-link"
+              >
                 <Icon name="mdi:instagram" />
               </a>
-              <a href="https://tiktok.com/@emwear" target="_blank" rel="noopener" class="contact__social-link">
+              <a
+                href="https://tiktok.com/@emwear"
+                target="_blank"
+                rel="noopener"
+                class="contact__social-link"
+              >
                 <Icon name="simple-icons:tiktok" />
               </a>
             </div>
@@ -70,9 +82,9 @@
 
       <!-- Right Side - Form -->
       <div class="contact__form-side">
-        <form @submit.prevent="handleSubmit" class="contact-form">
+        <form class="contact-form" @submit.prevent="handleSubmit">
           <h2 class="contact-form__title">Изпратете ни съобщение</h2>
-          
+
           <div class="contact-form__row">
             <div class="contact-form__field">
               <label for="name" class="contact-form__label">Име *</label>
@@ -83,7 +95,7 @@
                 class="contact-form__input"
                 placeholder="Вашето име"
                 required
-              />
+              >
             </div>
 
             <div class="contact-form__field">
@@ -95,7 +107,7 @@
                 class="contact-form__input"
                 placeholder="email@example.com"
                 required
-              />
+              >
             </div>
           </div>
 
@@ -107,7 +119,7 @@
               type="tel"
               class="contact-form__input"
               placeholder="+359 ..."
-            />
+            >
           </div>
 
           <div class="contact-form__field">
@@ -135,18 +147,24 @@
               rows="6"
               placeholder="Вашето съобщение..."
               required
-            ></textarea>
+            />
           </div>
 
-          <button type="submit" class="contact-form__submit btn btn--primary btn--large" :disabled="isSubmitting">
-            <Icon v-if="isSubmitting" name="mdi:loading" class="contact-form__submit-icon contact-form__submit-icon--spin" />
+          <button
+            type="submit"
+            class="contact-form__submit btn btn--primary btn--large"
+            :disabled="isSubmitting"
+          >
+            <Icon
+              v-if="isSubmitting"
+              name="mdi:loading"
+              class="contact-form__submit-icon contact-form__submit-icon--spin"
+            />
             <Icon v-else name="mdi:send" class="contact-form__submit-icon" />
-            {{ isSubmitting ? 'Изпращане...' : 'Изпрати съобщение' }}
+            {{ isSubmitting ? "Изпращане..." : "Изпрати съобщение" }}
           </button>
 
-          <p class="contact-form__note">
-            * Задължителни полета. Отговаряме в рамките на 24 часа.
-          </p>
+          <p class="contact-form__note">* Задължителни полета. Отговаряме в рамките на 24 часа.</p>
         </form>
       </div>
     </section>
@@ -154,68 +172,68 @@
 </template>
 
 <script setup lang="ts">
-import { reactive, ref } from 'vue'
+import { reactive, ref } from "vue";
 
 // Set page meta
 useHead({
-  title: 'Контакти - emWear | Свържете се с нас',
+  title: "Контакти - emWear | Свържете се с нас",
   meta: [
     {
-      name: 'description',
+      name: "description",
       content:
-        'Свържете се с emWear за въпроси относно персонализирани подаръци. Телефон: +359 89 092 7520, Имейл: info@emwear.bg. Отговаряме до 24 часа.',
+        "Свържете се с emWear за въпроси относно персонализирани подаръци. Телефон: +359 89 092 7520, Имейл: info@emwear.bg. Отговаряме до 24 часа.",
     },
     {
-      property: 'og:title',
-      content: 'Контакти - emWear | Свържете се с нас',
+      property: "og:title",
+      content: "Контакти - emWear | Свържете се с нас",
     },
     {
-      property: 'og:description',
+      property: "og:description",
       content:
-        'Свържете се с emWear за въпроси относно персонализирани подаръци. Телефон: +359 89 092 7520, Имейл: info@emwear.bg. Отговаряме до 24 часа.',
+        "Свържете се с emWear за въпроси относно персонализирани подаръци. Телефон: +359 89 092 7520, Имейл: info@emwear.bg. Отговаряме до 24 часа.",
     },
     {
-      property: 'og:type',
-      content: 'website',
+      property: "og:type",
+      content: "website",
     },
   ],
-})
+});
 
 // Form state
 const formData = reactive({
-  name: '',
-  email: '',
-  phone: '',
-  subject: '',
-  message: '',
-})
+  name: "",
+  email: "",
+  phone: "",
+  subject: "",
+  message: "",
+});
 
-const isSubmitting = ref(false)
+const isSubmitting = ref(false);
 
 const handleSubmit = async () => {
-  isSubmitting.value = true
-  
+  isSubmitting.value = true;
+
   // TODO: Implement actual form submission
-  console.log('Form submitted:', formData)
-  
+  console.log("Form submitted:", formData);
+
   // Simulate API call
   setTimeout(() => {
-    alert('Благодарим Ви! Вашето съобщение е изпратено успешно.')
+    alert("Благодарим Ви! Вашето съобщение е изпратено успешно.");
     // Reset form
-    formData.name = ''
-    formData.email = ''
-    formData.phone = ''
-    formData.subject = ''
-    formData.message = ''
-    isSubmitting.value = false
-  }, 1500)
-}
+    formData.name = "";
+    formData.email = "";
+    formData.phone = "";
+    formData.subject = "";
+    formData.message = "";
+    isSubmitting.value = false;
+  }, 1500);
+};
 </script>
 
 <style scoped lang="scss">
-@use '~/assets/styles/colors' as *;
-@use '~/assets/styles/breakpoints' as *;
-@use '~/assets/styles/fonts' as *;
+@use "~/assets/styles/colors" as *;
+@use "~/assets/styles/breakpoints" as *;
+@use "~/assets/styles/fonts" as *;
 
 .contact-page {
   background: $bg-page;

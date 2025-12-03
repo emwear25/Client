@@ -4,9 +4,9 @@
       <!-- Cancel Icon -->
       <div class="cancelled-icon">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-          <circle cx="12" cy="12" r="10"></circle>
-          <line x1="15" y1="9" x2="9" y2="15"></line>
-          <line x1="9" y1="9" x2="15" y2="15"></line>
+          <circle cx="12" cy="12" r="10"/>
+          <line x1="15" y1="9" x2="9" y2="15"/>
+          <line x1="9" y1="9" x2="15" y2="15"/>
         </svg>
       </div>
 
@@ -23,21 +23,16 @@
           Вие отказахте плащането или затворихте прозореца за плащане преди да завършите процеса.
         </p>
         <p>
-          Вашата поръчка все още е запазена като чернова. Можете да се върнете към касата и да опитате отново.
+          Вашата поръчка все още е запазена като чернова. Можете да се върнете към касата и да
+          опитате отново.
         </p>
       </div>
 
       <!-- Actions -->
       <div class="cancelled-actions">
-        <NuxtLink to="/checkout" class="btn btn--primary">
-          Върни се към касата
-        </NuxtLink>
-        <NuxtLink to="/cart" class="btn btn--secondary">
-          Виж количката
-        </NuxtLink>
-        <NuxtLink to="/products" class="btn btn--text">
-          Продължи пазаруването
-        </NuxtLink>
+        <NuxtLink to="/checkout" class="btn btn--primary"> Върни се към касата </NuxtLink>
+        <NuxtLink to="/cart" class="btn btn--secondary"> Виж количката </NuxtLink>
+        <NuxtLink to="/products" class="btn btn--text"> Продължи пазаруването </NuxtLink>
       </div>
 
       <!-- Support -->
@@ -81,7 +76,7 @@
   height: 80px;
   margin: 0 auto 2rem;
   color: #ef4444;
-  
+
   svg {
     width: 100%;
     height: 100%;
@@ -109,20 +104,20 @@
   padding: 1.5rem;
   margin-bottom: 2rem;
   text-align: left;
-  
+
   h3 {
     font-size: 1.125rem;
     font-weight: 600;
     color: #92400e;
     margin-bottom: 0.75rem;
   }
-  
+
   p {
     font-size: 0.9375rem;
     color: #78350f;
     margin-bottom: 0.5rem;
     line-height: 1.6;
-    
+
     &:last-child {
       margin-bottom: 0;
     }
@@ -143,33 +138,33 @@
   text-decoration: none;
   transition: all 0.2s;
   display: inline-block;
-  
+
   &--primary {
     background: #b9c6aa;
     color: white;
-    
+
     &:hover {
       background: #a8b599;
       transform: translateY(-2px);
       box-shadow: 0 4px 12px rgba(185, 198, 170, 0.3);
     }
   }
-  
+
   &--secondary {
     background: white;
     color: #b9c6aa;
     border: 2px solid #b9c6aa;
-    
+
     &:hover {
       background: #f9fafb;
       transform: translateY(-2px);
     }
   }
-  
+
   &--text {
     background: transparent;
     color: #6b7280;
-    
+
     &:hover {
       color: #b9c6aa;
     }
@@ -179,18 +174,18 @@
 .support-info {
   padding-top: 2rem;
   border-top: 1px solid #e5e7eb;
-  
+
   p {
     font-size: 0.875rem;
     color: #6b7280;
     margin: 0;
   }
-  
+
   a {
     color: #b9c6aa;
     text-decoration: none;
     font-weight: 600;
-    
+
     &:hover {
       text-decoration: underline;
     }
@@ -201,7 +196,7 @@
   .cancelled-container {
     padding: 2rem 1.5rem;
   }
-  
+
   .cancelled-title {
     font-size: 1.5rem;
   }

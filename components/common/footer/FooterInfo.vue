@@ -3,16 +3,12 @@
     <template v-if="!socialOnly">
       <div class="footer-info__brand">
         <h2 class="footer-info__logo">emWear</h2>
-        <p class="footer-info__desc">
-          Персонализирани подаръци с грижа и стил.
-        </p>
+        <p class="footer-info__desc">Персонализирани подаръци с грижа и стил.</p>
       </div>
     </template>
 
     <div v-if="shouldShowSocial" class="footer-info__social">
-      <h3 v-if="socialOnly" class="footer-info__social-title">
-        Последвайте ни
-      </h3>
+      <h3 v-if="socialOnly" class="footer-info__social-title">Последвайте ни</h3>
       <div class="footer-info__social-links">
         <a
           v-for="social in socialLinks"
@@ -32,40 +28,40 @@
 
 <script setup lang="ts">
 interface SocialLink {
-  name: string
-  icon: string
-  url: string
+  name: string;
+  icon: string;
+  url: string;
 }
 
 interface Props {
-  socialOnly?: boolean
-  showSocial?: boolean
+  socialOnly?: boolean;
+  showSocial?: boolean;
 }
 
-const props = defineProps<Props>()
+const props = defineProps<Props>();
 
 // Show social icons by default, unless explicitly set to false
 const shouldShowSocial = computed(() => {
-  return props.showSocial !== false
-})
+  return props.showSocial !== false;
+});
 
 const socialLinks: SocialLink[] = [
   {
-    name: 'Facebook',
-    icon: 'mdi:facebook',
-    url: 'https://facebook.com/emwear',
+    name: "Facebook",
+    icon: "mdi:facebook",
+    url: "https://facebook.com/emwear",
   },
   {
-    name: 'Instagram',
-    icon: 'mdi:instagram',
-    url: 'https://instagram.com/emwear',
+    name: "Instagram",
+    icon: "mdi:instagram",
+    url: "https://instagram.com/emwear",
   },
   {
-    name: 'TikTok',
-    icon: 'simple-icons:tiktok',
-    url: 'https://tiktok.com/@emwear',
+    name: "TikTok",
+    icon: "simple-icons:tiktok",
+    url: "https://tiktok.com/@emwear",
   },
-]
+];
 </script>
 
 <style scoped lang="scss">
@@ -79,7 +75,7 @@ const socialLinks: SocialLink[] = [
   }
 
   &__logo {
-    font-family: 'Poppins', sans-serif;
+    font-family: "Poppins", sans-serif;
     font-weight: 700;
     font-size: 1.75rem;
     color: white;
@@ -87,7 +83,7 @@ const socialLinks: SocialLink[] = [
   }
 
   &__desc {
-    font-family: 'Inter', sans-serif;
+    font-family: "Inter", sans-serif;
     font-weight: 400;
     font-size: 1rem;
     color: rgba(255, 255, 255, 0.7);
@@ -97,7 +93,7 @@ const socialLinks: SocialLink[] = [
   }
 
   &__social-title {
-    font-family: 'Poppins', sans-serif;
+    font-family: "Poppins", sans-serif;
     font-weight: 600;
     font-size: 1.1rem;
     color: white;

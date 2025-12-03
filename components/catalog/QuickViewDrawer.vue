@@ -2,24 +2,18 @@
   <Teleport to="body">
     <div v-if="open" class="qv">
       <!-- Backdrop -->
-      <div class="qv__backdrop" @click="$emit('close')"></div>
+      <div class="qv__backdrop" @click="$emit('close')"/>
 
       <!-- Panel (LEFT slide-in) -->
       <aside class="qv__panel" role="dialog" aria-modal="true" aria-labelledby="qv-title">
         <!-- Close Button -->
-        <button 
-          class="qv__close" 
-          @click="$emit('close')" 
-          aria-label="Затвори"
-        >
-          ×
-        </button>
+        <button class="qv__close" aria-label="Затвори" @click="$emit('close')">×</button>
 
         <!-- Header with Image -->
         <div class="qv__header">
-          <NuxtImg 
-            :src="product?.images?.[0]?.url || '/img/placeholder.png'" 
-            :alt="product?.name" 
+          <NuxtImg
+            :src="product?.images?.[0]?.url || '/img/placeholder.png'"
+            :alt="product?.name"
             class="qv__header-img"
             format="webp"
             quality="80"
@@ -42,8 +36,8 @@
           <div v-if="product?.colors?.length" class="qv__group">
             <p class="qv__label">ЦВЯТ</p>
             <div class="qv__swatches">
-              <button 
-                v-for="(color, index) in product.colors" 
+              <button
+                v-for="(color, index) in product.colors"
                 :key="index"
                 class="qv__swatch"
                 :style="{ background: getColorHex(color) }"
@@ -57,23 +51,19 @@
           <div v-if="product?.sizes?.length" class="qv__group">
             <p class="qv__label">РАЗМЕР</p>
             <div class="qv__choices">
-              <button 
-                v-for="size in product.sizes" 
-                :key="size" 
-                class="qv__choice"
-              >
+              <button v-for="size in product.sizes" :key="size" class="qv__choice">
                 {{ size }}
               </button>
             </div>
           </div>
 
           <!-- Add to Cart Button -->
-          <button 
+          <button
             class="btn btn--primary qv__cta"
             :disabled="!product?.stock || product.stock === 0"
             @click="addToCart"
           >
-            {{ product?.stock > 0 ? 'Добави в количката' : 'Изчерпан' }}
+            {{ product?.stock > 0 ? "Добави в количката" : "Изчерпан" }}
           </button>
 
           <!-- USP List -->
@@ -84,8 +74,8 @@
           </ul>
 
           <!-- View Full Product -->
-          <NuxtLink 
-            :to="`/products/${product?.slug || product?._id}`" 
+          <NuxtLink
+            :to="`/products/${product?.slug || product?._id}`"
             class="qv__view"
             @click="$emit('close')"
           >
@@ -98,89 +88,92 @@
 </template>
 
 <script setup lang="ts">
-import { useCartStore } from '~/stores/cart'
-import { useToast } from '~/composables/useToast'
+import { useCartStore } from "~/stores/cart";
+import { useToast } from "~/composables/useToast";
 
 interface ProductImage {
-  url: string
-  publicId: string
+  url: string;
+  publicId: string;
 }
 
 interface Product {
-  _id: string
-  slug?: string
-  name: string
-  price: number
-  compareAt?: number | null
-  images?: ProductImage[]
-  colors?: string[]
-  sizes?: string[]
-  stock: number
-  weight?: number // Weight in kg for shipping
+  _id: string;
+  slug?: string;
+  name: string;
+  price: number;
+  compareAt?: number | null;
+  images?: ProductImage[];
+  colors?: string[];
+  sizes?: string[];
+  stock: number;
+  weight?: number; // Weight in kg for shipping
 }
 
 const props = defineProps<{
-  open: boolean
-  product: Product | null
-}>()
+  open: boolean;
+  product: Product | null;
+}>();
 
 const emit = defineEmits<{
-  close: []
-}>()
+  close: [];
+}>();
 
-const cartStore = useCartStore()
-const toast = useToast()
+const cartStore = useCartStore();
+const toast = useToast();
 
 const formatPrice = (price?: number | null) => {
-  if (price == null) return ''
-  return `${price.toFixed(2)} лв.`
-}
+  if (price == null) return "";
+  return `${price.toFixed(2)} лв.`;
+};
 
 const getColorHex = (color: string) => {
   // Simple color mapping - extend as needed
   const colorMap: Record<string, string> = {
-    'червен': '#EF4444',
-    'червено': '#EF4444',
-    'син': '#3B82F6',
-    'синьо': '#3B82F6',
-    'зелен': '#10B981',
-    'зелено': '#10B981',
-    'жълт': '#F59E0B',
-    'жълто': '#F59E0B',
-    'бял': '#F9FAFB',
-    'бяло': '#F9FAFB',
-    'черен': '#1F2937',
-    'черно': '#1F2937',
-    'розов': '#EC4899',
-    'розово': '#EC4899',
-  }
-  return colorMap[color.toLowerCase()] || '#9CA3AF'
-}
+    червен: "#EF4444",
+    червено: "#EF4444",
+    син: "#3B82F6",
+    синьо: "#3B82F6",
+    зелен: "#10B981",
+    зелено: "#10B981",
+    жълт: "#F59E0B",
+    жълто: "#F59E0B",
+    бял: "#F9FAFB",
+    бяло: "#F9FAFB",
+    черен: "#1F2937",
+    черно: "#1F2937",
+    розов: "#EC4899",
+    розово: "#EC4899",
+  };
+  return colorMap[color.toLowerCase()] || "#9CA3AF";
+};
 
 const addToCart = () => {
-  if (!props.product) return
+  if (!props.product) return;
 
-  cartStore.addItem({
-    id: props.product._id,
-    name: props.product.name,
-    price: props.product.price,
-    image: props.product.images?.[0]?.url,
-    size: props.product.sizes?.[0],
-    color: props.product.colors?.[0],
-    weight: props.product.weight || 0.5 // Include weight for shipping calculation
-  }, 1)
+  cartStore.addItem(
+    {
+      id: props.product._id,
+      name: props.product.name,
+      price: props.product.price,
+      image: props.product.images?.[0]?.url,
+      size: props.product.sizes?.[0],
+      color: props.product.colors?.[0],
+      weight: props.product.weight || 0.5, // Include weight for shipping calculation
+    },
+    1
+  );
 
-  toast.success(`${props.product.name} е добавен в количката!`)
-  
+  toast.success(`${props.product.name} е добавен в количката!`);
+
   // Close drawer after adding
-  emit('close')
-}
+  emit("close");
+};
 </script>
 
 <style scoped lang="scss">
-@use '~/assets/styles/colors' as *;
-@use '~/assets/styles/breakpoints' as *;
-@use '~/assets/styles/fonts' as *;
+@use "~/assets/styles/colors" as *;
+@use "~/assets/styles/breakpoints" as *;
+@use "~/assets/styles/fonts" as *;
 
 // ═══════════════════════════════════════════════════
 // QUICK VIEW DRAWER - LEFT slide-in
@@ -215,7 +208,9 @@ const addToCart = () => {
   }
 
   @keyframes qv-in {
-    to { transform: translateX(0); }
+    to {
+      transform: translateX(0);
+    }
   }
 
   &__close {
@@ -391,4 +386,3 @@ const addToCart = () => {
   }
 }
 </style>
-

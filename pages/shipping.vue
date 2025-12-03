@@ -2,7 +2,7 @@
   <div class="shipping-page">
     <div class="container">
       <h1 class="shipping-page__title">Доставка и Връщане</h1>
-      
+
       <section class="shipping-page__section">
         <h2 class="shipping-page__section-title">Доставка</h2>
         <div class="shipping-page__content">
@@ -31,9 +31,7 @@
         <h2 class="shipping-page__section-title">Контакти</h2>
         <div class="shipping-page__content">
           <p>За въпроси относно доставка и връщане, моля свържете се с нас:</p>
-          <NuxtLink to="/contact" class="btn btn--primary">
-            Свържи се с нас
-          </NuxtLink>
+          <NuxtLink to="/contact" class="btn btn--primary"> Свържи се с нас </NuxtLink>
         </div>
       </section>
     </div>
@@ -42,17 +40,17 @@
 
 <script setup lang="ts">
 useHead({
-  title: 'Доставка и Връщане - emWear',
+  title: "Доставка и Връщане - emWear",
   meta: [
-    { name: 'description', content: 'Информация за доставка и връщане на продукти от emWear.' }
-  ]
-})
+    { name: "description", content: "Информация за доставка и връщане на продукти от emWear." },
+  ],
+});
 </script>
 
 <style lang="scss" scoped>
-@use '~/assets/styles/colors' as *;
-@use '~/assets/styles/fonts' as *;
-@use '~/assets/styles/breakpoints' as *;
+@use "~/assets/styles/colors" as *;
+@use "~/assets/styles/fonts" as *;
+@use "~/assets/styles/breakpoints" as *;
 
 .shipping-page {
   min-height: 60vh;
@@ -102,4 +100,3 @@ useHead({
   }
 }
 </style>
-

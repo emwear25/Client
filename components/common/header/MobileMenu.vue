@@ -2,11 +2,7 @@
   <div class="mobile-menu" :class="{ 'mobile-menu--open': isOpen }">
     <!-- Close Button -->
     <div class="mobile-menu__header">
-      <button
-        class="mobile-menu__close"
-        @click="emit('close')"
-        aria-label="Close menu"
-      >
+      <button class="mobile-menu__close" aria-label="Close menu" @click="emit('close')">
         <Icon name="mdi:close" class="mobile-menu__close-icon" />
       </button>
     </div>
@@ -29,8 +25,7 @@
             to="/products"
             class="mobile-menu__nav-link"
             :class="{
-              'mobile-menu__nav-link--active':
-                route.path.startsWith('/products'),
+              'mobile-menu__nav-link--active': route.path.startsWith('/products'),
             }"
             @click="emit('close')"
           >
@@ -90,20 +85,12 @@
 
     <!-- Actions -->
     <div class="mobile-menu__actions">
-      <NuxtLink
-        to="/favorites"
-        class="mobile-menu__action-link"
-        @click="emit('close')"
-      >
+      <NuxtLink to="/favorites" class="mobile-menu__action-link" @click="emit('close')">
         <Icon name="mdi:heart-outline" class="mobile-menu__action-icon" />
         <span>Любими</span>
       </NuxtLink>
 
-      <NuxtLink
-        to="/login"
-        class="mobile-menu__action-link"
-        @click="emit('close')"
-      >
+      <NuxtLink to="/login" class="mobile-menu__action-link" @click="emit('close')">
         <Icon name="mdi:account-outline" class="mobile-menu__action-icon" />
         <span>Вход</span>
       </NuxtLink>
@@ -112,25 +99,25 @@
 </template>
 
 <script setup lang="ts">
-import { useRoute } from 'vue-router'
+import { useRoute } from "vue-router";
 
 // Define props
 defineProps<{
-  isOpen: boolean
-}>()
+  isOpen: boolean;
+}>();
 
 // Define emits
 const emit = defineEmits<{
-  close: []
-}>()
+  close: [];
+}>();
 
 // Get current route for active link highlighting
-const route = useRoute()
+const route = useRoute();
 </script>
 
 <style scoped lang="scss">
-@use '~/assets/styles/colors' as *;
-@use '~/assets/styles/fonts' as *;
+@use "~/assets/styles/colors" as *;
+@use "~/assets/styles/fonts" as *;
 
 .mobile-menu {
   position: fixed;

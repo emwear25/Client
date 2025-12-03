@@ -5,35 +5,27 @@
         <span class="testimonials__eyebrow">Отзиви</span>
         <h2 class="testimonials__heading">Какво казват нашите клиенти</h2>
         <p class="testimonials__intro">
-          Радваме се да споделим историите на хората, които избраха да направят
-          своите моменти специални с emWear
+          Радваме се да споделим историите на хората, които избраха да направят своите моменти
+          специални с emWear
         </p>
       </div>
 
       <div class="testimonials__grid">
-        <article
-          v-for="testimonial in testimonials"
-          :key="testimonial.id"
-          class="testimonial-card"
-        >
+        <article v-for="testimonial in testimonials" :key="testimonial.id" class="testimonial-card">
           <div class="testimonial-card__header">
             <div class="testimonial-card__avatar">
               <img
                 :src="testimonial.avatar"
                 :alt="testimonial.name"
                 class="testimonial-card__avatar-img"
-              />
+              >
             </div>
             <div class="testimonial-card__info">
               <h3 class="testimonial-card__name">{{ testimonial.name }}</h3>
               <div class="testimonial-card__meta">
-                <span class="testimonial-card__product">{{
-                  testimonial.product
-                }}</span>
+                <span class="testimonial-card__product">{{ testimonial.product }}</span>
                 <span class="testimonial-card__separator">•</span>
-                <span class="testimonial-card__date">{{
-                  testimonial.date
-                }}</span>
+                <span class="testimonial-card__date">{{ testimonial.date }}</span>
               </div>
             </div>
           </div>
@@ -51,31 +43,21 @@
           </div>
 
           <blockquote class="testimonial-card__quote">
-            <Icon
-              name="mdi:format-quote-open"
-              class="testimonial-card__quote-icon"
-            />
+            <Icon name="mdi:format-quote-open" class="testimonial-card__quote-icon" />
             <p class="testimonial-card__text">{{ testimonial.text }}</p>
           </blockquote>
 
-          <div class="testimonial-card__footer" v-if="testimonial.verified">
+          <div v-if="testimonial.verified" class="testimonial-card__footer">
             <div class="testimonial-card__badge">
-              <Icon
-                name="mdi:check-decagram"
-                class="testimonial-card__badge-icon"
-              />
-              <span class="testimonial-card__badge-text"
-                >Потвърдена покупка</span
-              >
+              <Icon name="mdi:check-decagram" class="testimonial-card__badge-icon" />
+              <span class="testimonial-card__badge-text">Потвърдена покупка</span>
             </div>
           </div>
         </article>
       </div>
 
       <div class="testimonials__cta">
-        <p class="testimonials__cta-text">
-          Искате да споделите вашето преживяване?
-        </p>
+        <p class="testimonials__cta-text">Искате да споделите вашето преживяване?</p>
         <a href="#contact" class="btn btn--ghost">Напишете ни отзив</a>
       </div>
     </div>
@@ -84,84 +66,84 @@
 
 <script setup lang="ts">
 interface Testimonial {
-  id: number
-  name: string
-  avatar: string
-  product: string
-  date: string
-  rating: number
-  text: string
-  verified: boolean
+  id: number;
+  name: string;
+  avatar: string;
+  product: string;
+  date: string;
+  rating: number;
+  text: string;
+  verified: boolean;
 }
 
 const testimonials: Testimonial[] = [
   {
     id: 1,
-    name: 'Мария Петрова',
-    avatar: 'https://i.pravatar.cc/150?img=5',
-    product: 'Персонализирана раница',
-    date: 'Ноември 2024',
+    name: "Мария Петрова",
+    avatar: "https://i.pravatar.cc/150?img=5",
+    product: "Персонализирана раница",
+    date: "Ноември 2024",
     rating: 5,
-    text: 'Страхотно качество и изключително внимание към детайла! Моята дъщеря беше в екстаз от раницата с нейното име. Бродерията е перфектна и цветовете са точно такива, каквито поисках. Препоръчвам топло!',
+    text: "Страхотно качество и изключително внимание към детайла! Моята дъщеря беше в екстаз от раницата с нейното име. Бродерията е перфектна и цветовете са точно такива, каквито поисках. Препоръчвам топло!",
     verified: true,
   },
   {
     id: 2,
-    name: 'Георги Иванов',
-    avatar: 'https://i.pravatar.cc/150?img=12',
-    product: 'Персонализирана тениска',
-    date: 'Октомври 2024',
+    name: "Георги Иванов",
+    avatar: "https://i.pravatar.cc/150?img=12",
+    product: "Персонализирана тениска",
+    date: "Октомври 2024",
     rating: 5,
-    text: 'Поръчах тениска за рождения ден на сина ми и резултатът надмина всички очаквания! Севал беше изключително отзивчива и ми помогна да избера най-добрия дизайн. Перфектен подарък!',
+    text: "Поръчах тениска за рождения ден на сина ми и резултатът надмина всички очаквания! Севал беше изключително отзивчива и ми помогна да избера най-добрия дизайн. Перфектен подарък!",
     verified: true,
   },
   {
     id: 3,
-    name: 'Елена Димитрова',
-    avatar: 'https://i.pravatar.cc/150?img=9',
-    product: 'Комплект раница + несесер',
-    date: 'Септември 2024',
+    name: "Елена Димитрова",
+    avatar: "https://i.pravatar.cc/150?img=9",
+    product: "Комплект раница + несесер",
+    date: "Септември 2024",
     rating: 5,
-    text: 'Невероятни продукти! Комплектът е толкова красив и качествен. Бродерията е изпълнена прецизно и изглежда толкова професионално. Определено ще поръчам отново за подаръци!',
+    text: "Невероятни продукти! Комплектът е толкова красив и качествен. Бродерията е изпълнена прецизно и изглежда толкова професионално. Определено ще поръчам отново за подаръци!",
     verified: true,
   },
   {
     id: 4,
-    name: 'Иван Стоянов',
-    avatar: 'https://i.pravatar.cc/150?img=15',
-    product: 'Персонализирана кърпа',
-    date: 'Август 2024',
+    name: "Иван Стоянов",
+    avatar: "https://i.pravatar.cc/150?img=15",
+    product: "Персонализирана кърпа",
+    date: "Август 2024",
     rating: 5,
-    text: 'Много доволен от покупката! Кърпата е с отлично качество, а името е бродирано много красиво. Идеална за плажа и басейна. Благодаря за прекрасната работа!',
+    text: "Много доволен от покупката! Кърпата е с отлично качество, а името е бродирано много красиво. Идеална за плажа и басейна. Благодаря за прекрасната работа!",
     verified: true,
   },
   {
     id: 5,
-    name: 'Десислава Георгиева',
-    avatar: 'https://i.pravatar.cc/150?img=16',
-    product: 'Детска блуза с име',
-    date: 'Юли 2024',
+    name: "Десислава Георгиева",
+    avatar: "https://i.pravatar.cc/150?img=16",
+    product: "Детска блуза с име",
+    date: "Юли 2024",
     rating: 5,
-    text: 'Много съм впечатлена от качеството! Блузата е много мека и удобна, а бродерията изглежда страхотно. Дъщеря ми я обича и иска да я носи всеки ден. Браво!',
+    text: "Много съм впечатлена от качеството! Блузата е много мека и удобна, а бродерията изглежда страхотно. Дъщеря ми я обича и иска да я носи всеки ден. Браво!",
     verified: true,
   },
   {
     id: 6,
-    name: 'Николай Василев',
-    avatar: 'https://i.pravatar.cc/150?img=13',
-    product: 'Персонализиран суитчър',
-    date: 'Юни 2024',
+    name: "Николай Василев",
+    avatar: "https://i.pravatar.cc/150?img=13",
+    product: "Персонализиран суитчър",
+    date: "Юни 2024",
     rating: 5,
-    text: 'Поръчах суитчър за племенника си и той беше в чист възторг! Качеството е отлично, а доставката беше бърза. Със сигурност ще препоръчам на приятели и роднини!',
+    text: "Поръчах суитчър за племенника си и той беше в чист възторг! Качеството е отлично, а доставката беше бърза. Със сигурност ще препоръчам на приятели и роднини!",
     verified: true,
   },
-]
+];
 </script>
 
 <style scoped lang="scss">
-@use '~/assets/styles/colors' as *;
-@use '~/assets/styles/breakpoints' as *;
-@use '~/assets/styles/fonts' as *;
+@use "~/assets/styles/colors" as *;
+@use "~/assets/styles/breakpoints" as *;
+@use "~/assets/styles/fonts" as *;
 
 .testimonials {
   padding: 4rem 0;
@@ -179,17 +161,13 @@ const testimonials: Testimonial[] = [
 
   // Decorative elements
   &::before {
-    content: '';
+    content: "";
     position: absolute;
     top: -15%;
     right: -8%;
     width: 400px;
     height: 400px;
-    background: radial-gradient(
-      circle,
-      rgba($brand-accent-2, 0.12) 0%,
-      transparent 70%
-    );
+    background: radial-gradient(circle, rgba($brand-accent-2, 0.12) 0%, transparent 70%);
     border-radius: 50%;
     pointer-events: none;
   }
@@ -314,17 +292,13 @@ const testimonials: Testimonial[] = [
 
   // Decorative corner
   &::before {
-    content: '';
+    content: "";
     position: absolute;
     top: 0;
     right: 0;
     width: 60px;
     height: 60px;
-    background: linear-gradient(
-      135deg,
-      transparent 50%,
-      rgba($brand, 0.08) 50%
-    );
+    background: linear-gradient(135deg, transparent 50%, rgba($brand, 0.08) 50%);
     border-top-right-radius: 14px;
   }
 

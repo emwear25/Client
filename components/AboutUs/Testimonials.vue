@@ -3,16 +3,9 @@
     <div class="testimonials__container">
       <h2 class="testimonials__heading">Какво казват нашите клиенти</h2>
       <div class="testimonials__grid">
-        <div
-          v-for="testimonial in testimonials"
-          :key="testimonial.name"
-          class="testimonials__card"
-        >
+        <div v-for="testimonial in testimonials" :key="testimonial.name" class="testimonials__card">
           <div class="testimonials__quote">
-            <Icon
-              name="mdi:format-quote-open"
-              class="testimonials__quote-icon"
-            />
+            <Icon name="mdi:format-quote-open" class="testimonials__quote-icon" />
             <p class="testimonials__text">{{ testimonial.quote }}</p>
           </div>
           <div class="testimonials__author">
@@ -32,31 +25,31 @@
 
 <script setup lang="ts">
 interface Testimonial {
-  name: string
-  quote: string
-  location: string
+  name: string;
+  quote: string;
+  location: string;
 }
 
 const testimonials: Testimonial[] = [
   {
-    name: 'Мария Петрова',
+    name: "Мария Петрова",
     quote:
-      'Синът ми беше в небесата от радост! Качеството е перфектно и персонализацията изглежда много професионално.',
-    location: 'София',
+      "Синът ми беше в небесата от радост! Качеството е перфектно и персонализацията изглежда много професионално.",
+    location: "София",
   },
   {
-    name: 'Десислава Иванова',
+    name: "Десислава Иванова",
     quote:
-      'Поръчах персонализирана тениска за рождения ден на дъщеря ми. Доставката беше бърза и продуктът - великолепен!',
-    location: 'Пловдив',
+      "Поръчах персонализирана тениска за рождения ден на дъщеря ми. Доставката беше бърза и продуктът - великолепен!",
+    location: "Пловдив",
   },
   {
-    name: 'Николай Георгиев',
+    name: "Николай Георгиев",
     quote:
-      'Отлично обслужване и внимание към детайла. Определено ще поръчвам отново за специални поводи.',
-    location: 'Варна',
+      "Отлично обслужване и внимание към детайла. Определено ще поръчвам отново за специални поводи.",
+    location: "Варна",
   },
-]
+];
 </script>
 
 <style scoped lang="scss">
@@ -75,7 +68,7 @@ const testimonials: Testimonial[] = [
   }
 
   &__heading {
-    font-family: 'Poppins', sans-serif;
+    font-family: "Poppins", sans-serif;
     font-weight: 700;
     font-size: 2rem;
     color: #333;
@@ -127,7 +120,7 @@ const testimonials: Testimonial[] = [
   }
 
   &__text {
-    font-family: 'Inter', sans-serif;
+    font-family: "Inter", sans-serif;
     font-weight: 400;
     font-size: 1rem;
     color: #555;
@@ -155,7 +148,7 @@ const testimonials: Testimonial[] = [
   }
 
   &__name {
-    font-family: 'Poppins', sans-serif;
+    font-family: "Poppins", sans-serif;
     font-weight: 700;
     font-size: 1rem;
     color: #333;
@@ -163,7 +156,7 @@ const testimonials: Testimonial[] = [
   }
 
   &__location {
-    font-family: 'Inter', sans-serif;
+    font-family: "Inter", sans-serif;
     font-weight: 400;
     font-size: 0.875rem;
     color: #888;

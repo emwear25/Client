@@ -12,7 +12,7 @@
         </div>
 
         <!-- Register Form -->
-        <form @submit.prevent="handleRegister" class="auth-form">
+        <form class="auth-form" @submit.prevent="handleRegister">
           <!-- Email Input -->
           <div class="form-group">
             <label for="email" class="form-label">Имейл</label>
@@ -27,7 +27,7 @@
               autocomplete="email"
               :disabled="isLoading"
               @blur="validateEmail"
-            />
+            >
             <span v-if="emailError" class="form-error">{{ emailError }}</span>
           </div>
 
@@ -46,40 +46,22 @@
                 autocomplete="new-password"
                 :disabled="isLoading"
                 @input="validatePassword"
-              />
+              >
               <button
                 type="button"
                 class="password-toggle"
-                @click="showPassword = !showPassword"
                 :aria-label="showPassword ? 'Скрий парола' : 'Покажи парола'"
+                @click="showPassword = !showPassword"
               >
-                <svg
-                  v-if="showPassword"
-                  width="20"
-                  height="20"
-                  viewBox="0 0 20 20"
-                  fill="none"
-                >
+                <svg v-if="showPassword" width="20" height="20" viewBox="0 0 20 20" fill="none">
                   <path
                     d="M2 10C2 10 5 4 10 4C15 4 18 10 18 10C18 10 15 16 10 16C5 16 2 10 2 10Z"
                     stroke="currentColor"
                     stroke-width="2"
                   />
-                  <circle
-                    cx="10"
-                    cy="10"
-                    r="3"
-                    stroke="currentColor"
-                    stroke-width="2"
-                  />
+                  <circle cx="10" cy="10" r="3" stroke="currentColor" stroke-width="2" />
                 </svg>
-                <svg
-                  v-else
-                  width="20"
-                  height="20"
-                  viewBox="0 0 20 20"
-                  fill="none"
-                >
+                <svg v-else width="20" height="20" viewBox="0 0 20 20" fill="none">
                   <path
                     d="M3 3L17 17M10 7C11.66 7 13 8.34 13 10C13 10.35 12.94 10.69 12.83 11M7 10C7 8.34 8.34 7 10 7M7 10C7 11.66 8.34 13 10 13C10.35 13 10.69 12.94 11 12.83M2 10C2 10 5 4 10 4C11.33 4 12.55 4.36 13.61 4.93M18 10C18 10 15 16 10 16C8.67 16 7.45 15.64 6.39 15.07"
                     stroke="currentColor"
@@ -89,9 +71,7 @@
                 </svg>
               </button>
             </div>
-            <span v-if="passwordError" class="form-error">{{
-              passwordError
-            }}</span>
+            <span v-if="passwordError" class="form-error">{{ passwordError }}</span>
 
             <!-- Password Strength Indicator -->
             <div v-if="password" class="password-strength">
@@ -100,19 +80,15 @@
                   class="password-strength__fill"
                   :class="`password-strength__fill--${passwordStrength}`"
                   :style="{ width: passwordStrengthWidth }"
-                ></div>
+                />
               </div>
-              <span class="password-strength__label">{{
-                passwordStrengthLabel
-              }}</span>
+              <span class="password-strength__label">{{ passwordStrengthLabel }}</span>
             </div>
           </div>
 
           <!-- Confirm Password Input -->
           <div class="form-group">
-            <label for="confirmPassword" class="form-label"
-              >Потвърдете паролата</label
-            >
+            <label for="confirmPassword" class="form-label">Потвърдете паролата</label>
             <input
               id="confirmPassword"
               v-model="confirmPassword"
@@ -124,15 +100,13 @@
               autocomplete="new-password"
               :disabled="isLoading"
               @blur="validateConfirmPassword"
-            />
-            <span v-if="confirmPasswordError" class="form-error">{{
-              confirmPasswordError
-            }}</span>
+            >
+            <span v-if="confirmPasswordError" class="form-error">{{ confirmPasswordError }}</span>
           </div>
 
           <!-- Terms & Conditions -->
           <label class="checkbox-label">
-            <input type="checkbox" v-model="acceptTerms" required />
+            <input v-model="acceptTerms" type="checkbox" required >
             <span>
               Приемам
               <NuxtLink to="/terms" class="link-primary" target="_blank"
@@ -182,13 +156,7 @@
           :disabled="isLoading"
           @click="handleGoogleLogin"
         >
-          <svg
-            class="google-icon"
-            width="20"
-            height="20"
-            viewBox="0 0 24 24"
-            fill="none"
-          >
+          <svg class="google-icon" width="20" height="20" viewBox="0 0 24 24" fill="none">
             <path
               d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"
               fill="#4285F4"
@@ -222,89 +190,89 @@
 </template>
 
 <script setup lang="ts">
-import { useAuthStore } from '~/stores/auth'
-import { useToast } from '~/composables/useToast'
+import { useAuthStore } from "~/stores/auth";
+import { useToast } from "~/composables/useToast";
 
-const authStore = useAuthStore()
-const toast = useToast()
-const router = useRouter()
+const authStore = useAuthStore();
+const toast = useToast();
+const router = useRouter();
 
 // Form state
-const email = ref('')
-const password = ref('')
-const confirmPassword = ref('')
-const showPassword = ref(false)
-const showConfirmPassword = ref(false)
-const acceptTerms = ref(false)
-const isLoading = ref(false)
+const email = ref("");
+const password = ref("");
+const confirmPassword = ref("");
+const showPassword = ref(false);
+const showConfirmPassword = ref(false);
+const acceptTerms = ref(false);
+const isLoading = ref(false);
 
 // Validation errors
-const emailError = ref('')
-const passwordError = ref('')
-const confirmPasswordError = ref('')
+const emailError = ref("");
+const passwordError = ref("");
+const confirmPasswordError = ref("");
 
 // Password strength
 const passwordStrength = computed(() => {
-  if (!password.value) return 'weak'
+  if (!password.value) return "weak";
 
-  let strength = 0
-  if (password.value.length >= 8) strength++
-  if (password.value.length >= 12) strength++
-  if (/[a-z]/.test(password.value) && /[A-Z]/.test(password.value)) strength++
-  if (/\d/.test(password.value)) strength++
-  if (/[^a-zA-Z0-9]/.test(password.value)) strength++
+  let strength = 0;
+  if (password.value.length >= 8) strength++;
+  if (password.value.length >= 12) strength++;
+  if (/[a-z]/.test(password.value) && /[A-Z]/.test(password.value)) strength++;
+  if (/\d/.test(password.value)) strength++;
+  if (/[^a-zA-Z0-9]/.test(password.value)) strength++;
 
-  if (strength <= 2) return 'weak'
-  if (strength <= 3) return 'medium'
-  return 'strong'
-})
+  if (strength <= 2) return "weak";
+  if (strength <= 3) return "medium";
+  return "strong";
+});
 
 const passwordStrengthWidth = computed(() => {
-  const widths = { weak: '33%', medium: '66%', strong: '100%' }
-  return widths[passwordStrength.value]
-})
+  const widths = { weak: "33%", medium: "66%", strong: "100%" };
+  return widths[passwordStrength.value];
+});
 
 const passwordStrengthLabel = computed(() => {
-  const labels = { weak: 'Слаба', medium: 'Средна', strong: 'Силна' }
-  return labels[passwordStrength.value]
-})
+  const labels = { weak: "Слаба", medium: "Средна", strong: "Силна" };
+  return labels[passwordStrength.value];
+});
 
 // Form validation
 const validateEmail = () => {
-  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
   if (!email.value) {
-    emailError.value = 'Имейлът е задължителен'
+    emailError.value = "Имейлът е задължителен";
   } else if (!emailRegex.test(email.value)) {
-    emailError.value = 'Невалиден имейл адрес'
+    emailError.value = "Невалиден имейл адрес";
   } else {
-    emailError.value = ''
+    emailError.value = "";
   }
-}
+};
 
 const validatePassword = () => {
   if (!password.value) {
-    passwordError.value = 'Паролата е задължителна'
+    passwordError.value = "Паролата е задължителна";
   } else if (password.value.length < 8) {
-    passwordError.value = 'Паролата трябва да е минимум 8 символа'
+    passwordError.value = "Паролата трябва да е минимум 8 символа";
   } else {
-    passwordError.value = ''
+    passwordError.value = "";
   }
 
   // Re-validate confirm password if it's filled
   if (confirmPassword.value) {
-    validateConfirmPassword()
+    validateConfirmPassword();
   }
-}
+};
 
 const validateConfirmPassword = () => {
   if (!confirmPassword.value) {
-    confirmPasswordError.value = 'Потвърдете паролата'
+    confirmPasswordError.value = "Потвърдете паролата";
   } else if (password.value !== confirmPassword.value) {
-    confirmPasswordError.value = 'Паролите не съвпадат'
+    confirmPasswordError.value = "Паролите не съвпадат";
   } else {
-    confirmPasswordError.value = ''
+    confirmPasswordError.value = "";
   }
-}
+};
 
 const isFormValid = computed(() => {
   return (
@@ -315,68 +283,68 @@ const isFormValid = computed(() => {
     !passwordError.value &&
     !confirmPasswordError.value &&
     acceptTerms.value
-  )
-})
+  );
+});
 
 // Handle registration
 const handleRegister = async () => {
   // Validate all fields
-  validateEmail()
-  validatePassword()
-  validateConfirmPassword()
+  validateEmail();
+  validatePassword();
+  validateConfirmPassword();
 
   if (!isFormValid.value) {
-    toast.error('Моля, попълнете всички полета правилно')
-    return
+    toast.error("Моля, попълнете всички полета правилно");
+    return;
   }
 
-  isLoading.value = true
+  isLoading.value = true;
 
   try {
-    await authStore.register(email.value, password.value)
+    await authStore.register(email.value, password.value);
 
-    toast.success('Успешна регистрация! Добре дошли!')
+    toast.success("Успешна регистрация! Добре дошли!");
 
     // Redirect to home
-    router.push('/')
+    router.push("/");
   } catch (error: any) {
-    toast.error(error.message || 'Грешка при регистрация')
+    toast.error(error.message || "Грешка при регистрация");
   } finally {
-    isLoading.value = false
+    isLoading.value = false;
   }
-}
+};
 
 // Handle Google login/register - redirects to backend which handles OAuth flow
 const handleGoogleLogin = async () => {
   try {
-    await authStore.loginWithGoogle('/')
+    await authStore.loginWithGoogle("/");
   } catch (error: any) {
-    toast.error(error.message || 'Грешка при регистрация с Google')
+    toast.error(error.message || "Грешка при регистрация с Google");
   }
-}
+};
 
 // SEO
 useHead({
-  title: 'Регистрация - emWear',
+  title: "Регистрация - emWear",
   meta: [
     {
-      name: 'description',
+      name: "description",
       content:
-        'Създайте профил в emWear и започнете да пазарувате персонализирани бродирани изделия.',
+        "Създайте профил в emWear и започнете да пазарувате персонализирани бродирани изделия.",
     },
   ],
-})
+});
 
 // Redirect if already logged in
 if (authStore.isAuthenticated) {
-  router.push('/')
+  router.push("/");
 }
 </script>
 
 <style lang="scss" scoped>
-@use '~/assets/styles/colors' as *;
-@use '~/assets/styles/fonts' as *;
-@use '~/assets/styles/breakpoints' as *;
+@use "~/assets/styles/colors" as *;
+@use "~/assets/styles/fonts" as *;
+@use "~/assets/styles/breakpoints" as *;
 
 .auth-page {
   min-height: 100vh;
@@ -604,7 +572,7 @@ if (authStore.isAuthenticated) {
   cursor: pointer;
   line-height: 1.5;
 
-  input[type='checkbox'] {
+  input[type="checkbox"] {
     width: 18px;
     height: 18px;
     cursor: pointer;
@@ -637,7 +605,7 @@ if (authStore.isAuthenticated) {
   margin: 1.5rem 0;
 
   &::before {
-    content: '';
+    content: "";
     position: absolute;
     left: 0;
     top: 50%;

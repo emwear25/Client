@@ -24,7 +24,7 @@
 </script>
 
 <style lang="scss" scoped>
-@use '~/assets/styles/colors' as *;
+@use "~/assets/styles/colors" as *;
 
 .app-layout {
   min-height: 100vh;

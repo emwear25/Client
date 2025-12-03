@@ -9,7 +9,7 @@
     </NuxtLink>
 
     <!-- Cart with Badge -->
-    <button @click="cartStore.openCart()" class="site-header__cart">
+    <button class="site-header__cart" @click="cartStore.openCart()">
       <Icon name="mdi:cart-outline" class="site-header__cart-icon" />
       <span v-if="cartStore.itemCount > 0" class="site-header__badge">
         {{ cartStore.itemCount }}
@@ -20,8 +20,6 @@
     <div v-if="showProfileIcon" class="user-menu">
       <button
         class="site-header__cart"
-        @click.stop="toggleUserMenu"
-        @blur="handleBlur"
         :aria-expanded="isUserMenuOpen"
         aria-label="User menu"
         style="
@@ -29,6 +27,8 @@
           visibility: visible !important;
           opacity: 1 !important;
         "
+        @click.stop="toggleUserMenu"
+        @blur="handleBlur"
       >
         <Icon name="mdi:account-outline" class="site-header__cart-icon" />
       </button>
@@ -42,33 +42,22 @@
             </p>
           </div>
 
-          <div class="user-menu__divider"></div>
+          <div class="user-menu__divider"/>
 
           <nav class="user-menu__nav">
-            <NuxtLink
-              to="/profile"
-              class="user-menu__item"
-              @click="isUserMenuOpen = false"
-            >
+            <NuxtLink to="/profile" class="user-menu__item" @click="isUserMenuOpen = false">
               <Icon name="mdi:account-outline" />
               <span>Профил</span>
             </NuxtLink>
-            <NuxtLink
-              to="/orders"
-              class="user-menu__item"
-              @click="isUserMenuOpen = false"
-            >
+            <NuxtLink to="/orders" class="user-menu__item" @click="isUserMenuOpen = false">
               <Icon name="mdi:package-variant" />
               <span>Поръчки</span>
             </NuxtLink>
           </nav>
 
-          <div class="user-menu__divider"></div>
+          <div class="user-menu__divider"/>
 
-          <button
-            class="user-menu__item user-menu__item--logout"
-            @click="handleLogout"
-          >
+          <button class="user-menu__item user-menu__item--logout" @click="handleLogout">
             <Icon name="mdi:logout" />
             <span>Изход</span>
           </button>
@@ -77,20 +66,16 @@
     </div>
 
     <!-- Login (Guest) -->
-    <NuxtLink
-      v-else-if="showLoginIcon"
-      to="/login"
-      class="site-header__icon-btn"
-    >
+    <NuxtLink v-else-if="showLoginIcon" to="/login" class="site-header__icon-btn">
       <Icon name="mdi:account-outline" class="site-header__icon" />
     </NuxtLink>
 
     <!-- Mobile Menu Toggle -->
     <button
       class="site-header__menu-toggle"
-      @click="emit('toggleMenu')"
       :aria-expanded="menuOpen"
       aria-label="Toggle navigation menu"
+      @click="emit('toggleMenu')"
     >
       <Icon name="mdi:menu" class="site-header__menu-icon" />
     </button>
@@ -98,128 +83,126 @@
 </template>
 
 <script setup lang="ts">
-import { useCartStore } from '~/stores/cart'
-import { useAuthStore } from '~/stores/auth'
-import { useWishlist } from '~/stores/useWishlist'
-import { useToast } from '~/composables/useToast'
+import { useCartStore } from "~/stores/cart";
+import { useAuthStore } from "~/stores/auth";
+import { useWishlist } from "~/stores/useWishlist";
+import { useToast } from "~/composables/useToast";
 
 // Stores
-const cartStore = useCartStore()
-const authStore = useAuthStore()
-const wishlistStore = useWishlist()
-const toast = useToast()
-const router = useRouter()
+const cartStore = useCartStore();
+const authStore = useAuthStore();
+const wishlistStore = useWishlist();
+const toast = useToast();
+const router = useRouter();
 
 // Load cart and wishlist from localStorage (client-side only)
 onMounted(() => {
-  cartStore.load()
-  wishlistStore.load()
-})
+  cartStore.load();
+  wishlistStore.load();
+});
 
 // Use a computed to check auth state more reliably
 // Use isAuthenticated which works for both cookie-based (Google) and token-based (email/password) auth
 const showProfileIcon = computed(() => {
-  if (import.meta.server) return false // Never show on server
-  return authStore.isAuthenticated && !!authStore.user
-})
+  if (import.meta.server) return false; // Never show on server
+  return authStore.isAuthenticated && !!authStore.user;
+});
 
 const showLoginIcon = computed(() => {
-  if (import.meta.server) return false // Never show on server
+  if (import.meta.server) return false; // Never show on server
   // Only show login icon if profile icon is not shown (prevents both showing at once)
-  return (
-    !showProfileIcon.value && (!authStore.isAuthenticated || !authStore.user)
-  )
-})
+  return !showProfileIcon.value && (!authStore.isAuthenticated || !authStore.user);
+});
 
 // Debug auth state changes
 watch(
   () => [authStore.isAuthenticated, authStore.user, showProfileIcon.value],
   ([isAuth, user, showProfile]) => {
-    console.log('[HeaderIcons] Auth state changed:', {
+    console.log("[HeaderIcons] Auth state changed:", {
       isAuthenticated: isAuth,
       hasUser: !!user,
       showProfileIcon: showProfile,
       userEmail: user?.email,
-    })
+    });
   },
   { immediate: true, deep: true }
-)
+);
 
 // User menu state
-const isUserMenuOpen = ref(false)
+const isUserMenuOpen = ref(false);
 
 // Watch for auth state changes and ensure user is loaded
 watch(
   () => authStore.isAuthenticated,
   async (isAuth) => {
-    console.log('[HeaderIcons] Auth state changed:', {
+    console.log("[HeaderIcons] Auth state changed:", {
       isAuthenticated: isAuth,
       hasUser: !!authStore.user,
       userEmail: authStore.user?.email,
-    })
+    });
 
     // If authenticated but no user, fetch user (shouldn't happen, but safety check)
     if (isAuth && !authStore.user) {
-      console.log('[HeaderIcons] Authenticated but no user, fetching...')
-      await authStore.fetchUser()
+      console.log("[HeaderIcons] Authenticated but no user, fetching...");
+      await authStore.fetchUser();
     }
   },
   { immediate: true }
-)
+);
 
 // Define props
 defineProps<{
-  menuOpen: boolean
-}>()
+  menuOpen: boolean;
+}>();
 
 // Define emits
 const emit = defineEmits<{
-  toggleMenu: []
-}>()
+  toggleMenu: [];
+}>();
 
 // Handle logout
 const handleLogout = async () => {
-  isUserMenuOpen.value = false
-  await authStore.logout()
-  toast.success('Успешно излизане')
-  router.push('/')
-}
+  isUserMenuOpen.value = false;
+  await authStore.logout();
+  toast.success("Успешно излизане");
+  router.push("/");
+};
 
 // Toggle user menu
 const toggleUserMenu = () => {
-  console.log('[HeaderIcons] Toggling user menu:', {
+  console.log("[HeaderIcons] Toggling user menu:", {
     currentState: isUserMenuOpen.value,
     isAuthenticated: authStore.isAuthenticated,
     hasUser: !!authStore.user,
     userEmail: authStore.user?.email,
-  })
-  isUserMenuOpen.value = !isUserMenuOpen.value
-}
+  });
+  isUserMenuOpen.value = !isUserMenuOpen.value;
+};
 
 // Handle blur to close menu
 const handleBlur = (event: FocusEvent) => {
   // Delay to allow click events to fire
   setTimeout(() => {
-    const relatedTarget = event.relatedTarget as HTMLElement
-    if (!relatedTarget || !relatedTarget.closest('.user-menu')) {
-      isUserMenuOpen.value = false
+    const relatedTarget = event.relatedTarget as HTMLElement;
+    if (!relatedTarget || !relatedTarget.closest(".user-menu")) {
+      isUserMenuOpen.value = false;
     }
-  }, 200)
-}
+  }, 200);
+};
 
 // Close menu on route change
-const route = useRoute()
+const route = useRoute();
 watch(
   () => route.path,
   () => {
-    isUserMenuOpen.value = false
+    isUserMenuOpen.value = false;
   }
-)
+);
 </script>
 
 <style scoped lang="scss">
-@use '~/assets/styles/colors' as *;
-@use '~/assets/styles/fonts' as *;
+@use "~/assets/styles/colors" as *;
+@use "~/assets/styles/fonts" as *;
 
 .site-header {
   &__icon-group {
@@ -419,7 +402,7 @@ watch(
       background: rgba($brand, 0.1);
     }
 
-    &[aria-expanded='true'] {
+    &[aria-expanded="true"] {
       color: $brand;
       background: rgba($brand, 0.15);
     }
@@ -479,7 +462,7 @@ watch(
       outline-offset: 2px;
     }
 
-    &[aria-expanded='true'] {
+    &[aria-expanded="true"] {
       color: $brand !important;
       background: rgba($brand, 0.15);
 

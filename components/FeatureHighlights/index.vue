@@ -3,11 +3,7 @@
     <div class="feature-highlights__container">
       <!-- Desktop: Grid Layout -->
       <div class="feature-highlights__grid">
-        <div
-          v-for="feature in features"
-          :key="feature.id"
-          class="feature-highlights__card"
-        >
+        <div v-for="feature in features" :key="feature.id" class="feature-highlights__card">
           <div class="feature-highlights__icon-wrapper">
             <div class="feature-highlights__icon-circle">
               <Icon :name="feature.icon" class="feature-highlights__icon" />
@@ -56,53 +52,53 @@
             </div>
           </SwiperSlide>
         </Swiper>
-        <div class="feature-highlights__pagination"></div>
+        <div class="feature-highlights__pagination"/>
       </div>
     </div>
   </section>
 </template>
 
 <script setup lang="ts">
-import { Swiper, SwiperSlide } from 'swiper/vue'
-import { Pagination } from 'swiper/modules'
-import 'swiper/css'
-import 'swiper/css/pagination'
+import { Swiper, SwiperSlide } from "swiper/vue";
+import { Pagination } from "swiper/modules";
+import "swiper/css";
+import "swiper/css/pagination";
 
-const modules = [Pagination]
+const modules = [Pagination];
 
 // Static feature data
 const features = ref([
   {
     id: 1,
-    icon: 'mdi:alphabetical-variant',
-    title: 'Персонализирано име',
-    text: 'Всяка раница се изработва с името, което Вие изберете.',
+    icon: "mdi:alphabetical-variant",
+    title: "Персонализирано име",
+    text: "Всяка раница се изработва с името, което Вие изберете.",
   },
   {
     id: 2,
-    icon: 'mdi:cog',
-    title: 'Прецизна машинна бродерия',
-    text: 'Висококачествени машини гарантират трайна и детайлна бродерия.',
+    icon: "mdi:cog",
+    title: "Прецизна машинна бродерия",
+    text: "Висококачествени машини гарантират трайна и детайлна бродерия.",
   },
   {
     id: 3,
-    icon: 'mdi:truck-fast',
-    title: 'Експресна 48-часова изработка',
-    text: 'Подготвяме и изпращаме Вашата поръчка в рамките на 2 дни.',
+    icon: "mdi:truck-fast",
+    title: "Експресна 48-часова изработка",
+    text: "Подготвяме и изпращаме Вашата поръчка в рамките на 2 дни.",
   },
   {
     id: 4,
-    icon: 'mdi:gift-outline',
-    title: 'Идеален за подарък',
-    text: 'Получавате продукта в красива опаковка, готова за изненада.',
+    icon: "mdi:gift-outline",
+    title: "Идеален за подарък",
+    text: "Получавате продукта в красива опаковка, готова за изненада.",
   },
-])
+]);
 </script>
 
 <style scoped lang="scss">
-@use '~/assets/styles/colors' as *;
-@use '~/assets/styles/breakpoints' as *;
-@use '~/assets/styles/fonts' as *;
+@use "~/assets/styles/colors" as *;
+@use "~/assets/styles/breakpoints" as *;
+@use "~/assets/styles/fonts" as *;
 
 .feature-highlights {
   background: #ffffff;
@@ -257,17 +253,17 @@ const features = ref([
     font-family:
       system-ui,
       -apple-system,
-      'Segoe UI',
+      "Segoe UI",
       Roboto,
-      'Helvetica Neue',
-      'Noto Sans',
-      'Liberation Sans',
+      "Helvetica Neue",
+      "Noto Sans",
+      "Liberation Sans",
       Arial,
       sans-serif,
-      'Apple Color Emoji',
-      'Segoe UI Emoji',
-      'Segoe UI Symbol',
-      'Noto Color Emoji';
+      "Apple Color Emoji",
+      "Segoe UI Emoji",
+      "Segoe UI Symbol",
+      "Noto Color Emoji";
     font-size: 13px;
     font-weight: 700;
     color: rgba(47, 58, 42, 0.9);
@@ -283,17 +279,17 @@ const features = ref([
     font-family:
       system-ui,
       -apple-system,
-      'Segoe UI',
+      "Segoe UI",
       Roboto,
-      'Helvetica Neue',
-      'Noto Sans',
-      'Liberation Sans',
+      "Helvetica Neue",
+      "Noto Sans",
+      "Liberation Sans",
       Arial,
       sans-serif,
-      'Apple Color Emoji',
-      'Segoe UI Emoji',
-      'Segoe UI Symbol',
-      'Noto Color Emoji';
+      "Apple Color Emoji",
+      "Segoe UI Emoji",
+      "Segoe UI Symbol",
+      "Noto Color Emoji";
     font-size: 13px;
     font-weight: 400;
     color: rgba(47, 58, 42, 0.7);

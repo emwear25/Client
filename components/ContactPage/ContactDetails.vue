@@ -11,9 +11,7 @@
             </div>
             <div class="contact-details__content">
               <h3 class="contact-details__label">Телефон</h3>
-              <a href="tel:+359890927520" class="contact-details__link">
-                +359 89 092 7520
-              </a>
+              <a href="tel:+359890927520" class="contact-details__link"> +359 89 092 7520 </a>
             </div>
           </div>
 
@@ -23,9 +21,7 @@
             </div>
             <div class="contact-details__content">
               <h3 class="contact-details__label">Имейл</h3>
-              <a href="mailto:info@emwear.bg" class="contact-details__link">
-                info@emwear.bg
-              </a>
+              <a href="mailto:info@emwear.bg" class="contact-details__link"> info@emwear.bg </a>
             </div>
           </div>
         </div>
@@ -33,25 +29,13 @@
         <div class="contact-details__social">
           <h3 class="contact-details__social-heading">Последвайте ни:</h3>
           <div class="contact-details__social-icons">
-            <a
-              href="#"
-              class="contact-details__social-link"
-              aria-label="Facebook"
-            >
+            <a href="#" class="contact-details__social-link" aria-label="Facebook">
               <Icon name="simple-icons:facebook" />
             </a>
-            <a
-              href="#"
-              class="contact-details__social-link"
-              aria-label="Instagram"
-            >
+            <a href="#" class="contact-details__social-link" aria-label="Instagram">
               <Icon name="simple-icons:instagram" />
             </a>
-            <a
-              href="#"
-              class="contact-details__social-link"
-              aria-label="TikTok"
-            >
+            <a href="#" class="contact-details__social-link" aria-label="TikTok">
               <Icon name="simple-icons:tiktok" />
             </a>
           </div>
@@ -91,7 +75,7 @@
   }
 
   &__heading {
-    font-family: 'Poppins', sans-serif;
+    font-family: "Poppins", sans-serif;
     font-weight: 700;
     font-size: 1.75rem;
     color: #333;
@@ -132,7 +116,7 @@
   }
 
   &__label {
-    font-family: 'Poppins', sans-serif;
+    font-family: "Poppins", sans-serif;
     font-weight: 700;
     font-size: 0.9rem;
     color: #666;
@@ -142,7 +126,7 @@
   }
 
   &__link {
-    font-family: 'Inter', sans-serif;
+    font-family: "Inter", sans-serif;
     font-weight: 400;
     font-size: 1.125rem;
     color: #333;
@@ -163,7 +147,7 @@
   }
 
   &__social-heading {
-    font-family: 'Poppins', sans-serif;
+    font-family: "Poppins", sans-serif;
     font-weight: 700;
     font-size: 1.125rem;
     color: #333;

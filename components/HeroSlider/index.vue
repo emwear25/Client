@@ -20,7 +20,7 @@
       }"
       :speed="1200"
       :effect="'creative'"
-      :creativeEffect="{
+      :creative-effect="{
         prev: {
           translate: ['-120%', 0, -500],
         },
@@ -29,7 +29,7 @@
         },
       }"
       class="hero-slider__swiper"
-      @slideChange="onSlideChange"
+      @slide-change="onSlideChange"
       @init="onSwiperInit"
     >
       <!-- Slide 1: Diagonal Split Left -->
@@ -38,16 +38,14 @@
         <div
           class="hero-slider__mobile-bg"
           :style="{ backgroundImage: `url(${slides[0].image})` }"
-        ></div>
+        />
 
         <!-- Desktop: Diagonal split image -->
-        <div
-          class="hero-slider__image-container hero-slider__image-container--diagonal-left"
-        >
+        <div class="hero-slider__image-container hero-slider__image-container--diagonal-left">
           <div
             class="hero-slider__image"
             :style="{ backgroundImage: `url(${slides[0].image})` }"
-          ></div>
+          />
         </div>
 
         <div class="hero-slider__content-zone hero-slider__content-zone--right">
@@ -67,21 +65,9 @@
               stroke-dashoffset="1000"
             />
             <defs>
-              <linearGradient
-                id="thread-gradient-1"
-                x1="0%"
-                y1="0%"
-                x2="100%"
-                y2="100%"
-              >
-                <stop
-                  offset="0%"
-                  style="stop-color: #b9c6aa; stop-opacity: 0.6"
-                />
-                <stop
-                  offset="100%"
-                  style="stop-color: #e8b8b1; stop-opacity: 0.8"
-                />
+              <linearGradient id="thread-gradient-1" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" style="stop-color: #b9c6aa; stop-opacity: 0.6" />
+                <stop offset="100%" style="stop-color: #e8b8b1; stop-opacity: 0.8" />
               </linearGradient>
             </defs>
           </svg>
@@ -90,14 +76,9 @@
             <div class="hero-slider__label">Нова колекция</div>
             <h1 class="hero-slider__title hero-slider__title--large">
               <span class="hero-slider__title-word">Персонализирани</span>
-              <span
-                class="hero-slider__title-word hero-slider__title-word--accent"
-                >раници</span
-              >
+              <span class="hero-slider__title-word hero-slider__title-word--accent">раници</span>
             </h1>
-            <p class="hero-slider__subtitle">
-              Стилни и функционални раници<br />за всеки ден
-            </p>
+            <p class="hero-slider__subtitle">Стилни и функционални раници<br >за всеки ден</p>
 
             <!-- Decorative stitches -->
             <svg
@@ -117,10 +98,7 @@
               />
             </svg>
 
-            <NuxtLink
-              to="/products"
-              class="hero-slider__cta hero-slider__cta--primary"
-            >
+            <NuxtLink to="/products" class="hero-slider__cta hero-slider__cta--primary">
               <span class="hero-slider__cta-text">Разгледай колекцията</span>
               <svg
                 class="hero-slider__cta-arrow"
@@ -166,14 +144,12 @@
       </SwiperSlide>
 
       <!-- Slide 2: Diagonal Split Right -->
-      <SwiperSlide
-        class="hero-slider__slide hero-slider__slide--diagonal-right"
-      >
+      <SwiperSlide class="hero-slider__slide hero-slider__slide--diagonal-right">
         <!-- Mobile: Full width image background -->
         <div
           class="hero-slider__mobile-bg"
           :style="{ backgroundImage: `url(${slides[1].image})` }"
-        ></div>
+        />
 
         <div class="hero-slider__content-zone hero-slider__content-zone--left">
           <!-- Animated embroidery thread -->
@@ -192,21 +168,9 @@
               stroke-dashoffset="1000"
             />
             <defs>
-              <linearGradient
-                id="thread-gradient-2"
-                x1="0%"
-                y1="0%"
-                x2="100%"
-                y2="100%"
-              >
-                <stop
-                  offset="0%"
-                  style="stop-color: #afc9e6; stop-opacity: 0.6"
-                />
-                <stop
-                  offset="100%"
-                  style="stop-color: #b9c6aa; stop-opacity: 0.8"
-                />
+              <linearGradient id="thread-gradient-2" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" style="stop-color: #afc9e6; stop-opacity: 0.6" />
+                <stop offset="100%" style="stop-color: #b9c6aa; stop-opacity: 0.8" />
               </linearGradient>
             </defs>
           </svg>
@@ -217,14 +181,11 @@
             <div class="hero-slider__label">Персонализация</div>
             <h1 class="hero-slider__title hero-slider__title--large">
               <span class="hero-slider__title-word">Създайте</span>
-              <span
-                class="hero-slider__title-word hero-slider__title-word--accent"
+              <span class="hero-slider__title-word hero-slider__title-word--accent"
                 >уникален дизайн</span
               >
             </h1>
-            <p class="hero-slider__subtitle">
-              Уникални бродерии за всеки<br />стил и случай
-            </p>
+            <p class="hero-slider__subtitle">Уникални бродерии за всеки<br >стил и случай</p>
 
             <!-- Decorative stitches -->
             <svg
@@ -244,10 +205,7 @@
               />
             </svg>
 
-            <NuxtLink
-              to="/products"
-              class="hero-slider__cta hero-slider__cta--primary"
-            >
+            <NuxtLink to="/products" class="hero-slider__cta hero-slider__cta--primary">
               <span class="hero-slider__cta-text">Разгледай</span>
               <svg
                 class="hero-slider__cta-arrow"
@@ -292,14 +250,12 @@
         </div>
 
         <!-- Desktop: Diagonal split image -->
-        <div
-          class="hero-slider__image-container hero-slider__image-container--diagonal-right"
-        >
+        <div class="hero-slider__image-container hero-slider__image-container--diagonal-right">
           <div
             class="hero-slider__image"
             :style="{ backgroundImage: `url('${slides[1].image}')` }"
             :data-slide="2"
-          ></div>
+          />
         </div>
       </SwiperSlide>
 
@@ -309,16 +265,14 @@
         <div
           class="hero-slider__mobile-bg"
           :style="{ backgroundImage: `url(${slides[2].image})` }"
-        ></div>
+        />
 
         <!-- Desktop: Diagonal split image -->
-        <div
-          class="hero-slider__image-container hero-slider__image-container--diagonal-left"
-        >
+        <div class="hero-slider__image-container hero-slider__image-container--diagonal-left">
           <div
             class="hero-slider__image"
             :style="{ backgroundImage: `url('${slides[2].image}')` }"
-          ></div>
+          />
         </div>
 
         <div class="hero-slider__content-zone hero-slider__content-zone--right">
@@ -338,21 +292,9 @@
               stroke-dashoffset="1000"
             />
             <defs>
-              <linearGradient
-                id="thread-gradient-3"
-                x1="0%"
-                y1="0%"
-                x2="100%"
-                y2="100%"
-              >
-                <stop
-                  offset="0%"
-                  style="stop-color: #f2c66d; stop-opacity: 0.6"
-                />
-                <stop
-                  offset="100%"
-                  style="stop-color: #b9c6aa; stop-opacity: 0.8"
-                />
+              <linearGradient id="thread-gradient-3" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" style="stop-color: #f2c66d; stop-opacity: 0.6" />
+                <stop offset="100%" style="stop-color: #b9c6aa; stop-opacity: 0.8" />
               </linearGradient>
             </defs>
           </svg>
@@ -361,14 +303,11 @@
             <div class="hero-slider__label">Ръчна изработка</div>
             <h1 class="hero-slider__title hero-slider__title--large">
               <span class="hero-slider__title-word">Бродирани халати</span>
-              <span
-                class="hero-slider__title-word hero-slider__title-word--accent"
+              <span class="hero-slider__title-word hero-slider__title-word--accent"
                 >с герои и имена</span
               >
             </h1>
-            <p class="hero-slider__subtitle">
-              Персонализирани халати с<br />любими герои и имена
-            </p>
+            <p class="hero-slider__subtitle">Персонализирани халати с<br >любими герои и имена</p>
 
             <!-- Decorative stitches -->
             <svg
@@ -388,10 +327,7 @@
               />
             </svg>
 
-            <NuxtLink
-              to="/products"
-              class="hero-slider__cta hero-slider__cta--primary"
-            >
+            <NuxtLink to="/products" class="hero-slider__cta hero-slider__cta--primary">
               <span class="hero-slider__cta-text">Поръчай сега</span>
               <svg
                 class="hero-slider__cta-arrow"
@@ -437,14 +373,12 @@
       </SwiperSlide>
 
       <!-- Slide 4: Diagonal Split Right -->
-      <SwiperSlide
-        class="hero-slider__slide hero-slider__slide--diagonal-right"
-      >
+      <SwiperSlide class="hero-slider__slide hero-slider__slide--diagonal-right">
         <!-- Mobile: Full width image background -->
         <div
           class="hero-slider__mobile-bg"
           :style="{ backgroundImage: `url(${slides[3].image})` }"
-        ></div>
+        />
 
         <div class="hero-slider__content-zone hero-slider__content-zone--left">
           <!-- Animated embroidery thread -->
@@ -463,21 +397,9 @@
               stroke-dashoffset="1000"
             />
             <defs>
-              <linearGradient
-                id="thread-gradient-4"
-                x1="0%"
-                y1="0%"
-                x2="100%"
-                y2="100%"
-              >
-                <stop
-                  offset="0%"
-                  style="stop-color: #e8b8b1; stop-opacity: 0.6"
-                />
-                <stop
-                  offset="100%"
-                  style="stop-color: #f2c66d; stop-opacity: 0.8"
-                />
+              <linearGradient id="thread-gradient-4" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" style="stop-color: #e8b8b1; stop-opacity: 0.6" />
+                <stop offset="100%" style="stop-color: #f2c66d; stop-opacity: 0.8" />
               </linearGradient>
             </defs>
           </svg>
@@ -488,12 +410,9 @@
             <div class="hero-slider__label">Ръчна изработка</div>
             <h1 class="hero-slider__title hero-slider__title--large">
               <span class="hero-slider__title-word">Персонализирани кърпи</span>
-              <span
-                class="hero-slider__title-word hero-slider__title-word--accent"
-                >с ушички</span
-              >
+              <span class="hero-slider__title-word hero-slider__title-word--accent">с ушички</span>
             </h1>
-            <p class="hero-slider__subtitle">С любими герои и<br />имена</p>
+            <p class="hero-slider__subtitle">С любими герои и<br >имена</p>
 
             <!-- Decorative stitches -->
             <svg
@@ -513,10 +432,7 @@
               />
             </svg>
 
-            <NuxtLink
-              to="/products"
-              class="hero-slider__cta hero-slider__cta--primary"
-            >
+            <NuxtLink to="/products" class="hero-slider__cta hero-slider__cta--primary">
               <span class="hero-slider__cta-text">Поръчай сега</span>
               <svg
                 class="hero-slider__cta-arrow"
@@ -561,22 +477,17 @@
         </div>
 
         <!-- Desktop: Diagonal split image -->
-        <div
-          class="hero-slider__image-container hero-slider__image-container--diagonal-right"
-        >
+        <div class="hero-slider__image-container hero-slider__image-container--diagonal-right">
           <div
             class="hero-slider__image"
             :style="{ backgroundImage: `url('${slides[3].image}')` }"
             :data-slide="4"
-          ></div>
+          />
         </div>
       </SwiperSlide>
 
       <!-- Custom Navigation -->
-      <button
-        class="hero-slider__nav hero-slider__nav--prev"
-        aria-label="Previous slide"
-      >
+      <button class="hero-slider__nav hero-slider__nav--prev" aria-label="Previous slide">
         <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
           <path
             d="M15 18l-6-6 6-6"
@@ -589,10 +500,7 @@
         </svg>
       </button>
 
-      <button
-        class="hero-slider__nav hero-slider__nav--next"
-        aria-label="Next slide"
-      >
+      <button class="hero-slider__nav hero-slider__nav--next" aria-label="Next slide">
         <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
           <path
             d="M9 18l6-6-6-6"
@@ -608,110 +516,101 @@
 
     <!-- Progress indicator -->
     <div class="hero-slider__progress">
-      <div
-        class="hero-slider__progress-bar"
-        :style="{ width: progressWidth }"
-      ></div>
+      <div class="hero-slider__progress-bar" :style="{ width: progressWidth }"/>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { Swiper, SwiperSlide } from 'swiper/vue'
-import {
-  Navigation,
-  Pagination,
-  Autoplay,
-  EffectCreative,
-} from 'swiper/modules'
-import 'swiper/css'
-import 'swiper/css/navigation'
-import 'swiper/css/pagination'
-import 'swiper/css/effect-creative'
+import { Swiper, SwiperSlide } from "swiper/vue";
+import { Navigation, Pagination, Autoplay, EffectCreative } from "swiper/modules";
+import "swiper/css";
+import "swiper/css/navigation";
+import "swiper/css/pagination";
+import "swiper/css/effect-creative";
 
-const modules = [Navigation, Pagination, Autoplay, EffectCreative]
+const modules = [Navigation, Pagination, Autoplay, EffectCreative];
 
-const currentSlide = ref(0)
-const progressWidth = ref('0%')
-const contentCard = ref<HTMLElement | null>(null)
+const currentSlide = ref(0);
+const progressWidth = ref("0%");
+const contentCard = ref<HTMLElement | null>(null);
 
 const slides = ref([
   {
     id: 1,
-    image: '/img/slider/bags.png',
+    image: "/img/slider/bags.png",
   },
   {
     id: 2,
-    image: '/img/slider/slide-2.png',
+    image: "/img/slider/slide-2.png",
   },
   {
     id: 3,
-    image: '/img/slider/bathrobes.jpg',
+    image: "/img/slider/bathrobes.jpg",
   },
   {
     id: 4,
-    image: '/img/slider/towels.jpg',
+    image: "/img/slider/towels.jpg",
   },
-])
+]);
 
 const onSlideChange = (swiper: any) => {
-  currentSlide.value = swiper.realIndex
-  animateThreadPaths()
-}
+  currentSlide.value = swiper.realIndex;
+  animateThreadPaths();
+};
 
 const onSwiperInit = () => {
-  animateThreadPaths()
-  startProgressAnimation()
-}
+  animateThreadPaths();
+  startProgressAnimation();
+};
 
 const animateThreadPaths = () => {
   // Trigger thread path animations on slide change
-  const threads = document.querySelectorAll('.hero-slider__thread-path path')
+  const threads = document.querySelectorAll(".hero-slider__thread-path path");
   threads.forEach((thread) => {
-    const pathElement = thread as SVGPathElement
-    pathElement.style.strokeDashoffset = '1000'
+    const pathElement = thread as SVGPathElement;
+    pathElement.style.strokeDashoffset = "1000";
     setTimeout(() => {
-      pathElement.style.strokeDashoffset = '0'
-    }, 300)
-  })
-}
+      pathElement.style.strokeDashoffset = "0";
+    }, 300);
+  });
+};
 
 const startProgressAnimation = () => {
-  let progress = 0
+  let progress = 0;
   const interval = setInterval(() => {
-    progress += 1.67 // 100 / 60 (6 seconds)
-    progressWidth.value = `${progress}%`
+    progress += 1.67; // 100 / 60 (6 seconds)
+    progressWidth.value = `${progress}%`;
     if (progress >= 100) {
-      progress = 0
+      progress = 0;
     }
-  }, 100)
+  }, 100);
 
-  onUnmounted(() => clearInterval(interval))
-}
+  onUnmounted(() => clearInterval(interval));
+};
 
 // 3D tilt effect for card
 const handleCardTilt = (e: MouseEvent) => {
-  if (!contentCard.value) return
+  if (!contentCard.value) return;
 
-  const card = contentCard.value
-  const rect = card.getBoundingClientRect()
-  const x = e.clientX - rect.left
-  const y = e.clientY - rect.top
+  const card = contentCard.value;
+  const rect = card.getBoundingClientRect();
+  const x = e.clientX - rect.left;
+  const y = e.clientY - rect.top;
 
-  const centerX = rect.width / 2
-  const centerY = rect.height / 2
+  const centerX = rect.width / 2;
+  const centerY = rect.height / 2;
 
-  const rotateX = (y - centerY) / 10
-  const rotateY = (centerX - x) / 10
+  const rotateX = (y - centerY) / 10;
+  const rotateY = (centerX - x) / 10;
 
-  card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale3d(1.02, 1.02, 1.02)`
-}
+  card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale3d(1.02, 1.02, 1.02)`;
+};
 
 const resetCardTilt = () => {
-  if (!contentCard.value) return
-  contentCard.value.style.transform =
-    'perspective(1000px) rotateX(0) rotateY(0) scale3d(1, 1, 1)'
-}
+  if (!contentCard.value) return;
+  contentCard.value.style.transform = "perspective(1000px) rotateX(0) rotateY(0) scale3d(1, 1, 1)";
+};
 
 // Custom pagination bullet renderer
 const renderCustomBullet = (index: number, className: string) => {
@@ -719,14 +618,14 @@ const renderCustomBullet = (index: number, className: string) => {
     <svg viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
       <circle cx="10" cy="10" r="8" stroke="currentColor" stroke-width="2" fill="none" />
     </svg>
-  </span>`
-}
+  </span>`;
+};
 </script>
 
 <style scoped lang="scss">
-@use '~/assets/styles/colors' as *;
-@use '~/assets/styles/breakpoints' as *;
-@use '~/assets/styles/fonts' as *;
+@use "~/assets/styles/colors" as *;
+@use "~/assets/styles/breakpoints" as *;
+@use "~/assets/styles/fonts" as *;
 
 /* ============================================
    REVOLUTIONARY HERO SLIDER - BEM
@@ -1179,7 +1078,7 @@ const renderCustomBullet = (index: number, className: string) => {
     margin-bottom: 1.5rem;
 
     &::before {
-      content: '✦';
+      content: "✦";
       color: $brand;
     }
   }
@@ -1199,7 +1098,7 @@ const renderCustomBullet = (index: number, className: string) => {
 
     // Mobile: Font specifications
     @media (max-width: 767px) {
-      font-family: 'Outfit', sans-serif;
+      font-family: "Outfit", sans-serif;
       font-weight: 300;
       color: rgb(255, 255, 255);
       font-size: 24px;
@@ -1298,7 +1197,7 @@ const renderCustomBullet = (index: number, className: string) => {
       }
 
       &::after {
-        content: '';
+        content: "";
         position: absolute;
         bottom: -10px;
         left: 0;
@@ -1336,7 +1235,7 @@ const renderCustomBullet = (index: number, className: string) => {
     display: inline-block;
 
     &::before {
-      content: '';
+      content: "";
       position: absolute;
       bottom: 5px;
       left: -5px;
@@ -1357,7 +1256,7 @@ const renderCustomBullet = (index: number, className: string) => {
 
     // Mobile: Font specifications
     @media (max-width: 767px) {
-      font-family: 'Outfit', sans-serif;
+      font-family: "Outfit", sans-serif;
       font-weight: 300;
       color: rgb(255, 255, 255);
       font-size: 16px;

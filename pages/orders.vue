@@ -3,9 +3,7 @@
     <div class="container">
       <div class="orders-page__header">
         <h1 class="orders-page__title">Моите Поръчки</h1>
-        <p class="orders-page__subtitle">
-          Прегледайте историята на вашите поръчки
-        </p>
+        <p class="orders-page__subtitle">Прегледайте историята на вашите поръчки</p>
       </div>
 
       <div v-if="isLoading" class="orders-page__loading">
@@ -15,32 +13,23 @@
       <div v-else-if="error" class="orders-page__error">
         <h2>Грешка</h2>
         <p>{{ error }}</p>
-        <button class="btn btn--primary" @click="fetchOrders">
-          Опитай отново
-        </button>
+        <button class="btn btn--primary" @click="fetchOrders">Опитай отново</button>
       </div>
 
       <div v-else-if="orders.length === 0" class="orders-page__empty">
         <h2>Нямате поръчки</h2>
         <p>Все още нямате направени поръчки.</p>
-        <NuxtLink to="/products" class="btn btn--primary">
-          Разгледай Продукти
-        </NuxtLink>
+        <NuxtLink to="/products" class="btn btn--primary"> Разгледай Продукти </NuxtLink>
       </div>
 
       <div v-else class="orders-page__list">
         <div v-for="order in orders" :key="order._id" class="order-card">
           <div class="order-card__header">
             <div class="order-card__info">
-              <h3 class="order-card__number">
-                Поръчка #{{ order.orderNumber }}
-              </h3>
+              <h3 class="order-card__number">Поръчка #{{ order.orderNumber }}</h3>
               <p class="order-card__date">{{ formatDate(order.createdAt) }}</p>
             </div>
-            <span
-              class="order-card__status"
-              :class="`order-card__status--${order.orderStatus}`"
-            >
+            <span class="order-card__status" :class="`order-card__status--${order.orderStatus}`">
               {{ getStatusLabel(order.orderStatus) }}
             </span>
           </div>
@@ -51,12 +40,8 @@
                 :src="getItemImage(item)"
                 :alt="item.name"
                 class="order-item__image"
-                @error="
-                  (e) =>
-                    ((e.target as HTMLImageElement).src =
-                      '/img/placeholder.png')
-                "
-              />
+                @error="(e) => ((e.target as HTMLImageElement).src = '/img/placeholder.png')"
+              >
               <div class="order-item__info">
                 <h4 class="order-item__name">{{ item.name }}</h4>
                 <p class="order-item__meta">
@@ -65,9 +50,7 @@
                   <span> • Количество: {{ item.quantity }}</span>
                 </p>
               </div>
-              <div class="order-item__price">
-                {{ (item.price * item.quantity).toFixed(2) }} лв
-              </div>
+              <div class="order-item__price">{{ (item.price * item.quantity).toFixed(2) }} лв</div>
             </div>
           </div>
 
@@ -84,129 +67,127 @@
 </template>
 
 <script setup lang="ts">
-console.log('[Orders Page] Component loading...')
+import { useAuthStore } from "~/stores/auth";
+import { useToast } from "~/composables/useToast";
+import { useApi } from "~/composables/useApi";
 
-import { useAuthStore } from '~/stores/auth'
-import { useToast } from '~/composables/useToast'
-import { useApi } from '~/composables/useApi'
+console.log("[Orders Page] Component loading...");
 
 definePageMeta({
-  middleware: 'auth',
-})
+  middleware: "auth",
+});
 
-const authStore = useAuthStore()
-const toast = useToast()
-const api = useApi()
+const authStore = useAuthStore();
+const api = useApi();
 
-const orders = ref<any[]>([])
-const isLoading = ref(true)
-const error = ref<string | null>(null)
+const orders = ref<any[]>([]);
+const isLoading = ref(true);
+const error = ref<string | null>(null);
 const pagination = ref({
   page: 1,
   limit: 10,
   total: 0,
   pages: 1,
-})
+});
 
 const fetchOrders = async () => {
-  console.log('[Orders Page] Fetching orders...')
-  isLoading.value = true
-  error.value = null
+  console.log("[Orders Page] Fetching orders...");
+  isLoading.value = true;
+  error.value = null;
 
   try {
     // Check if user is authenticated (works for both token-based and cookie-based auth)
     if (!authStore.isAuthenticated) {
-      throw new Error('Не сте удостоверени')
+      throw new Error("Не сте удостоверени");
     }
 
     // Build request options - use token if available, otherwise use cookies
     const requestOptions: any = {
-      credentials: 'include', // Always include cookies for cookie-based auth (Google OAuth)
-    }
+      credentials: "include", // Always include cookies for cookie-based auth (Google OAuth)
+    };
 
     // Add Bearer token if available (for email/password users)
     if (authStore.accessToken) {
       requestOptions.headers = {
         Authorization: `Bearer ${authStore.accessToken}`,
-      }
+      };
     }
 
-    const response = await api.get('orders', requestOptions)
+    const response = await api.get("orders", requestOptions);
 
-    console.log('[Orders Page] Response:', response)
+    console.log("[Orders Page] Response:", response);
 
     if (response.success) {
-      orders.value = response.data || []
-      pagination.value = response.pagination || pagination.value
+      orders.value = response.data || [];
+      pagination.value = response.pagination || pagination.value;
     } else {
-      throw new Error('Неуспешно зареждане на поръчките')
+      throw new Error("Неуспешно зареждане на поръчките");
     }
   } catch (err: any) {
-    console.error('[Orders Page] Error:', err)
-    error.value =
-      err.data?.message || err.message || 'Грешка при зареждане на поръчките'
+    console.error("[Orders Page] Error:", err);
+    error.value = err.data?.message || err.message || "Грешка при зареждане на поръчките";
   } finally {
-    isLoading.value = false
+    isLoading.value = false;
   }
-}
+};
 
 const formatDate = (dateString: string) => {
-  const date = new Date(dateString)
-  return date.toLocaleDateString('bg-BG', {
-    year: 'numeric',
-    month: 'long',
-    day: 'numeric',
-  })
-}
+  const date = new Date(dateString);
+  return date.toLocaleDateString("bg-BG", {
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+  });
+};
 
 const getStatusLabel = (status: string) => {
   const labels: Record<string, string> = {
-    pending: 'В очакване',
-    processing: 'Обработва се',
-    shipped: 'Изпратена',
-    delivered: 'Доставена',
-    cancelled: 'Отменена',
-  }
-  return labels[status] || status
-}
+    pending: "В очакване",
+    processing: "Обработва се",
+    shipped: "Изпратена",
+    delivered: "Доставена",
+    cancelled: "Отменена",
+  };
+  return labels[status] || status;
+};
 
 const getItemImage = (item: any) => {
   // Check if item has image
   if (!item.image) {
     // Try to get from populated product
     if (item.product?.images?.[0]?.url) {
-      return item.product.images[0].url
+      return item.product.images[0].url;
     }
-    return '/img/placeholder.png'
+    return "/img/placeholder.png";
   }
 
   // Handle if image is an object with url property
-  if (typeof item.image === 'object' && item.image.url) {
-    return item.image.url
+  if (typeof item.image === "object" && item.image.url) {
+    return item.image.url;
   }
 
   // Handle if image is a string
-  if (typeof item.image === 'string') {
-    return item.image
+  if (typeof item.image === "string") {
+    return item.image;
   }
 
-  return '/img/placeholder.png'
-}
+  return "/img/placeholder.png";
+};
 
 onMounted(() => {
-  console.log('[Orders Page] Mounted!')
-  fetchOrders()
-})
+  console.log("[Orders Page] Mounted!");
+  fetchOrders();
+});
 
 useHead({
-  title: 'Моите Поръчки - emWear',
-})
+  title: "Моите Поръчки - emWear",
+});
 </script>
 
 <style lang="scss" scoped>
-@use '~/assets/styles/colors' as *;
-@use '~/assets/styles/fonts' as *;
-@use '~/assets/styles/breakpoints' as *;
+@use "~/assets/styles/colors" as *;
+@use "~/assets/styles/fonts" as *;
+@use "~/assets/styles/breakpoints" as *;
 
 .orders-page {
   min-height: 60vh;

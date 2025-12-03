@@ -3,11 +3,7 @@
     <div class="container">
       <div class="profile-edit-page__header">
         <h1 class="profile-edit-page__title">Редактиране на профил</h1>
-        <button
-          type="button"
-          class="profile-edit-page__back"
-          @click="$router.back()"
-        >
+        <button type="button" class="profile-edit-page__back" @click="$router.back()">
           ← Назад към профила
         </button>
       </div>
@@ -27,7 +23,7 @@
                   type="text"
                   class="form-input"
                   placeholder="Вашето име"
-                />
+                >
               </div>
 
               <div class="form-group">
@@ -38,7 +34,7 @@
                   type="text"
                   class="form-input"
                   placeholder="Вашата фамилия"
-                />
+                >
               </div>
             </div>
 
@@ -50,7 +46,7 @@
                 type="tel"
                 class="form-input"
                 placeholder="+359 ..."
-              />
+              >
             </div>
 
             <div class="form-group">
@@ -61,7 +57,7 @@
                 type="email"
                 class="form-input"
                 disabled
-              />
+              >
               <p class="form-hint">Имейлът не може да бъде променен</p>
             </div>
           </div>
@@ -79,10 +75,7 @@
               </button>
             </div>
 
-            <div
-              v-if="authStore.user?.addresses?.length"
-              class="addresses-list"
-            >
+            <div v-if="authStore.user?.addresses?.length" class="addresses-list">
               <div
                 v-for="address in authStore.user.addresses"
                 :key="address._id"
@@ -91,9 +84,7 @@
               >
                 <div class="address-card__content">
                   <div class="address-card__badges">
-                    <div class="address-card__badge" v-if="address.isDefault">
-                      По подразбиране
-                    </div>
+                    <div v-if="address.isDefault" class="address-card__badge">По подразбиране</div>
                     <div
                       v-if="address.type === 'econt_office'"
                       class="address-card__type-badge address-card__type-badge--econt"
@@ -106,17 +97,12 @@
                     >
                       🤖 Еконтомат
                     </div>
-                    <div
-                      v-else
-                      class="address-card__type-badge address-card__type-badge--home"
-                    >
+                    <div v-else class="address-card__type-badge address-card__type-badge--home">
                       🏠 Личен адрес
                     </div>
                   </div>
                   <p class="address-card__street">{{ address.street }}</p>
-                  <p class="address-card__city">
-                    {{ address.city }}, {{ address.postalCode }}
-                  </p>
+                  <p class="address-card__city">{{ address.city }}, {{ address.postalCode }}</p>
                   <p class="address-card__country">{{ address.country }}</p>
                 </div>
                 <div class="address-card__actions">
@@ -151,12 +137,8 @@
 
           <!-- Submit Button -->
           <div class="form-actions">
-            <button
-              type="submit"
-              class="btn btn--primary btn--large"
-              :disabled="isSaving"
-            >
-              {{ isSaving ? 'Запазване...' : 'Запази промените' }}
+            <button type="submit" class="btn btn--primary btn--large" :disabled="isSaving">
+              {{ isSaving ? "Запазване..." : "Запази промените" }}
             </button>
           </div>
         </form>
@@ -165,20 +147,16 @@
 
     <!-- Address Dialog -->
     <Teleport to="body">
-      <div
-        v-if="showAddressDialog"
-        class="dialog-overlay"
-        @click="closeAddressDialog"
-      >
+      <div v-if="showAddressDialog" class="dialog-overlay" @click="closeAddressDialog">
         <div class="dialog" @click.stop>
           <div class="dialog__header">
             <h3 class="dialog__title">
-              {{ editingAddress ? 'Редактиране на адрес' : 'Нов адрес' }}
+              {{ editingAddress ? "Редактиране на адрес" : "Нов адрес" }}
             </h3>
             <button class="dialog__close" @click="closeAddressDialog">×</button>
           </div>
 
-          <form @submit.prevent="saveAddress" class="dialog__body">
+          <form class="dialog__body" @submit.prevent="saveAddress">
             <div class="form-group">
               <label for="addressStreet" class="form-label">Адрес *</label>
               <input
@@ -188,7 +166,7 @@
                 class="form-input"
                 placeholder="Улица, номер, етаж, апартамент"
                 required
-              />
+              >
             </div>
 
             <div class="form-row">
@@ -200,44 +178,34 @@
                   type="text"
                   class="form-input"
                   required
-                />
+                >
               </div>
 
               <div class="form-group">
-                <label for="addressPostalCode" class="form-label"
-                  >Пощенски код *</label
-                >
+                <label for="addressPostalCode" class="form-label">Пощенски код *</label>
                 <input
                   id="addressPostalCode"
                   v-model="addressForm.postalCode"
                   type="text"
                   class="form-input"
                   required
-                />
+                >
               </div>
             </div>
 
             <div class="form-group">
               <label class="checkbox-label">
-                <input type="checkbox" v-model="addressForm.isDefault" />
+                <input v-model="addressForm.isDefault" type="checkbox" >
                 <span>Задай като адрес по подразбиране</span>
               </label>
             </div>
 
             <div class="dialog__actions">
-              <button
-                type="button"
-                class="btn btn--outline"
-                @click="closeAddressDialog"
-              >
+              <button type="button" class="btn btn--outline" @click="closeAddressDialog">
                 Отказ
               </button>
-              <button
-                type="submit"
-                class="btn btn--primary"
-                :disabled="isSavingAddress"
-              >
-                {{ isSavingAddress ? 'Запазване...' : 'Запази' }}
+              <button type="submit" class="btn btn--primary" :disabled="isSavingAddress">
+                {{ isSavingAddress ? "Запазване..." : "Запази" }}
               </button>
             </div>
           </form>
@@ -248,127 +216,122 @@
 </template>
 
 <script setup lang="ts">
-import { useAuthStore } from '~/stores/auth'
-import { useToast } from '~/composables/useToast'
-import { useApi } from '~/composables/useApi'
+import { useAuthStore } from "~/stores/auth";
+import { useToast } from "~/composables/useToast";
+import { useApi } from "~/composables/useApi";
 
 definePageMeta({
-  middleware: 'auth',
-})
+  middleware: "auth",
+});
 
-const authStore = useAuthStore()
-const toast = useToast()
-const router = useRouter()
-const api = useApi()
+const authStore = useAuthStore();
+const toast = useToast();
+const api = useApi();
 
 // Form state
 const form = ref({
-  firstName: authStore.user?.firstName || '',
-  lastName: authStore.user?.lastName || '',
-  phone: authStore.user?.phone || '',
-})
+  firstName: authStore.user?.firstName || "",
+  lastName: authStore.user?.lastName || "",
+  phone: authStore.user?.phone || "",
+});
 
-const isSaving = ref(false)
+const isSaving = ref(false);
 
 // Address dialog state
-const showAddressDialog = ref(false)
-const editingAddress = ref<any>(null)
+const showAddressDialog = ref(false);
+const editingAddress = ref<any>(null);
 const addressForm = ref({
-  street: '',
-  city: '',
-  postalCode: '',
-  country: 'България',
+  street: "",
+  city: "",
+  postalCode: "",
+  country: "България",
   isDefault: false,
-})
-const isSavingAddress = ref(false)
+});
+const isSavingAddress = ref(false);
 
 // Update profile info
 const handleSubmit = async () => {
-  isSaving.value = true
+  isSaving.value = true;
 
   try {
     await authStore.updateProfile({
       firstName: form.value.firstName,
       lastName: form.value.lastName,
       phone: form.value.phone,
-    })
+    });
 
-    toast.success('Профилът е обновен успешно!')
+    toast.success("Профилът е обновен успешно!");
   } catch (error: any) {
-    toast.error(error.message || 'Грешка при обновяване на профила')
+    toast.error(error.message || "Грешка при обновяване на профила");
   } finally {
-    isSaving.value = false
+    isSaving.value = false;
   }
-}
+};
 
 // Address dialog
 const openAddressDialog = (address?: any) => {
   if (address) {
-    editingAddress.value = address
+    editingAddress.value = address;
     addressForm.value = {
       street: address.street,
       city: address.city,
       postalCode: address.postalCode,
-      country: address.country || 'България',
+      country: address.country || "България",
       isDefault: address.isDefault,
-    }
+    };
   } else {
-    editingAddress.value = null
+    editingAddress.value = null;
     addressForm.value = {
-      street: '',
-      city: '',
-      postalCode: '',
-      country: 'България',
+      street: "",
+      city: "",
+      postalCode: "",
+      country: "България",
       isDefault: !authStore.user?.addresses?.length,
-    }
+    };
   }
-  showAddressDialog.value = true
-}
+  showAddressDialog.value = true;
+};
 
 const closeAddressDialog = () => {
-  showAddressDialog.value = false
-  editingAddress.value = null
-}
+  showAddressDialog.value = false;
+  editingAddress.value = null;
+};
 
 const saveAddress = async () => {
-  isSavingAddress.value = true
+  isSavingAddress.value = true;
 
   try {
     if (editingAddress.value) {
       // Update existing address
-      await api.patch(
-        `users/addresses/${editingAddress.value._id}`,
-        addressForm.value,
-        {
-          headers: {
-            Authorization: `Bearer ${authStore.accessToken}`,
-          },
-        }
-      )
-      toast.success('Адресът е обновен!')
-    } else {
-      // Add new address
-      await api.post('users/addresses', addressForm.value, {
+      await api.patch(`users/addresses/${editingAddress.value._id}`, addressForm.value, {
         headers: {
           Authorization: `Bearer ${authStore.accessToken}`,
         },
-      })
-      toast.success('Адресът е добавен!')
+      });
+      toast.success("Адресът е обновен!");
+    } else {
+      // Add new address
+      await api.post("users/addresses", addressForm.value, {
+        headers: {
+          Authorization: `Bearer ${authStore.accessToken}`,
+        },
+      });
+      toast.success("Адресът е добавен!");
     }
 
     // Refresh user data
-    await authStore.fetchUser()
-    closeAddressDialog()
+    await authStore.fetchUser();
+    closeAddressDialog();
   } catch (error: any) {
-    toast.error(error.data?.message || 'Грешка при запазване на адреса')
+    toast.error(error.data?.message || "Грешка при запазване на адреса");
   } finally {
-    isSavingAddress.value = false
+    isSavingAddress.value = false;
   }
-}
+};
 
 const deleteAddress = async (addressId: string) => {
-  if (!confirm('Сигурни ли сте, че искате да изтриете този адрес?')) {
-    return
+  if (!confirm("Сигурни ли сте, че искате да изтриете този адрес?")) {
+    return;
   }
 
   try {
@@ -376,14 +339,14 @@ const deleteAddress = async (addressId: string) => {
       headers: {
         Authorization: `Bearer ${authStore.accessToken}`,
       },
-    })
+    });
 
-    toast.success('Адресът е изтрит!')
-    await authStore.fetchUser()
+    toast.success("Адресът е изтрит!");
+    await authStore.fetchUser();
   } catch (error: any) {
-    toast.error(error.data?.message || 'Грешка при изтриване на адреса')
+    toast.error(error.data?.message || "Грешка при изтриване на адреса");
   }
-}
+};
 
 const setDefaultAddress = async (addressId: string) => {
   try {
@@ -398,26 +361,24 @@ const setDefaultAddress = async (addressId: string) => {
           isDefault: true,
         },
       }
-    )
+    );
 
-    toast.success('Адресът е зададен по подразбиране!')
-    await authStore.fetchUser()
+    toast.success("Адресът е зададен по подразбиране!");
+    await authStore.fetchUser();
   } catch (error: any) {
-    toast.error(
-      error.data?.message || 'Грешка при задаване на адрес по подразбиране'
-    )
+    toast.error(error.data?.message || "Грешка при задаване на адрес по подразбиране");
   }
-}
+};
 
 useHead({
-  title: 'Редактиране на профил - emWear',
-})
+  title: "Редактиране на профил - emWear",
+});
 </script>
 
 <style lang="scss" scoped>
-@use '~/assets/styles/colors' as *;
-@use '~/assets/styles/fonts' as *;
-@use '~/assets/styles/breakpoints' as *;
+@use "~/assets/styles/colors" as *;
+@use "~/assets/styles/fonts" as *;
+@use "~/assets/styles/breakpoints" as *;
 
 .profile-edit-page {
   min-height: 60vh;
@@ -557,7 +518,7 @@ useHead({
   color: $text-primary;
   cursor: pointer;
 
-  input[type='checkbox'] {
+  input[type="checkbox"] {
     width: 18px;
     height: 18px;
     cursor: pointer;

@@ -1,9 +1,7 @@
 <template>
   <div class="footer-bottom">
     <div class="footer-bottom__copyright">
-      <p class="footer-bottom__text">
-        © emWear {{ currentYear }}. Всички права запазени.
-      </p>
+      <p class="footer-bottom__text">© emWear {{ currentYear }}. Всички права запазени.</p>
     </div>
     <div class="footer-bottom__social">
       <span class="footer-bottom__social-text">Последвайте ни:</span>
@@ -26,36 +24,36 @@
 
 <script setup lang="ts">
 interface SocialLink {
-  name: string
-  icon: string
-  url: string
+  name: string;
+  icon: string;
+  url: string;
 }
 
-const currentYear = new Date().getFullYear()
+const currentYear = new Date().getFullYear();
 
 const socialLinks: SocialLink[] = [
   {
-    name: 'Facebook',
-    icon: 'mdi:facebook',
-    url: 'https://facebook.com/emwear',
+    name: "Facebook",
+    icon: "mdi:facebook",
+    url: "https://facebook.com/emwear",
   },
   {
-    name: 'Instagram',
-    icon: 'mdi:instagram',
-    url: 'https://instagram.com/emwear',
+    name: "Instagram",
+    icon: "mdi:instagram",
+    url: "https://instagram.com/emwear",
   },
   {
-    name: 'TikTok',
-    icon: 'simple-icons:tiktok',
-    url: 'https://tiktok.com/@emwear',
+    name: "TikTok",
+    icon: "simple-icons:tiktok",
+    url: "https://tiktok.com/@emwear",
   },
-]
+];
 </script>
 
 <style scoped lang="scss">
-@use '~/assets/styles/colors' as *;
-@use '~/assets/styles/breakpoints' as *;
-@use '~/assets/styles/fonts' as *;
+@use "~/assets/styles/colors" as *;
+@use "~/assets/styles/breakpoints" as *;
+@use "~/assets/styles/fonts" as *;
 
 .footer-bottom {
   display: flex;

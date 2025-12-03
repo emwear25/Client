@@ -5,7 +5,7 @@
         <h1 class="favorites-hero__title">Моите Любими</h1>
         <p class="favorites-hero__subtitle">
           {{ wishlistStore.count }}
-          {{ wishlistStore.count === 1 ? 'продукт' : 'продукта' }}
+          {{ wishlistStore.count === 1 ? "продукт" : "продукта" }}
         </p>
       </div>
     </section>
@@ -17,12 +17,9 @@
           <Icon name="mdi:heart-outline" class="favorites-empty__icon" />
           <h2 class="favorites-empty__title">Списъкът с любими е празен</h2>
           <p class="favorites-empty__text">
-            Започнете да добавяте продукти, които харесвате, за да ги
-            проследявате тук.
+            Започнете да добавяте продукти, които харесвате, за да ги проследявате тук.
           </p>
-          <NuxtLink to="/catalog" class="btn btn--primary">
-            Разгледай Продукти
-          </NuxtLink>
+          <NuxtLink to="/catalog" class="btn btn--primary"> Разгледай Продукти </NuxtLink>
         </div>
 
         <!-- Products Grid -->
@@ -47,109 +44,109 @@
 </template>
 
 <script setup lang="ts">
-import { useWishlist } from '~/stores/useWishlist'
-import { useApi } from '~/composables/useApi'
+import { useWishlist } from "~/stores/useWishlist";
+import { useApi } from "~/composables/useApi";
 
 interface ProductImage {
-  url: string
-  publicId: string
+  url: string;
+  publicId: string;
 }
 
 interface Product {
-  _id: string
-  slug?: string
-  name: string
-  description: string
-  price: number
-  compareAt?: number | null
-  category: string
-  images?: ProductImage[]
-  stock: number
-  customEmbroidery?: boolean
-  createdAt: string
+  _id: string;
+  slug?: string;
+  name: string;
+  description: string;
+  price: number;
+  compareAt?: number | null;
+  category: string;
+  images?: ProductImage[];
+  stock: number;
+  customEmbroidery?: boolean;
+  createdAt: string;
 }
 
-const wishlistStore = useWishlist()
-const favoriteProducts = ref<Product[]>([])
-const isLoading = ref(false)
-const selectedProduct = ref<Product | null>(null)
-const isQuickViewOpen = ref(false)
+const wishlistStore = useWishlist();
+const favoriteProducts = ref<Product[]>([]);
+const isLoading = ref(false);
+const selectedProduct = ref<Product | null>(null);
+const isQuickViewOpen = ref(false);
 
 // Load wishlist and fetch products
 onMounted(async () => {
-  wishlistStore.load()
-  await fetchFavoriteProducts()
-})
+  wishlistStore.load();
+  await fetchFavoriteProducts();
+});
 
 // Fetch products by IDs
 const fetchFavoriteProducts = async () => {
   if (wishlistStore.count === 0) {
-    favoriteProducts.value = []
-    return
+    favoriteProducts.value = [];
+    return;
   }
 
-  isLoading.value = true
+  isLoading.value = true;
   try {
     // Fetch all products using API utility
-    const api = useApi()
-    const apiData = await api.get('products')
+    const api = useApi();
+    const apiData = await api.get("products");
 
     if (apiData?.success && Array.isArray(apiData.data)) {
       // Filter to only show favorited products
       // API returns: { success: true, data: [products...], pagination: {...} }
       favoriteProducts.value = apiData.data.filter((product: Product) =>
         wishlistStore.ids.includes(product._id)
-      )
+      );
     } else {
-      console.error('Unexpected API response format:', apiData)
-      favoriteProducts.value = []
+      console.error("Unexpected API response format:", apiData);
+      favoriteProducts.value = [];
     }
   } catch (error) {
-    console.error('Failed to fetch favorite products:', error)
-    favoriteProducts.value = []
+    console.error("Failed to fetch favorite products:", error);
+    favoriteProducts.value = [];
   } finally {
-    isLoading.value = false
+    isLoading.value = false;
   }
-}
+};
 
 // Watch for changes in wishlist
 watch(
   () => wishlistStore.ids,
   async () => {
-    await fetchFavoriteProducts()
+    await fetchFavoriteProducts();
   },
   { deep: true }
-)
+);
 
 // Quick view handlers
 const handleQuickView = (product: Product) => {
-  selectedProduct.value = product
-  isQuickViewOpen.value = true
-}
+  selectedProduct.value = product;
+  isQuickViewOpen.value = true;
+};
 
 const closeQuickView = () => {
-  isQuickViewOpen.value = false
+  isQuickViewOpen.value = false;
   setTimeout(() => {
-    selectedProduct.value = null
-  }, 300)
-}
+    selectedProduct.value = null;
+  }, 300);
+};
 
 // SEO
 useHead({
-  title: 'Моите Любими - emWear',
+  title: "Моите Любими - emWear",
   meta: [
     {
-      name: 'description',
-      content: 'Разгледайте и управлявайте любимите си продукти в emWear.',
+      name: "description",
+      content: "Разгледайте и управлявайте любимите си продукти в emWear.",
     },
   ],
-})
+});
 </script>
 
 <style scoped lang="scss">
-@use '~/assets/styles/colors' as *;
-@use '~/assets/styles/fonts' as *;
-@use '~/assets/styles/breakpoints' as *;
+@use "~/assets/styles/colors" as *;
+@use "~/assets/styles/fonts" as *;
+@use "~/assets/styles/breakpoints" as *;
 
 .favorites-page {
   min-height: 60vh;

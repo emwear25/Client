@@ -12,23 +12,16 @@
           <div class="category-promos__card-inner">
             <!-- Background Image -->
             <div class="category-promos__image-wrapper">
-              <img
-                :src="category.image"
-                :alt="category.title"
-                class="category-promos__image"
-              />
+              <img :src="category.image" :alt="category.title" class="category-promos__image" >
               <!-- Dark Overlay -->
-              <div class="category-promos__overlay"></div>
+              <div class="category-promos__overlay"/>
             </div>
 
             <!-- Content -->
-            <div
-              class="category-promos__content"
-              :class="`category-promos__content--${index + 1}`"
-            >
+            <div class="category-promos__content" :class="`category-promos__content--${index + 1}`">
               <h3 class="category-promos__title">{{ category.title }}</h3>
               <NuxtLink :to="category.link" class="category-promos__button">
-                {{ 'Купи сега' }}
+                {{ "Купи сега" }}
               </NuxtLink>
             </div>
           </div>
@@ -63,13 +56,9 @@
             <div class="category-promos__card-inner">
               <!-- Background Image -->
               <div class="category-promos__image-wrapper">
-                <img
-                  :src="category.image"
-                  :alt="category.title"
-                  class="category-promos__image"
-                />
+                <img :src="category.image" :alt="category.title" class="category-promos__image" >
                 <!-- Dark Overlay -->
-                <div class="category-promos__overlay"></div>
+                <div class="category-promos__overlay"/>
               </div>
 
               <!-- Content -->
@@ -79,11 +68,7 @@
               >
                 <h3 class="category-promos__title">{{ category.title }}</h3>
                 <NuxtLink :to="category.link" class="category-promos__button">
-                  {{
-                    category.id === 1 || category.id === 2
-                      ? 'Купи сега'
-                      : 'Shop Now'
-                  }}
+                  {{ category.id === 1 || category.id === 2 ? "Купи сега" : "Shop Now" }}
                 </NuxtLink>
               </div>
             </div>
@@ -95,47 +80,47 @@
 </template>
 
 <script setup lang="ts">
-import { Swiper, SwiperSlide } from 'swiper/vue'
-import { Navigation, Pagination, Autoplay } from 'swiper/modules'
-import 'swiper/css'
-import 'swiper/css/navigation'
-import 'swiper/css/pagination'
+import { Swiper, SwiperSlide } from "swiper/vue";
+import { Navigation, Pagination, Autoplay } from "swiper/modules";
+import "swiper/css";
+import "swiper/css/navigation";
+import "swiper/css/pagination";
 
 interface CategoryPromo {
-  id: number
-  title: string
-  image: string
-  link: string
+  id: number;
+  title: string;
+  image: string;
+  link: string;
 }
 
-const modules = [Navigation, Pagination, Autoplay]
+const modules = [Navigation, Pagination, Autoplay];
 
 const categories: CategoryPromo[] = [
   {
     id: 1,
-    title: 'Детски ранички',
-    image: '/img/banners/banner1.jpg',
-    link: '/products?category=backpacks',
+    title: "Детски ранички",
+    image: "/img/banners/banner1.jpg",
+    link: "/products?category=backpacks",
   },
   {
     id: 2,
-    title: 'Халати',
-    image: '/img/banners/banner2.jpg',
-    link: '/products?category=robes',
+    title: "Халати",
+    image: "/img/banners/banner2.jpg",
+    link: "/products?category=robes",
   },
   {
     id: 3,
-    title: 'Кърпи с ушички',
-    image: '/img/banners/banner3.jpg',
-    link: '/products?category=towels',
+    title: "Кърпи с ушички",
+    image: "/img/banners/banner3.jpg",
+    link: "/products?category=towels",
   },
   {
     id: 4,
-    title: 'Персонализирани Гергефи',
-    image: '/img/banners/banner4.jpg',
-    link: '/products?category=towels-personalized',
+    title: "Персонализирани Гергефи",
+    image: "/img/banners/banner4.jpg",
+    link: "/products?category=towels-personalized",
   },
-]
+];
 </script>
 
 <style lang="scss" scoped>
@@ -301,7 +286,7 @@ const categories: CategoryPromo[] = [
   }
 
   &__title {
-    font-family: 'Outfit', sans-serif;
+    font-family: "Outfit", sans-serif;
     font-size: 30px;
     font-weight: 300;
     color: #fefefe;
@@ -321,11 +306,11 @@ const categories: CategoryPromo[] = [
     font-family:
       system-ui,
       -apple-system,
-      'Segoe UI',
-      'Roboto',
-      'Helvetica Neue',
-      'Noto Sans',
-      'Liberation Sans',
+      "Segoe UI",
+      "Roboto",
+      "Helvetica Neue",
+      "Noto Sans",
+      "Liberation Sans",
       Arial,
       sans-serif;
     font-size: 13px;

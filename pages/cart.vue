@@ -4,9 +4,9 @@
     <header class="cart-page__header">
       <div class="cart-page__container">
         <h1 class="cart-page__title">Количка</h1>
-        <p class="cart-page__subtitle" v-if="!cartStore.isEmpty">
+        <p v-if="!cartStore.isEmpty" class="cart-page__subtitle">
           {{ cartStore.itemCount }}
-          {{ cartStore.itemCount === 1 ? 'продукт' : 'продукта' }}
+          {{ cartStore.itemCount === 1 ? "продукт" : "продукта" }}
         </p>
       </div>
     </header>
@@ -24,14 +24,7 @@
               fill="none"
               xmlns="http://www.w3.org/2000/svg"
             >
-              <circle
-                cx="60"
-                cy="60"
-                r="58"
-                stroke="currentColor"
-                stroke-width="2"
-                opacity="0.2"
-              />
+              <circle cx="60" cy="60" r="58" stroke="currentColor" stroke-width="2" opacity="0.2" />
               <path
                 d="M40 45L45 30H75L80 45M40 45H80M40 45L45 85H75L80 45"
                 stroke="currentColor"
@@ -44,13 +37,8 @@
             </svg>
           </div>
           <h2 class="empty-cart__title">Вашата количка е празна</h2>
-          <p class="empty-cart__message">
-            Добавете продукти, за да започнете пазаруването
-          </p>
-          <NuxtLink
-            to="/products"
-            class="btn btn--primary btn--large empty-cart__cta"
-          >
+          <p class="empty-cart__message">Добавете продукти, за да започнете пазаруването</p>
+          <NuxtLink to="/products" class="btn btn--primary btn--large empty-cart__cta">
             Разгледай Продукти
           </NuxtLink>
         </div>
@@ -71,7 +59,7 @@
                     :src="item.image || '/placeholder-product.jpg'"
                     :alt="item.name"
                     loading="lazy"
-                  />
+                  >
                 </div>
 
                 <!-- Product Details -->
@@ -87,9 +75,7 @@
                     </span>
                   </div>
 
-                  <div class="cart-item__price">
-                    {{ formatPrice(item.price) }} лв.
-                  </div>
+                  <div class="cart-item__price">{{ formatPrice(item.price) }} лв.</div>
                 </div>
 
                 <!-- Quantity Controls -->
@@ -98,15 +84,10 @@
                   <div class="cart-item__quantity-controls">
                     <button
                       class="cart-item__quantity-btn"
-                      @click="decrementQuantity(item)"
                       :aria-label="`Намали количеството на ${item.name}`"
+                      @click="decrementQuantity(item)"
                     >
-                      <svg
-                        width="16"
-                        height="16"
-                        viewBox="0 0 16 16"
-                        fill="none"
-                      >
+                      <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
                         <path
                           d="M3 8H13"
                           stroke="currentColor"
@@ -119,21 +100,16 @@
                       type="number"
                       class="cart-item__quantity-input"
                       :value="item.quantity"
-                      @change="updateQuantityInput($event, item)"
                       min="1"
                       :aria-label="`Количество за ${item.name}`"
-                    />
+                      @change="updateQuantityInput($event, item)"
+                    >
                     <button
                       class="cart-item__quantity-btn"
-                      @click="incrementQuantity(item)"
                       :aria-label="`Увеличи количеството на ${item.name}`"
+                      @click="incrementQuantity(item)"
                     >
-                      <svg
-                        width="16"
-                        height="16"
-                        viewBox="0 0 16 16"
-                        fill="none"
-                      >
+                      <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
                         <path
                           d="M8 3V13M3 8H13"
                           stroke="currentColor"
@@ -156,8 +132,8 @@
                 <!-- Remove Button -->
                 <button
                   class="cart-item__remove"
-                  @click="removeItem(item)"
                   :aria-label="`Премахни ${item.name} от количката`"
+                  @click="removeItem(item)"
                 >
                   <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
                     <path
@@ -190,10 +166,7 @@
                 >
                   <span class="order-summary__label">Междинна сума</span>
                   <span class="order-summary__value"
-                    >{{
-                      formatPrice(cartStore.subtotalBeforeDiscount)
-                    }}
-                    лв.</span
+                    >{{ formatPrice(cartStore.subtotalBeforeDiscount) }} лв.</span
                   >
                 </div>
 
@@ -204,14 +177,11 @@
                 >
                   <span class="order-summary__label">
                     Отстъпка
-                    <span
-                      v-if="cartStore.hasCoupon"
-                      class="order-summary__coupon-code"
+                    <span v-if="cartStore.hasCoupon" class="order-summary__coupon-code"
                       >({{ cartStore.appliedCoupon }})</span
                     >
                   </span>
-                  <span
-                    class="order-summary__value order-summary__discount-amount"
+                  <span class="order-summary__value order-summary__discount-amount"
                     >-{{ formatPrice(cartStore.discountTotal) }} лв.</span
                   >
                 </div>
@@ -223,15 +193,13 @@
                   >
                 </div>
 
-                <div class="order-summary__divider"></div>
+                <div class="order-summary__divider"/>
 
                 <!-- Savings summary -->
-                <div
-                  v-if="cartStore.discountTotal > 0"
-                  class="order-summary__savings"
-                >
-                  🎉 Спестявате {{ formatPrice(cartStore.discountTotal) }} лв.
-                  ({{ cartStore.savingsPercentage }}%)
+                <div v-if="cartStore.discountTotal > 0" class="order-summary__savings">
+                  🎉 Спестявате {{ formatPrice(cartStore.discountTotal) }} лв. ({{
+                    cartStore.savingsPercentage
+                  }}%)
                 </div>
 
                 <div class="order-summary__row order-summary__total">
@@ -243,8 +211,8 @@
 
                 <button
                   class="btn btn--primary btn--large order-summary__cta"
-                  @click="goToCheckout"
                   :disabled="cartStore.isEmpty"
+                  @click="goToCheckout"
                 >
                   Към Плащане
                 </button>
@@ -262,97 +230,87 @@
 </template>
 
 <script setup lang="ts">
-import { useCartStore } from '~/stores/cart'
-import { useAuthStore } from '~/stores/auth'
-import { useRouter } from 'vue-router'
-import { useToast } from '~/composables/useToast'
+import { useCartStore } from "~/stores/cart";
+import { useAuthStore } from "~/stores/auth";
+import { useRouter } from "vue-router";
+import { useToast } from "~/composables/useToast";
 
-const cartStore = useCartStore()
-const authStore = useAuthStore()
-const router = useRouter()
-const toast = useToast()
+const cartStore = useCartStore();
+const router = useRouter();
+const toast = useToast();
 
 // Debug: Log cart items on mount
 onMounted(() => {
-  console.log('Cart page mounted. Items:', cartStore.items)
-  console.log('Is empty:', cartStore.isEmpty)
-  console.log('Item count:', cartStore.itemCount)
-})
+  console.log("Cart page mounted. Items:", cartStore.items);
+  console.log("Is empty:", cartStore.isEmpty);
+  console.log("Item count:", cartStore.itemCount);
+});
 
 // Navigate to checkout
 const goToCheckout = () => {
   // Check if cart is empty
   if (cartStore.isEmpty) {
-    toast.error('Количката е празна. Добавете продукти преди да продължите.')
-    return
+    toast.error("Количката е празна. Добавете продукти преди да продължите.");
+    return;
   }
 
   // Navigate to checkout (no auth required - supports guest checkout)
-  router.push('/checkout')
-}
+  router.push("/checkout");
+};
 
 // Shipping calculation (free shipping over 100 BGN)
 const shippingCost = computed(() => {
-  return cartStore.totalPrice >= 100 ? 0 : 5.99
-})
+  return cartStore.totalPrice >= 100 ? 0 : 5.99;
+});
 
-const totalWithShipping = computed(() => {
-  return cartStore.totalPrice + shippingCost.value
-})
+const _totalWithShipping = computed(() => {
+  return cartStore.totalPrice + shippingCost.value;
+});
 
 // Format price to 2 decimal places
 const formatPrice = (price: number): string => {
-  return price.toFixed(2)
-}
+  return price.toFixed(2);
+};
 
 // Quantity controls
 const incrementQuantity = (item: any) => {
-  cartStore.updateQuantity(item.id, item.quantity + 1, item.size, item.color)
-}
+  cartStore.updateQuantity(item.id, item.quantity + 1, item.size, item.color);
+};
 
 const decrementQuantity = (item: any) => {
   if (item.quantity > 1) {
-    cartStore.updateQuantity(item.id, item.quantity - 1, item.size, item.color)
+    cartStore.updateQuantity(item.id, item.quantity - 1, item.size, item.color);
   }
-}
+};
 
 const updateQuantityInput = (event: Event, item: any) => {
-  const target = event.target as HTMLInputElement
-  const newQuantity = parseInt(target.value) || 1
-  cartStore.updateQuantity(
-    item.id,
-    Math.max(1, newQuantity),
-    item.size,
-    item.color
-  )
-}
+  const target = event.target as HTMLInputElement;
+  const newQuantity = parseInt(target.value) || 1;
+  cartStore.updateQuantity(item.id, Math.max(1, newQuantity), item.size, item.color);
+};
 
 const removeItem = (item: any) => {
-  if (
-    confirm(
-      `Сигурни ли сте, че искате да премахнете "${item.name}" от количката?`
-    )
-  ) {
-    cartStore.removeItem(item.id, item.size, item.color)
+  if (confirm(`Сигурни ли сте, че искате да премахнете "${item.name}" от количката?`)) {
+    cartStore.removeItem(item.id, item.size, item.color);
   }
-}
+};
 
 // SEO
 useHead({
-  title: 'Количка - emWear',
+  title: "Количка - emWear",
   meta: [
     {
-      name: 'description',
-      content: 'Прегледайте вашата количка и завършете поръчката си от emWear.',
+      name: "description",
+      content: "Прегледайте вашата количка и завършете поръчката си от emWear.",
     },
   ],
-})
+});
 </script>
 
 <style lang="scss" scoped>
-@use '~/assets/styles/colors' as *;
-@use '~/assets/styles/breakpoints' as *;
-@use '~/assets/styles/fonts' as *;
+@use "~/assets/styles/colors" as *;
+@use "~/assets/styles/breakpoints" as *;
+@use "~/assets/styles/fonts" as *;
 
 // ═══════════════════════════════════════════════════
 // CART PAGE
@@ -497,10 +455,10 @@ useHead({
   display: grid;
   grid-template-columns: 80px 1fr;
   grid-template-areas:
-    'image details'
-    'image quantity'
-    'subtotal subtotal'
-    'remove remove';
+    "image details"
+    "image quantity"
+    "subtotal subtotal"
+    "remove remove";
   gap: 1rem;
   position: relative;
   transition: all 0.2s ease;
@@ -509,15 +467,15 @@ useHead({
   @include up(sm) {
     grid-template-columns: 100px 1fr auto;
     grid-template-areas:
-      'image details quantity'
-      'image details subtotal'
-      'remove remove remove';
+      "image details quantity"
+      "image details subtotal"
+      "remove remove remove";
     padding: 1.25rem;
   }
 
   @include up(md) {
     grid-template-columns: 120px 1fr auto auto auto;
-    grid-template-areas: 'image details quantity subtotal remove';
+    grid-template-areas: "image details quantity subtotal remove";
     gap: 1.5rem;
     padding: 1.5rem;
   }

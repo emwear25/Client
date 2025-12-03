@@ -10,9 +10,7 @@
           <NuxtLink to="/products" class="btn btn--primary btn--large">
             Разгледай продуктите
           </NuxtLink>
-          <NuxtLink to="/contact" class="btn btn--ghost btn--large">
-            Свържете се с нас
-          </NuxtLink>
+          <NuxtLink to="/contact" class="btn btn--ghost btn--large"> Свържете се с нас </NuxtLink>
         </div>
       </div>
     </div>
@@ -22,9 +20,9 @@
 <script setup lang="ts"></script>
 
 <style scoped lang="scss">
-@use '~/assets/styles/colors' as *;
-@use '~/assets/styles/breakpoints' as *;
-@use '~/assets/styles/fonts' as *;
+@use "~/assets/styles/colors" as *;
+@use "~/assets/styles/breakpoints" as *;
+@use "~/assets/styles/fonts" as *;
 
 .about-cta {
   padding: 4rem 0;
@@ -42,7 +40,7 @@
 
   // Decorative elements
   &::before {
-    content: '';
+    content: "";
     position: absolute;
     bottom: -10%;
     left: -5%;
@@ -54,7 +52,7 @@
   }
 
   &::after {
-    content: '';
+    content: "";
     position: absolute;
     top: -15%;
     right: -8%;

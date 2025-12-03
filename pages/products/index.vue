@@ -5,15 +5,14 @@
       <div class="container">
         <h1 class="hero-products__title">Нашите Продукти</h1>
         <p class="hero-products__subtitle">
-          Открийте ръчно бродирани ранички, дрехи и аксесоари – персонализирани
-          с име.
+          Открийте ръчно бродирани ранички, дрехи и аксесоари – персонализирани с име.
         </p>
       </div>
     </div>
 
     <!-- Toolbar (Sort only) -->
     <div class="container products-toolbar">
-      <div class="products-toolbar__spacer"></div>
+      <div class="products-toolbar__spacer"/>
       <div class="products-toolbar__sort">
         <label class="sr-only" for="sort">Подреди</label>
         <select id="sort" v-model="sortBy" class="products-toolbar__select">
@@ -29,15 +28,11 @@
     <div class="container">
       <div v-if="isLoading" class="products-grid">
         <div v-for="i in 8" :key="`skeleton-${i}`" class="product-skeleton">
-          <div class="product-skeleton__img"></div>
+          <div class="product-skeleton__img"/>
           <div class="product-skeleton__body">
-            <div
-              class="product-skeleton__line product-skeleton__line--short"
-            ></div>
-            <div class="product-skeleton__line"></div>
-            <div
-              class="product-skeleton__line product-skeleton__line--short"
-            ></div>
+            <div class="product-skeleton__line product-skeleton__line--short"/>
+            <div class="product-skeleton__line"/>
+            <div class="product-skeleton__line product-skeleton__line--short"/>
           </div>
         </div>
       </div>
@@ -51,15 +46,13 @@
           stroke="currentColor"
           stroke-width="1.5"
         >
-          <circle cx="12" cy="12" r="10"></circle>
-          <line x1="12" y1="8" x2="12" y2="12"></line>
-          <line x1="12" y1="16" x2="12.01" y2="16"></line>
+          <circle cx="12" cy="12" r="10"/>
+          <line x1="12" y1="8" x2="12" y2="12"/>
+          <line x1="12" y1="16" x2="12.01" y2="16"/>
         </svg>
         <h2 class="state-card__title">Нещо се обърка</h2>
         <p class="state-card__text">{{ error }}</p>
-        <button class="btn btn--primary" @click="fetchProducts">
-          Опитай отново
-        </button>
+        <button class="btn btn--primary" @click="fetchProducts">Опитай отново</button>
       </div>
 
       <!-- Empty State -->
@@ -71,8 +64,8 @@
           stroke="currentColor"
           stroke-width="1.5"
         >
-          <circle cx="11" cy="11" r="8"></circle>
-          <path d="m21 21-4.35-4.35"></path>
+          <circle cx="11" cy="11" r="8"/>
+          <path d="m21 21-4.35-4.35"/>
         </svg>
         <h2 class="state-card__title">Няма намерени продукти</h2>
         <p class="state-card__text">Скоро ще добавим нови продукти</p>
@@ -99,104 +92,99 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted } from 'vue'
-import { useHead } from '#app'
-import { useWishlist } from '~/stores/useWishlist'
-import { useApi } from '~/composables/useApi'
+import { ref, computed, onMounted } from "vue";
+import { useHead } from "#app";
+import { useWishlist } from "~/stores/useWishlist";
+import { useApi } from "~/composables/useApi";
 
 useHead({
-  title: 'Продукти - emWear | Персонализирани Бродирани Изделия',
+  title: "Продукти - emWear | Персонализирани Бродирани Изделия",
   meta: [
     {
-      name: 'description',
-      content:
-        'Открийте ръчно бродирани ранички, дрехи и аксесоари – персонализирани с име.',
+      name: "description",
+      content: "Открийте ръчно бродирани ранички, дрехи и аксесоари – персонализирани с име.",
     },
   ],
-})
+});
 
 interface ProductImage {
-  url: string
-  publicId: string
+  url: string;
+  publicId: string;
 }
 
 interface Product {
-  _id: string
-  slug?: string
-  name: string
-  description: string
-  price: number
-  compareAt?: number | null
-  category: string
-  sizes: string[]
-  colors: string[]
-  images?: ProductImage[]
-  stock: number
-  isActive: boolean
-  customEmbroidery?: boolean
-  createdAt: string
+  _id: string;
+  slug?: string;
+  name: string;
+  description: string;
+  price: number;
+  compareAt?: number | null;
+  category: string;
+  sizes: string[];
+  colors: string[];
+  images?: ProductImage[];
+  stock: number;
+  isActive: boolean;
+  customEmbroidery?: boolean;
+  createdAt: string;
 }
 
 // State
-const products = ref<Product[]>([])
-const isLoading = ref(true)
-const error = ref<string | null>(null)
-const sortBy = ref<'newest' | 'price-asc' | 'price-desc' | 'name-asc'>('newest')
-const drawerOpen = ref(false)
-const activeProduct = ref<Product | null>(null)
+const products = ref<Product[]>([]);
+const isLoading = ref(true);
+const error = ref<string | null>(null);
+const sortBy = ref<"newest" | "price-asc" | "price-desc" | "name-asc">("newest");
+const drawerOpen = ref(false);
+const activeProduct = ref<Product | null>(null);
 
 // Computed - Sorted Products
 const sortedProducts = computed(() => {
-  const arr = [...products.value]
+  const arr = [...products.value];
 
   switch (sortBy.value) {
-    case 'price-asc':
-      return arr.sort((a, b) => a.price - b.price)
-    case 'price-desc':
-      return arr.sort((a, b) => b.price - a.price)
-    case 'name-asc':
-      return arr.sort((a, b) => a.name.localeCompare(b.name, 'bg'))
+    case "price-asc":
+      return arr.sort((a, b) => a.price - b.price);
+    case "price-desc":
+      return arr.sort((a, b) => b.price - a.price);
+    case "name-asc":
+      return arr.sort((a, b) => a.name.localeCompare(b.name, "bg"));
     default: // newest
-      return arr.sort(
-        (a, b) =>
-          new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
-      )
+      return arr.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
   }
-})
+});
 
 // Functions
 const fetchProducts = async () => {
-  isLoading.value = true
-  error.value = null
+  isLoading.value = true;
+  error.value = null;
 
   try {
-    const api = useApi()
-    const data = await api.get('products?active=true')
-    products.value = data.data || []
+    const api = useApi();
+    const data = await api.get("products?active=true");
+    products.value = data.data || [];
   } catch (err) {
-    error.value =
-      err instanceof Error ? err.message : 'Възникна грешка при зареждането'
+    error.value = err instanceof Error ? err.message : "Възникна грешка при зареждането";
   } finally {
-    isLoading.value = false
+    isLoading.value = false;
   }
-}
+};
 
 const openQuickView = (product: Product) => {
-  activeProduct.value = product
-  drawerOpen.value = true
-}
+  activeProduct.value = product;
+  drawerOpen.value = true;
+};
 
 onMounted(() => {
-  const wishlist = useWishlist()
-  wishlist.load()
-  fetchProducts()
-})
+  const wishlist = useWishlist();
+  wishlist.load();
+  fetchProducts();
+});
 </script>
 
 <style lang="scss" scoped>
-@use '@/assets/styles/colors' as *;
-@use '@/assets/styles/breakpoints' as *;
-@use '@/assets/styles/fonts' as *;
+@use "@/assets/styles/colors" as *;
+@use "@/assets/styles/breakpoints" as *;
+@use "@/assets/styles/fonts" as *;
 
 // ═══════════════════════════════════════════════════
 // PRODUCTS PAGE - Warm, Premium, Scandinavian Design
@@ -400,12 +388,7 @@ onMounted(() => {
 
   &__img {
     aspect-ratio: 1 / 1.2;
-    background: linear-gradient(
-      90deg,
-      $bg-page 25%,
-      rgba($brand, 0.12) 50%,
-      $bg-page 75%
-    );
+    background: linear-gradient(90deg, $bg-page 25%, rgba($brand, 0.12) 50%, $bg-page 75%);
     background-size: 200% 100%;
     animation: shimmer 2s infinite;
   }
@@ -416,12 +399,7 @@ onMounted(() => {
 
   &__line {
     height: 12px;
-    background: linear-gradient(
-      90deg,
-      $bg-page 25%,
-      rgba($brand, 0.12) 50%,
-      $bg-page 75%
-    );
+    background: linear-gradient(90deg, $bg-page 25%, rgba($brand, 0.12) 50%, $bg-page 75%);
     background-size: 200% 100%;
     animation: shimmer 2s infinite;
     margin-bottom: 0.5rem;

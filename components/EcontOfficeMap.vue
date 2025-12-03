@@ -14,7 +14,7 @@
           class="search-input"
           @focus="showCitySuggestions = true"
           @blur="hideCitySuggestions"
-        />
+        >
         <div v-if="showCitySuggestions && filteredCities.length > 0" class="suggestions-dropdown">
           <div
             v-for="city in filteredCities"
@@ -30,18 +30,27 @@
 
       <!-- Office Search -->
       <div class="search-input-wrapper">
-        <label for="office-search">🏢 Изберете офис{{ selectedCityName ? ` в ${selectedCityName}` : '' }}:</label>
+        <label for="office-search"
+          >🏢 Изберете офис{{ selectedCityName ? ` в ${selectedCityName}` : "" }}:</label
+        >
         <input
           id="office-search"
           v-model="officeSearchQuery"
           type="text"
-          :placeholder="selectedCityName ? `Кликнете за избор на офис в ${selectedCityName}...` : 'Първо изберете град...'"
+          :placeholder="
+            selectedCityName
+              ? `Кликнете за избор на офис в ${selectedCityName}...`
+              : 'Първо изберете град...'
+          "
           class="search-input"
           :disabled="!selectedCityName"
           @focus="showOfficeSuggestions = true"
           @blur="hideOfficeSuggestions"
-        />
-        <div v-if="showOfficeSuggestions && filteredOfficesForSearch.length > 0" class="suggestions-dropdown">
+        >
+        <div
+          v-if="showOfficeSuggestions && filteredOfficesForSearch.length > 0"
+          class="suggestions-dropdown"
+        >
           <div
             v-for="office in filteredOfficesForSearch"
             :key="office.id"
@@ -57,7 +66,7 @@
         </div>
       </div>
     </div>
-    
+
     <!-- Map Container (hidden after confirmation) -->
     <div v-show="!isConfirmed" class="map-wrapper">
       <!-- Instructional Overlay (shown when no city selected) -->
@@ -68,266 +77,272 @@
           <p>за да видите пунктовете на картата</p>
         </div>
       </div>
-      
-      <div ref="mapContainer" class="map-container"></div>
+
+      <div ref="mapContainer" class="map-container"/>
     </div>
-    
+
     <!-- Selected Office Card (shown after confirmation) -->
     <div v-show="isConfirmed" class="selected-office-card">
       <div class="success-badge">✓ Избран офис</div>
       <h3>{{ selectedOffice?.name }}</h3>
       <p class="office-address">{{ selectedOffice?.address.fullAddress }}</p>
       <p class="office-city">{{ selectedOffice?.address.city.name }}</p>
-      <button @click="changeOffice" class="change-office-btn">
-        ✏️ Промени адрес
-      </button>
+      <button class="change-office-btn" @click="changeOffice">✏️ Промени адрес</button>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, watch, computed, nextTick } from 'vue'
-import L from 'leaflet'
-import 'leaflet/dist/leaflet.css'
-import 'leaflet.markercluster'
-import 'leaflet.markercluster/dist/MarkerCluster.css'
-import 'leaflet.markercluster/dist/MarkerCluster.Default.css'
+import { ref, onMounted, watch, computed, nextTick } from "vue";
+import L from "leaflet";
+import "leaflet/dist/leaflet.css";
+import "leaflet.markercluster";
+import "leaflet.markercluster/dist/MarkerCluster.css";
+import "leaflet.markercluster/dist/MarkerCluster.Default.css";
 
 interface Office {
-  id: number
-  code: string
-  name: string
-  isAPS: boolean
-  isMPS: boolean
+  id: number;
+  code: string;
+  name: string;
+  isAPS: boolean;
+  isMPS: boolean;
   address: {
     city: {
-      id: number
-      name: string
-      postCode: string
-    }
+      id: number;
+      name: string;
+      postCode: string;
+    };
     location: {
-      latitude: number
-      longitude: number
-    }
-    fullAddress?: string
-  }
-  phones?: string[]
-  emails?: string[]
+      latitude: number;
+      longitude: number;
+    };
+    fullAddress?: string;
+  };
+  phones?: string[];
+  emails?: string[];
 }
 
 interface CityGroup {
-  cityName: string
-  cityId: number
-  offices: Office[]
-  centerLat: number
-  centerLng: number
+  cityName: string;
+  cityId: number;
+  offices: Office[];
+  centerLat: number;
+  centerLng: number;
 }
 
 const props = defineProps<{
-  officeType?: 'office' | 'aps' | 'all'
-  initialCity?: string
-}>()
+  officeType?: "office" | "aps" | "all";
+  initialCity?: string;
+}>();
 
 const emit = defineEmits<{
-  (e: 'office-selected', office: Office): void
-}>()
+  (e: "office-selected", office: Office): void;
+}>();
 
-const mapContainer = ref<HTMLElement | null>(null)
-const map = ref<L.Map | null>(null)
-const cityMarkers = ref<L.Marker[]>([])
-const officeMarkers = ref<L.Marker[]>([])
-const markerClusterGroup = ref<any>(null)
-const offices = ref<Office[]>([])
-const selectedOffice = ref<Office | null>(null)
-const searchQuery = ref('')
-const selectedCityName = ref(props.initialCity || '')
-const currentZoom = ref(6)
-const showingCityMarkers = ref(true)
+const mapContainer = ref<HTMLElement | null>(null);
+const map = ref<L.Map | null>(null);
+const cityMarkers = ref<L.Marker[]>([]);
+const officeMarkers = ref<L.Marker[]>([]);
+const markerClusterGroup = ref<any>(null);
+const offices = ref<Office[]>([]);
+const selectedOffice = ref<Office | null>(null);
+const searchQuery = ref("");
+const selectedCityName = ref(props.initialCity || "");
+const currentZoom = ref(6);
+const showingCityMarkers = ref(true);
 
 // Search state
-const citySearchQuery = ref('')
-const officeSearchQuery = ref('')
-const showCitySuggestions = ref(false)
-const showOfficeSuggestions = ref(false)
+const citySearchQuery = ref("");
+const officeSearchQuery = ref("");
+const showCitySuggestions = ref(false);
+const showOfficeSuggestions = ref(false);
 
 // Filtered cities for autocomplete
 const filteredCities = computed(() => {
   // Show all cities when focused and empty, or filter by query
   if (!citySearchQuery.value.trim()) {
-    return showCitySuggestions.value 
+    return showCitySuggestions.value
       ? officesByCity.value.sort((a, b) => a.cityName.localeCompare(b.cityName))
-      : []
+      : [];
   }
-  const query = citySearchQuery.value.toLowerCase()
-  return officesByCity.value.filter(city =>
-    city.cityName.toLowerCase().includes(query)
-  ).sort((a, b) => a.cityName.localeCompare(b.cityName))
-})
+  const query = citySearchQuery.value.toLowerCase();
+  return officesByCity.value
+    .filter((city) => city.cityName.toLowerCase().includes(query))
+    .sort((a, b) => a.cityName.localeCompare(b.cityName));
+});
 
 // Filtered offices for autocomplete
 const filteredOfficesForSearch = computed(() => {
   // If a city is selected, show only that city's offices
-  let officesToShow = offices.value
-  
+  let officesToShow = offices.value;
+
   // Filter Bulgaria offices only
-  officesToShow = officesToShow.filter(o => {
-    const countryCode = (o.address?.city?.country as any)?.code3 || (o.address as any)?.countryCode
-    return countryCode === 'BGR'
-  })
-  
+  officesToShow = officesToShow.filter((o) => {
+    const countryCode = (o.address?.city?.country as any)?.code3 || (o.address as any)?.countryCode;
+    return countryCode === "BGR";
+  });
+
   // Filter by office type
-  if (props.officeType === 'office') {
-    officesToShow = officesToShow.filter(o => !o.isAPS && !o.isMPS)
-  } else if (props.officeType === 'aps') {
-    officesToShow = officesToShow.filter(o => o.isAPS || o.isMPS)
+  if (props.officeType === "office") {
+    officesToShow = officesToShow.filter((o) => !o.isAPS && !o.isMPS);
+  } else if (props.officeType === "aps") {
+    officesToShow = officesToShow.filter((o) => o.isAPS || o.isMPS);
   }
-  
+
   // If city is selected, filter by city
   if (selectedCityName.value) {
-    officesToShow = officesToShow.filter(o => o.address.city.name === selectedCityName.value)
+    officesToShow = officesToShow.filter((o) => o.address.city.name === selectedCityName.value);
   }
-  
+
   // Show all offices when focused and empty, or filter by query
   if (!officeSearchQuery.value.trim()) {
-    return showOfficeSuggestions.value ? officesToShow.sort((a, b) => a.name.localeCompare(b.name)) : []
+    return showOfficeSuggestions.value
+      ? officesToShow.sort((a, b) => a.name.localeCompare(b.name))
+      : [];
   }
-  
-  const query = officeSearchQuery.value.toLowerCase()
-  return officesToShow.filter(office =>
-    office.name.toLowerCase().includes(query) ||
-    office.address.city.name.toLowerCase().includes(query)
-  ).sort((a, b) => a.name.localeCompare(b.name))
-})
+
+  const query = officeSearchQuery.value.toLowerCase();
+  return officesToShow
+    .filter(
+      (office) =>
+        office.name.toLowerCase().includes(query) ||
+        office.address.city.name.toLowerCase().includes(query)
+    )
+    .sort((a, b) => a.name.localeCompare(b.name));
+});
 // Get unique cities from offices
 const cities = computed(() => {
-  const citySet = new Set(offices.value.map(o => o.address.city.name))
-  return Array.from(citySet).sort()
-})
+  const citySet = new Set(offices.value.map((o) => o.address.city.name));
+  return Array.from(citySet).sort();
+});
 
 // Group offices by city
 const officesByCity = computed((): CityGroup[] => {
-  const cityMap = new Map<string, CityGroup>()
-  
-  let filtered = offices.value
+  const cityMap = new Map<string, CityGroup>();
+
+  let filtered = offices.value;
 
   // Filter by country - only show Bulgaria offices
-  filtered = filtered.filter(o => {
-    const countryCode = o.address?.city?.country?.code3 || o.address?.countryCode
-    return countryCode === 'BGR' // Bulgaria only
-  })
+  filtered = filtered.filter((o) => {
+    const countryCode = o.address?.city?.country?.code3 || o.address?.countryCode;
+    return countryCode === "BGR"; // Bulgaria only
+  });
 
-  console.log('[EcontMap] After Bulgaria filter:', filtered.length, 'offices')
+  console.log("[EcontMap] After Bulgaria filter:", filtered.length, "offices");
 
   // Filter by office type
-  if (props.officeType === 'office') {
-    filtered = filtered.filter(o => !o.isAPS && !o.isMPS)
-  } else if (props.officeType === 'aps') {
-    filtered = filtered.filter(o => o.isAPS || o.isMPS)
+  if (props.officeType === "office") {
+    filtered = filtered.filter((o) => !o.isAPS && !o.isMPS);
+  } else if (props.officeType === "aps") {
+    filtered = filtered.filter((o) => o.isAPS || o.isMPS);
   }
 
   // Filter by search query
   if (searchQuery.value) {
-    const query = searchQuery.value.toLowerCase()
-    filtered = filtered.filter(o =>
-      o.name.toLowerCase().includes(query) ||
-      o.address.city.name.toLowerCase().includes(query)
-    )
+    const query = searchQuery.value.toLowerCase();
+    filtered = filtered.filter(
+      (o) =>
+        o.name.toLowerCase().includes(query) || o.address.city.name.toLowerCase().includes(query)
+    );
   }
 
-  filtered.forEach(office => {
-    const cityName = office.address.city.name
+  filtered.forEach((office) => {
+    const cityName = office.address.city.name;
     if (!cityMap.has(cityName)) {
       cityMap.set(cityName, {
         cityName,
         cityId: office.address.city.id,
         offices: [],
         centerLat: 0,
-        centerLng: 0
-      })
+        centerLng: 0,
+      });
     }
-    cityMap.get(cityName)!.offices.push(office)
-  })
+    cityMap.get(cityName)!.offices.push(office);
+  });
 
   // Calculate center point for each city
-  cityMap.forEach(city => {
-    const avgLat = city.offices.reduce((sum, o) => sum + o.address.location.latitude, 0) / city.offices.length
-    const avgLng = city.offices.reduce((sum, o) => sum + o.address.location.longitude, 0) / city.offices.length
-    city.centerLat = avgLat
-    city.centerLng = avgLng
-  })
+  cityMap.forEach((city) => {
+    const avgLat =
+      city.offices.reduce((sum, o) => sum + o.address.location.latitude, 0) / city.offices.length;
+    const avgLng =
+      city.offices.reduce((sum, o) => sum + o.address.location.longitude, 0) / city.offices.length;
+    city.centerLat = avgLat;
+    city.centerLng = avgLng;
+  });
 
-  return Array.from(cityMap.values())
-})
+  return Array.from(cityMap.values());
+});
 
 // Filter offices based on selected city
 const filteredOffices = computed(() => {
-  if (!selectedCityName.value) return []
-  
-  const cityGroup = officesByCity.value.find(c => c.cityName === selectedCityName.value)
-  return cityGroup ? cityGroup.offices : []
-})
+  if (!selectedCityName.value) return [];
+
+  const cityGroup = officesByCity.value.find((c) => c.cityName === selectedCityName.value);
+  return cityGroup ? cityGroup.offices : [];
+});
 
 // Fetch offices from API
 const fetchOffices = async () => {
   try {
-    console.log('[EcontMap] Fetching offices from API...')
-    const response: any = await $fetch('/api/econt/offices')
-    console.log('[EcontMap] API response:', response)
-    
+    console.log("[EcontMap] Fetching offices from API...");
+    const response: any = await $fetch("/api/econt/offices");
+    console.log("[EcontMap] API response:", response);
+
     if (response.success && response.data) {
-      console.log('[EcontMap] Raw offices count:', response.data.length)
+      console.log("[EcontMap] Raw offices count:", response.data.length);
       offices.value = response.data.map((office: any) => ({
         ...office,
         address: {
           ...office.address,
-          fullAddress: `${office.address.city.name}, ${office.address.quarter || ''} ${office.address.street || ''}`.trim()
-        }
-      }))
-      console.log('[EcontMap] Offices loaded:', offices.value.length)
-      console.log('[EcontMap] First office:', offices.value[0])
+          fullAddress:
+            `${office.address.city.name}, ${office.address.quarter || ""} ${office.address.street || ""}`.trim(),
+        },
+      }));
+      console.log("[EcontMap] Offices loaded:", offices.value.length);
+      console.log("[EcontMap] First office:", offices.value[0]);
     } else {
-      console.error('[EcontMap] Invalid response format:', response)
+      console.error("[EcontMap] Invalid response format:", response);
     }
   } catch (error) {
-    console.error('[EcontMap] Failed to fetch offices:', error)
+    console.error("[EcontMap] Failed to fetch offices:", error);
   }
-}
+};
 
 // Initialize map
 const initMap = () => {
-  if (!mapContainer.value) return
+  if (!mapContainer.value) return;
 
   // Create map centered on Bulgaria
-  map.value = L.map(mapContainer.value).setView([42.7339, 25.4858], 7)
+  map.value = L.map(mapContainer.value).setView([42.7339, 25.4858], 7);
 
   // Add OpenStreetMap tiles
-  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-    attribution: '© OpenStreetMap contributors',
+  L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+    attribution: "© OpenStreetMap contributors",
     maxZoom: 18,
-    minZoom: 6
-  }).addTo(map.value)
+    minZoom: 6,
+  }).addTo(map.value);
 
   // Track zoom level
-  map.value.on('zoomend', () => {
+  map.value.on("zoomend", () => {
     if (map.value) {
-      currentZoom.value = map.value.getZoom()
-      updateMarkerDisplay()
+      currentZoom.value = map.value.getZoom();
+      updateMarkerDisplay();
     }
-  })
+  });
 
   // Initialize marker cluster group
   markerClusterGroup.value = (L as any).markerClusterGroup({
     maxClusterRadius: 80,
     spiderfyOnMaxZoom: true,
     showCoverageOnHover: false,
-    zoomToBoundsOnClick: true
-  })
-}
+    zoomToBoundsOnClick: true,
+  });
+};
 
 // Create city marker icon with count
 const createCityIcon = (count: number) => {
   return L.divIcon({
-    className: 'city-marker',
+    className: "city-marker",
     html: `<div class="city-marker-content">
       <div class="city-marker-pin">
         <span class="city-marker-count">${count}</span>
@@ -335,16 +350,16 @@ const createCityIcon = (count: number) => {
     </div>`,
     iconSize: [50, 50],
     iconAnchor: [25, 50],
-    popupAnchor: [0, -50]
-  })
-}
+    popupAnchor: [0, -50],
+  });
+};
 
 // Create individual office marker icon with parcel icon
 const createOfficeIcon = (isAPS: boolean) => {
-  const pinColor = '#2B5BA6' // Econt Blue for all markers
-  
+  const pinColor = "#2B5BA6"; // Econt Blue for all markers
+
   return L.divIcon({
-    className: 'custom-office-marker',
+    className: "custom-office-marker",
     html: `
       <div class="pin-container">
         <svg class="pin-shape" viewBox="0 0 24 24" fill="${pinColor}">
@@ -359,297 +374,311 @@ const createOfficeIcon = (isAPS: boolean) => {
     `,
     iconSize: [32, 40],
     iconAnchor: [16, 40],
-    popupAnchor: [0, -40]
-  })
-}
+    popupAnchor: [0, -40],
+  });
+};
 
 // Update marker display based on zoom level
 const updateMarkerDisplay = () => {
-  if (!map.value) return
+  if (!map.value) return;
 
-  const zoom = currentZoom.value
-  
+  const zoom = currentZoom.value;
+
   // Show city markers when zoomed out (zoom < 10), individual offices when zoomed in
   if (zoom < 10 && !selectedCityName.value) {
-    showCityMarkers()
+    showCityMarkers();
   } else {
-    showOfficeMarkers()
+    showOfficeMarkers();
   }
-}
+};
 
 // Show city-level markers with counts
 const showCityMarkers = () => {
-  if (!map.value) return
-  
-  showingCityMarkers.value = true
-  
+  if (!map.value) return;
+
+  showingCityMarkers.value = true;
+
   // Clear existing markers
-  cityMarkers.value.forEach(marker => marker.remove())
-  officeMarkers.value.forEach(marker => marker.remove())
+  cityMarkers.value.forEach((marker) => marker.remove());
+  officeMarkers.value.forEach((marker) => marker.remove());
   if (markerClusterGroup.value) {
-    markerClusterGroup.value.clearLayers()
+    markerClusterGroup.value.clearLayers();
   }
-  cityMarkers.value = []
-  officeMarkers.value = []
+  cityMarkers.value = [];
+  officeMarkers.value = [];
 
   // Add city markers
-  officesByCity.value.forEach(city => {
+  officesByCity.value.forEach((city) => {
     const marker = L.marker([city.centerLat, city.centerLng], {
-      icon: createCityIcon(city.offices.length)
-    })
+      icon: createCityIcon(city.offices.length),
+    });
 
     const popupContent = `
       <div class="city-popup">
         <h4>${city.cityName}</h4>
-        <p><strong>${city.offices.length} ${city.offices.length === 1 ? 'офис' : 'офиса'}</strong></p>
+        <p><strong>${city.offices.length} ${city.offices.length === 1 ? "офис" : "офиса"}</strong></p>
         <button class="select-city-btn" data-city-name="${city.cityName}">
           Покажи офисите
         </button>
       </div>
-    `
+    `;
 
-    marker.bindPopup(popupContent)
-    marker.addTo(map.value!)
-    cityMarkers.value.push(marker)
+    marker.bindPopup(popupContent);
+    marker.addTo(map.value!);
+    cityMarkers.value.push(marker);
 
     // Handle city selection from popup
-    marker.on('popupopen', () => {
-      const btn = document.querySelector(`[data-city-name="${city.cityName}"]`)
+    marker.on("popupopen", () => {
+      const btn = document.querySelector(`[data-city-name="${city.cityName}"]`);
       if (btn) {
-        btn.addEventListener('click', () => {
-          selectedCityName.value = city.cityName
-          map.value?.setView([city.centerLat, city.centerLng], 13)
-          map.value?.closePopup()
-        })
+        btn.addEventListener("click", () => {
+          selectedCityName.value = city.cityName;
+          map.value?.setView([city.centerLat, city.centerLng], 13);
+          map.value?.closePopup();
+        });
       }
-    })
-  })
-}
+    });
+  });
+};
 
 // Show individual office markers
 const showOfficeMarkers = () => {
-  if (!map.value) return
-  
-  console.log('[EcontMap] showOfficeMarkers called, offices.value.length:', offices.value.length)
-  
-  showingCityMarkers.value = false
-  
+  if (!map.value) return;
+
+  console.log("[EcontMap] showOfficeMarkers called, offices.value.length:", offices.value.length);
+
+  showingCityMarkers.value = false;
+
   // Clear city markers
-  cityMarkers.value.forEach(marker => marker.remove())
-  cityMarkers.value = []
+  cityMarkers.value.forEach((marker) => marker.remove());
+  cityMarkers.value = [];
 
   // Clear existing office markers
-  officeMarkers.value.forEach(marker => marker.remove())
+  officeMarkers.value.forEach((marker) => marker.remove());
   if (markerClusterGroup.value) {
-    markerClusterGroup.value.clearLayers()
+    markerClusterGroup.value.clearLayers();
   }
-  officeMarkers.value = []
+  officeMarkers.value = [];
 
   // Determine which offices to show
-  let officesToShow = offices.value
-  
+  let officesToShow = offices.value;
+
   // Filter by country - only show Bulgaria offices
-  officesToShow = officesToShow.filter(o => {
-    const countryCode = (o.address?.city as any)?.country?.code3 || (o.address as any)?.countryCode
-    return countryCode === 'BGR' // Bulgaria only
-  })
-  
+  officesToShow = officesToShow.filter((o) => {
+    const countryCode = (o.address?.city as any)?.country?.code3 || (o.address as any)?.countryCode;
+    return countryCode === "BGR"; // Bulgaria only
+  });
+
   // Filter by office type
-  if (props.officeType === 'office') {
-    officesToShow = officesToShow.filter(o => !o.isAPS && !o.isMPS)
-  } else if (props.officeType === 'aps') {
-    officesToShow = officesToShow.filter(o => o.isAPS || o.isMPS)
+  if (props.officeType === "office") {
+    officesToShow = officesToShow.filter((o) => !o.isAPS && !o.isMPS);
+  } else if (props.officeType === "aps") {
+    officesToShow = officesToShow.filter((o) => o.isAPS || o.isMPS);
   }
-  
-  console.log('[EcontMap] selectedCityName.value:', selectedCityName.value)
-  console.log('[EcontMap] After Bulgaria filter:', officesToShow.length, 'offices')
-  
+
+  console.log("[EcontMap] selectedCityName.value:", selectedCityName.value);
+  console.log("[EcontMap] After Bulgaria filter:", officesToShow.length, "offices");
+
   // If a city is selected, show only that city's offices
   if (selectedCityName.value) {
-    const beforeFilter = officesToShow.length
-    officesToShow = officesToShow.filter(o => o.address.city.name === selectedCityName.value)
-    console.log('[EcontMap] Filtered by city:', selectedCityName.value, 'from', beforeFilter, 'to', officesToShow.length)
+    const beforeFilter = officesToShow.length;
+    officesToShow = officesToShow.filter((o) => o.address.city.name === selectedCityName.value);
+    console.log(
+      "[EcontMap] Filtered by city:",
+      selectedCityName.value,
+      "from",
+      beforeFilter,
+      "to",
+      officesToShow.length
+    );
   }
 
-  console.log('[EcontMap] Showing offices:', officesToShow.length)
+  console.log("[EcontMap] Showing offices:", officesToShow.length);
 
   // Add office markers with clustering
-  let markersAdded = 0
-  officesToShow.forEach(office => {
+  let markersAdded = 0;
+  officesToShow.forEach((office) => {
     if (!office.address?.location?.latitude || !office.address?.location?.longitude) {
-      console.warn('[EcontMap] Office missing coordinates:', office.name)
-      return
+      console.warn("[EcontMap] Office missing coordinates:", office.name);
+      return;
     }
 
-    const { latitude, longitude } = office.address.location
-    
+    const { latitude, longitude } = office.address.location;
+
     const marker = L.marker([latitude, longitude], {
-      icon: createOfficeIcon(office.isAPS || office.isMPS)
-    })
+      icon: createOfficeIcon(office.isAPS || office.isMPS),
+    });
 
     const popupContent = `
       <div class="office-popup">
         <h4>${office.name}</h4>
         <p><strong>${office.address.city.name}</strong></p>
-        <p>${office.address.fullAddress || ''}</p>
-        ${office.phones ? `<p>📞 ${office.phones[0]}</p>` : ''}
+        <p>${office.address.fullAddress || ""}</p>
+        ${office.phones ? `<p>📞 ${office.phones[0]}</p>` : ""}
         <button class="select-office-btn" data-office-id="${office.id}">
           Избери този офис
         </button>
       </div>
-    `
+    `;
 
-    marker.bindPopup(popupContent)
-    
+    marker.bindPopup(popupContent);
+
     // Add to cluster group
     if (markerClusterGroup.value) {
-      markerClusterGroup.value.addLayer(marker)
-      markersAdded++
+      markerClusterGroup.value.addLayer(marker);
+      markersAdded++;
     }
-    
-    officeMarkers.value.push(marker)
+
+    officeMarkers.value.push(marker);
 
     // Handle office selection from popup
-    marker.on('popupopen', () => {
-      const btn = document.querySelector(`[data-office-id="${office.id}"]`)
+    marker.on("popupopen", () => {
+      const btn = document.querySelector(`[data-office-id="${office.id}"]`);
       if (btn) {
-        btn.addEventListener('click', () => {
-          selectedOffice.value = office
-          officeSearchQuery.value = office.name // Auto-fill dropdown
-          map.value?.closePopup()
+        btn.addEventListener("click", () => {
+          selectedOffice.value = office;
+          officeSearchQuery.value = office.name; // Auto-fill dropdown
+          map.value?.closePopup();
           // Automatically confirm selection and hide map
-          confirmSelection()
-        })
+          confirmSelection();
+        });
       }
-    })
-  })
+    });
+  });
 
-  console.log('[EcontMap] Markers added to cluster:', markersAdded)
+  console.log("[EcontMap] Markers added to cluster:", markersAdded);
 
   // Add cluster group to map
   if (markerClusterGroup.value && map.value) {
-    map.value.addLayer(markerClusterGroup.value)
-    console.log('[EcontMap] Cluster group added to map')
+    map.value.addLayer(markerClusterGroup.value);
+    console.log("[EcontMap] Cluster group added to map");
   }
-}
+};
 
 // Select city from autocomplete
 const selectCity = (city: CityGroup) => {
-  citySearchQuery.value = city.cityName
-  selectedCityName.value = city.cityName
-  showCitySuggestions.value = false
-  
+  citySearchQuery.value = city.cityName;
+  selectedCityName.value = city.cityName;
+  showCitySuggestions.value = false;
+
   // Zoom to city
   if (map.value) {
-    map.value.setView([city.centerLat, city.centerLng], 12)
-    showOfficeMarkers()
+    map.value.setView([city.centerLat, city.centerLng], 12);
+    showOfficeMarkers();
   }
-}
+};
 
 // Select office from autocomplete dropdown
 const selectOfficeFromDropdown = (office: any) => {
-  officeSearchQuery.value = office.name
-  showOfficeSuggestions.value = false
-  selectedOffice.value = office
-  
+  officeSearchQuery.value = office.name;
+  showOfficeSuggestions.value = false;
+  selectedOffice.value = office;
+
   // Zoom to office on map
   if (map.value && office.address?.location) {
-    map.value.setView([office.address.location.latitude, office.address.location.longitude], 16)
-    
+    map.value.setView([office.address.location.latitude, office.address.location.longitude], 16);
+
     // Open popup for the office after a short delay
     setTimeout(() => {
-      const marker = officeMarkers.value.find(m => {
-        const latlng = m.getLatLng()
-        return latlng.lat === office.address.location.latitude && 
-               latlng.lng === office.address.location.longitude
-      })
+      const marker = officeMarkers.value.find((m) => {
+        const latlng = m.getLatLng();
+        return (
+          latlng.lat === office.address.location.latitude &&
+          latlng.lng === office.address.location.longitude
+        );
+      });
       if (marker) {
-        marker.openPopup()
+        marker.openPopup();
       }
-    }, 500)
+    }, 500);
   }
-}
+};
 
 // Hide suggestions with delay for click to register
 const hideCitySuggestions = () => {
   setTimeout(() => {
-    showCitySuggestions.value = false
-  }, 200)
-}
+    showCitySuggestions.value = false;
+  }, 200);
+};
 
 const hideOfficeSuggestions = () => {
   setTimeout(() => {
-    showOfficeSuggestions.value = false
-  }, 200)
-}
+    showOfficeSuggestions.value = false;
+  }, 200);
+};
 
-const isConfirmed = ref(false)
+const isConfirmed = ref(false);
 
 // Confirm office selection
 const confirmSelection = () => {
   if (selectedOffice.value) {
-    isConfirmed.value = true
-    emit('office-selected', selectedOffice.value)
+    isConfirmed.value = true;
+    emit("office-selected", selectedOffice.value);
   }
-}
+};
 
 // Change office (show map again with current selection)
 const changeOffice = () => {
-  isConfirmed.value = false
+  isConfirmed.value = false;
   // Keep selectedOffice, selectedCityName, and search queries populated
   // Just show the map again so user can change selection
-  
+
   // Need to wait for DOM update before invalidating map size
   nextTick(() => {
     // Give more time for the map to become visible
     setTimeout(() => {
       if (map.value) {
         // Force Leaflet to recalculate map size
-        map.value.invalidateSize()
-        
+        map.value.invalidateSize();
+
         // Give the map more time to render after invalidating size
         setTimeout(() => {
           if (map.value && selectedOffice.value?.address?.location) {
             // If we have a selected office, zoom to it on the map
-            map.value.setView([
-              selectedOffice.value.address.location.latitude,
-              selectedOffice.value.address.location.longitude
-            ], 16)
-            showOfficeMarkers()
+            map.value.setView(
+              [
+                selectedOffice.value.address.location.latitude,
+                selectedOffice.value.address.location.longitude,
+              ],
+              16
+            );
+            showOfficeMarkers();
           } else if (map.value && selectedCityName.value) {
             // If we only have a city selected, show that city's offices
-            const cityGroup = officesByCity.value.find(c => c.cityName === selectedCityName.value)
+            const cityGroup = officesByCity.value.find(
+              (c) => c.cityName === selectedCityName.value
+            );
             if (cityGroup) {
-              map.value.setView([cityGroup.centerLat, cityGroup.centerLng], 12)
-              showOfficeMarkers()
+              map.value.setView([cityGroup.centerLat, cityGroup.centerLng], 12);
+              showOfficeMarkers();
             }
           }
-        }, 150)
+        }, 150);
       }
-    }, 50)
-  })
-}
+    }, 50);
+  });
+};
 
 // Watch for filter changes
 watch([() => props.officeType], () => {
-  updateMarkerDisplay()
-})
+  updateMarkerDisplay();
+});
 
 // Watch for city selection
 watch(selectedCityName, (newCity) => {
   if (newCity) {
-    showOfficeMarkers()
+    showOfficeMarkers();
   } else {
-    updateMarkerDisplay()
+    updateMarkerDisplay();
   }
-})
+});
 
 // Initialize on mount
 onMounted(async () => {
-  await fetchOffices()
-  initMap()
-  showCityMarkers()
-})
+  await fetchOffices();
+  initMap();
+  showCityMarkers();
+});
 </script>
 
 <style scoped>
@@ -812,7 +841,7 @@ onMounted(async () => {
 .selected-office-card {
   padding: 2rem;
   background: linear-gradient(135deg, rgba(185, 198, 170, 0.1) 0%, rgba(185, 198, 170, 0.05) 100%);
-  border: 2px solid #B9C6AA;
+  border: 2px solid #b9c6aa;
   border-radius: 12px;
   position: relative;
   min-height: 200px;
@@ -821,8 +850,8 @@ onMounted(async () => {
 .success-badge {
   display: inline-block;
   padding: 0.5rem 1rem;
-  background: #B9C6AA;
-  color: #2F3A2A;
+  background: #b9c6aa;
+  color: #2f3a2a;
   border-radius: 20px;
   font-size: 0.85rem;
   font-weight: 600;
@@ -831,7 +860,7 @@ onMounted(async () => {
 
 .selected-office-card h3 {
   margin: 0 0 1rem 0;
-  color: #2F3A2A;
+  color: #2f3a2a;
   font-size: 1.5rem;
   font-weight: 600;
 }
@@ -852,8 +881,8 @@ onMounted(async () => {
   margin-top: 1.5rem;
   padding: 0.75rem 1.5rem;
   background: white;
-  color: #2F3A2A;
-  border: 2px solid #B9C6AA;
+  color: #2f3a2a;
+  border: 2px solid #b9c6aa;
   border-radius: 8px;
   font-size: 1rem;
   font-weight: 600;
@@ -862,7 +891,7 @@ onMounted(async () => {
 }
 
 .change-office-btn:hover {
-  background: #B9C6AA;
+  background: #b9c6aa;
   color: white;
   transform: translateY(-2px);
   box-shadow: 0 4px 12px rgba(185, 198, 170, 0.3);
@@ -889,8 +918,8 @@ onMounted(async () => {
   margin-top: 1rem;
   width: 100%;
   padding: 0.75rem;
-  background: #B9C6AA;
-  color: #2F3A2A;
+  background: #b9c6aa;
+  color: #2f3a2a;
   border: none;
   border-radius: 8px;
   font-size: 1rem;
@@ -900,7 +929,7 @@ onMounted(async () => {
 }
 
 .confirm-btn:hover {
-  background: #A8B599;
+  background: #a8b599;
   transform: translateY(-1px);
   box-shadow: 0 4px 12px rgba(185, 198, 170, 0.3);
 }
@@ -908,7 +937,7 @@ onMounted(async () => {
 .confirmed-office-info {
   padding: 1rem;
   background: rgba(185, 198, 170, 0.1);
-  border: 2px solid #B9C6AA;
+  border: 2px solid #b9c6aa;
   border-radius: 8px;
   position: relative;
 }
@@ -919,7 +948,7 @@ onMounted(async () => {
   right: 1rem;
   width: 32px;
   height: 32px;
-  background: #B9C6AA;
+  background: #b9c6aa;
   color: white;
   border-radius: 50%;
   display: flex;
@@ -931,13 +960,13 @@ onMounted(async () => {
 
 .confirmed-office-info h4 {
   margin: 0 0 0.5rem 0;
-  color: #2F3A2A;
+  color: #2f3a2a;
   font-weight: 600;
 }
 
 .confirmed-office-info p {
   margin: 0.25rem 0;
-  color: #2F3A2A;
+  color: #2f3a2a;
   font-size: 0.9rem;
 }
 
@@ -969,11 +998,11 @@ onMounted(async () => {
 }
 
 :deep(.marker-office) {
-  color: #2196F3;
+  color: #2196f3;
 }
 
 :deep(.marker-aps) {
-  color: #FF9800;
+  color: #ff9800;
 }
 
 /* Popup styles */
@@ -998,8 +1027,8 @@ onMounted(async () => {
   margin-top: 0.75rem;
   width: 100%;
   padding: 0.5rem;
-  background: #B9C6AA;
-  color: #2F3A2A;
+  background: #b9c6aa;
+  color: #2f3a2a;
   border: none;
   border-radius: 4px;
   cursor: pointer;
@@ -1009,7 +1038,7 @@ onMounted(async () => {
 }
 
 :deep(.select-office-btn:hover) {
-  background: #A8B599;
+  background: #a8b599;
   transform: translateY(-1px);
   box-shadow: 0 2px 8px rgba(185, 198, 170, 0.3);
 }
@@ -1033,7 +1062,7 @@ onMounted(async () => {
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
   border: 3px solid white;
 }
 
@@ -1042,7 +1071,7 @@ onMounted(async () => {
   color: white;
   font-weight: bold;
   font-size: 16px;
-  text-shadow: 0 1px 2px rgba(0,0,0,0.3);
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
 }
 
 /* City popup styles */
@@ -1068,8 +1097,8 @@ onMounted(async () => {
   margin-top: 0.75rem;
   width: 100%;
   padding: 0.6rem;
-  background: #B9C6AA;
-  color: #2F3A2A;
+  background: #b9c6aa;
+  color: #2f3a2a;
   border: none;
   border-radius: 4px;
   cursor: pointer;
@@ -1079,7 +1108,7 @@ onMounted(async () => {
 }
 
 :deep(.select-city-btn:hover) {
-  background: #A8B599;
+  background: #a8b599;
   transform: translateY(-1px);
   box-shadow: 0 2px 8px rgba(185, 198, 170, 0.3);
 }
@@ -1100,15 +1129,15 @@ onMounted(async () => {
 }
 
 :deep(.office-marker-office) {
-  color: #2196F3;
+  color: #2196f3;
 }
 
 :deep(.office-marker-aps) {
-  color: #FF9800;
+  color: #ff9800;
 }
 
 :deep(.office-marker-icon) {
   font-size: 24px;
-  filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3));
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3));
 }
 </style>

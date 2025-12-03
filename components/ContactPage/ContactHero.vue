@@ -3,8 +3,8 @@
     <div class="contact-hero__container">
       <h1 class="contact-hero__heading">Свържете се с нас</h1>
       <p class="contact-hero__subtext">
-        Имате въпрос относно поръчка, продукт или идея за персонализация? Пишете
-        ни — ще отговорим до 24 часа.
+        Имате въпрос относно поръчка, продукт или идея за персонализация? Пишете ни — ще отговорим
+        до 24 часа.
       </p>
     </div>
   </section>
@@ -30,7 +30,7 @@
   }
 
   &__heading {
-    font-family: 'Poppins', sans-serif;
+    font-family: "Poppins", sans-serif;
     font-weight: 700;
     font-size: 2.5rem;
     color: #333;
@@ -47,7 +47,7 @@
   }
 
   &__subtext {
-    font-family: 'Inter', sans-serif;
+    font-family: "Inter", sans-serif;
     font-weight: 400;
     font-size: 1.125rem;
     color: #666;

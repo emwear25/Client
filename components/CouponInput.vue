@@ -6,30 +6,22 @@
         type="text"
         placeholder="Въведете код за отстъпка"
         :disabled="loading || hasCoupon"
-        @keyup.enter="handleApply"
         class="coupon-field"
-      />
+        @keyup.enter="handleApply"
+      >
       <button
         v-if="!hasCoupon"
-        @click="handleApply"
         :disabled="loading || !couponCode.trim()"
         class="apply-btn"
+        @click="handleApply"
       >
-        {{ loading ? 'Проверка...' : 'Приложи' }}
+        {{ loading ? "Проверка..." : "Приложи" }}
       </button>
-      <button
-        v-else
-        @click="handleRemove"
-        class="remove-btn"
-      >
-        ✕ Премахни
-      </button>
+      <button v-else class="remove-btn" @click="handleRemove">✕ Премахни</button>
     </div>
 
     <!-- Success message -->
-    <div v-if="successMessage" class="message success">
-      ✓ {{ successMessage }}
-    </div>
+    <div v-if="successMessage" class="message success">✓ {{ successMessage }}</div>
 
     <!-- Error message -->
     <div v-if="errorMessage" class="message error">
@@ -40,87 +32,85 @@
     <div v-if="hasCoupon && appliedDiscount" class="discount-info">
       <div class="discount-badge">
         <span class="discount-name">{{ appliedDiscount.name }}</span>
-        <span class="discount-value">
-          -{{ formatDiscountValue(appliedDiscount) }}
-        </span>
+        <span class="discount-value"> -{{ formatDiscountValue(appliedDiscount) }} </span>
       </div>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref, computed } from 'vue'
-import { useCartStore } from '~/stores/cart'
+import { ref, computed } from "vue";
+import { useCartStore } from "~/stores/cart";
 
-const cartStore = useCartStore()
+const cartStore = useCartStore();
 
-const couponCode = ref('')
-const loading = ref(false)
-const successMessage = ref('')
-const errorMessage = ref('')
+const couponCode = ref("");
+const loading = ref(false);
+const successMessage = ref("");
+const errorMessage = ref("");
 
-const hasCoupon = computed(() => cartStore.hasCoupon)
+const hasCoupon = computed(() => cartStore.hasCoupon);
 const appliedDiscount = computed(() => {
   return cartStore.appliedDiscounts && cartStore.appliedDiscounts.length > 0
     ? cartStore.appliedDiscounts[0]
-    : null
-})
+    : null;
+});
 
 const handleApply = async () => {
-  if (!couponCode.value.trim()) return
+  if (!couponCode.value.trim()) return;
 
-  loading.value = true
-  errorMessage.value = ''
-  successMessage.value = ''
+  loading.value = true;
+  errorMessage.value = "";
+  successMessage.value = "";
 
   try {
-    await cartStore.applyCoupon(couponCode.value)
-    successMessage.value = 'Кодът за отстъпка е приложен успешно!'
-    
+    await cartStore.applyCoupon(couponCode.value);
+    successMessage.value = "Кодът за отстъпка е приложен успешно!";
+
     // Clear success message after 3 seconds
     setTimeout(() => {
-      successMessage.value = ''
-    }, 3000)
+      successMessage.value = "";
+    }, 3000);
   } catch (error: any) {
-    errorMessage.value = error.message || 'Невалиден код за отстъпка'
-    
+    errorMessage.value = error.message || "Невалиден код за отстъпка";
+
     // Clear error message after 5 seconds
     setTimeout(() => {
-      errorMessage.value = ''
-    }, 5000)
+      errorMessage.value = "";
+    }, 5000);
   } finally {
-    loading.value = false
+    loading.value = false;
   }
-}
+};
 
 const handleRemove = async () => {
-  loading.value = true
-  errorMessage.value = ''
-  successMessage.value = ''
+  loading.value = true;
+  errorMessage.value = "";
+  successMessage.value = "";
 
   try {
-    await cartStore.removeCoupon()
-    couponCode.value = ''
-    successMessage.value = 'Кодът за отстъпка е премахнат'
-    
+    await cartStore.removeCoupon();
+    couponCode.value = "";
+    successMessage.value = "Кодът за отстъпка е премахнат";
+
     setTimeout(() => {
-      successMessage.value = ''
-    }, 3000)
+      successMessage.value = "";
+    }, 3000);
   } catch (error: any) {
-    errorMessage.value = 'Грешка при премахване на кода'
+    errorMessage.value = "Грешка при премахване на кода";
   } finally {
-    loading.value = false
+    loading.value = false;
   }
-}
+};
 
 const formatDiscountValue = (discount: any) => {
-  if (discount.type === 'percentage') {
-    return `${discount.value}%`
-  } else if (discount.type === 'fixed_amount') {
-    return `${discount.value.toFixed(2)} лв.`
+  if (discount.type === "percentage") {
+    return `${discount.value}%`;
+  } else if (discount.type === "fixed_amount") {
+    return `${discount.value.toFixed(2)} лв.`;
   }
-  return discount.amount.toFixed(2) + ' лв.'
-}
+  return discount.amount.toFixed(2) + " лв.";
+};
 </script>
 
 <style scoped>

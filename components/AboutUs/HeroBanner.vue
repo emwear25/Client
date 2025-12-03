@@ -3,10 +3,11 @@
     <div class="about-hero__container">
       <div class="about-hero__content">
         <span class="about-hero__label">Открийте нашата история</span>
-      <h1 class="about-hero__heading">За нас</h1>
-      <p class="about-hero__subtext">
-          Създаваме персонализирани подаръци с внимание към всеки детайл, които носят радост и уникалност
-      </p>
+        <h1 class="about-hero__heading">За нас</h1>
+        <p class="about-hero__subtext">
+          Създаваме персонализирани подаръци с внимание към всеки детайл, които носят радост и
+          уникалност
+        </p>
       </div>
     </div>
   </section>
@@ -15,9 +16,9 @@
 <script setup lang="ts"></script>
 
 <style scoped lang="scss">
-@use '~/assets/styles/colors' as *;
-@use '~/assets/styles/breakpoints' as *;
-@use '~/assets/styles/fonts' as *;
+@use "~/assets/styles/colors" as *;
+@use "~/assets/styles/breakpoints" as *;
+@use "~/assets/styles/fonts" as *;
 
 .about-hero {
   background: $grad-brand-a;
@@ -36,7 +37,7 @@
 
   // Decorative circle
   &::before {
-    content: '';
+    content: "";
     position: absolute;
     top: -20%;
     right: -10%;
@@ -54,17 +55,17 @@
     position: relative;
     z-index: 1;
 
-    @include up(md) { 
-      max-width: 960px; 
-      padding-inline: 20px; 
+    @include up(md) {
+      max-width: 960px;
+      padding-inline: 20px;
     }
-    @include up(lg) { 
-      max-width: 1280px; 
-      padding-inline: 24px; 
+    @include up(lg) {
+      max-width: 1280px;
+      padding-inline: 24px;
     }
-    @include up(xl) { 
-      max-width: 1440px; 
-      padding-inline: 32px; 
+    @include up(xl) {
+      max-width: 1440px;
+      padding-inline: 32px;
     }
   }
 

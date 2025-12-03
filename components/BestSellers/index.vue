@@ -5,23 +5,19 @@
 
       <!-- Loading State -->
       <div v-if="isLoading" class="best-sellers__loading">
-        <div class="spinner"></div>
+        <div class="spinner"/>
       </div>
 
       <!-- Products Grid -->
       <div v-else-if="products.length > 0" class="best-sellers__grid">
-        <article
-          v-for="product in products"
-          :key="product._id"
-          class="product-card"
-        >
+        <article v-for="product in products" :key="product._id" class="product-card">
           <NuxtLink :to="`/products/${product._id}`" class="product-card__link">
             <div class="product-card__media">
               <img
                 :src="product.images?.[0]?.url || '/img/placeholder.png'"
                 :alt="product.name"
                 class="product-card__img"
-              />
+              >
               <div v-if="product.isNew" class="product-card__badges">
                 <span class="badge badge--handmade">Ръчна бродерия</span>
               </div>
@@ -31,12 +27,8 @@
               <h3 class="product-card__title">{{ product.name }}</h3>
 
               <div class="product-card__footer">
-                <span class="product-card__price"
-                  >{{ product.price.toFixed(2) }} лв.</span
-                >
-                <span v-if="product.stock > 0" class="badge badge--in-stock">
-                  На Склад
-                </span>
+                <span class="product-card__price">{{ product.price.toFixed(2) }} лв.</span>
+                <span v-if="product.stock > 0" class="badge badge--in-stock"> На Склад </span>
               </div>
             </div>
           </NuxtLink>
@@ -45,64 +37,62 @@
 
       <!-- View All -->
       <div v-if="products.length > 0" class="best-sellers__cta">
-        <NuxtLink to="/products" class="btn btn--ghost">
-          Виж Всички Продукти
-        </NuxtLink>
+        <NuxtLink to="/products" class="btn btn--ghost"> Виж Всички Продукти </NuxtLink>
       </div>
     </div>
   </section>
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted } from 'vue'
-import { useApi } from '~/composables/useApi'
+import { ref, onMounted } from "vue";
+import { useApi } from "~/composables/useApi";
 
 interface ProductImage {
-  url: string
-  publicId: string
+  url: string;
+  publicId: string;
 }
 
 interface Product {
-  _id: string
-  name: string
-  price: number
-  category: string
-  images?: ProductImage[]
-  stock: number
-  isActive: boolean
-  isNew?: boolean
+  _id: string;
+  name: string;
+  price: number;
+  category: string;
+  images?: ProductImage[];
+  stock: number;
+  isActive: boolean;
+  isNew?: boolean;
 }
 
 // State
-const products = ref<Product[]>([])
-const isLoading = ref(true)
+const products = ref<Product[]>([]);
+const isLoading = ref(true);
 
 // Fetch products
 const fetchBestSellers = async () => {
-  isLoading.value = true
+  isLoading.value = true;
 
   try {
-    const api = useApi()
-    const data = await api.get('products?active=true&limit=4')
-    products.value = data.data?.slice(0, 4) || []
+    const api = useApi();
+    const data = await api.get("products?active=true&limit=4");
+    products.value = data.data?.slice(0, 4) || [];
   } catch (error) {
-    console.error('Error fetching best sellers:', error)
-    products.value = []
+    console.error("Error fetching best sellers:", error);
+    products.value = [];
   } finally {
-    isLoading.value = false
+    isLoading.value = false;
   }
-}
+};
 
 // Lifecycle
 onMounted(() => {
-  fetchBestSellers()
-})
+  fetchBestSellers();
+});
 </script>
 
 <style scoped lang="scss">
-@use '~/assets/styles/colors' as *;
-@use '~/assets/styles/breakpoints' as *;
-@use '~/assets/styles/fonts' as *;
+@use "~/assets/styles/colors" as *;
+@use "~/assets/styles/breakpoints" as *;
+@use "~/assets/styles/fonts" as *;
 
 .best-sellers {
   width: 100%;

@@ -12,7 +12,7 @@
         </div>
 
         <!-- Login Form -->
-        <form @submit.prevent="handleLogin" class="auth-form">
+        <form class="auth-form" @submit.prevent="handleLogin">
           <!-- Email Input -->
           <div class="form-group">
             <label for="email" class="form-label">Имейл</label>
@@ -25,7 +25,7 @@
               required
               autocomplete="email"
               :disabled="isLoading"
-            />
+            >
           </div>
 
           <!-- Password Input -->
@@ -41,40 +41,22 @@
                 required
                 autocomplete="current-password"
                 :disabled="isLoading"
-              />
+              >
               <button
                 type="button"
                 class="password-toggle"
-                @click="showPassword = !showPassword"
                 :aria-label="showPassword ? 'Скрий парола' : 'Покажи парола'"
+                @click="showPassword = !showPassword"
               >
-                <svg
-                  v-if="showPassword"
-                  width="20"
-                  height="20"
-                  viewBox="0 0 20 20"
-                  fill="none"
-                >
+                <svg v-if="showPassword" width="20" height="20" viewBox="0 0 20 20" fill="none">
                   <path
                     d="M2 10C2 10 5 4 10 4C15 4 18 10 18 10C18 10 15 16 10 16C5 16 2 10 2 10Z"
                     stroke="currentColor"
                     stroke-width="2"
                   />
-                  <circle
-                    cx="10"
-                    cy="10"
-                    r="3"
-                    stroke="currentColor"
-                    stroke-width="2"
-                  />
+                  <circle cx="10" cy="10" r="3" stroke="currentColor" stroke-width="2" />
                 </svg>
-                <svg
-                  v-else
-                  width="20"
-                  height="20"
-                  viewBox="0 0 20 20"
-                  fill="none"
-                >
+                <svg v-else width="20" height="20" viewBox="0 0 20 20" fill="none">
                   <path
                     d="M3 3L17 17M10 7C11.66 7 13 8.34 13 10C13 10.35 12.94 10.69 12.83 11M7 10C7 8.34 8.34 7 10 7M7 10C7 11.66 8.34 13 10 13C10.35 13 10.69 12.94 11 12.83M2 10C2 10 5 4 10 4C11.33 4 12.55 4.36 13.61 4.93M18 10C18 10 15 16 10 16C8.67 16 7.45 15.64 6.39 15.07"
                     stroke="currentColor"
@@ -89,20 +71,14 @@
           <!-- Remember Me & Forgot Password -->
           <div class="form-row">
             <label class="checkbox-label">
-              <input type="checkbox" v-model="rememberMe" />
+              <input v-model="rememberMe" type="checkbox" >
               <span>Запомни ме</span>
             </label>
-            <NuxtLink to="/forgot-password" class="link-secondary">
-              Забравена парола?
-            </NuxtLink>
+            <NuxtLink to="/forgot-password" class="link-secondary"> Забравена парола? </NuxtLink>
           </div>
 
           <!-- Submit Button -->
-          <button
-            type="submit"
-            class="btn btn--primary btn--large btn--full"
-            :disabled="isLoading"
-          >
+          <button type="submit" class="btn btn--primary btn--large btn--full" :disabled="isLoading">
             <span v-if="!isLoading">Вход</span>
             <span v-else class="loading-spinner">
               <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
@@ -134,13 +110,7 @@
           :disabled="isLoading"
           @click="handleGoogleLogin"
         >
-          <svg
-            class="google-icon"
-            width="20"
-            height="20"
-            viewBox="0 0 24 24"
-            fill="none"
-          >
+          <svg class="google-icon" width="20" height="20" viewBox="0 0 24 24" fill="none">
             <path
               d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"
               fill="#4285F4"
@@ -165,9 +135,7 @@
         <div class="auth-card__footer">
           <p>
             Нямате профил?
-            <NuxtLink to="/register" class="link-primary">
-              Регистрирайте се
-            </NuxtLink>
+            <NuxtLink to="/register" class="link-primary"> Регистрирайте се </NuxtLink>
           </p>
         </div>
       </div>
@@ -176,92 +144,91 @@
 </template>
 
 <script setup lang="ts">
-import { useAuthStore } from '~/stores/auth'
-import { useToast } from '~/composables/useToast'
+import { useAuthStore } from "~/stores/auth";
+import { useToast } from "~/composables/useToast";
 
-const authStore = useAuthStore()
-const toast = useToast()
-const router = useRouter()
-const route = useRoute()
+const authStore = useAuthStore();
+const toast = useToast();
+const route = useRoute();
 
 // Form state
-const email = ref('')
-const password = ref('')
-const showPassword = ref(false)
-const rememberMe = ref(false)
-const isLoading = ref(false)
-const checkingAuth = ref(true)
+const email = ref("");
+const password = ref("");
+const showPassword = ref(false);
+const rememberMe = ref(false);
+const isLoading = ref(false);
+const checkingAuth = ref(true);
 
 // Handle login
 const handleLogin = async () => {
-  isLoading.value = true
+  isLoading.value = true;
 
   try {
-    await authStore.login(email.value, password.value)
+    await authStore.login(email.value, password.value);
 
-    toast.success('Успешно влизане!')
+    toast.success("Успешно влизане!");
 
     // Wait a bit for state to update
-    await nextTick()
+    await nextTick();
 
     // Redirect to intended page or home
-    const redirect = (route.query.redirect as string) || '/'
-    await navigateTo(redirect)
+    const redirect = (route.query.redirect as string) || "/";
+    await navigateTo(redirect);
   } catch (error: any) {
-    toast.error(error.message || 'Грешка при влизане')
+    toast.error(error.message || "Грешка при влизане");
   } finally {
-    isLoading.value = false
+    isLoading.value = false;
   }
-}
+};
 
 // Handle Google login - redirects to backend which handles OAuth flow
 const handleGoogleLogin = async () => {
   try {
-    const redirect = (route.query.redirect as string) || '/'
-    await authStore.loginWithGoogle(redirect)
+    const redirect = (route.query.redirect as string) || "/";
+    await authStore.loginWithGoogle(redirect);
   } catch (error: any) {
-    toast.error(error.message || 'Грешка при влизане с Google')
+    toast.error(error.message || "Грешка при влизане с Google");
   }
-}
+};
 
 // Check auth on mount
 onMounted(() => {
   // Wait for auth to initialize
   const checkInterval = setInterval(() => {
     if (authStore.isInitialized) {
-      clearInterval(checkInterval)
+      clearInterval(checkInterval);
       if (authStore.isAuthenticated) {
-        console.log('[Login Page] User authenticated, redirecting...')
-        navigateTo('/')
+        console.log("[Login Page] User authenticated, redirecting...");
+        navigateTo("/");
       } else {
-        checkingAuth.value = false
+        checkingAuth.value = false;
       }
     }
-  }, 50)
+  }, 50);
 
   // Timeout after 2 seconds
   setTimeout(() => {
-    clearInterval(checkInterval)
-    checkingAuth.value = false
-  }, 2000)
-})
+    clearInterval(checkInterval);
+    checkingAuth.value = false;
+  }, 2000);
+});
 
 // SEO
 useHead({
-  title: 'Вход - emWear',
+  title: "Вход - emWear",
   meta: [
     {
-      name: 'description',
-      content: 'Влезте в профила си в emWear за да управлявате поръчките си.',
+      name: "description",
+      content: "Влезте в профила си в emWear за да управлявате поръчките си.",
     },
   ],
-})
+});
 </script>
 
 <style lang="scss" scoped>
-@use '~/assets/styles/colors' as *;
-@use '~/assets/styles/fonts' as *;
-@use '~/assets/styles/breakpoints' as *;
+@use "~/assets/styles/colors" as *;
+@use "~/assets/styles/fonts" as *;
+@use "~/assets/styles/breakpoints" as *;
 
 .auth-page {
   min-height: 100vh;
@@ -440,7 +407,7 @@ useHead({
   color: $text-secondary;
   cursor: pointer;
 
-  input[type='checkbox'] {
+  input[type="checkbox"] {
     width: 18px;
     height: 18px;
     cursor: pointer;
@@ -489,7 +456,7 @@ useHead({
   margin: 1.5rem 0;
 
   &::before {
-    content: '';
+    content: "";
     position: absolute;
     left: 0;
     top: 50%;

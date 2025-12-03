@@ -5,12 +5,12 @@
         <!-- Image Side -->
         <div class="meet-maker__visual">
           <div class="meet-maker__image-wrapper">
-          <img
+            <img
               src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=600&h=700&fit=crop&crop=faces"
               alt="Севал - Създател на emWear"
               class="meet-maker__image"
-            />
-            <div class="meet-maker__image-decoration"></div>
+            >
+            <div class="meet-maker__image-decoration"/>
           </div>
           <div class="meet-maker__badge">
             <Icon name="mdi:heart-outline" class="meet-maker__badge-icon" />
@@ -22,32 +22,34 @@
         <div class="meet-maker__text">
           <span class="meet-maker__eyebrow">Запознайте се</span>
           <h2 class="meet-maker__heading">Кой стои зад emWear?</h2>
-          
+
           <div class="meet-maker__intro">
-            <p class="meet-maker__greeting">Здравейте! Аз съм <strong>Севал</strong> – човекът зад emWear.</p>
+            <p class="meet-maker__greeting">
+              Здравейте! Аз съм <strong>Севал</strong> – човекът зад emWear.
+            </p>
           </div>
 
           <div class="meet-maker__story">
             <p class="meet-maker__paragraph">
-              Вярвам, че най-красивите подаръци са тези, в които има лично послание и емоция. 
-              Именно затова всяка моя изработка е създадена с изключително внимание към детайла, 
-              с много любов и истинска грижа към всеки клиент.
+              Вярвам, че най-красивите подаръци са тези, в които има лично послание и емоция. Именно
+              затова всяка моя изработка е създадена с изключително внимание към детайла, с много
+              любов и истинска грижа към всеки клиент.
             </p>
-            
+
             <p class="meet-maker__paragraph">
-              Всяка бродерия, всеки шев и всеки надпис носят частица от моята душа и страст към 
-              занаята. За мен най-важното е да направя вашия подарък наистина специален, уникален 
-              и запомнящ се – нещо, което ще донесе усмивка и топлина в сърцето на получателя.
+              Всяка бродерия, всеки шев и всеки надпис носят частица от моята душа и страст към
+              занаята. За мен най-важното е да направя вашия подарък наистина специален, уникален и
+              запомнящ се – нещо, което ще донесе усмивка и топлина в сърцето на получателя.
             </p>
 
             <p class="meet-maker__paragraph meet-maker__paragraph--highlight">
-              Когато създавам продукт за вас, аз не просто бродирам име върху материя – 
-              вплитам история, емоция и лични спомени, които правят всеки артикул уникален и безценен.
+              Когато създавам продукт за вас, аз не просто бродирам име върху материя – вплитам
+              история, емоция и лични спомени, които правят всеки артикул уникален и безценен.
             </p>
           </div>
 
           <div class="meet-maker__signature">
-            <div class="meet-maker__signature-line"></div>
+            <div class="meet-maker__signature-line"/>
             <span class="meet-maker__signature-name">Севал</span>
             <span class="meet-maker__signature-title">Основател</span>
           </div>
@@ -75,9 +77,9 @@
 <script setup lang="ts"></script>
 
 <style scoped lang="scss">
-@use '~/assets/styles/colors' as *;
-@use '~/assets/styles/breakpoints' as *;
-@use '~/assets/styles/fonts' as *;
+@use "~/assets/styles/colors" as *;
+@use "~/assets/styles/breakpoints" as *;
+@use "~/assets/styles/fonts" as *;
 
 .meet-maker {
   padding: 4rem 0;
@@ -86,7 +88,7 @@
   overflow: hidden;
 
   @include up(md) {
-  padding: 5rem 0;
+    padding: 5rem 0;
   }
 
   @include up(lg) {
@@ -95,7 +97,7 @@
 
   // Decorative background
   &::before {
-    content: '';
+    content: "";
     position: absolute;
     top: -20%;
     left: -10%;
@@ -113,17 +115,17 @@
     position: relative;
     z-index: 1;
 
-    @include up(md) { 
-      max-width: 960px; 
-      padding-inline: 20px; 
+    @include up(md) {
+      max-width: 960px;
+      padding-inline: 20px;
     }
-    @include up(lg) { 
-      max-width: 1280px; 
-      padding-inline: 24px; 
+    @include up(lg) {
+      max-width: 1280px;
+      padding-inline: 24px;
     }
-    @include up(xl) { 
-      max-width: 1440px; 
-      padding-inline: 32px; 
+    @include up(xl) {
+      max-width: 1440px;
+      padding-inline: 32px;
     }
   }
 
@@ -157,7 +159,7 @@
     box-shadow: 0 20px 50px rgba($brand-ink, 0.2);
 
     &::before {
-      content: '';
+      content: "";
       position: absolute;
       inset: 0;
       background: linear-gradient(135deg, rgba($brand, 0.2) 0%, transparent 60%);
@@ -208,7 +210,7 @@
   &__badge-icon {
     width: 20px;
     height: 20px;
-    }
+  }
 
   // Text Side
   &__text {

@@ -3,22 +3,14 @@
     <div class="footer-nav__grid">
       <div class="footer-nav__section footer-nav__section--brand">
         <NuxtLink to="/" class="footer-nav__logo-link">
-          <img 
-            src="/logo-dark.png" 
-            alt="emWear" 
-            class="footer-nav__logo-img"
-          />
+          <img src="/logo-dark.png" alt="emWear" class="footer-nav__logo-img" >
         </NuxtLink>
         <p class="footer-nav__desc">Персонализирани подаръци с грижа и стил.</p>
       </div>
       <div class="footer-nav__section">
         <h3 class="footer-nav__heading">Колекция</h3>
         <ul class="footer-nav__list">
-          <li
-            v-for="link in collectionLinks"
-            :key="link.path"
-            class="footer-nav__item"
-          >
+          <li v-for="link in collectionLinks" :key="link.path" class="footer-nav__item">
             <NuxtLink :to="link.path" class="footer-nav__link">
               {{ link.name }}
             </NuxtLink>
@@ -28,11 +20,7 @@
       <div class="footer-nav__section">
         <h3 class="footer-nav__heading">Компания</h3>
         <ul class="footer-nav__list">
-          <li
-            v-for="link in companyLinks"
-            :key="link.path"
-            class="footer-nav__item"
-          >
+          <li v-for="link in companyLinks" :key="link.path" class="footer-nav__item">
             <NuxtLink :to="link.path" class="footer-nav__link">
               {{ link.name }}
             </NuxtLink>
@@ -45,27 +33,27 @@
 
 <script setup lang="ts">
 interface NavigationLink {
-  name: string
-  path: string
+  name: string;
+  path: string;
 }
 
 const collectionLinks: NavigationLink[] = [
-  { name: 'Продукти', path: '/products' },
-  { name: 'Намаления', path: '/sales' },
-  { name: 'Блог', path: '/blog' },
-]
+  { name: "Продукти", path: "/products" },
+  { name: "Намаления", path: "/sales" },
+  { name: "Блог", path: "/blog" },
+];
 
 const companyLinks: NavigationLink[] = [
-  { name: 'За Нас', path: '/about' },
-  { name: 'Контакти', path: '/contact' },
-  { name: 'Доставка и връщане', path: '/shipping' },
-]
+  { name: "За Нас", path: "/about" },
+  { name: "Контакти", path: "/contact" },
+  { name: "Доставка и връщане", path: "/shipping" },
+];
 </script>
 
 <style scoped lang="scss">
-@use '~/assets/styles/colors' as *;
-@use '~/assets/styles/breakpoints' as *;
-@use '~/assets/styles/fonts' as *;
+@use "~/assets/styles/colors" as *;
+@use "~/assets/styles/breakpoints" as *;
+@use "~/assets/styles/fonts" as *;
 
 .footer-nav {
   &__grid {

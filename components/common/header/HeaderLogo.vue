@@ -1,11 +1,7 @@
 <template>
   <div class="site-header__logo">
     <NuxtLink to="/" class="site-header__logo-link">
-      <img 
-        src="/logo-dark.png" 
-        alt="emWear" 
-        class="site-header__logo-img"
-      />
+      <img src="/logo-dark.png" alt="emWear" class="site-header__logo-img" >
     </NuxtLink>
   </div>
 </template>
@@ -15,7 +11,7 @@
 </script>
 
 <style scoped lang="scss">
-@use '~/assets/styles/colors' as *;
+@use "~/assets/styles/colors" as *;
 
 .site-header {
   &__logo {

@@ -10,11 +10,7 @@
           class="category-grid__card"
         >
           <div class="category-grid__card-content">
-            <img
-              :src="category.img"
-              :alt="category.title"
-              class="category-grid__img"
-            />
+            <img :src="category.img" :alt="category.title" class="category-grid__img" >
             <div class="category-grid__overlay">
               <Icon :name="category.icon" class="category-grid__icon" />
               <h3 class="category-grid__title">{{ category.title }}</h3>
@@ -29,36 +25,36 @@
 
 <script setup lang="ts">
 interface Category {
-  id: number
-  slug: string
-  title: string
-  img: string
-  icon: string
+  id: number;
+  slug: string;
+  title: string;
+  img: string;
+  icon: string;
 }
 
 const categories: Category[] = [
   {
     id: 1,
-    slug: 'ranici',
-    title: 'Раници',
-    img: '/images/categories/backpack.jpg',
-    icon: 'mdi:backpack',
+    slug: "ranici",
+    title: "Раници",
+    img: "/images/categories/backpack.jpg",
+    icon: "mdi:backpack",
   },
   {
     id: 2,
-    slug: 'havlii',
-    title: 'Хавлии',
-    img: '/images/categories/towel.jpg',
-    icon: 'mdi:bathtub-outline',
+    slug: "havlii",
+    title: "Хавлии",
+    img: "/images/categories/towel.jpg",
+    icon: "mdi:bathtub-outline",
   },
   {
     id: 3,
-    slug: 'halati',
-    title: 'Халати',
-    img: '/images/categories/robe.jpg',
-    icon: 'mdi:robe',
+    slug: "halati",
+    title: "Халати",
+    img: "/images/categories/robe.jpg",
+    icon: "mdi:robe",
   },
-]
+];
 </script>
 
 <style scoped lang="scss">
@@ -78,7 +74,7 @@ const categories: Category[] = [
   }
 
   &__heading {
-    font-family: 'Poppins', sans-serif;
+    font-family: "Poppins", sans-serif;
     font-weight: 700;
     font-size: clamp(1.75rem, 4vw, 2.5rem);
     text-align: center;
@@ -170,7 +166,7 @@ const categories: Category[] = [
   }
 
   &__title {
-    font-family: 'Poppins', sans-serif;
+    font-family: "Poppins", sans-serif;
     font-weight: 600;
     font-size: 1.25rem;
     color: white;
@@ -179,7 +175,7 @@ const categories: Category[] = [
   }
 
   &__cta {
-    font-family: 'Inter', sans-serif;
+    font-family: "Inter", sans-serif;
     font-weight: 500;
     font-size: 15px;
     color: #3498db;
