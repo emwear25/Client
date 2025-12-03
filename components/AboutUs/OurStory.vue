@@ -12,7 +12,7 @@
           <p class="our-story__paragraph">
             С любов към детайлите и отдаденост към качеството, ние вярваме, че всеки персонализиран
             продукт носи частица от уникалността на всяко дете. Това е нашата мисия - да създаваме
-            радост чрез ръчно бродирани изделия.
+            радост чрез персонализирани бродирани изделия.
           </p>
           <div class="our-story__stats">
             <div class="our-story__stat">
@@ -21,7 +21,7 @@
             </div>
             <div class="our-story__stat">
               <span class="our-story__stat-number">100%</span>
-              <span class="our-story__stat-label">Ръчна изработка</span>
+              <span class="our-story__stat-label">Прецизна изработка</span>
             </div>
           </div>
         </div>

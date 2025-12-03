@@ -63,7 +63,7 @@
           <div class="meet-maker__values">
             <div class="meet-maker__value">
               <Icon name="mdi:hand-heart" class="meet-maker__value-icon" />
-              <span class="meet-maker__value-text">Ръчна изработка</span>
+              <span class="meet-maker__value-text">Прецизна изработка</span>
             </div>
             <div class="meet-maker__value">
               <Icon name="mdi:heart-pulse" class="meet-maker__value-icon" />

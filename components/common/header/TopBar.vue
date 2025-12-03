@@ -3,12 +3,12 @@
     <div class="topbar__container">
       <!-- Left side - Shipping info -->
       <div class="topbar__left">
-        <span class="topbar__info"> Безплатна доставка над 50лв </span>
+        <span class="topbar__info"> Безплатна доставка над 110 лв </span>
       </div>
 
       <!-- Center - Main promotional text -->
       <div class="topbar__center">
-        <span class="topbar__promo"> Ръчно бродирани изделия с любов ✨ </span>
+        <span class="topbar__promo"> Персонализирани бродирани изделия с любов ✨ </span>
       </div>
     </div>
   </div>

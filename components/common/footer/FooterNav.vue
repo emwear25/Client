@@ -7,8 +7,8 @@
             src="/logo-dark.png"
             alt="emWear"
             class="footer-nav__logo-img"
-            width="200"
-            height="60"
+            width="150"
+            height="45"
             loading="eager"
             format="png"
           />
@@ -110,13 +110,13 @@ const companyLinks: NavigationLink[] = [
   }
 
   &__logo-img {
-    height: 52px;
+    height: 40px;
     width: auto;
     display: block;
     filter: brightness(0) invert(1);
 
     @include up(md) {
-      height: 60px;
+      height: 45px;
     }
   }
 

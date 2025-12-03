@@ -25,7 +25,7 @@
                 placeholder
               />
               <div v-if="product.isNew" class="product-card__badges">
-                <span class="badge badge--handmade">Ръчна бродерия</span>
+                <span class="badge badge--handmade">Персонализирана бродерия</span>
               </div>
             </div>
 

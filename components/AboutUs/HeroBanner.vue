@@ -90,21 +90,21 @@
   }
 
   &__heading {
-    font-family: $font-heading;
-    font-weight: 700;
-    font-size: clamp(2.5rem, 8vw, 4rem);
+    font-family: 'Outfit', sans-serif;
+    font-weight: 300;
+    font-size: 56px;
     color: $brand-ink;
     margin: 0 0 1.5rem 0;
-    line-height: 1.1;
+    line-height: 60px;
     letter-spacing: 0.02em;
   }
 
   &__subtext {
-    font-family: $font-body;
-    font-weight: 400;
-    font-size: clamp(1.0625rem, 3vw, 1.25rem);
-    color: $text-secondary;
-    line-height: 1.7;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', 'Noto Sans', 'Liberation Sans', Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
+    font-weight: 300;
+    font-size: 18px;
+    color: $brand-ink;
+    line-height: 31px;
     margin: 0;
   }
 }

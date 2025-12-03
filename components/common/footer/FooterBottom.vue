@@ -35,17 +35,17 @@ const socialLinks: SocialLink[] = [
   {
     name: "Facebook",
     icon: "mdi:facebook",
-    url: "https://facebook.com/emwear",
+    url: "https://www.facebook.com/emwearbg/",
   },
   {
     name: "Instagram",
     icon: "mdi:instagram",
-    url: "https://instagram.com/emwear",
+    url: "https://www.instagram.com/emwea.r/",
   },
   {
     name: "TikTok",
     icon: "simple-icons:tiktok",
-    url: "https://tiktok.com/@emwear",
+    url: "https://www.tiktok.com/@emwear.bg",
   },
 ];
 </script>

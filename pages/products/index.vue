@@ -5,14 +5,14 @@
       <div class="container">
         <h1 class="hero-products__title">Нашите Продукти</h1>
         <p class="hero-products__subtitle">
-          Открийте ръчно бродирани ранички, дрехи и аксесоари – персонализирани с име.
+          Открийте персонализирани бродирани ранички, дрехи и аксесоари – с име и дизайн.
         </p>
       </div>
     </div>
 
     <!-- Toolbar (Sort only) -->
     <div class="container products-toolbar">
-      <div class="products-toolbar__spacer"/>
+      <div class="products-toolbar__spacer" />
       <div class="products-toolbar__sort">
         <label class="sr-only" for="sort">Подреди</label>
         <select id="sort" v-model="sortBy" class="products-toolbar__select">
@@ -28,11 +28,11 @@
     <div class="container">
       <div v-if="isLoading" class="products-grid">
         <div v-for="i in 8" :key="`skeleton-${i}`" class="product-skeleton">
-          <div class="product-skeleton__img"/>
+          <div class="product-skeleton__img" />
           <div class="product-skeleton__body">
-            <div class="product-skeleton__line product-skeleton__line--short"/>
-            <div class="product-skeleton__line"/>
-            <div class="product-skeleton__line product-skeleton__line--short"/>
+            <div class="product-skeleton__line product-skeleton__line--short" />
+            <div class="product-skeleton__line" />
+            <div class="product-skeleton__line product-skeleton__line--short" />
           </div>
         </div>
       </div>
@@ -46,9 +46,9 @@
           stroke="currentColor"
           stroke-width="1.5"
         >
-          <circle cx="12" cy="12" r="10"/>
-          <line x1="12" y1="8" x2="12" y2="12"/>
-          <line x1="12" y1="16" x2="12.01" y2="16"/>
+          <circle cx="12" cy="12" r="10" />
+          <line x1="12" y1="8" x2="12" y2="12" />
+          <line x1="12" y1="16" x2="12.01" y2="16" />
         </svg>
         <h2 class="state-card__title">Нещо се обърка</h2>
         <p class="state-card__text">{{ error }}</p>
@@ -64,8 +64,8 @@
           stroke="currentColor"
           stroke-width="1.5"
         >
-          <circle cx="11" cy="11" r="8"/>
-          <path d="m21 21-4.35-4.35"/>
+          <circle cx="11" cy="11" r="8" />
+          <path d="m21 21-4.35-4.35" />
         </svg>
         <h2 class="state-card__title">Няма намерени продукти</h2>
         <p class="state-card__text">Скоро ще добавим нови продукти</p>
@@ -102,7 +102,7 @@ useHead({
   meta: [
     {
       name: "description",
-      content: "Открийте ръчно бродирани ранички, дрехи и аксесоари – персонализирани с име.",
+      content: "Открийте персонализирани бродирани ранички, дрехи и аксесоари – с име и дизайн.",
     },
   ],
 });
@@ -119,14 +119,18 @@ interface Product {
   description: string;
   price: number;
   compareAt?: number | null;
-  category: string;
-  sizes: string[];
-  colors: string[];
+  category: string | { _id: string; name: string };
+  sizes?: string[];
+  colors?: string[];
   images?: ProductImage[];
   stock: number;
-  isActive: boolean;
+  isActive?: boolean;
   customEmbroidery?: boolean;
   createdAt: string;
+  reviewStats?: {
+    averageRating: number;
+    totalReviews: number;
+  };
 }
 
 // State
@@ -160,8 +164,15 @@ const fetchProducts = async () => {
 
   try {
     const api = useApi();
-    const data = await api.get("products?active=true");
-    products.value = data.data || [];
+    const response = await api.get("products?active=true");
+
+    if (response && response.success && response.data) {
+      products.value = Array.isArray(response.data) ? response.data : [];
+    } else if (Array.isArray(response)) {
+      products.value = response;
+    } else {
+      products.value = [];
+    }
   } catch (err) {
     error.value = err instanceof Error ? err.message : "Възникна грешка при зареждането";
   } finally {
@@ -192,72 +203,6 @@ onMounted(() => {
 
 .products-page {
   min-height: 100vh;
-
-  // Hero
-  &__hero {
-    background: $grad-brand-a;
-    padding: 3rem 1rem;
-    text-align: center;
-
-    @include up(md) {
-      padding: 4rem 1rem;
-    }
-  }
-
-  &__hero-title {
-    font-family: $font-heading;
-    color: $brand-ink;
-    font-size: clamp(2rem, 6vw, 2.75rem);
-    font-weight: 700;
-    margin: 0 0 0.75rem;
-    letter-spacing: 0.02em;
-  }
-
-  &__hero-subtitle {
-    font-size: 1rem;
-    font-weight: 400;
-    color: $text-secondary;
-    margin: 0;
-    max-width: 600px;
-    margin-inline: auto;
-
-    @include up(md) {
-      font-size: 1.0625rem;
-    }
-  }
-
-  // Main Layout
-  &__main {
-    padding: 2rem 0;
-
-    @include up(md) {
-      padding: 3rem 0;
-    }
-  }
-
-  &__layout {
-    display: grid;
-    gap: 2rem;
-
-    @include up(lg) {
-      grid-template-columns: 260px 1fr;
-      gap: 3rem;
-    }
-  }
-
-  // Sidebar
-  &__sidebar {
-    @include up(lg) {
-      position: sticky;
-      top: 90px;
-      align-self: start;
-    }
-  }
-
-  // Content Area
-  &__content {
-    min-width: 0;
-  }
 }
 
 // ═══════════════════════════════════════════════════
@@ -276,18 +221,24 @@ onMounted(() => {
   }
 
   &__title {
-    font-family: $font-heading;
-    font-size: clamp(1.75rem, 4vw, 2.5rem);
-    font-weight: 600;
+    font-family: "Outfit", sans-serif;
+    font-size: 56px;
+    font-weight: 300;
+    color: $brand-ink;
     margin: 0 0 0.75rem;
     letter-spacing: 0.01em;
+    line-height: 60px;
   }
 
   &__subtitle {
-    font-family: $font-body;
-    font-size: clamp(0.9375rem, 2vw, 1rem);
-    line-height: 1.6;
-    color: $text-secondary;
+    font-family:
+      -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", "Noto Sans",
+      "Liberation Sans", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji",
+      "Segoe UI Symbol", "Noto Color Emoji";
+    font-size: 18px;
+    font-weight: 300;
+    line-height: 31px;
+    color: $brand-ink;
     max-width: 700px;
     margin-inline: auto;
   }
@@ -476,58 +427,6 @@ onMounted(() => {
     .state-card__icon {
       color: $error;
     }
-  }
-}
-
-// ═══════════════════════════════════════════════════
-// PAGINATION - Soft, minimal navigation
-// ═══════════════════════════════════════════════════
-
-.pagination {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 1rem;
-  margin-top: 3rem;
-  padding-top: 2rem;
-  border-top: 1px solid $border-base;
-
-  &__btn {
-    background: $bg-card;
-    border: 1px solid $border-base;
-    color: $brand-ink;
-    padding: 0.75rem 1.5rem;
-    border-radius: 999px;
-    font-family: $font-body;
-    font-size: 0.9375rem;
-    font-weight: 500;
-    cursor: pointer;
-    transition: all 0.2s ease;
-    box-shadow: 0 2px 8px $shadow-soft;
-
-    &:hover:not(:disabled) {
-      background: $brand;
-      border-color: $brand;
-      transform: translateY(-2px);
-      box-shadow: 0 4px 12px $shadow-soft;
-    }
-
-    &:disabled {
-      opacity: 0.4;
-      cursor: not-allowed;
-    }
-
-    &:focus-visible {
-      outline: 2px solid $brand;
-      outline-offset: 2px;
-    }
-  }
-
-  &__info {
-    font-size: 0.9375rem;
-    color: $text-secondary;
-    font-weight: 500;
-    padding: 0 0.5rem;
   }
 }
 </style>

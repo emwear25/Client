@@ -300,7 +300,7 @@
           </svg>
 
           <div class="hero-slider__content hero-slider__content--style-1">
-            <div class="hero-slider__label">Ръчна изработка</div>
+            <div class="hero-slider__label">Прецизна машинна бродерия</div>
             <h1 class="hero-slider__title hero-slider__title--large">
               <span class="hero-slider__title-word">Бродирани халати</span>
               <span class="hero-slider__title-word hero-slider__title-word--accent"
@@ -407,7 +407,7 @@
           <div
             class="hero-slider__content hero-slider__content--style-1 hero-slider__content--align-right"
           >
-            <div class="hero-slider__label">Ръчна изработка</div>
+            <div class="hero-slider__label">Прецизна машинна бродерия</div>
             <h1 class="hero-slider__title hero-slider__title--large">
               <span class="hero-slider__title-word">Персонализирани кърпи</span>
               <span class="hero-slider__title-word hero-slider__title-word--accent">с ушички</span>

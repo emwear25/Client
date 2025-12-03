@@ -5,8 +5,8 @@
         src="/logo-dark.png"
         alt="emWear"
         class="site-header__logo-img"
-        width="200"
-        height="60"
+        width="150"
+        height="45"
         loading="eager"
         format="png"
       />
@@ -42,12 +42,12 @@
     }
 
     &-img {
-      height: 52px;
+      height: 40px;
       width: auto;
       display: block;
 
       @media (min-width: 768px) {
-        height: 58px;
+        height: 45px;
       }
     }
   }

@@ -29,13 +29,31 @@
         <div class="contact-details__social">
           <h3 class="contact-details__social-heading">Последвайте ни:</h3>
           <div class="contact-details__social-icons">
-            <a href="#" class="contact-details__social-link" aria-label="Facebook">
+            <a
+              href="https://www.facebook.com/emwearbg/"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="contact-details__social-link"
+              aria-label="Facebook"
+            >
               <Icon name="simple-icons:facebook" />
             </a>
-            <a href="#" class="contact-details__social-link" aria-label="Instagram">
+            <a
+              href="https://www.instagram.com/emwea.r/"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="contact-details__social-link"
+              aria-label="Instagram"
+            >
               <Icon name="simple-icons:instagram" />
             </a>
-            <a href="#" class="contact-details__social-link" aria-label="TikTok">
+            <a
+              href="https://www.tiktok.com/@emwear.bg"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="contact-details__social-link"
+              aria-label="TikTok"
+            >
               <Icon name="simple-icons:tiktok" />
             </a>
           </div>

@@ -44,6 +44,25 @@
 
     <div class="product-card__body">
       <h3 class="product-card__title">{{ product.name }}</h3>
+      <!-- Ratings -->
+      <div v-if="product.reviewStats && product.reviewStats.totalReviews > 0" class="product-card__rating">
+        <span class="product-card__stars">
+          <span
+            v-for="star in 5"
+            :key="star"
+            class="product-card__star"
+            :class="{
+              'product-card__star--filled': star <= Math.round(product.reviewStats.averageRating),
+            }"
+          >
+            ★
+          </span>
+        </span>
+        <span class="product-card__rating-text">
+          {{ product.reviewStats.averageRating.toFixed(1) }}
+          <span class="product-card__rating-count">({{ product.reviewStats.totalReviews }})</span>
+        </span>
+      </div>
       <div class="product-card__price-wrapper">
         <div class="product-card__price">
           <span class="product-card__price-current">{{ formatPrice(product.price) }}</span>
@@ -89,11 +108,18 @@ interface Product {
   description: string;
   price: number;
   compareAt?: number | null;
-  category: string;
+  category: string | { _id: string; name: string };
   images?: ProductImage[];
   stock: number;
   customEmbroidery?: boolean;
   createdAt: string;
+  sizes?: string[];
+  colors?: string[];
+  isActive?: boolean;
+  reviewStats?: {
+    averageRating: number;
+    totalReviews: number;
+  };
 }
 
 const props = defineProps<{
@@ -369,7 +395,7 @@ const goToPDP = () => {
     font-family: $font-heading;
     color: $brand-ink;
     font-size: 0.9375rem;
-    margin: 0 0 10px;
+    margin: 0 0 8px;
     display: -webkit-box;
     -webkit-line-clamp: 2;
     -webkit-box-orient: vertical;
@@ -381,6 +407,38 @@ const goToPDP = () => {
     @include up(md) {
       font-size: 1rem;
     }
+  }
+
+  &__rating {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin: 0 0 8px;
+  }
+
+  &__stars {
+    display: flex;
+    gap: 2px;
+  }
+
+  &__star {
+    font-size: 0.875rem;
+    color: #d1d5db;
+    line-height: 1;
+
+    &--filled {
+      color: #fbbf24;
+    }
+  }
+
+  &__rating-text {
+    font-size: 0.8125rem;
+    color: $text-secondary;
+    font-weight: 500;
+  }
+
+  &__rating-count {
+    font-weight: 400;
   }
 
   &__price {

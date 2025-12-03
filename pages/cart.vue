@@ -263,9 +263,9 @@ const goToCheckout = () => {
   router.push("/checkout");
 };
 
-// Shipping calculation (free shipping over 100 BGN)
+// Shipping calculation (free shipping over 110 BGN)
 const shippingCost = computed(() => {
-  return cartStore.totalPrice >= 100 ? 0 : 5.99;
+  return cartStore.totalPrice >= 110 ? 0 : 5.99;
 });
 
 const _totalWithShipping = computed(() => {

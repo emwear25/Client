@@ -52,25 +52,25 @@
             <h3 class="contact__social-title">Последвайте ни</h3>
             <div class="contact__social-links">
               <a
-                href="https://facebook.com/emwear"
+                href="https://www.facebook.com/emwearbg/"
                 target="_blank"
-                rel="noopener"
+                rel="noopener noreferrer"
                 class="contact__social-link"
               >
                 <Icon name="mdi:facebook" />
               </a>
               <a
-                href="https://instagram.com/emwear"
+                href="https://www.instagram.com/emwea.r/"
                 target="_blank"
-                rel="noopener"
+                rel="noopener noreferrer"
                 class="contact__social-link"
               >
                 <Icon name="mdi:instagram" />
               </a>
               <a
-                href="https://tiktok.com/@emwear"
+                href="https://www.tiktok.com/@emwear.bg"
                 target="_blank"
-                rel="noopener"
+                rel="noopener noreferrer"
                 class="contact__social-link"
               >
                 <Icon name="simple-icons:tiktok" />

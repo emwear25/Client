@@ -120,10 +120,35 @@
                 </div>
               </div>
 
-              <!-- Reviews Placeholder -->
-              <div class="pdp-reviews">
-                <div class="pdp-reviews__stars">★★★★★</div>
-                <span class="pdp-reviews__count">(Скоро ще добавим отзиви)</span>
+              <!-- Reviews Summary -->
+              <div v-if="reviewStats.totalReviews > 0" class="pdp-reviews">
+                <span class="pdp-reviews__stars">
+                  <span
+                    v-for="star in 5"
+                    :key="star"
+                    class="pdp-reviews__star"
+                    :class="{
+                      'pdp-reviews__star--filled': star <= Math.round(reviewStats.averageRating),
+                    }"
+                  >
+                    ★
+                  </span>
+                </span>
+                <span class="pdp-reviews__count">
+                  {{ reviewStats.averageRating.toFixed(1) }}
+                  <span class="pdp-reviews__text">
+                    ({{ reviewStats.totalReviews }}
+                    {{ reviewStats.totalReviews === 1 ? "отзив" : "отзива" }})
+                  </span>
+                </span>
+              </div>
+              <div v-else class="pdp-reviews">
+                <span class="pdp-reviews__stars">
+                  <span v-for="star in 5" :key="star" class="pdp-reviews__star">★</span>
+                </span>
+                <span class="pdp-reviews__count">
+                  <span class="pdp-reviews__text">(Няма отзиви)</span>
+                </span>
               </div>
 
               <!-- Price -->
@@ -141,17 +166,24 @@
               <!-- Colors -->
               <div v-if="product.colors && product.colors.length" class="pdp-option">
                 <label class="pdp-option__label"
-                  >Цвят: <strong>{{ selectedColor || product.colors[0] }}</strong></label
+                  >Цвят:
+                  <strong>{{
+                    selectedColor
+                      ? getColorDisplayName(selectedColor)
+                      : product.colors && product.colors[0]
+                        ? getColorDisplayName(product.colors[0])
+                        : ""
+                  }}</strong></label
                 >
                 <div class="pdp-option__swatches">
                   <button
                     v-for="color in product.colors"
-                    :key="color"
+                    :key="getColorName(color)"
                     class="pdp-swatch"
-                    :class="{ 'pdp-swatch--active': selectedColor === color }"
-                    :style="{ background: getColorHex(color) }"
-                    :title="color"
-                    @click="selectedColor = color"
+                    :class="{ 'pdp-swatch--active': selectedColor === getColorName(color) }"
+                    :style="{ background: getColorHexValue(color) }"
+                    :title="getColorDisplayName(color)"
+                    @click="selectedColor = getColorName(color)"
                   />
                 </div>
               </div>
@@ -294,7 +326,7 @@
                     <circle cx="5.5" cy="18.5" r="2.5" />
                     <circle cx="18.5" cy="18.5" r="2.5" />
                   </svg>
-                  <span>Безплатна доставка над 50 лв</span>
+                  <span>Безплатна доставка над 110 лв</span>
                 </div>
                 <div class="pdp-trust__item">
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -318,10 +350,28 @@
               <div class="pdp-payment">
                 <span class="pdp-payment__label">Приемаме:</span>
                 <div class="pdp-payment__icons">
-                  <span class="pdp-payment__icon">VISA</span>
-                  <span class="pdp-payment__icon">Mastercard</span>
-                  <span class="pdp-payment__icon">PayPal</span>
-                  <span class="pdp-payment__icon">Apple Pay</span>
+                  <div class="pdp-payment__icon pdp-payment__icon--visa" title="VISA">
+                    <NuxtImg src="/img/payments/visa.png" alt="VISA" width="60" height="40" />
+                  </div>
+                  <div class="pdp-payment__icon pdp-payment__icon--mastercard" title="Mastercard">
+                    <NuxtImg src="/img/payments/card.png" alt="Mastercard" width="60" height="40" />
+                  </div>
+                  <div class="pdp-payment__icon pdp-payment__icon--applepay" title="Apple Pay">
+                    <NuxtImg
+                      src="/img/payments/apple-pay.png"
+                      alt="Apple Pay"
+                      width="60"
+                      height="40"
+                    />
+                  </div>
+                  <div class="pdp-payment__icon pdp-payment__icon--cod" title="Наложен платеж">
+                    <NuxtImg
+                      src="/img/payments/cash-on-delivery.png"
+                      alt="Наложен платеж"
+                      width="60"
+                      height="40"
+                    />
+                  </div>
                 </div>
               </div>
 
@@ -361,7 +411,7 @@
               </svg>
             </button>
             <div v-show="openSection === 'description'" class="pdp-accordion__content">
-              <p>{{ product.description }}</p>
+              <div class="pdp-description" v-html="formattedDescription"></div>
             </div>
           </div>
 
@@ -420,7 +470,7 @@
               <div class="pdp-shipping">
                 <div class="pdp-shipping__item">
                   <strong>Безплатна доставка</strong>
-                  <p>За поръчки над 50 лв с Еконт или Спиди</p>
+                  <p>За поръчки над 110 лв с Еконт или Спиди</p>
                 </div>
                 <div class="pdp-shipping__item">
                   <strong>Време за доставка</strong>
@@ -474,27 +524,40 @@
         </div>
       </section>
 
-      <!-- Reviews Section (Placeholder) -->
-      <section class="pdp-reviews-section">
+      <!-- Reviews Section -->
+      <section v-if="product" class="pdp-reviews-section">
         <div class="container">
-          <h2 class="pdp-section-title">Отзиви на клиенти</h2>
-          <div class="pdp-reviews-placeholder">
-            <svg
-              class="pdp-reviews-placeholder__icon"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="2"
-            >
-              <polygon
-                points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"
+          <div class="pdp-reviews-section__main">
+            <!-- Review Statistics (Sidebar) -->
+            <aside v-if="reviewStats.totalReviews > 0" class="pdp-reviews-section__stats">
+              <ReviewStats :stats="reviewStats" @filter-by-rating="handleRatingFilter" />
+            </aside>
+
+            <!-- Reviews List -->
+            <div class="pdp-reviews-section__content">
+              <ProductReviews
+                :key="`reviews-${product._id}-${refreshKey}`"
+                :product-id="product._id"
+                :stats="reviewStats"
+                @stats-updated="handleStatsUpdated"
               />
-            </svg>
-            <h3>Скоро ще добавим система за отзиви!</h3>
-            <p>Бъдете първите, които ще споделят мнението си за този продукт.</p>
+            </div>
+          </div>
+
+          <!-- Review Form -->
+          <div class="pdp-reviews-section__form">
+            <ReviewForm
+              :key="`form-${product._id}-${refreshKey}`"
+              :product-id="product._id"
+              @submitted="handleReviewSubmitted"
+              @stats-updated="handleStatsUpdated"
+            />
           </div>
         </div>
       </section>
+
+      <!-- Related Products -->
+      <RelatedProducts v-if="product" :product-id="product._id" :limit="4" />
     </div>
   </div>
 </template>
@@ -506,6 +569,11 @@ import { useHead } from "#app";
 import { useCartStore } from "~/stores/cart";
 import { useWishlist } from "~/stores/useWishlist";
 import { useApi } from "~/composables/useApi";
+import { useProductDescription } from "~/composables/useProductDescription";
+import ReviewStats from "~/components/reviews/ReviewStats.vue";
+import ProductReviews from "~/components/reviews/ProductReviews.vue";
+import ReviewForm from "~/components/reviews/ReviewForm.vue";
+import RelatedProducts from "~/components/products/RelatedProducts.vue";
 
 interface ProductImage {
   url: string;
@@ -524,6 +592,18 @@ interface Variant {
   price?: number;
   reserved?: number;
   lowStockThreshold?: number;
+}
+
+interface ReviewStats {
+  averageRating: number;
+  totalReviews: number;
+  ratingDistribution: {
+    1: number;
+    2: number;
+    3: number;
+    4: number;
+    5: number;
+  };
 }
 
 interface Product {
@@ -555,6 +635,7 @@ interface Product {
   customEmbroidery?: boolean;
   embroideryFonts?: string[];
   embroideryColors?: EmbroideryColor[];
+  reviewStats?: ReviewStats;
   createdAt: string;
 }
 
@@ -562,6 +643,7 @@ const route = useRoute();
 const router = useRouter();
 const cartStore = useCartStore();
 const wishlistStore = useWishlist();
+const { formatDescription } = useProductDescription();
 
 // State
 const product = ref<Product | null>(null);
@@ -582,10 +664,30 @@ const embroideryFont = ref("");
 // Accordion state
 const openSection = ref<string>("description");
 
+// Review state
+const reviewStats = ref({
+  averageRating: 0,
+  totalReviews: 0,
+  ratingDistribution: {
+    1: 0,
+    2: 0,
+    3: 0,
+    4: 0,
+    5: 0,
+  },
+});
+const refreshKey = ref(0);
+
 // Wishlist computed
 const isInWishlist = computed(() =>
   product.value ? wishlistStore.ids.includes(product.value._id) : false
 );
+
+// Formatted description
+const formattedDescription = computed(() => {
+  if (!product.value?.description) return "";
+  return formatDescription(product.value.description);
+});
 
 // Computed
 const selectedImage = computed(() => {
@@ -597,7 +699,8 @@ const selectedImage = computed(() => {
 const currentPrice = computed(() => {
   if (!product.value) return 0;
 
-  const currentColor = selectedColor.value || (product.value.colors?.[0] ?? "");
+  const firstColor = product.value.colors?.[0];
+  const currentColor = selectedColor.value || (firstColor ? getColorName(firstColor) : "");
   const currentSize = selectedSize.value || (product.value.sizes?.[0] ?? "");
 
   // If product has variants, find the specific variant price
@@ -620,7 +723,8 @@ const currentPrice = computed(() => {
 const currentStock = computed(() => {
   if (!product.value) return 0;
 
-  const currentColor = selectedColor.value || (product.value.colors?.[0] ?? "");
+  const firstColor = product.value.colors?.[0];
+  const currentColor = selectedColor.value || (firstColor ? getColorName(firstColor) : "");
   const currentSize = selectedSize.value || (product.value.sizes?.[0] ?? "");
 
   // If product has variants, find the specific variant stock
@@ -662,7 +766,23 @@ const formatCategory = (category: string | { name: string } | undefined) => {
   return map[categoryName] || categoryName;
 };
 
-const getColorHex = (color: string) => {
+// Helper functions for color handling (supports both object and string formats)
+const getColorName = (color: string | { name: string; hex?: string }) => {
+  return typeof color === "string" ? color : color.name;
+};
+
+const getColorDisplayName = (color: string | { name: string; hex?: string }) => {
+  return typeof color === "string" ? color : color.name;
+};
+
+const getColorHexValue = (color: string | { name: string; hex?: string }) => {
+  // If color is an object with hex, use it directly
+  if (typeof color === "object" && color.hex) {
+    return color.hex;
+  }
+
+  // Otherwise, try to map the color name (backward compatibility)
+  const colorName = typeof color === "string" ? color : color.name;
   const colorMap: Record<string, string> = {
     червен: "#EF4444",
     червено: "#EF4444",
@@ -679,9 +799,21 @@ const getColorHex = (color: string) => {
     розов: "#EC4899",
     розово: "#EC4899",
     сив: "#6B7280",
-    синьо: "#3B82F6",
+    // English color names
+    black: "#000000",
+    white: "#FFFFFF",
+    red: "#EF4444",
+    blue: "#3B82F6",
+    green: "#10B981",
+    yellow: "#F59E0B",
+    purple: "#8B5CF6",
+    pink: "#EC4899",
+    gray: "#6B7280",
+    grey: "#6B7280",
+    navy: "#1E40AF",
+    crew: "#C5A572",
   };
-  return colorMap[color.toLowerCase()] || "#9CA3AF";
+  return colorMap[colorName.toLowerCase()] || "#9CA3AF";
 };
 
 const toggleSection = (section: string) => {
@@ -746,6 +878,31 @@ const addToCart = () => {
   }, 1000);
 };
 
+// Fetch review stats
+const fetchReviewStats = async (productId: string) => {
+  try {
+    const api = useApi();
+    const response = await api.get(`reviews/stats/${productId}`);
+
+    if (response.success && response.data) {
+      reviewStats.value = {
+        averageRating: response.data.averageRating || 0,
+        totalReviews: response.data.totalReviews || 0,
+        ratingDistribution: response.data.ratingDistribution || {
+          1: 0,
+          2: 0,
+          3: 0,
+          4: 0,
+          5: 0,
+        },
+      };
+    }
+  } catch (error) {
+    console.error("Error fetching review stats:", error);
+    // Fail silently - not critical
+  }
+};
+
 const fetchProduct = async () => {
   const id = route.params.id;
   isLoading.value = true;
@@ -757,6 +914,24 @@ const fetchProduct = async () => {
 
     if (response.success && response.data) {
       product.value = response.data;
+
+      // Load review stats if available from product
+      if (product.value?.reviewStats) {
+        reviewStats.value = {
+          averageRating: product.value.reviewStats.averageRating || 0,
+          totalReviews: product.value.reviewStats.totalReviews || 0,
+          ratingDistribution: product.value.reviewStats.ratingDistribution || {
+            1: 0,
+            2: 0,
+            3: 0,
+            4: 0,
+            5: 0,
+          },
+        };
+      } else if (product.value) {
+        // Fetch review stats from API
+        await fetchReviewStats(product.value._id);
+      }
     } else {
       throw new Error("Продуктът не е намерен");
     }
@@ -764,15 +939,18 @@ const fetchProduct = async () => {
     // Set defaults
     if (product.value) {
       selectedColor.value =
-        product.value.colors && product.value.colors.length > 0 ? product.value.colors[0] : "";
+        product.value.colors && product.value.colors.length > 0
+          ? product.value.colors[0] || ""
+          : "";
       selectedSize.value = product.value.sizes[0] || "";
 
       // Set default embroidery options
-      if (product.value.embroideryFonts && product.value.embroideryFonts.length) {
-        embroideryFont.value = product.value.embroideryFonts[0];
+      if (product.value.embroideryFonts && product.value.embroideryFonts.length > 0) {
+        embroideryFont.value = product.value.embroideryFonts[0] || "";
       }
-      if (product.value.embroideryColors && product.value.embroideryColors.length) {
-        embroideryColor.value = product.value.embroideryColors[0].value;
+      if (product.value.embroideryColors && product.value.embroideryColors.length > 0) {
+        const firstColor = product.value.embroideryColors[0];
+        embroideryColor.value = firstColor?.value || "";
       }
 
       useHead({
@@ -784,6 +962,29 @@ const fetchProduct = async () => {
     error.value = err instanceof Error ? err.message : "Възникна грешка";
   } finally {
     isLoading.value = false;
+  }
+};
+
+// Handle review events
+const handleRatingFilter = (_rating: number) => {
+  // Triggered by ReviewStats component - refresh reviews list
+  refreshKey.value += 1;
+};
+
+const handleReviewSubmitted = () => {
+  refreshKey.value += 1;
+  // Refetch stats after review submission
+  if (product.value) {
+    fetchReviewStats(product.value._id);
+  }
+};
+
+const handleStatsUpdated = (stats?: ReviewStats) => {
+  if (stats) {
+    reviewStats.value = stats;
+  } else if (product.value) {
+    // If no stats passed, refetch them (e.g., from ReviewForm)
+    fetchReviewStats(product.value._id);
   }
 };
 
@@ -986,18 +1187,41 @@ onMounted(() => {
 
 // Reviews
 .pdp-reviews {
-  display: flex;
+  display: inline-flex;
   align-items: center;
-  gap: 0.5rem;
+  gap: 0.375rem;
+  margin-bottom: 0.5rem;
+  line-height: 1.4;
 
   &__stars {
-    color: #f59e0b;
-    font-size: 1.125rem;
+    display: inline-flex;
+    align-items: center;
+    gap: 1px;
+  }
+
+  &__star {
+    font-size: 16px;
+    color: #d1d5db;
+    line-height: 1;
+    transition: color 0.2s ease;
+
+    &--filled {
+      color: #f59e0b;
+    }
   }
 
   &__count {
+    display: inline-flex;
+    align-items: center;
+    color: $text-primary;
+    font-size: 0.9375rem;
+    font-weight: 500;
+    line-height: 1.4;
+  }
+
+  &__text {
     color: $text-secondary;
-    font-size: 0.875rem;
+    font-weight: 400;
   }
 }
 
@@ -1280,12 +1504,36 @@ onMounted(() => {
   }
 
   &__icon {
-    padding: 0.375rem 0.75rem;
+    width: 60px;
+    height: 40px;
+    border-radius: 4px;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform 0.2s ease;
+    cursor: pointer;
+    flex-shrink: 0;
     background: $bg-card;
     border: 1px solid $border-base;
-    font-size: 0.75rem;
-    font-weight: 600;
-    color: $text-secondary;
+    padding: 4px;
+
+    svg {
+      width: 100%;
+      height: 100%;
+      display: block;
+    }
+
+    img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      display: block;
+    }
+
+    &:hover {
+      transform: scale(1.05);
+    }
   }
 }
 
@@ -1373,6 +1621,60 @@ onMounted(() => {
   }
 }
 
+/* Formatted Product Description */
+.pdp-description {
+  font-family: $font-body;
+  font-size: 16px;
+  line-height: 1.7;
+  color: $text-primary;
+
+  p {
+    margin: 0 0 1rem;
+
+    &:last-child {
+      margin-bottom: 0;
+    }
+  }
+
+  strong {
+    font-weight: 600;
+    color: $brand-ink;
+  }
+
+  em {
+    font-style: italic;
+  }
+
+  ul,
+  ol {
+    margin: 1rem 0;
+    padding-left: 1.5rem;
+    list-style-position: outside;
+  }
+
+  ul {
+    list-style-type: disc;
+  }
+
+  ol {
+    list-style-type: decimal;
+  }
+
+  li {
+    margin-bottom: 0.5rem;
+
+    &:last-child {
+      margin-bottom: 0;
+    }
+  }
+
+  br {
+    display: block;
+    margin-bottom: 0.5rem;
+    content: "";
+  }
+}
+
 .pdp-list {
   list-style: none;
   padding: 0;
@@ -1437,7 +1739,55 @@ onMounted(() => {
 
 /* Reviews Section */
 .pdp-reviews-section {
-  padding: 3rem 0;
+  padding: 2rem 0;
+  background: linear-gradient(to bottom, transparent 0%, rgba($brand, 0.02) 100%);
+
+  @include up(lg) {
+    padding: 2.5rem 0;
+  }
+
+  &__main {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    margin-bottom: 1.5rem;
+    max-width: 1400px;
+    margin-left: auto;
+    margin-right: auto;
+
+    @include up(lg) {
+      flex-direction: row;
+      gap: 2rem;
+      align-items: flex-start;
+    }
+  }
+
+  &__stats {
+    flex-shrink: 0;
+
+    @include up(lg) {
+      width: 280px;
+      position: sticky;
+      top: 100px;
+    }
+  }
+
+  &__content {
+    flex: 1;
+    min-width: 0;
+  }
+
+  &__form {
+    max-width: 800px;
+    margin: 1.5rem auto 0;
+    padding-top: 1.5rem;
+    border-top: 2px solid $border-base;
+
+    @include up(lg) {
+      margin-top: 2rem;
+      padding-top: 2rem;
+    }
+  }
 }
 
 .pdp-section-title {
