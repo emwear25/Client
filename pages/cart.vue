@@ -55,11 +55,16 @@
               >
                 <!-- Product Image -->
                 <div class="cart-item__image">
-                  <img
+                  <NuxtImg
                     :src="item.image || '/placeholder-product.jpg'"
                     :alt="item.name"
+                    format="webp"
+                    quality="75"
+                    width="100"
+                    height="100"
                     loading="lazy"
-                  >
+                    placeholder
+                  />
                 </div>
 
                 <!-- Product Details -->

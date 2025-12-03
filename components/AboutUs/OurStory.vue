@@ -27,11 +27,17 @@
         </div>
         <div class="our-story__image">
           <div class="our-story__img-wrapper">
-            <img
+            <NuxtImg
               src="https://images.unsplash.com/photo-1556911220-bff31c812dba?w=800&h=600&fit=crop"
               alt="Нашата история"
               class="our-story__img"
-            >
+              format="webp"
+              quality="80"
+              width="800"
+              height="600"
+              loading="lazy"
+              placeholder
+            />
             <div class="our-story__img-overlay"/>
           </div>
         </div>

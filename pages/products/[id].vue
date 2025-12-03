@@ -44,7 +44,12 @@
                   :alt="product.name"
                   class="pdp-gallery__img"
                   format="webp"
-                  quality="80"
+                  quality="85"
+                  width="800"
+                  height="800"
+                  sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 800px"
+                  loading="eager"
+                  placeholder
                 />
               </div>
               <div v-if="product.images && product.images.length > 1" class="pdp-gallery__thumbs">
@@ -61,8 +66,11 @@
                     :src="img.url"
                     :alt="`${product.name} - ${index + 1}`"
                     format="webp"
-                    quality="60"
+                    quality="70"
                     width="100"
+                    height="100"
+                    loading="lazy"
+                    placeholder
                   />
                 </button>
               </div>

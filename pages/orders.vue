@@ -36,12 +36,18 @@
 
           <div class="order-card__items">
             <div v-for="item in order.items" :key="item._id" class="order-item">
-              <img
+              <NuxtImg
                 :src="getItemImage(item)"
                 :alt="item.name"
                 class="order-item__image"
-                @error="(e) => ((e.target as HTMLImageElement).src = '/img/placeholder.png')"
-              >
+                format="webp"
+                quality="75"
+                width="80"
+                height="80"
+                loading="lazy"
+                placeholder
+                :fallback="'/img/placeholder.png'"
+              />
               <div class="order-item__info">
                 <h4 class="order-item__name">{{ item.name }}</h4>
                 <p class="order-item__meta">

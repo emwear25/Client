@@ -15,6 +15,59 @@ export default defineNuxtConfig({
     "@vueuse/nuxt",
   ],
 
+  // Image optimization configuration for ecommerce
+  image: {
+    // Use ipx provider (works with any URL, including Cloudinary)
+    provider: "ipx",
+    // Quality settings
+    quality: 80,
+    format: ["webp"],
+    // Screen sizes for responsive images
+    screens: {
+      xs: 320,
+      sm: 640,
+      md: 768,
+      lg: 1024,
+      xl: 1280,
+      xxl: 1536,
+    },
+    // Default modifiers
+    modifiers: {
+      quality: 80,
+      format: "webp",
+    },
+    // Presets for different use cases
+    presets: {
+      // Product card thumbnail (grid view)
+      productCard: {
+        modifiers: {
+          format: "webp",
+          quality: 75,
+          width: 400,
+          height: 400,
+        },
+      },
+      // Product detail page main image
+      productDetail: {
+        modifiers: {
+          format: "webp",
+          quality: 85,
+          width: 800,
+          height: 800,
+        },
+      },
+      // Product thumbnail (gallery)
+      productThumb: {
+        modifiers: {
+          format: "webp",
+          quality: 70,
+          width: 100,
+          height: 100,
+        },
+      },
+    },
+  },
+
   icon: {
     serverBundle: {
       collections: ["mdi"],

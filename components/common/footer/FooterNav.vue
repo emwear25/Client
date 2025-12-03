@@ -3,7 +3,15 @@
     <div class="footer-nav__grid">
       <div class="footer-nav__section footer-nav__section--brand">
         <NuxtLink to="/" class="footer-nav__logo-link">
-          <img src="/logo-dark.png" alt="emWear" class="footer-nav__logo-img" >
+          <NuxtImg
+            src="/logo-dark.png"
+            alt="emWear"
+            class="footer-nav__logo-img"
+            width="200"
+            height="60"
+            loading="eager"
+            format="png"
+          />
         </NuxtLink>
         <p class="footer-nav__desc">Персонализирани подаръци с грижа и стил.</p>
       </div>

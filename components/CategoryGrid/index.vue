@@ -10,7 +10,17 @@
           class="category-grid__card"
         >
           <div class="category-grid__card-content">
-            <img :src="category.img" :alt="category.title" class="category-grid__img" >
+            <NuxtImg
+              :src="category.img"
+              :alt="category.title"
+              class="category-grid__img"
+              format="webp"
+              quality="80"
+              width="400"
+              height="360"
+              loading="lazy"
+              placeholder
+            />
             <div class="category-grid__overlay">
               <Icon :name="category.icon" class="category-grid__icon" />
               <h3 class="category-grid__title">{{ category.title }}</h3>

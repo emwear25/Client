@@ -1,7 +1,15 @@
 <template>
   <div class="site-header__logo">
     <NuxtLink to="/" class="site-header__logo-link">
-      <img src="/logo-dark.png" alt="emWear" class="site-header__logo-img" >
+      <NuxtImg
+        src="/logo-dark.png"
+        alt="emWear"
+        class="site-header__logo-img"
+        width="200"
+        height="60"
+        loading="eager"
+        format="png"
+      />
     </NuxtLink>
   </div>
 </template>

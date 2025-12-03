@@ -13,11 +13,17 @@
         <article v-for="product in products" :key="product._id" class="product-card">
           <NuxtLink :to="`/products/${product._id}`" class="product-card__link">
             <div class="product-card__media">
-              <img
+              <NuxtImg
                 :src="product.images?.[0]?.url || '/img/placeholder.png'"
                 :alt="product.name"
                 class="product-card__img"
-              >
+                format="webp"
+                quality="75"
+                width="400"
+                height="400"
+                loading="lazy"
+                placeholder
+              />
               <div v-if="product.isNew" class="product-card__badges">
                 <span class="badge badge--handmade">Ръчна бродерия</span>
               </div>

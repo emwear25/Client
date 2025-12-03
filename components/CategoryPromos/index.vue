@@ -12,7 +12,17 @@
           <div class="category-promos__card-inner">
             <!-- Background Image -->
             <div class="category-promos__image-wrapper">
-              <img :src="category.image" :alt="category.title" class="category-promos__image" >
+              <NuxtImg
+                :src="category.image"
+                :alt="category.title"
+                class="category-promos__image"
+                format="webp"
+                quality="80"
+                width="600"
+                height="400"
+                loading="lazy"
+                placeholder
+              />
               <!-- Dark Overlay -->
               <div class="category-promos__overlay"/>
             </div>
@@ -56,7 +66,17 @@
             <div class="category-promos__card-inner">
               <!-- Background Image -->
               <div class="category-promos__image-wrapper">
-                <img :src="category.image" :alt="category.title" class="category-promos__image" >
+                <NuxtImg
+                :src="category.image"
+                :alt="category.title"
+                class="category-promos__image"
+                format="webp"
+                quality="80"
+                width="600"
+                height="400"
+                loading="lazy"
+                placeholder
+              />
                 <!-- Dark Overlay -->
                 <div class="category-promos__overlay"/>
               </div>

@@ -11,11 +11,17 @@
     <!-- Cart Items -->
     <div v-else class="checkout-order-summary__items">
       <div v-for="item in items" :key="item.id" class="checkout-order-summary__item">
-        <img
+        <NuxtImg
           v-if="item.image"
           :src="item.image"
           :alt="item.name"
           class="checkout-order-summary__item-image"
+          format="webp"
+          quality="75"
+          width="80"
+          height="80"
+          loading="lazy"
+          placeholder
         />
         <div class="checkout-order-summary__item-info">
           <h4 class="checkout-order-summary__item-name">{{ item.name }}</h4>

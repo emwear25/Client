@@ -51,11 +51,17 @@
               :key="`${item.id}-${item.size}-${item.color}`"
               class="cart-item"
             >
-              <img
+              <NuxtImg
                 :src="item.image || '/img/placeholder.png'"
                 :alt="item.name"
                 class="cart-item__img"
-              >
+                format="webp"
+                quality="75"
+                width="80"
+                height="80"
+                loading="lazy"
+                placeholder
+              />
               <div class="cart-item__details">
                 <h4 class="cart-item__name">{{ item.name }}</h4>
                 <div class="cart-item__meta">

@@ -1,12 +1,18 @@
 <template>
   <article class="product-card">
     <div class="product-card__media" @click="goToPDP">
-      <img
+      <NuxtImg
         :src="product.images?.[0]?.url || '/img/placeholder.png'"
         :alt="product.name"
         class="product-card__img"
+        format="webp"
+        quality="75"
+        width="400"
+        height="400"
         loading="lazy"
-      >
+        placeholder
+        :placeholder-class="['bg-gray-200', 'animate-pulse']"
+      />
 
       <!-- Quick View Button -->
       <button class="product-card__quick" @click.stop="$emit('quick-view', product)">

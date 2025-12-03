@@ -5,11 +5,17 @@
         <!-- Image Side -->
         <div class="meet-maker__visual">
           <div class="meet-maker__image-wrapper">
-            <img
+            <NuxtImg
               src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=600&h=700&fit=crop&crop=faces"
               alt="Севал - Създател на emWear"
               class="meet-maker__image"
-            >
+              format="webp"
+              quality="80"
+              width="600"
+              height="700"
+              loading="lazy"
+              placeholder
+            />
             <div class="meet-maker__image-decoration"/>
           </div>
           <div class="meet-maker__badge">

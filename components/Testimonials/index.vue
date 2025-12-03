@@ -14,11 +14,17 @@
         <article v-for="testimonial in testimonials" :key="testimonial.id" class="testimonial-card">
           <div class="testimonial-card__header">
             <div class="testimonial-card__avatar">
-              <img
+              <NuxtImg
                 :src="testimonial.avatar"
                 :alt="testimonial.name"
                 class="testimonial-card__avatar-img"
-              >
+                format="webp"
+                quality="75"
+                width="56"
+                height="56"
+                loading="lazy"
+                placeholder
+              />
             </div>
             <div class="testimonial-card__info">
               <h3 class="testimonial-card__name">{{ testimonial.name }}</h3>

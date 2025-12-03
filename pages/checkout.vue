@@ -233,7 +233,8 @@ import { useAuthStore } from "~/stores/auth";
 import { useToast } from "~/composables/useToast";
 import { useApi } from "~/composables/useApi";
 import { useCheckoutValidation } from "~/composables/useCheckoutValidation";
-import { nextTick, computed } from "vue";
+import { useDebounce } from "~/composables/useDebounce";
+import { nextTick, computed, watch, onUnmounted } from "vue";
 import CheckoutDeliveryMethod from "~/components/checkout/CheckoutDeliveryMethod.vue";
 import CheckoutGuestForm from "~/components/checkout/CheckoutGuestForm.vue";
 import CheckoutShippingAddress from "~/components/checkout/CheckoutShippingAddress.vue";
@@ -251,6 +252,9 @@ const api = useApi();
 
 // Use validation composable
 const { validationErrors, handleBlur, handleInput } = useCheckoutValidation();
+
+// Use debounce composable
+const { debounceAsync } = useDebounce();
 
 // State
 const isGuest = ref(!authStore.isAuthenticated); // Start in guest mode if not authenticated
@@ -730,9 +734,14 @@ const calculateSpeedyShipping = async () => {
   }
 };
 
-// Watch for changes in delivery method, city, office, or address fields
-let debounceTimer: ReturnType<typeof setTimeout> | null = null;
+// Create debounced versions of shipping calculation functions with request cancellation
+const debouncedCalculateEcontShipping = debounceAsync(calculateEcontShipping, 500);
+const debouncedCalculateSpeedyShipping = debounceAsync(calculateSpeedyShipping, 500);
 
+// Track current shipping calculation promise for cancellation
+let currentShippingCalculation: { cancel: () => void } | null = null;
+
+// Watch for changes in delivery method, city, office, or address fields
 watch(
   [
     deliveryMethod,
@@ -745,42 +754,78 @@ watch(
     () => shippingForm.value.postalCode,
   ],
   ([newDeliveryMethod, newProvider], [oldDeliveryMethod, oldProvider]) => {
-    // Clear any existing debounce timer
-    if (debounceTimer) {
-      clearTimeout(debounceTimer);
-      debounceTimer = null;
+    // Cancel any pending shipping calculation
+    if (currentShippingCalculation) {
+      currentShippingCalculation.cancel();
+      currentShippingCalculation = null;
     }
+
+    // Cancel debounced functions
+    debouncedCalculateEcontShipping.cancel();
+    debouncedCalculateSpeedyShipping.cancel();
 
     // If delivery method or provider changed, recalculate immediately
     if (newDeliveryMethod !== oldDeliveryMethod || newProvider !== oldProvider) {
       console.log("[Checkout] Delivery method/provider changed, recalculating immediately");
       if (deliveryProvider.value === "speedy") {
-        calculateSpeedyShipping();
+        currentShippingCalculation = { cancel: debouncedCalculateSpeedyShipping.cancel };
+        calculateSpeedyShipping().catch(() => {
+          // Ignore errors from cancelled requests
+        });
       } else {
-        calculateEcontShipping();
+        currentShippingCalculation = { cancel: debouncedCalculateEcontShipping.cancel };
+        calculateEcontShipping().catch(() => {
+          // Ignore errors from cancelled requests
+        });
       }
       return;
     }
 
-    // For address delivery with text input changes, debounce
+    // For address delivery with text input changes, use debounced calculation
     if (deliveryMethod.value === "courier_address") {
-      debounceTimer = setTimeout(() => {
-        if (deliveryProvider.value === "speedy") {
-          calculateSpeedyShipping();
-        } else {
-          calculateEcontShipping();
-        }
-      }, 500);
+      if (deliveryProvider.value === "speedy") {
+        currentShippingCalculation = { cancel: debouncedCalculateSpeedyShipping.cancel };
+        debouncedCalculateSpeedyShipping().catch((error: Error) => {
+          // Ignore cancellation errors
+          if (error.message !== "Request was cancelled") {
+            console.error("[Checkout] Shipping calculation error:", error);
+          }
+        });
+      } else {
+        currentShippingCalculation = { cancel: debouncedCalculateEcontShipping.cancel };
+        debouncedCalculateEcontShipping().catch((error: Error) => {
+          // Ignore cancellation errors
+          if (error.message !== "Request was cancelled") {
+            console.error("[Checkout] Shipping calculation error:", error);
+          }
+        });
+      }
     } else {
       // For office/automat selection, calculate immediately
       if (deliveryProvider.value === "speedy") {
-        calculateSpeedyShipping();
+        currentShippingCalculation = { cancel: debouncedCalculateSpeedyShipping.cancel };
+        calculateSpeedyShipping().catch(() => {
+          // Ignore errors from cancelled requests
+        });
       } else {
-        calculateEcontShipping();
+        currentShippingCalculation = { cancel: debouncedCalculateEcontShipping.cancel };
+        calculateEcontShipping().catch(() => {
+          // Ignore errors from cancelled requests
+        });
       }
     }
   }
 );
+
+// Cleanup on unmount
+onUnmounted(() => {
+  // Cancel any pending calculations
+  debouncedCalculateEcontShipping.cancel();
+  debouncedCalculateSpeedyShipping.cancel();
+  if (currentShippingCalculation) {
+    currentShippingCalculation.cancel();
+  }
+});
 
 // Filtered offices based on delivery method
 const filteredOffices = computed(() => {
