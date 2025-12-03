@@ -426,6 +426,9 @@ const getStatusLabel = (status: string) => {
   justify-content: center;
   padding: 2rem 1rem;
   background: linear-gradient(135deg, $color-linen 0%, $color-sage 50%, $color-forest 100%);
+  overflow-x: hidden;
+  width: 100%;
+  max-width: 100%;
 
   &__container {
     width: 100%;

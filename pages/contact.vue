@@ -236,6 +236,9 @@ const handleSubmit = async () => {
 @use "~/assets/styles/fonts" as *;
 
 .contact-page {
+  overflow-x: hidden;
+  width: 100%;
+  max-width: 100%;
   background: $bg-page;
 }
 

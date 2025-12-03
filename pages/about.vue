@@ -38,6 +38,9 @@ useHead({
 
 <style scoped lang="scss">
 .about-page {
+  overflow-x: hidden;
+  width: 100%;
+  max-width: 100%;
   // No additional styles needed - components handle their own spacing
 }
 </style>

@@ -1114,6 +1114,9 @@ onMounted(() => {
 .pdp {
   background: $bg-page;
   min-height: 100vh;
+  overflow-x: hidden;
+  width: 100%;
+  max-width: 100%;
 }
 
 /* Loading & Error */

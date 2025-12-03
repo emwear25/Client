@@ -165,6 +165,9 @@ useHead({
   min-height: 100vh;
   background: $bg-page;
   padding: 2rem 1rem;
+  overflow-x: hidden;
+  width: 100%;
+  max-width: 100%;
 
   @include up(md) {
     padding: 3rem 1.5rem;

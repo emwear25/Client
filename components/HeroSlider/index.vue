@@ -633,8 +633,8 @@ const renderCustomBullet = (index: number, className: string) => {
 
 .hero-slider {
   position: relative;
-  width: 100vw;
-  margin-left: calc(50% - 50vw);
+  width: 100%;
+  max-width: 100%;
   overflow: hidden;
   background: $color-linen;
 

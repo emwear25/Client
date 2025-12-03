@@ -150,6 +150,9 @@ useHead({
 
 .favorites-page {
   min-height: 60vh;
+  overflow-x: hidden;
+  width: 100%;
+  max-width: 100%;
 }
 
 .favorites-hero {

@@ -289,6 +289,9 @@ useHead({
   min-height: 100vh;
   background: $bg-page;
   padding-bottom: 3rem;
+  overflow-x: hidden;
+  width: 100%;
+  max-width: 100%;
 
   &__header {
     background: $grad-brand-a;

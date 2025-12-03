@@ -196,6 +196,9 @@ useHead({
 @use "~/assets/styles/breakpoints" as *;
 
 .orders-page {
+  overflow-x: hidden;
+  width: 100%;
+  max-width: 100%;
   min-height: 60vh;
   padding: 2rem 0 4rem;
 

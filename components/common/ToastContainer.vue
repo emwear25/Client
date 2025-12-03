@@ -99,7 +99,7 @@ const { toasts, remove } = useToast();
   flex-direction: column;
   gap: 0.75rem;
   max-width: 420px;
-  width: calc(100vw - 2rem);
+  width: calc(100% - 2rem);
 
   @include up(sm) {
     width: 420px;

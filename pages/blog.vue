@@ -24,6 +24,9 @@ useHead({
   min-height: 60vh;
   padding: 4rem 1rem;
   text-align: center;
+  overflow-x: hidden;
+  width: 100%;
+  max-width: 100%;
 
   &__title {
     font-family: $font-heading;

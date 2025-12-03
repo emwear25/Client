@@ -383,6 +383,9 @@ useHead({
 .profile-edit-page {
   min-height: 60vh;
   padding: 2rem 0 4rem;
+  overflow-x: hidden;
+  width: 100%;
+  max-width: 100%;
 
   &__header {
     margin-bottom: 2rem;

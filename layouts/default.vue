@@ -30,11 +30,17 @@
   min-height: 100vh;
   display: flex;
   flex-direction: column;
+  overflow-x: hidden;
+  width: 100%;
+  max-width: 100%;
 
   &__main {
     flex: 1;
     padding: 0;
     margin: 0;
+    overflow-x: hidden;
+    width: 100%;
+    max-width: 100%;
   }
 }
 </style>

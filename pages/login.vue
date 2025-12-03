@@ -231,6 +231,9 @@ useHead({
 @use "~/assets/styles/breakpoints" as *;
 
 .auth-page {
+  overflow-x: hidden;
+  width: 100%;
+  max-width: 100%;
   min-height: 100vh;
   background: $grad-brand-a;
   display: flex;
