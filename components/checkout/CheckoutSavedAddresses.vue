@@ -251,6 +251,7 @@ defineEmits<{
   &__new-address-btn {
     width: 100%;
     margin-top: 1rem;
+    margin-bottom: 1.5rem;
     padding: 0.875rem 1rem;
     background: white;
     border: 2px solid #b9c6aa;

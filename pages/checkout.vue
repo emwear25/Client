@@ -75,9 +75,9 @@
               </button>
             </div>
 
-            <!-- Saved Addresses Component -->
+            <!-- Saved Addresses Component (for authenticated users) -->
             <CheckoutSavedAddresses
-              v-if="deliveryProvider === 'econt' && authStore.user?.addresses?.length"
+              v-if="!isGuest && deliveryProvider === 'econt' && authStore.user?.addresses?.length"
               :displayed-addresses="displayedAddresses"
               :selected-address-id="selectedAddressId"
               :has-more-addresses="hasMoreAddresses"
@@ -176,18 +176,6 @@
                 </span>
               </div>
             </div>
-
-            <!-- Saved Addresses Component -->
-            <CheckoutSavedAddresses
-              v-if="deliveryProvider === 'econt' && authStore.user?.addresses?.length"
-              :displayed-addresses="displayedAddresses"
-              :selected-address-id="selectedAddressId"
-              :has-more-addresses="hasMoreAddresses"
-              :total-addresses="authStore.user.addresses.length"
-              @select-address="selectAddress"
-              @load-more="showAllAddresses = true"
-              @new-address="selectNewAddress"
-            />
 
             <!-- Shipping Address Component (for authenticated users) -->
             <CheckoutShippingAddress
