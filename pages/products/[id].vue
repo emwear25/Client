@@ -512,18 +512,9 @@
                 :product-id="product._id"
                 :stats="reviewStats"
                 @stats-updated="handleStatsUpdated"
+                @open-review-form="showReviewModal = true"
               />
             </div>
-          </div>
-
-          <!-- Review Form -->
-          <div class="pdp-reviews-section__form">
-            <ReviewForm
-              :key="`form-${product._id}-${refreshKey}`"
-              :product-id="product._id"
-              @submitted="handleReviewSubmitted"
-              @stats-updated="handleStatsUpdated"
-            />
           </div>
         </div>
       </section>
@@ -531,6 +522,16 @@
       <!-- Related Products -->
       <RelatedProducts v-if="product" :product-id="product._id" :limit="4" />
     </div>
+
+    <!-- Review Form Modal -->
+    <Modal v-if="product" v-model:open="showReviewModal">
+      <ReviewForm
+        :key="`form-${product._id}-${refreshKey}`"
+        :product-id="product._id"
+        @submitted="handleReviewSubmitted"
+        @stats-updated="handleStatsUpdated"
+      />
+    </Modal>
   </div>
 </template>
 
@@ -546,6 +547,7 @@ import ReviewStats from "~/components/reviews/ReviewStats.vue";
 import ProductReviews from "~/components/reviews/ProductReviews.vue";
 import ReviewForm from "~/components/reviews/ReviewForm.vue";
 import RelatedProducts from "~/components/products/RelatedProducts.vue";
+import Modal from "~/components/common/Modal.vue";
 
 interface ProductImage {
   url: string;
@@ -646,6 +648,9 @@ const validateEmbroidery = () => {
 
 // Accordion state
 const openSection = ref<string>("description");
+
+// Review modal state
+const showReviewModal = ref(false);
 
 // Review state
 const reviewStats = ref({
@@ -1078,6 +1083,7 @@ const handleRatingFilter = (_rating: number) => {
 
 const handleReviewSubmitted = () => {
   refreshKey.value += 1;
+  showReviewModal.value = false;
   // Refetch stats after review submission
   if (product.value) {
     fetchReviewStats(product.value._id);
@@ -1924,17 +1930,6 @@ onMounted(() => {
     min-width: 0;
   }
 
-  &__form {
-    max-width: 800px;
-    margin: 1.5rem auto 0;
-    padding-top: 1.5rem;
-    border-top: 2px solid $border-base;
-
-    @include up(lg) {
-      margin-top: 2rem;
-      padding-top: 2rem;
-    }
-  }
 }
 
 .pdp-section-title {

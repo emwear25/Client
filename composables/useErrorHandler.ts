@@ -68,8 +68,8 @@ export const useErrorHandler = () => {
 
     // Map common error messages to user-friendly Bulgarian text
     const errorMap: Record<string, string> = {
-      "Network request failed": "Проблем с интернет връзката. Моля, опитайте отново.",
-      "Failed to fetch": "Проблем с връзката към сървъра. Моля, опитайте отново.",
+      "Network request failed": "Не може да се установи връзка със сървъра. Моля, проверете дали сървърът е стартиран и опитайте отново.",
+      "Failed to fetch": "Не може да се установи връзка със сървъра. Моля, проверете дали сървърът е стартиран и опитайте отново.",
       Unauthorized: "Не сте оторизирани. Моля, влезте отново в системата.",
       Forbidden: "Нямате права за достъп до този ресурс.",
       "Not Found": "Заявеният ресурс не беше намерен.",

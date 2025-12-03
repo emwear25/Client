@@ -12,16 +12,12 @@
           <div class="category-promos__card-inner">
             <!-- Background Image -->
             <div class="category-promos__image-wrapper">
-              <NuxtImg
+              <img
                 :src="category.image"
                 :alt="category.title"
                 class="category-promos__image"
-                format="webp"
-                quality="80"
-                width="600"
-                height="400"
-                loading="lazy"
-                placeholder
+                loading="eager"
+                fetchpriority="high"
               />
               <!-- Dark Overlay -->
               <div class="category-promos__overlay"/>
@@ -66,16 +62,12 @@
             <div class="category-promos__card-inner">
               <!-- Background Image -->
               <div class="category-promos__image-wrapper">
-                <NuxtImg
+                <img
                 :src="category.image"
                 :alt="category.title"
                 class="category-promos__image"
-                format="webp"
-                quality="80"
-                width="600"
-                height="400"
-                loading="lazy"
-                placeholder
+                loading="eager"
+                fetchpriority="high"
               />
                 <!-- Dark Overlay -->
                 <div class="category-promos__overlay"/>
@@ -280,6 +272,15 @@ const categories: CategoryPromo[] = [
     height: 100%;
     object-fit: cover;
     display: block;
+    // Ensure images load immediately
+    opacity: 1;
+    transition: opacity 0.3s ease;
+    
+    // Fallback if image fails to load
+    &[src=""],
+    &:not([src]) {
+      opacity: 0;
+    }
   }
 
   &__overlay {

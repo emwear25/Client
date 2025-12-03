@@ -66,7 +66,9 @@
                 <h4 class="cart-item__name">{{ item.name }}</h4>
                 <div class="cart-item__meta">
                   <span v-if="item.size" class="cart-item__attr">Размер: {{ item.size }}</span>
-                  <span v-if="item.color" class="cart-item__attr">Цвят: {{ item.color }}</span>
+                  <span v-if="item.color" class="cart-item__attr">
+                    Цвят: {{ getColorDisplayName(item.color) }}
+                  </span>
                 </div>
                 <div class="cart-item__footer">
                   <div class="cart-item__quantity">
@@ -141,6 +143,55 @@ const formatPrice = (price: number) => {
   return `${price.toFixed(2)} лв.`;
 };
 
+// Color translation map: English to Bulgarian
+const colorTranslationMap: Record<string, string> = {
+  black: "Черен",
+  white: "Бял",
+  red: "Червен",
+  blue: "Син",
+  green: "Зелен",
+  yellow: "Жълт",
+  purple: "Лилав",
+  pink: "Розов",
+  gray: "Сив",
+  grey: "Сив",
+  navy: "Морско синьо",
+};
+
+// Helper function to get color display name (handles string or object)
+const getColorDisplayName = (color: string | { name: string; hex?: string } | null | undefined): string => {
+  if (!color) return "";
+  
+  let colorName = "";
+  
+  // Handle different formats
+  if (typeof color === "string") {
+    // Try to parse if it's a JSON string
+    try {
+      const parsed = JSON.parse(color);
+      colorName = parsed.name || color;
+    } catch {
+      // Not JSON, use as-is
+      colorName = color;
+    }
+  } else if (typeof color === "object" && color) {
+    colorName = color.name || "";
+  }
+
+  if (!colorName) return "";
+
+  // Normalize to lowercase for matching
+  const normalizedName = colorName.toLowerCase().trim();
+
+  // Check if we have a translation
+  if (colorTranslationMap[normalizedName]) {
+    return colorTranslationMap[normalizedName];
+  }
+
+  // Return original name if no translation found
+  return colorName;
+};
+
 // Navigate to checkout
 const goToCheckout = () => {
   // Close cart drawer first
@@ -203,7 +254,7 @@ const goToCheckout = () => {
   &__close {
     position: absolute;
     top: 8px;
-    left: 12px;
+    right: 12px;
     width: 36px;
     height: 36px;
     border-radius: 999px;

@@ -96,6 +96,7 @@ import { ref, computed, onMounted } from "vue";
 import { useHead } from "#app";
 import { useWishlist } from "~/stores/useWishlist";
 import { useApi } from "~/composables/useApi";
+import { useErrorHandler } from "~/composables/useErrorHandler";
 
 useHead({
   title: "Продукти - emWear | Персонализирани Бродирани Изделия",
@@ -158,6 +159,43 @@ const sortedProducts = computed(() => {
 });
 
 // Functions
+const { normalizeError, getUserFriendlyMessage } = useErrorHandler();
+
+const getErrorMessage = (err: unknown): string => {
+  // Handle network/server connection errors first
+  if (err instanceof Error) {
+    const message = err.message.toLowerCase();
+    
+    // Check for specific network errors (server not running, connection failed)
+    if (message.includes("failed to fetch") || 
+        message.includes("networkerror") || 
+        message.includes("network request failed") ||
+        (message.includes("fetch") && message.includes("failed")) ||
+        message.includes("load failed")) {
+      return "Не може да се установи връзка със сървъра. Моля, проверете дали сървърът е стартиран и опитайте отново.";
+    }
+    
+    if (message.includes("timeout") || message.includes("timed out")) {
+      return "Заявката отне твърде много време. Моля, опитайте отново.";
+    }
+  }
+  
+  // Normalize the error and get user-friendly message
+  const normalizedError = normalizeError(err);
+  const friendlyMessage = getUserFriendlyMessage(normalizedError);
+  
+  // Check if it's a network error (no status code usually means network issue)
+  if (!normalizedError.statusCode) {
+    const message = (normalizedError.message || "").toLowerCase();
+    if (message.includes("fetch") || message.includes("network") || message.includes("connection")) {
+      return "Не може да се установи връзка със сървъра. Моля, проверете дали сървърът е стартиран и опитайте отново.";
+    }
+  }
+  
+  // Return user-friendly message or fallback
+  return friendlyMessage || "Възникна неочаквана грешка при зареждането на продуктите. Моля, опитайте отново.";
+};
+
 const fetchProducts = async () => {
   isLoading.value = true;
   error.value = null;
@@ -176,7 +214,7 @@ const fetchProducts = async () => {
       products.value = [];
     }
   } catch (err) {
-    error.value = err instanceof Error ? err.message : "Възникна грешка при зареждането";
+    error.value = getErrorMessage(err);
   } finally {
     isLoading.value = false;
   }

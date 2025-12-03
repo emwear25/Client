@@ -4,7 +4,7 @@
       <!-- Backdrop -->
       <div class="qv__backdrop" @click="$emit('close')"/>
 
-      <!-- Panel (LEFT slide-in) -->
+      <!-- Panel (RIGHT slide-in) -->
       <aside class="qv__panel" role="dialog" aria-modal="true" aria-labelledby="qv-title">
         <!-- Close Button -->
         <button class="qv__close" aria-label="Затвори" @click="$emit('close')">×</button>
@@ -34,26 +34,76 @@
 
           <!-- Colors (if available) -->
           <div v-if="product?.colors?.length" class="qv__group">
-            <p class="qv__label">ЦВЯТ</p>
+            <p class="qv__label">
+              ЦВЯТ: <strong>{{ selectedColor ? getColorDisplayName(selectedColor) : getColorDisplayName(product.colors[0]) }}</strong>
+            </p>
             <div class="qv__swatches">
               <button
-                v-for="(color, index) in product.colors"
-                :key="index"
+                v-for="color in product.colors"
+                :key="getColorName(color)"
                 class="qv__swatch"
+                :class="{ 'qv__swatch--active': getColorName(color) === selectedColor }"
                 :style="{ background: getColorHex(color) }"
-                :aria-label="color"
-                :title="color"
+                :aria-label="getColorDisplayName(color)"
+                :title="getColorDisplayName(color)"
+                @click="selectedColor = getColorName(color)"
               />
             </div>
           </div>
 
           <!-- Sizes (if available) -->
           <div v-if="product?.sizes?.length" class="qv__group">
-            <p class="qv__label">РАЗМЕР</p>
+            <p class="qv__label">
+              РАЗМЕР: <strong>{{ selectedSize || product.sizes[0] }}</strong>
+            </p>
             <div class="qv__choices">
-              <button v-for="size in product.sizes" :key="size" class="qv__choice">
+              <button
+                v-for="size in product.sizes"
+                :key="size"
+                class="qv__choice"
+                :class="{ 'qv__choice--active': selectedSize === size }"
+                @click="selectedSize = size"
+              >
                 {{ size }}
               </button>
+            </div>
+          </div>
+
+          <!-- Embroidery Customization -->
+          <div v-if="product?.customEmbroidery" class="qv__custom">
+            <div class="qv__custom-item">
+              <input
+                id="qv-embroidery-enable"
+                v-model="embroideryEnabled"
+                type="checkbox"
+                class="qv__custom-checkbox"
+              />
+              <label for="qv-embroidery-enable" class="qv__custom-label">
+                <img src="/img/embroidered.svg" alt="Бродерия" class="qv__custom-icon" />
+                Добави име за бродерия
+              </label>
+            </div>
+
+            <div v-if="embroideryEnabled" class="qv__custom-fields">
+              <p class="qv__custom-note">
+                Забележка: Персонализираните артикули се нуждаят от допълнително време за обработка.
+              </p>
+              <div class="qv__custom-field">
+                <label class="qv__custom-field-label">Име за бродерия</label>
+                <input
+                  v-model="embroideryName"
+                  type="text"
+                  placeholder="Въведете име"
+                  class="qv__custom-input"
+                  :class="{ 'qv__custom-input--error': embroideryError }"
+                  maxlength="15"
+                  required
+                  @blur="validateEmbroidery"
+                />
+                <span v-if="embroideryError" class="qv__custom-error">{{
+                  embroideryError
+                }}</span>
+              </div>
             </div>
           </div>
 
@@ -88,6 +138,7 @@
 </template>
 
 <script setup lang="ts">
+import { ref, computed, watch, onMounted } from "vue";
 import { useCartStore } from "~/stores/cart";
 import { useToast } from "~/composables/useToast";
 
@@ -103,10 +154,11 @@ interface Product {
   price: number;
   compareAt?: number | null;
   images?: ProductImage[];
-  colors?: string[];
+  colors?: (string | { name: string; hex?: string })[];
   sizes?: string[];
   stock: number;
-  weight?: number; // Weight in kg for shipping
+  weight?: number;
+  customEmbroidery?: boolean;
 }
 
 const props = defineProps<{
@@ -121,34 +173,194 @@ const emit = defineEmits<{
 const cartStore = useCartStore();
 const toast = useToast();
 
+// Selection state
+const selectedColor = ref<string>("");
+const selectedSize = ref<string>("");
+
+// Embroidery state
+const embroideryEnabled = ref(false);
+const embroideryName = ref("");
+const embroideryError = ref("");
+
+// Auto-select first color/size when product changes
+watch(
+  () => props.product,
+  (newProduct) => {
+    if (!newProduct) {
+      selectedColor.value = "";
+      selectedSize.value = "";
+      embroideryEnabled.value = false;
+      embroideryName.value = "";
+      embroideryError.value = "";
+      return;
+    }
+
+    // Auto-select first color if only one exists
+    if (newProduct.colors && newProduct.colors.length === 1) {
+      selectedColor.value = getColorName(newProduct.colors[0]);
+    } else {
+      selectedColor.value = "";
+    }
+
+    // Auto-select first size if sizes exist
+    if (newProduct.sizes && newProduct.sizes.length > 0) {
+      selectedSize.value = newProduct.sizes[0];
+    } else {
+      selectedSize.value = "";
+    }
+
+    // Reset embroidery
+    embroideryEnabled.value = false;
+    embroideryName.value = "";
+    embroideryError.value = "";
+  },
+  { immediate: true }
+);
+
+// Validation for embroidery
+const validateEmbroidery = () => {
+  if (embroideryEnabled.value && !embroideryName.value.trim()) {
+    embroideryError.value = "Това поле е задължително.";
+    return false;
+  }
+  embroideryError.value = "";
+  return true;
+};
+
 const formatPrice = (price?: number | null) => {
   if (price == null) return "";
   return `${price.toFixed(2)} лв.`;
 };
 
-const getColorHex = (color: string) => {
-  // Simple color mapping - extend as needed
+// Helper functions for color handling
+const getColorName = (color: string | { name: string; hex?: string }) => {
+  return typeof color === "string" ? color : color.name;
+};
+
+// Color translation map: English to Bulgarian
+const colorTranslationMap: Record<string, string> = {
+  black: "Черен",
+  white: "Бял",
+  red: "Червен",
+  blue: "Син",
+  green: "Зелен",
+  yellow: "Жълт",
+  purple: "Лилав",
+  pink: "Розов",
+  gray: "Сив",
+  grey: "Сив",
+  navy: "Морско синьо",
+};
+
+const getColorDisplayName = (color: string | { name: string; hex?: string } | null | undefined) => {
+  if (!color) return "";
+  const colorName = typeof color === "string" ? color : color?.name || "";
+  if (!colorName) return "";
+  const normalizedName = colorName.toLowerCase().trim();
+  return colorTranslationMap[normalizedName] || colorName;
+};
+
+const getColorHex = (color: string | { name: string; hex?: string } | null | undefined) => {
+  const DEFAULT_GREY = "#9CA3AF";
+  
+  if (!color) return DEFAULT_GREY;
+
+  const colorName = typeof color === "string" ? color : color?.name;
+
+  if (!colorName || typeof colorName !== "string") {
+    if (typeof color === "object" && color?.hex) {
+      return color.hex;
+    }
+    return DEFAULT_GREY;
+  }
+
+  const normalizedName = colorName.toLowerCase().trim();
+
   const colorMap: Record<string, string> = {
-    червен: "#EF4444",
-    червено: "#EF4444",
-    син: "#3B82F6",
-    синьо: "#3B82F6",
-    зелен: "#10B981",
-    зелено: "#10B981",
-    жълт: "#F59E0B",
-    жълто: "#F59E0B",
-    бял: "#F9FAFB",
-    бяло: "#F9FAFB",
-    черен: "#1F2937",
-    черно: "#1F2937",
-    розов: "#EC4899",
-    розово: "#EC4899",
+    червен: "#ef4444",
+    червено: "#ef4444",
+    син: "#3b82f6",
+    синьо: "#3b82f6",
+    зелен: "#10b981",
+    зелено: "#10b981",
+    жълт: "#f59e0b",
+    жълто: "#f59e0b",
+    бял: "#ffffff",
+    бяло: "#ffffff",
+    черен: "#000000",
+    черно: "#000000",
+    розов: "#ec4899",
+    розово: "#ec4899",
+    сив: "#6b7280",
+    black: "#000000",
+    white: "#ffffff",
+    red: "#ef4444",
+    blue: "#3b82f6",
+    green: "#10b981",
+    yellow: "#f59e0b",
+    purple: "#8b5cf6",
+    pink: "#ec4899",
+    gray: "#6b7280",
+    grey: "#6b7280",
+    navy: "#1e40af",
   };
-  return colorMap[color.toLowerCase()] || "#9CA3AF";
+
+  const mappedFromName = colorMap[normalizedName];
+  if (mappedFromName) {
+    return mappedFromName;
+  }
+
+  if (typeof color === "object" && color.hex) {
+    const hexValue = color.hex.trim().toLowerCase();
+    if (hexValue && hexValue !== DEFAULT_GREY.toLowerCase()) {
+      return color.hex;
+    }
+  }
+
+  return DEFAULT_GREY;
 };
 
 const addToCart = () => {
   if (!props.product) return;
+
+  // Validate color selection if MORE than 1 color exists
+  if (props.product.colors && props.product.colors.length > 1 && !selectedColor.value) {
+    toast.error("Моля изберете цвят", 3000);
+    return;
+  }
+
+  // Validate size selection if sizes exist
+  if (props.product.sizes && props.product.sizes.length > 0 && !selectedSize.value) {
+    toast.error("Моля изберете размер", 3000);
+    return;
+  }
+
+  // Validate embroidery if enabled
+  if (embroideryEnabled.value && !validateEmbroidery()) {
+    return;
+  }
+
+  // Get color display name for cart
+  let colorForCart: string | undefined = undefined;
+  if (selectedColor.value) {
+    const colorObj = props.product.colors?.find((c) => getColorName(c) === selectedColor.value);
+    if (colorObj) {
+      colorForCart = getColorDisplayName(colorObj);
+    } else {
+      colorForCart = selectedColor.value;
+    }
+  } else if (props.product.colors && props.product.colors.length === 1) {
+    colorForCart = getColorDisplayName(props.product.colors[0]);
+  }
+
+  // Prepare embroidery data if enabled
+  const embroidery = embroideryEnabled.value && embroideryName.value.trim()
+    ? {
+        name: embroideryName.value.trim(),
+        color: undefined,
+        font: undefined,
+      }
+    : undefined;
 
   cartStore.addItem(
     {
@@ -156,9 +368,10 @@ const addToCart = () => {
       name: props.product.name,
       price: props.product.price,
       image: props.product.images?.[0]?.url,
-      size: props.product.sizes?.[0],
-      color: props.product.colors?.[0],
-      weight: props.product.weight || 0.5, // Include weight for shipping calculation
+      size: selectedSize.value || props.product.sizes?.[0],
+      color: colorForCart,
+      weight: props.product.weight || 0.5,
+      embroidery,
     },
     1
   );
@@ -176,7 +389,7 @@ const addToCart = () => {
 @use "~/assets/styles/fonts" as *;
 
 // ═══════════════════════════════════════════════════
-// QUICK VIEW DRAWER - LEFT slide-in
+// QUICK VIEW DRAWER - RIGHT slide-in
 // ═══════════════════════════════════════════════════
 
 .qv {
@@ -216,7 +429,7 @@ const addToCart = () => {
   &__close {
     position: absolute;
     top: 8px;
-    left: 12px;
+    right: 12px;
     width: 36px;
     height: 36px;
     border-radius: 999px;
@@ -301,6 +514,11 @@ const addToCart = () => {
     color: $text-secondary;
     margin-bottom: 0.4rem;
     letter-spacing: 0.05em;
+
+    strong {
+      color: $brand-ink;
+      font-weight: 600;
+    }
   }
 
   &__swatches {
@@ -312,14 +530,19 @@ const addToCart = () => {
   &__swatch {
     width: 28px;
     height: 28px;
-    border-radius: 999px;
-    border: 1px solid $border-base;
+    border-radius: 50%;
+    border: 2px solid transparent;
     cursor: pointer;
     transition: all 0.2s ease;
 
     &:hover {
       transform: scale(1.15);
       box-shadow: 0 2px 8px $shadow-soft;
+    }
+
+    &--active {
+      border-color: $brand-ink;
+      box-shadow: 0 0 0 2px $bg-card, 0 0 0 4px $brand-ink;
     }
   }
 
@@ -345,6 +568,109 @@ const addToCart = () => {
       border-color: $brand;
       color: $brand-ink;
     }
+
+    &--active {
+      background: $brand;
+      border-color: $brand;
+      color: $color-white;
+      font-weight: 600;
+    }
+  }
+
+  // Embroidery customization styles
+  &__custom {
+    margin: 1rem 0;
+    padding: 1rem 1.25rem;
+    background: $bg-page;
+    border-radius: 8px;
+  }
+
+  &__custom-item {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+  }
+
+  &__custom-checkbox {
+    width: 20px;
+    height: 20px;
+    accent-color: $brand;
+    cursor: pointer;
+  }
+
+  &__custom-label {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-family: $font-body;
+    font-size: 15px;
+    font-weight: 400;
+    line-height: 26px;
+    color: #333333;
+    cursor: pointer;
+  }
+
+  &__custom-icon {
+    width: 50px;
+    height: 50px;
+    flex-shrink: 0;
+  }
+
+  &__custom-fields {
+    margin-top: 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  &__custom-note {
+    font-family: $font-body;
+    font-size: 12px;
+    font-weight: 400;
+    line-height: 14px;
+    color: #333333;
+    margin: 0;
+  }
+
+  &__custom-field {
+    display: flex;
+    flex-direction: column;
+  }
+
+  &__custom-field-label {
+    display: block;
+    font-size: 0.875rem;
+    font-weight: 500;
+    margin-bottom: 0.5rem;
+  }
+
+  &__custom-input {
+    width: 100%;
+    padding: 0.5rem 0;
+    border: none;
+    border-bottom: 1px solid $border-base;
+    background: transparent;
+    font-family: $font-body;
+    font-size: 0.9375rem;
+    border-radius: 0;
+
+    &:focus {
+      outline: none;
+      border-bottom-color: $brand;
+      border-bottom-width: 2px;
+    }
+
+    &--error {
+      border-bottom-color: $error;
+      border-bottom-width: 2px;
+    }
+  }
+
+  &__custom-error {
+    display: block;
+    font-size: 0.875rem;
+    color: $error;
+    margin-top: 0.25rem;
   }
 
   &__cta {

@@ -10,7 +10,35 @@
 </template>
 
 <script setup lang="ts">
-// This is the main index page
+// Preload critical banner images for better performance
+useHead({
+  link: [
+    {
+      rel: "preload",
+      as: "image",
+      href: "/img/banners/banner1.jpg",
+      fetchpriority: "high",
+    },
+    {
+      rel: "preload",
+      as: "image",
+      href: "/img/banners/banner2.jpg",
+      fetchpriority: "high",
+    },
+    {
+      rel: "preload",
+      as: "image",
+      href: "/img/banners/banner3.jpg",
+      fetchpriority: "high",
+    },
+    {
+      rel: "preload",
+      as: "image",
+      href: "/img/banners/banner4.jpg",
+      fetchpriority: "high",
+    },
+  ],
+});
 </script>
 
 <style lang="scss" scoped>

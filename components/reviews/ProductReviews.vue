@@ -2,20 +2,25 @@
   <section class="product-reviews">
     <div class="product-reviews__header">
       <h2 class="product-reviews__title">Отзиви на клиенти</h2>
-      <div v-if="stats.totalReviews > 0" class="product-reviews__quick-stats">
-        <span class="product-reviews__average">{{ stats.averageRating.toFixed(1) }}</span>
-        <div class="product-reviews__stars">
-          <Icon
-            v-for="star in 5"
-            :key="star"
-            name="mdi:star"
-            class="product-reviews__star"
-            :class="{
-              'product-reviews__star--filled': star <= Math.round(stats.averageRating),
-            }"
-          />
+      <div class="product-reviews__header-right">
+        <div v-if="stats.totalReviews > 0" class="product-reviews__quick-stats">
+          <span class="product-reviews__average">{{ stats.averageRating.toFixed(1) }}</span>
+          <div class="product-reviews__stars">
+            <Icon
+              v-for="star in 5"
+              :key="star"
+              name="mdi:star"
+              class="product-reviews__star"
+              :class="{
+                'product-reviews__star--filled': star <= Math.round(stats.averageRating),
+              }"
+            />
+          </div>
+          <span class="product-reviews__count">({{ stats.totalReviews }} отзива)</span>
         </div>
-        <span class="product-reviews__count">({{ stats.totalReviews }} отзива)</span>
+        <button class="product-reviews__add-btn" @click="$emit('open-review-form')">
+          Добави отзив
+        </button>
       </div>
     </div>
 
@@ -62,6 +67,9 @@
       <Icon name="mdi:star-outline" class="product-reviews__empty-icon" />
       <h3>Все още няма отзиви</h3>
       <p>Бъдете първите, които ще споделят мнението си за този продукт!</p>
+      <button class="product-reviews__add-btn" @click="$emit('open-review-form')">
+        Добави отзив
+      </button>
     </div>
 
     <!-- Reviews List -->
@@ -205,6 +213,7 @@ interface Props {
 const props = defineProps<Props>();
 const emit = defineEmits<{
   "stats-updated": [stats: ReviewStats];
+  "open-review-form": [];
 }>();
 
 const api = useApi();
@@ -396,6 +405,13 @@ onMounted(() => {
     gap: 1rem;
   }
 
+  &__header-right {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    flex-wrap: wrap;
+  }
+
   &__title {
     font-size: 1.25rem;
     font-weight: 700;
@@ -553,10 +569,35 @@ onMounted(() => {
   &__empty p {
     font-size: 1rem;
     color: $text-secondary;
-    margin: 0;
+    margin: 0 0 1.5rem;
     max-width: 400px;
     margin-left: auto;
     margin-right: auto;
+  }
+
+  &__add-btn {
+    padding: 0.875rem 2rem;
+    background: $grad-brand-b;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 0.9375rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 8px rgba($brand-ink, 0.15);
+    letter-spacing: 0.01em;
+    white-space: nowrap;
+
+    &:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba($brand-ink, 0.25);
+    }
+
+    &:active {
+      transform: translateY(0);
+      box-shadow: 0 2px 6px rgba($brand-ink, 0.2);
+    }
   }
   
   @keyframes float {
