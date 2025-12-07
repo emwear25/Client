@@ -115,3 +115,4 @@ export const SITE_METADATA = {
   locale: "bg_BG",
   siteUrl: "https://emwear.bg",
 };
+
