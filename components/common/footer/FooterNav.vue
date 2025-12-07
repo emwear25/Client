@@ -7,8 +7,8 @@
             src="/logo-dark.png"
             alt="emWear"
             class="footer-nav__logo-img"
-            width="233"
-            height="70"
+            width="150"
+            height="45"
             loading="eager"
           />
         </NuxtLink>
@@ -109,10 +109,15 @@ const companyLinks: NavigationLink[] = [
   }
 
   &__logo-img {
-    height: 70px;
+    height: 60px;
     width: auto;
     display: block;
+    object-fit: contain;
     filter: brightness(0) invert(1);
+
+    @include up(md) {
+      height: 70px;
+    }
   }
 
   &__desc {

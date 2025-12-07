@@ -16,7 +16,7 @@
               loading="lazy"
               placeholder
             />
-            <div class="meet-maker__image-decoration"/>
+            <div class="meet-maker__image-decoration" />
           </div>
           <div class="meet-maker__badge">
             <Icon name="mdi:heart-outline" class="meet-maker__badge-icon" />
@@ -55,7 +55,7 @@
           </div>
 
           <div class="meet-maker__signature">
-            <div class="meet-maker__signature-line"/>
+            <div class="meet-maker__signature-line" />
             <span class="meet-maker__signature-name">Севал</span>
             <span class="meet-maker__signature-title">Основател</span>
           </div>
@@ -122,15 +122,15 @@
     z-index: 1;
 
     @include up(md) {
-      max-width: 960px;
+      max-width: 1104px;
       padding-inline: 20px;
     }
     @include up(lg) {
-      max-width: 1280px;
+      max-width: 1472px;
       padding-inline: 24px;
     }
     @include up(xl) {
-      max-width: 1440px;
+      max-width: 1656px;
       padding-inline: 32px;
     }
   }

@@ -46,7 +46,19 @@ export const useWishlist = defineStore("wishlist", {
       if (!import.meta.client) return;
       
       const authStore = useAuthStore();
-      if (!authStore.isAuthenticated) return;
+      if (!authStore.isAuthenticated) {
+        // Not authenticated - load from localStorage instead
+        const raw = localStorage.getItem("emw_wishlist");
+        if (raw) {
+          try {
+            this.ids = JSON.parse(raw);
+          } catch (e) {
+            console.error("Failed to load wishlist from localStorage:", e);
+            this.ids = [];
+          }
+        }
+        return;
+      }
 
       this.isSyncing = true;
       try {
@@ -58,8 +70,17 @@ export const useWishlist = defineStore("wishlist", {
           // Also update localStorage as backup
           this.persist();
         }
-      } catch (error) {
-        console.error("Failed to sync wishlist from backend:", error);
+      } catch (error: any) {
+        // Handle 401 errors gracefully - user is not authenticated
+        if (error.status === 401 || error.statusCode === 401) {
+          console.warn("[Wishlist] Not authenticated, using localStorage");
+          // Clear auth state if token was invalid
+          if (authStore.user) {
+            authStore.user = null;
+          }
+        } else {
+          console.error("Failed to sync wishlist from backend:", error);
+        }
         // Fallback to localStorage on error
         const raw = localStorage.getItem("emw_wishlist");
         if (raw) {
@@ -67,6 +88,7 @@ export const useWishlist = defineStore("wishlist", {
             this.ids = JSON.parse(raw);
           } catch (e) {
             console.error("Failed to load wishlist from localStorage:", e);
+            this.ids = [];
           }
         }
       } finally {
@@ -100,7 +122,10 @@ export const useWishlist = defineStore("wishlist", {
       if (!import.meta.client) return;
       
       const authStore = useAuthStore();
-      if (!authStore.isAuthenticated) return;
+      if (!authStore.isAuthenticated || !authStore.user) {
+        // Not authenticated - don't try to merge
+        return;
+      }
 
       // Get guest wishlist from localStorage
       const guestWishlist: string[] = [];
@@ -134,9 +159,19 @@ export const useWishlist = defineStore("wishlist", {
           // Clear guest wishlist from localStorage (now merged)
           localStorage.removeItem("emw_wishlist");
         }
-      } catch (error) {
+      } catch (error: any) {
+        // Handle 401 errors gracefully
+        if (error.status === 401 || error.statusCode === 401) {
+          console.warn("[Wishlist] Not authenticated for merge, using localStorage");
+          // Clear auth state if token was invalid
+          if (authStore.user) {
+            authStore.user = null;
+          }
+          // Keep guest wishlist in localStorage
+          return;
+        }
         console.error("Failed to merge wishlist:", error);
-        // On error, just load from backend
+        // On error, just load from backend (or localStorage if not authenticated)
         await this.syncFromBackend();
       }
     },

@@ -174,27 +174,34 @@
 <script setup lang="ts">
 import { reactive, ref } from "vue";
 
-// Set page meta
+import { usePageSEO } from "~/composables/useSEO";
+
+// Set page SEO
+usePageSEO({
+  title: "Контакти",
+  description:
+    "Свържете се с emWear за въпроси относно персонализирани подаръци. Телефон: +359 89 092 7520, Имейл: info@emwear.bg. Отговаряме до 24 часа.",
+  type: "website",
+});
+
+// Add ContactPage structured data
 useHead({
-  title: "Контакти - emWear | Свържете се с нас",
-  meta: [
+  script: [
     {
-      name: "description",
-      content:
-        "Свържете се с emWear за въпроси относно персонализирани подаръци. Телефон: +359 89 092 7520, Имейл: info@emwear.bg. Отговаряме до 24 часа.",
-    },
-    {
-      property: "og:title",
-      content: "Контакти - emWear | Свържете се с нас",
-    },
-    {
-      property: "og:description",
-      content:
-        "Свържете се с emWear за въпроси относно персонализирани подаръци. Телефон: +359 89 092 7520, Имейл: info@emwear.bg. Отговаряме до 24 часа.",
-    },
-    {
-      property: "og:type",
-      content: "website",
+      type: "application/ld+json",
+      children: JSON.stringify({
+        "@context": "https://schema.org",
+        "@type": "ContactPage",
+        name: "Контакти - emWear",
+        description: "Свържете се с emWear за въпроси относно персонализирани подаръци",
+        mainEntity: {
+          "@type": "Organization",
+          name: "emWear",
+          email: "info@emwear.bg",
+          telephone: "+359890927520",
+          url: "https://emwear.bg",
+        },
+      }),
     },
   ],
 });

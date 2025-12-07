@@ -25,56 +25,238 @@ export const useApi = () => {
   };
 
   /**
+   * Get default headers including auth if available
+   */
+  const getDefaultHeaders = (): Record<string, string> => {
+    const headers: Record<string, string> = {};
+
+    // Add auth token if available (for token-based auth)
+    if (import.meta.client) {
+      const accessToken = localStorage.getItem("accessToken");
+      if (accessToken) {
+        headers.Authorization = `Bearer ${accessToken}`;
+      }
+    }
+
+    return headers;
+  };
+
+  /**
    * Make a GET request
    */
   const get = async <T = any>(endpoint: string, options?: any): Promise<T> => {
-    return await $fetch<T>(getApiUrl(endpoint), {
-      method: "GET",
-      ...options,
-    });
+    try {
+      return await $fetch<T>(getApiUrl(endpoint), {
+        method: "GET",
+        credentials: "include", // Include cookies for cookie-based auth (Google OAuth)
+        headers: {
+          ...getDefaultHeaders(),
+          ...options?.headers,
+        },
+        ...options,
+      });
+    } catch (error: any) {
+      // Handle 401 errors - token might be expired
+      if (error.status === 401 || error.statusCode === 401) {
+        // Clear invalid tokens
+        if (import.meta.client) {
+          // Only clear if we're sure the token is invalid (not just missing)
+          if (localStorage.getItem("accessToken")) {
+            console.warn("[useApi] 401 error - token may be expired, clearing tokens");
+            localStorage.removeItem("accessToken");
+            localStorage.removeItem("refreshToken");
+            // Clear auth state asynchronously to avoid circular dependency
+            Promise.resolve().then(async () => {
+              try {
+                const { useAuthStore } = await import("~/stores/auth");
+                const authStore = useAuthStore();
+                if (authStore.user) {
+                  authStore.user = null;
+                }
+              } catch (importError) {
+                // If import fails, that's okay - localStorage is already cleared
+              }
+            });
+          }
+        }
+      }
+      throw error;
+    }
   };
 
   /**
    * Make a POST request
    */
   const post = async <T = any>(endpoint: string, body?: any, options?: any): Promise<T> => {
-    return await $fetch<T>(getApiUrl(endpoint), {
-      method: "POST",
-      body,
-      ...options,
-    });
+    try {
+      return await $fetch<T>(getApiUrl(endpoint), {
+        method: "POST",
+        credentials: "include", // Include cookies for cookie-based auth (Google OAuth)
+        headers: {
+          ...getDefaultHeaders(),
+          ...options?.headers,
+        },
+        body,
+        ...options,
+      });
+    } catch (error: any) {
+      // Handle 401 errors - token might be expired
+      if (error.status === 401 || error.statusCode === 401) {
+        // Clear invalid tokens
+        if (import.meta.client) {
+          // Only clear if we're sure the token is invalid (not just missing)
+          if (localStorage.getItem("accessToken")) {
+            console.warn("[useApi] 401 error - token may be expired, clearing tokens");
+            localStorage.removeItem("accessToken");
+            localStorage.removeItem("refreshToken");
+            // Clear auth state asynchronously to avoid circular dependency
+            Promise.resolve().then(async () => {
+              try {
+                const { useAuthStore } = await import("~/stores/auth");
+                const authStore = useAuthStore();
+                if (authStore.user) {
+                  authStore.user = null;
+                }
+              } catch (importError) {
+                // If import fails, that's okay - localStorage is already cleared
+              }
+            });
+          }
+        }
+      }
+      throw error;
+    }
   };
 
   /**
    * Make a PUT request
    */
   const put = async <T = any>(endpoint: string, body?: any, options?: any): Promise<T> => {
-    return await $fetch<T>(getApiUrl(endpoint), {
-      method: "PUT",
-      body,
-      ...options,
-    });
+    try {
+      return await $fetch<T>(getApiUrl(endpoint), {
+        method: "PUT",
+        credentials: "include", // Include cookies for cookie-based auth (Google OAuth)
+        headers: {
+          ...getDefaultHeaders(),
+          ...options?.headers,
+        },
+        body,
+        ...options,
+      });
+    } catch (error: any) {
+      // Handle 401 errors - token might be expired
+      if (error.status === 401 || error.statusCode === 401) {
+        // Clear invalid tokens
+        if (import.meta.client) {
+          // Only clear if we're sure the token is invalid (not just missing)
+          if (localStorage.getItem("accessToken")) {
+            console.warn("[useApi] 401 error - token may be expired, clearing tokens");
+            localStorage.removeItem("accessToken");
+            localStorage.removeItem("refreshToken");
+            // Clear auth state asynchronously to avoid circular dependency
+            Promise.resolve().then(async () => {
+              try {
+                const { useAuthStore } = await import("~/stores/auth");
+                const authStore = useAuthStore();
+                if (authStore.user) {
+                  authStore.user = null;
+                }
+              } catch (importError) {
+                // If import fails, that's okay - localStorage is already cleared
+              }
+            });
+          }
+        }
+      }
+      throw error;
+    }
   };
 
   /**
    * Make a PATCH request
    */
   const patch = async <T = any>(endpoint: string, body?: any, options?: any): Promise<T> => {
-    return await $fetch<T>(getApiUrl(endpoint), {
-      method: "PATCH",
-      body,
-      ...options,
-    });
+    try {
+      return await $fetch<T>(getApiUrl(endpoint), {
+        method: "PATCH",
+        credentials: "include", // Include cookies for cookie-based auth (Google OAuth)
+        headers: {
+          ...getDefaultHeaders(),
+          ...options?.headers,
+        },
+        body,
+        ...options,
+      });
+    } catch (error: any) {
+      // Handle 401 errors - token might be expired
+      if (error.status === 401 || error.statusCode === 401) {
+        // Clear invalid tokens
+        if (import.meta.client) {
+          // Only clear if we're sure the token is invalid (not just missing)
+          if (localStorage.getItem("accessToken")) {
+            console.warn("[useApi] 401 error - token may be expired, clearing tokens");
+            localStorage.removeItem("accessToken");
+            localStorage.removeItem("refreshToken");
+            // Clear auth state asynchronously to avoid circular dependency
+            Promise.resolve().then(async () => {
+              try {
+                const { useAuthStore } = await import("~/stores/auth");
+                const authStore = useAuthStore();
+                if (authStore.user) {
+                  authStore.user = null;
+                }
+              } catch (importError) {
+                // If import fails, that's okay - localStorage is already cleared
+              }
+            });
+          }
+        }
+      }
+      throw error;
+    }
   };
 
   /**
    * Make a DELETE request
    */
   const del = async <T = any>(endpoint: string, options?: any): Promise<T> => {
-    return await $fetch<T>(getApiUrl(endpoint), {
-      method: "DELETE",
-      ...options,
-    });
+    try {
+      return await $fetch<T>(getApiUrl(endpoint), {
+        method: "DELETE",
+        credentials: "include", // Include cookies for cookie-based auth (Google OAuth)
+        headers: {
+          ...getDefaultHeaders(),
+          ...options?.headers,
+        },
+        ...options,
+      });
+    } catch (error: any) {
+      // Handle 401 errors - token might be expired
+      if (error.status === 401 || error.statusCode === 401) {
+        // Clear invalid tokens
+        if (import.meta.client) {
+          // Only clear if we're sure the token is invalid (not just missing)
+          if (localStorage.getItem("accessToken")) {
+            console.warn("[useApi] 401 error - token may be expired, clearing tokens");
+            localStorage.removeItem("accessToken");
+            localStorage.removeItem("refreshToken");
+            // Clear auth state asynchronously to avoid circular dependency
+            Promise.resolve().then(async () => {
+              try {
+                const { useAuthStore } = await import("~/stores/auth");
+                const authStore = useAuthStore();
+                if (authStore.user) {
+                  authStore.user = null;
+                }
+              } catch (importError) {
+                // If import fails, that's okay - localStorage is already cleared
+              }
+            });
+          }
+        }
+      }
+      throw error;
+    }
   };
 
   return {

@@ -15,6 +15,56 @@ export default defineNuxtConfig({
     "@vueuse/nuxt",
   ],
 
+  // SEO Configuration
+  app: {
+    head: {
+      htmlAttrs: {
+        lang: "bg",
+      },
+      charset: "utf-8",
+      viewport: "width=device-width, initial-scale=1",
+      title: "emWear - Персонализирани подаръци с бродерия",
+      titleTemplate: "%s | emWear",
+      meta: [
+        {
+          name: "description",
+          content:
+            "Персонализирани подаръци с качествена бродерия. Детски раници, торби, чанти с име. Безплатна доставка над 110 лв. Поръчайте сега!",
+        },
+        {
+          name: "format-detection",
+          content: "telephone=no",
+        },
+        {
+          property: "og:site_name",
+          content: "emWear",
+        },
+        {
+          property: "og:locale",
+          content: "bg_BG",
+        },
+        {
+          property: "og:type",
+          content: "website",
+        },
+        {
+          name: "twitter:card",
+          content: "summary_large_image",
+        },
+        {
+          name: "twitter:site",
+          content: "@emwear",
+        },
+      ],
+      link: [
+        {
+          rel: "canonical",
+          href: process.env.NUXT_PUBLIC_FRONTEND_URL || "https://emwear.bg",
+        },
+      ],
+    },
+  },
+
   // Image optimization configuration for ecommerce
   image: {
     // Use ipx provider (works with any URL, including Cloudinary)
@@ -74,11 +124,38 @@ export default defineNuxtConfig({
     },
     clientBundle: {
       icons: [
+        // Header icons
         "mdi:heart-outline",
         "mdi:cart-outline",
         "mdi:account-outline",
         "mdi:menu",
         "mdi:close",
+        "mdi:package-variant",
+        "mdi:logout",
+        // FeatureHighlights icons (homepage)
+        "mdi:alphabetical-variant",
+        "mdi:cog",
+        "mdi:truck-fast",
+        "mdi:gift-outline",
+        // Testimonials/Reviews
+        "mdi:star",
+        "mdi:star-outline",
+        "mdi:format-quote-open",
+        "mdi:check-decagram",
+        // Contact page
+        "mdi:phone",
+        "mdi:email",
+        // Footer
+        "mdi:facebook",
+        "mdi:instagram",
+        // Newsletter
+        "mdi:email-heart-outline",
+        "mdi:email-outline",
+        "mdi:arrow-right",
+        // Category grid
+        "mdi:backpack",
+        "mdi:bathtub-outline",
+        "mdi:robe",
       ],
     },
   },
@@ -108,6 +185,12 @@ export default defineNuxtConfig({
         },
       },
     },
+    compressPublicAssets: true,
+    minify: true,
+    prerender: {
+      crawlLinks: true,
+      routes: ["/", "/products", "/about", "/contact", "/blog"],
+    },
   },
 
   // Runtime config for API base URL
@@ -116,5 +199,30 @@ export default defineNuxtConfig({
       apiBase: process.env.NUXT_PUBLIC_API_BASE || "http://localhost:3030",
       frontendUrl: process.env.NUXT_PUBLIC_FRONTEND_URL || "http://localhost:3000",
     },
+  },
+
+  // Performance optimizations for SEO
+  experimental: {
+    payloadExtraction: false, // Faster page loads
+  },
+
+  // SEO and performance
+  routeRules: {
+    // Static pages - pre-render for better SEO
+    "/": { prerender: true, index: true },
+    "/about": { prerender: true },
+    "/contact": { prerender: true },
+    "/blog": { prerender: true },
+    "/products": { prerender: true, isr: 3600 }, // ISR with 1 hour cache
+    // Dynamic product pages - SSR for SEO
+    "/products/**": { ssr: true, isr: 3600 },
+    "/category/**": { ssr: true, isr: 3600 },
+    // Private pages - no index
+    "/checkout": { index: false },
+    "/cart": { index: false },
+    "/profile": { index: false },
+    "/orders": { index: false },
+    "/login": { index: false },
+    "/register": { index: false },
   },
 });

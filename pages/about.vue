@@ -10,27 +10,33 @@
 </template>
 
 <script setup lang="ts">
-// Set page meta
+import { usePageSEO } from "~/composables/useSEO";
+
+// Set page SEO
+usePageSEO({
+  title: "За нас",
+  description:
+    "Научете повече за emWear - създаваме персонализирани подаръци с внимание към всеки детайл. Произведено в България с много грижа и любов.",
+  type: "website",
+});
+
+// Add AboutPage structured data
 useHead({
-  title: "За нас - emWear | Персонализирани подаръци",
-  meta: [
+  script: [
     {
-      name: "description",
-      content:
-        "Научете повече за emWear - създаваме персонализирани подаръци с внимание към всеки детайл. Произведено в България с много грижа и любов.",
-    },
-    {
-      property: "og:title",
-      content: "За нас - emWear | Персонализирани подаръци",
-    },
-    {
-      property: "og:description",
-      content:
-        "Научете повече за emWear - създаваме персонализирани подаръци с внимание към всеки детайл. Произведено в България с много грижа и любов.",
-    },
-    {
-      property: "og:type",
-      content: "website",
+      type: "application/ld+json",
+      children: JSON.stringify({
+        "@context": "https://schema.org",
+        "@type": "AboutPage",
+        name: "За нас - emWear",
+        description:
+          "Научете повече за emWear - създаваме персонализирани подаръци с внимание към всеки детайл.",
+        mainEntity: {
+          "@type": "Organization",
+          name: "emWear",
+          description: "Персонализирани подаръци с качествена бродерия",
+        },
+      }),
     },
   ],
 });

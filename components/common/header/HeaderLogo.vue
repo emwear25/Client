@@ -5,8 +5,8 @@
         src="/logo-dark.png"
         alt="emWear"
         class="site-header__logo-img"
-        width="233"
-        height="70"
+        width="150"
+        height="45"
         loading="eager"
       />
     </NuxtLink>
@@ -41,9 +41,14 @@
     }
 
     &-img {
-      height: 70px;
+      height: 60px;
       width: auto;
       display: block;
+      object-fit: contain;
+
+      @media (min-width: 768px) {
+        height: 70px;
+      }
     }
   }
 }

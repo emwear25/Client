@@ -32,6 +32,34 @@
             Продукти
           </NuxtLink>
         </li>
+        <li class="mobile-menu__nav-item mobile-menu__nav-item--indent">
+          <NuxtLink
+            to="/collections"
+            class="mobile-menu__nav-link mobile-menu__nav-link--sub"
+            :class="{
+              'mobile-menu__nav-link--active': route.path === '/collections',
+            }"
+            @click="emit('close')"
+          >
+            Колекции
+          </NuxtLink>
+        </li>
+        <li
+          v-for="category in categoriesWithProducts"
+          :key="category._id"
+          class="mobile-menu__nav-item mobile-menu__nav-item--indent"
+        >
+          <NuxtLink
+            :to="`/category/${category.slug}`"
+            class="mobile-menu__nav-link mobile-menu__nav-link--sub"
+            :class="{
+              'mobile-menu__nav-link--active': route.path === `/category/${category.slug}`,
+            }"
+            @click="emit('close')"
+          >
+            {{ category.displayName }}
+          </NuxtLink>
+        </li>
         <li class="mobile-menu__nav-item">
           <NuxtLink
             to="/sales"
@@ -100,6 +128,15 @@
 
 <script setup lang="ts">
 import { useRoute } from "vue-router";
+import { useApi } from "~/composables/useApi";
+
+interface Category {
+  _id: string;
+  name: string;
+  slug: string;
+  displayName: string;
+  productCount?: number;
+}
 
 // Define props
 defineProps<{
@@ -113,6 +150,31 @@ const emit = defineEmits<{
 
 // Get current route for active link highlighting
 const route = useRoute();
+
+// Categories state
+const categoriesWithProducts = ref<Category[]>([]);
+
+// Fetch categories with products only
+const fetchCategories = async () => {
+  try {
+    const api = useApi();
+    const response = await api.get<{ success: boolean; data: Category[] }>(
+      "categories?withProductsOnly=true"
+    );
+
+    if (response && response.success) {
+      categoriesWithProducts.value = response.data || [];
+    }
+  } catch (err) {
+    console.error("Error fetching categories:", err);
+    categoriesWithProducts.value = [];
+  }
+};
+
+// Fetch on mount
+onMounted(() => {
+  fetchCategories();
+});
 </script>
 
 <style scoped lang="scss">
@@ -193,6 +255,10 @@ const route = useRoute();
       &:last-child {
         border-bottom: none;
       }
+
+      &--indent {
+        background: rgba($brand, 0.03);
+      }
     }
 
     &-link {
@@ -204,6 +270,12 @@ const route = useRoute();
       font-weight: 500;
       font-size: 1rem;
       transition: all 0.2s ease;
+
+      &--sub {
+        padding-left: 2.5rem;
+        font-size: 0.9375rem;
+        font-weight: 400;
+      }
 
       &:hover {
         color: $brand;

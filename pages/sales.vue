@@ -15,7 +15,8 @@
       <div class="sales-toolbar__spacer" />
       <div class="sales-toolbar__count">
         <span v-if="!isLoading && sortedProducts.length > 0" class="sales-toolbar__count-text">
-          Намерени {{ sortedProducts.length }} {{ sortedProducts.length === 1 ? 'продукт' : 'продукта' }}
+          Намерени {{ sortedProducts.length }}
+          {{ sortedProducts.length === 1 ? "продукт" : "продукта" }}
         </span>
       </div>
       <div class="sales-toolbar__sort">
@@ -100,19 +101,16 @@
 
 <script setup lang="ts">
 import { ref, computed, onMounted } from "vue";
-import { useHead } from "#app";
 import { useWishlist } from "~/stores/useWishlist";
 import { useApi } from "~/composables/useApi";
 import { useErrorHandler } from "~/composables/useErrorHandler";
+import { usePageSEO } from "~/composables/useSEO";
 
-useHead({
-  title: "Намаления - emWear | Специални Оферти",
-  meta: [
-    {
-      name: "description",
-      content: "Открийте най-добрите оферти на наши персонализирани бродирани изделия с отстъпки.",
-    },
-  ],
+usePageSEO({
+  title: "Намаления",
+  description:
+    "Открийте най-добрите оферти на наши персонализирани бродирани изделия с отстъпки. Специални цени за ограничено време!",
+  type: "website",
 });
 
 interface ProductImage {
@@ -152,7 +150,9 @@ interface Product {
 const products = ref<Product[]>([]);
 const isLoading = ref(true);
 const error = ref<string | null>(null);
-const sortBy = ref<"newest" | "price-asc" | "price-desc" | "name-asc" | "discount-desc">("discount-desc");
+const sortBy = ref<"newest" | "price-asc" | "price-desc" | "name-asc" | "discount-desc">(
+  "discount-desc"
+);
 const drawerOpen = ref(false);
 const activeProduct = ref<Product | null>(null);
 
@@ -197,31 +197,40 @@ const { normalizeError, getUserFriendlyMessage } = useErrorHandler();
 const getErrorMessage = (err: unknown): string => {
   if (err instanceof Error) {
     const message = err.message.toLowerCase();
-    
-    if (message.includes("failed to fetch") || 
-        message.includes("networkerror") || 
-        message.includes("network request failed") ||
-        (message.includes("fetch") && message.includes("failed")) ||
-        message.includes("load failed")) {
+
+    if (
+      message.includes("failed to fetch") ||
+      message.includes("networkerror") ||
+      message.includes("network request failed") ||
+      (message.includes("fetch") && message.includes("failed")) ||
+      message.includes("load failed")
+    ) {
       return "Не може да се установи връзка със сървъра. Моля, проверете дали сървърът е стартиран и опитайте отново.";
     }
-    
+
     if (message.includes("timeout") || message.includes("timed out")) {
       return "Заявката отне твърде много време. Моля, опитайте отново.";
     }
   }
-  
+
   const normalizedError = normalizeError(err);
   const friendlyMessage = getUserFriendlyMessage(normalizedError);
-  
+
   if (!normalizedError.statusCode) {
     const message = (normalizedError.message || "").toLowerCase();
-    if (message.includes("fetch") || message.includes("network") || message.includes("connection")) {
+    if (
+      message.includes("fetch") ||
+      message.includes("network") ||
+      message.includes("connection")
+    ) {
       return "Не може да се установи връзка със сървъра. Моля, проверете дали сървърът е стартиран и опитайте отново.";
     }
   }
-  
-  return friendlyMessage || "Възникна неочаквана грешка при зареждането на продуктите. Моля, опитайте отново.";
+
+  return (
+    friendlyMessage ||
+    "Възникна неочаквана грешка при зареждането на продуктите. Моля, опитайте отново."
+  );
 };
 
 const fetchProducts = async () => {
@@ -235,7 +244,9 @@ const fetchProducts = async () => {
     const response = await api.get(`products?active=true&onSale=true&limit=100&_t=${timestamp}`);
 
     if (response && response.success && response.data) {
-      const productsData = Array.isArray(response.data) ? response.data : response.data.products || [];
+      const productsData = Array.isArray(response.data)
+        ? response.data
+        : response.data.products || [];
       // Filter products that have discounts (compareAt or discount object)
       products.value = productsData.filter((product: Product) => {
         return product.compareAt != null || product.discount != null;

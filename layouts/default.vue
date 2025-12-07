@@ -20,7 +20,10 @@
 </template>
 
 <script setup lang="ts">
-// Layout logic - store initialization handled by plugins
+import { useDefaultSEO } from "~/composables/useSEO";
+
+// Set default SEO for all pages
+useDefaultSEO();
 </script>
 
 <style lang="scss" scoped>

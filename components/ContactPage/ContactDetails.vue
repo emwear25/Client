@@ -66,17 +66,28 @@
 <script setup lang="ts"></script>
 
 <style scoped lang="scss">
+@use "~/assets/styles/breakpoints" as *;
+
 .contact-details {
   padding: 3rem 0;
   background-color: #fafafa;
 
   &__container {
-    max-width: 1200px;
+    width: 100%;
     margin: 0 auto;
-    padding: 0 1rem;
+    padding-inline: 16px;
 
-    @media (min-width: 768px) {
-      padding: 0 2rem;
+    @include up(md) {
+      max-width: 1104px;
+      padding-inline: 20px;
+    }
+    @include up(lg) {
+      max-width: 1472px;
+      padding-inline: 24px;
+    }
+    @include up(xl) {
+      max-width: 1656px;
+      padding-inline: 32px;
     }
   }
 

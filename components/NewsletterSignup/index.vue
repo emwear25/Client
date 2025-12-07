@@ -22,11 +22,16 @@
               placeholder="вашия@имейл.com"
               class="newsletter__input"
               required
-            >
+            />
           </div>
-          <button type="submit" class="newsletter__button btn btn--primary btn--large">
-            Абонирай се
-            <Icon name="mdi:arrow-right" class="newsletter__button-icon" />
+          <button
+            type="submit"
+            class="newsletter__button btn btn--primary btn--large"
+            :disabled="isLoading"
+          >
+            <span v-if="!isLoading">Абонирай се</span>
+            <span v-else>Изпращане...</span>
+            <Icon v-if="!isLoading" name="mdi:arrow-right" class="newsletter__button-icon" />
           </button>
         </form>
         <p class="newsletter__privacy">
@@ -38,13 +43,38 @@
 </template>
 
 <script setup lang="ts">
-const email = ref("");
+import { useApi } from "~/composables/useApi";
+import { useToast } from "~/composables/useToast";
 
-const handleSubmit = () => {
-  // Newsletter signup logic placeholder
-  console.log("Newsletter signup:", email.value);
-  // TODO: Add success message
-  email.value = "";
+const email = ref("");
+const isLoading = ref(false);
+const toast = useToast();
+
+const handleSubmit = async () => {
+  if (!email.value || isLoading.value) return;
+
+  isLoading.value = true;
+
+  try {
+    const api = useApi();
+    const response = await api.post("subscriptions", {
+      email: email.value,
+    });
+
+    if (response && response.success) {
+      toast.success(response.message || "Успешно се абонирахте за нашия бюлетин!");
+      email.value = "";
+    }
+  } catch (error: any) {
+    console.error("Newsletter subscription error:", error);
+    const errorMessage =
+      error?.response?.data?.message ||
+      error?.message ||
+      "Възникна грешка при абониране. Моля опитайте отново.";
+    toast.error(errorMessage);
+  } finally {
+    isLoading.value = false;
+  }
 };
 </script>
 

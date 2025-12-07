@@ -9,9 +9,29 @@
 </template>
 
 <script setup lang="ts">
+import { usePageSEO } from "~/composables/useSEO";
+
+usePageSEO({
+  title: "Блог",
+  description:
+    "Полезни статии за персонализирани подаръци, идеи за подаръци, съвети за избор и вдъхновение от emWear.",
+  type: "website",
+});
+
+// Add Blog structured data
 useHead({
-  title: "Блог - emWear",
-  meta: [{ name: "description", content: "Разгледайте нашите статии и новини." }],
+  script: [
+    {
+      type: "application/ld+json",
+      children: JSON.stringify({
+        "@context": "https://schema.org",
+        "@type": "Blog",
+        name: "emWear Блог",
+        description: "Полезни статии за персонализирани подаръци и вдъхновение",
+        url: "https://emwear.bg/blog",
+      }),
+    },
+  ],
 });
 </script>
 

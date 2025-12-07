@@ -3,7 +3,7 @@
     <!-- Favorites with Badge -->
     <NuxtLink to="/favorites" class="site-header__favorites">
       <Icon name="mdi:heart-outline" class="site-header__favorites-icon" />
-      <span v-if="wishlistStore.count > 0" class="site-header__badge">
+      <span v-if="isMounted && wishlistStore.count > 0" class="site-header__badge">
         {{ wishlistStore.count }}
       </span>
     </NuxtLink>
@@ -11,13 +11,13 @@
     <!-- Cart with Badge -->
     <button class="site-header__cart" @click="cartStore.openCart()">
       <Icon name="mdi:cart-outline" class="site-header__cart-icon" />
-      <span v-if="cartStore.itemCount > 0" class="site-header__badge">
+      <span v-if="isMounted && cartStore.itemCount > 0" class="site-header__badge">
         {{ cartStore.itemCount }}
       </span>
     </button>
 
     <!-- User Menu (Authenticated) -->
-    <div v-if="showProfileIcon" class="user-menu">
+    <div v-if="isMounted && showProfileIcon" class="user-menu">
       <button
         class="site-header__cart"
         :aria-expanded="isUserMenuOpen"
@@ -42,7 +42,7 @@
             </p>
           </div>
 
-          <div class="user-menu__divider"/>
+          <div class="user-menu__divider" />
 
           <nav class="user-menu__nav">
             <NuxtLink to="/profile" class="user-menu__item" @click="isUserMenuOpen = false">
@@ -55,7 +55,7 @@
             </NuxtLink>
           </nav>
 
-          <div class="user-menu__divider"/>
+          <div class="user-menu__divider" />
 
           <button class="user-menu__item user-menu__item--logout" @click="handleLogout">
             <Icon name="mdi:logout" />
@@ -66,7 +66,7 @@
     </div>
 
     <!-- Login (Guest) -->
-    <NuxtLink v-else-if="showLoginIcon" to="/login" class="site-header__icon-btn">
+    <NuxtLink v-else-if="isMounted && showLoginIcon" to="/login" class="site-header__icon-btn">
       <Icon name="mdi:account-outline" class="site-header__icon" />
     </NuxtLink>
 
@@ -95,8 +95,12 @@ const wishlistStore = useWishlist();
 const toast = useToast();
 const router = useRouter();
 
+// Client-side mounted flag to prevent hydration mismatches
+const isMounted = ref(false);
+
 // Load cart and wishlist from localStorage (client-side only)
 onMounted(() => {
+  isMounted.value = true;
   cartStore.load();
   wishlistStore.load();
 });
@@ -104,12 +108,12 @@ onMounted(() => {
 // Use a computed to check auth state more reliably
 // Use isAuthenticated which works for both cookie-based (Google) and token-based (email/password) auth
 const showProfileIcon = computed(() => {
-  if (import.meta.server) return false; // Never show on server
+  if (!isMounted.value) return false; // Never show until mounted
   return authStore.isAuthenticated && !!authStore.user;
 });
 
 const showLoginIcon = computed(() => {
-  if (import.meta.server) return false; // Never show on server
+  if (!isMounted.value) return false; // Never show until mounted
   // Only show login icon if profile icon is not shown (prevents both showing at once)
   return !showProfileIcon.value && (!authStore.isAuthenticated || !authStore.user);
 });

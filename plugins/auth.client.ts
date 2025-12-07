@@ -32,12 +32,17 @@ export default defineNuxtPlugin(async () => {
   // Mark as initialized
   authStore.isInitialized = true;
 
-  // If user is authenticated, merge guest wishlist with backend wishlist
-  if (authStore.isAuthenticated) {
-    const { useWishlist } = await import("~/stores/useWishlist");
-    const wishlistStore = useWishlist();
-    await wishlistStore.mergeWithBackend();
-    console.log("[Auth Plugin] Wishlist merged with backend");
+  // If user is authenticated and fetchUser succeeded, merge guest wishlist with backend wishlist
+  if (authStore.isAuthenticated && authStore.user) {
+    try {
+      const { useWishlist } = await import("~/stores/useWishlist");
+      const wishlistStore = useWishlist();
+      await wishlistStore.mergeWithBackend();
+      console.log("[Auth Plugin] Wishlist merged with backend");
+    } catch (error) {
+      console.error("[Auth Plugin] Failed to merge wishlist:", error);
+      // Don't block initialization if wishlist merge fails
+    }
   }
 
   console.log("[Auth Plugin] FINAL STATE:");

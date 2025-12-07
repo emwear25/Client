@@ -10,8 +10,60 @@
 </template>
 
 <script setup lang="ts">
-// Preload critical banner images for better performance
+import { usePageSEO } from "~/composables/useSEO";
+
+// Set homepage SEO
+usePageSEO({
+  title: "emWear - Персонализирани подаръци с бродерия",
+  description:
+    "Персонализирани подаръци с качествена бродерия. Детски раници, торби, чанти с име. Безплатна доставка над 110 лв. Поръчайте сега!",
+  image: "/logo.png",
+  type: "website",
+});
+
+// Add Organization and WebSite structured data
 useHead({
+  script: [
+    {
+      type: "application/ld+json",
+      children: JSON.stringify({
+        "@context": "https://schema.org",
+        "@graph": [
+          {
+            "@type": "Organization",
+            name: "emWear",
+            url: "https://emwear.bg",
+            logo: "https://emwear.bg/logo.png",
+            description: "Персонализирани подаръци с качествена бродерия",
+            sameAs: [
+              "https://www.facebook.com/emwearbg/",
+              "https://www.instagram.com/emwea.r/",
+              "https://www.tiktok.com/@emwear.bg",
+            ],
+            contactPoint: {
+              "@type": "ContactPoint",
+              contactType: "Customer Service",
+              email: "info@emwear.bg",
+              telephone: "+359894366008",
+            },
+          },
+          {
+            "@type": "WebSite",
+            name: "emWear",
+            url: "https://emwear.bg",
+            potentialAction: {
+              "@type": "SearchAction",
+              target: {
+                "@type": "EntryPoint",
+                urlTemplate: "https://emwear.bg/products?search={search_term_string}",
+              },
+              "query-input": "required name=search_term_string",
+            },
+          },
+        ],
+      }),
+    },
+  ],
   link: [
     {
       rel: "preload",

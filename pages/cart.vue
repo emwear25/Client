@@ -111,7 +111,7 @@
                       min="1"
                       :aria-label="`Количество за ${item.name}`"
                       @change="updateQuantityInput($event, item)"
-                    >
+                    />
                     <button
                       class="cart-item__quantity-btn"
                       :aria-label="`Увеличи количеството на ${item.name}`"
@@ -169,7 +169,7 @@
                   >
                 </div>
 
-                <div class="order-summary__divider"/>
+                <div class="order-summary__divider" />
 
                 <div class="order-summary__row order-summary__total">
                   <span class="order-summary__label">Общо</span>
@@ -308,9 +308,24 @@ useHead({
   }
 
   &__container {
-    max-width: 1280px;
-    margin: 0 auto;
     width: 100%;
+    margin: 0 auto;
+    padding-inline: 16px;
+
+    @include up(md) {
+      max-width: 1104px;
+      padding-inline: 20px;
+    }
+
+    @include up(lg) {
+      max-width: 1472px;
+      padding-inline: 24px;
+    }
+
+    @include up(xl) {
+      max-width: 1656px;
+      padding-inline: 32px;
+    }
   }
 
   &__title {

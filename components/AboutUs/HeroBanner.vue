@@ -56,15 +56,15 @@
     z-index: 1;
 
     @include up(md) {
-      max-width: 960px;
+      max-width: 1104px;
       padding-inline: 20px;
     }
     @include up(lg) {
-      max-width: 1280px;
+      max-width: 1472px;
       padding-inline: 24px;
     }
     @include up(xl) {
-      max-width: 1440px;
+      max-width: 1656px;
       padding-inline: 32px;
     }
   }
@@ -90,7 +90,7 @@
   }
 
   &__heading {
-    font-family: 'Outfit', sans-serif;
+    font-family: "Outfit", sans-serif;
     font-weight: 300;
     font-size: 56px;
     color: $brand-ink;
@@ -100,7 +100,10 @@
   }
 
   &__subtext {
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', 'Noto Sans', 'Liberation Sans', Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
+    font-family:
+      -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", "Noto Sans",
+      "Liberation Sans", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji",
+      "Segoe UI Symbol", "Noto Color Emoji";
     font-weight: 300;
     font-size: 18px;
     color: $brand-ink;

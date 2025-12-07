@@ -10,16 +10,41 @@
           Начало
         </NuxtLink>
       </li>
-      <li class="site-header__nav-item">
-        <NuxtLink
-          to="/products"
-          class="site-header__nav-link"
+      <li
+        class="site-header__nav-item site-header__nav-item--dropdown nav-item"
+        :class="{ 'nav-item--open': isProductsOpen }"
+        @mouseenter="isProductsOpen = true"
+        @mouseleave="isProductsOpen = false"
+      >
+        <button
+          class="site-header__nav-link site-header__nav-link--button"
+          type="button"
           :class="{
             'site-header__nav-link--active': route.path.startsWith('/products'),
           }"
+          @click="toggleProductsOnMobile"
         >
           Продукти
-        </NuxtLink>
+          <svg
+            class="site-header__nav-arrow"
+            :class="{ 'site-header__nav-arrow--open': isProductsOpen }"
+            width="12"
+            height="12"
+            viewBox="0 0 12 12"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              d="M3 4.5L6 7.5L9 4.5"
+              stroke="currentColor"
+              stroke-width="1.5"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            />
+          </svg>
+        </button>
+
+        <NavDropdown :is-open="isProductsOpen" :items="dropdownItems" @item-click="closeDropdown" />
       </li>
       <li class="site-header__nav-item">
         <NuxtLink
@@ -71,9 +96,67 @@
 
 <script setup lang="ts">
 import { useRoute } from "vue-router";
+import { useApi } from "~/composables/useApi";
+
+interface Category {
+  _id: string;
+  name: string;
+  slug: string;
+  displayName: string;
+  productCount?: number;
+}
 
 // Get current route for active link highlighting
 const route = useRoute();
+
+// Dropdown state
+const isProductsOpen = ref(false);
+const categoriesWithProducts = ref<Category[]>([]);
+
+// Toggle dropdown on mobile/touch devices
+const toggleProductsOnMobile = (event: MouseEvent) => {
+  // On desktop we rely on hover only, on mobile/touch we toggle by click
+  if (window.matchMedia("(pointer: coarse)").matches) {
+    isProductsOpen.value = !isProductsOpen.value;
+    event.preventDefault();
+  }
+};
+
+const closeDropdown = () => {
+  isProductsOpen.value = false;
+};
+
+// Computed dropdown items
+const dropdownItems = computed(() => [
+  { label: "Всички продукти", to: "/products" },
+  { label: "Колекции", to: "/collections" },
+  ...categoriesWithProducts.value.map((c) => ({
+    label: c.displayName,
+    to: `/category/${c.slug}`,
+  })),
+]);
+
+// Fetch categories with products only
+const fetchCategories = async () => {
+  try {
+    const api = useApi();
+    const response = await api.get<{ success: boolean; data: Category[] }>(
+      "categories?withProductsOnly=true"
+    );
+
+    if (response && response.success) {
+      categoriesWithProducts.value = response.data || [];
+    }
+  } catch (err) {
+    console.error("Error fetching categories:", err);
+    categoriesWithProducts.value = [];
+  }
+};
+
+// Fetch on mount
+onMounted(() => {
+  fetchCategories();
+});
 </script>
 
 <style scoped lang="scss">
@@ -98,11 +181,13 @@ const route = useRoute();
     }
 
     &-item {
-      // No specific styles needed for desktop
+      position: relative;
     }
 
     &-link {
-      display: block;
+      display: flex;
+      align-items: center;
+      gap: 0.25rem;
       padding: 0.5rem 0;
       color: rgb(77, 77, 77);
       text-decoration: none;
@@ -112,6 +197,9 @@ const route = useRoute();
       line-height: 28px;
       transition: color 0.2s ease;
       position: relative;
+      background: none;
+      border: none;
+      cursor: pointer;
 
       &:hover {
         color: $brand;
@@ -132,9 +220,22 @@ const route = useRoute();
         }
       }
 
+      &--button {
+        // Ensure button variant looks like a link
+        text-align: left;
+      }
+
       &:focus-visible {
         outline: 2px solid $brand;
         outline-offset: 2px;
+      }
+    }
+
+    &-arrow {
+      transition: transform 0.2s ease;
+
+      &--open {
+        transform: rotate(180deg);
       }
     }
   }

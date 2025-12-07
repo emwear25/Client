@@ -1,11 +1,11 @@
 <template>
-  <section class="products-page">
-    <!-- Hero Section - FULL WIDTH -->
-    <div class="hero-products">
+  <section class="category-page">
+    <!-- Hero Section -->
+    <div class="hero-category">
       <div class="container">
-        <h1 class="hero-products__title">Нашите Продукти</h1>
-        <p class="hero-products__subtitle">
-          Открийте персонализирани бродирани ранички, дрехи и аксесоари – с име и дизайн.
+        <h1 class="hero-category__title">{{ categoryDisplayName }}</h1>
+        <p v-if="category" class="hero-category__subtitle">
+          Разгледайте нашите {{ category.displayName.toLowerCase() }}
         </p>
       </div>
     </div>
@@ -39,17 +39,6 @@
 
       <!-- Error State -->
       <div v-else-if="error" class="state-card state-card--error">
-        <svg
-          class="state-card__icon"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          stroke-width="1.5"
-        >
-          <circle cx="12" cy="12" r="10" />
-          <line x1="12" y1="8" x2="12" y2="12" />
-          <line x1="12" y1="16" x2="12.01" y2="16" />
-        </svg>
         <h2 class="state-card__title">Нещо се обърка</h2>
         <p class="state-card__text">{{ error }}</p>
         <button class="btn btn--primary" @click="fetchProducts">Опитай отново</button>
@@ -57,18 +46,9 @@
 
       <!-- Empty State -->
       <div v-else-if="sortedProducts.length === 0" class="state-card">
-        <svg
-          class="state-card__icon"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          stroke-width="1.5"
-        >
-          <circle cx="11" cy="11" r="8" />
-          <path d="m21 21-4.35-4.35" />
-        </svg>
         <h2 class="state-card__title">Няма намерени продукти</h2>
-        <p class="state-card__text">Скоро ще добавим нови продукти</p>
+        <p class="state-card__text">Скоро ще добавим нови продукти в тази категория</p>
+        <NuxtLink to="/products" class="btn btn--primary">Виж всички продукти</NuxtLink>
       </div>
 
       <!-- Products Grid -->
@@ -92,17 +72,18 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted } from "vue";
-import { useWishlist } from "~/stores/useWishlist";
 import { useApi } from "~/composables/useApi";
-import { useErrorHandler } from "~/composables/useErrorHandler";
 import { usePageSEO } from "~/composables/useSEO";
 
-usePageSEO({
-  title: "Продукти",
-  description: "Открийте персонализирани бродирани ранички, дрехи и аксесоари – с име и дизайн.",
-  type: "website",
-});
+const route = useRoute();
+const slug = route.params.slug as string;
+
+interface Category {
+  _id: string;
+  name: string;
+  slug: string;
+  displayName: string;
+}
 
 interface ProductImage {
   url: string;
@@ -131,6 +112,7 @@ interface Product {
 }
 
 // State
+const category = ref<Category | null>(null);
 const products = ref<Product[]>([]);
 const isLoading = ref(true);
 const error = ref<string | null>(null);
@@ -138,7 +120,11 @@ const sortBy = ref<"newest" | "price-asc" | "price-desc" | "name-asc">("newest")
 const drawerOpen = ref(false);
 const activeProduct = ref<Product | null>(null);
 
-// Computed - Sorted Products
+// Computed
+const categoryDisplayName = computed(() => {
+  return category.value?.displayName || "Категория";
+});
+
 const sortedProducts = computed(() => {
   const arr = [...products.value];
 
@@ -155,62 +141,36 @@ const sortedProducts = computed(() => {
 });
 
 // Functions
-const { normalizeError, getUserFriendlyMessage } = useErrorHandler();
-
-const getErrorMessage = (err: unknown): string => {
-  // Handle network/server connection errors first
-  if (err instanceof Error) {
-    const message = err.message.toLowerCase();
-    
-    // Check for specific network errors (server not running, connection failed)
-    if (message.includes("failed to fetch") || 
-        message.includes("networkerror") || 
-        message.includes("network request failed") ||
-        (message.includes("fetch") && message.includes("failed")) ||
-        message.includes("load failed")) {
-      return "Не може да се установи връзка със сървъра. Моля, проверете дали сървърът е стартиран и опитайте отново.";
-    }
-    
-    if (message.includes("timeout") || message.includes("timed out")) {
-      return "Заявката отне твърде много време. Моля, опитайте отново.";
-    }
-  }
-  
-  // Normalize the error and get user-friendly message
-  const normalizedError = normalizeError(err);
-  const friendlyMessage = getUserFriendlyMessage(normalizedError);
-  
-  // Check if it's a network error (no status code usually means network issue)
-  if (!normalizedError.statusCode) {
-    const message = (normalizedError.message || "").toLowerCase();
-    if (message.includes("fetch") || message.includes("network") || message.includes("connection")) {
-      return "Не може да се установи връзка със сървъра. Моля, проверете дали сървърът е стартиран и опитайте отново.";
-    }
-  }
-  
-  // Return user-friendly message or fallback
-  return friendlyMessage || "Възникна неочаквана грешка при зареждането на продуктите. Моля, опитайте отново.";
-};
-
 const fetchProducts = async () => {
   isLoading.value = true;
   error.value = null;
 
   try {
     const api = useApi();
-    // Add cache-busting timestamp to ensure fresh data
-    const timestamp = Date.now();
-    const response = await api.get(`products?active=true&_t=${timestamp}`);
 
-    if (response && response.success && response.data) {
-      products.value = Array.isArray(response.data) ? response.data : [];
-    } else if (Array.isArray(response)) {
-      products.value = response;
-    } else {
-      products.value = [];
+    // Fetch category first
+    const categoriesResponse = await api.get<{ success: boolean; data: Category[] }>(
+      "categories?active=true"
+    );
+
+    const categories = categoriesResponse?.data || [];
+    category.value = categories.find((c) => c.slug === slug) || null;
+
+    if (!category.value) {
+      error.value = "Категорията не е намерена";
+      isLoading.value = false;
+      return;
     }
+
+    // Fetch products for this category
+    const productsResponse = await api.get<{ success: boolean; data: Product[] }>(
+      `products?category=${category.value._id}&active=true`
+    );
+
+    products.value = productsResponse?.data || [];
   } catch (err) {
-    error.value = getErrorMessage(err);
+    console.error("Error fetching products:", err);
+    error.value = "Неуспешно зареждане на продуктите";
   } finally {
     isLoading.value = false;
   }
@@ -221,9 +181,38 @@ const openQuickView = (product: Product) => {
   drawerOpen.value = true;
 };
 
+// SEO - watch for category changes
+watch(
+  () => categoryDisplayName.value,
+  (name) => {
+    if (name) {
+      usePageSEO({
+        title: name,
+        description: `Разгледайте нашите ${name.toLowerCase()} - персонализирани бродирани изделия от emWear.`,
+        type: "website",
+      });
+
+      // Add CollectionPage structured data
+      useHead({
+        script: [
+          {
+            type: "application/ld+json",
+            children: JSON.stringify({
+              "@context": "https://schema.org",
+              "@type": "CollectionPage",
+              name: name,
+              description: `Разгледайте нашите ${name.toLowerCase()} - персонализирани бродирани изделия`,
+            }),
+          },
+        ],
+      });
+    }
+  },
+  { immediate: true }
+);
+
+// Fetch on mount
 onMounted(() => {
-  const wishlist = useWishlist();
-  wishlist.load();
   fetchProducts();
 });
 </script>
@@ -233,22 +222,14 @@ onMounted(() => {
 @use "@/assets/styles/breakpoints" as *;
 @use "@/assets/styles/fonts" as *;
 
-// ═══════════════════════════════════════════════════
-// PRODUCTS PAGE - Warm, Premium, Scandinavian Design
-// ═══════════════════════════════════════════════════
-
-.products-page {
+.category-page {
   min-height: 100vh;
   overflow-x: hidden;
   width: 100%;
   max-width: 100%;
 }
 
-// ═══════════════════════════════════════════════════
-// HERO SECTION - Soft gradient, warm welcome
-// ═══════════════════════════════════════════════════
-
-.hero-products {
+.hero-category {
   background: $grad-brand-a;
   padding: 3rem 0;
   text-align: center;
@@ -282,10 +263,6 @@ onMounted(() => {
     margin-inline: auto;
   }
 }
-
-// ═══════════════════════════════════════════════════
-// TOOLBAR - Sort dropdown only
-// ═══════════════════════════════════════════════════
 
 .products-toolbar {
   display: flex;
@@ -341,10 +318,6 @@ onMounted(() => {
   border-width: 0;
 }
 
-// ═══════════════════════════════════════════════════
-// PRODUCTS GRID - Airy spacing, large images
-// ═══════════════════════════════════════════════════
-
 .products-grid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
@@ -365,10 +338,6 @@ onMounted(() => {
     gap: 24px;
   }
 }
-
-// ═══════════════════════════════════════════════════
-// SKELETON LOADING - Soft pulsing placeholders
-// ═══════════════════════════════════════════════════
 
 .product-skeleton {
   background: $bg-card;
@@ -423,23 +392,11 @@ onMounted(() => {
   }
 }
 
-// ═══════════════════════════════════════════════════
-// STATE CARDS - Empty & Error states
-// ═══════════════════════════════════════════════════
-
 .state-card {
   background: $bg-card;
   padding: 4rem 2rem;
   text-align: center;
   border: 1px solid $border-base;
-
-  &__icon {
-    width: 4rem;
-    height: 4rem;
-    color: $brand;
-    margin: 0 auto 1.5rem;
-    stroke-width: 1.5;
-  }
 
   &__title {
     font-family: $font-heading;

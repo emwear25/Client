@@ -538,11 +538,12 @@
 <script setup lang="ts">
 import { ref, computed, onMounted } from "vue";
 import { useRoute, useRouter } from "vue-router";
-import { useHead } from "#app";
 import { useCartStore } from "~/stores/cart";
 import { useWishlist } from "~/stores/useWishlist";
 import { useApi } from "~/composables/useApi";
 import { useProductDescription } from "~/composables/useProductDescription";
+import { useProductSEO } from "~/composables/useSEO";
+import { useBreadcrumbs } from "~/composables/useBreadcrumbs";
 import ReviewStats from "~/components/reviews/ReviewStats.vue";
 import ProductReviews from "~/components/reviews/ProductReviews.vue";
 import ReviewForm from "~/components/reviews/ReviewForm.vue";
@@ -1063,10 +1064,40 @@ const fetchProduct = async () => {
         embroideryColor.value = firstColor?.value || "";
       }
 
-      useHead({
-        title: `${product.value.name} - emWear`,
-        meta: [{ name: "description", content: product.value.description }],
+      // Set SEO for product page
+      useProductSEO({
+        name: product.value.name,
+        description: product.value.description,
+        images: product.value.images || [],
+        price: product.value.price,
+        category: product.value.category,
+        seoTitle: (product.value as any).seoTitle,
+        metaDescription: (product.value as any).metaDescription,
+        slug: product.value.slug,
+        reviewStats: product.value.reviewStats,
       });
+
+      // Add breadcrumbs
+      const categoryName =
+        typeof product.value.category === "object" ? product.value.category?.name : "Продукти";
+      const categorySlug =
+        typeof product.value.category === "object" ? (product.value.category as any)?.slug : null;
+
+      const breadcrumbItems = [
+        { name: "Начало", url: "/" },
+        { name: "Продукти", url: "/products" },
+      ];
+
+      if (categoryName !== "Продукти" && categorySlug) {
+        breadcrumbItems.push({ name: categoryName, url: `/category/${categorySlug}` });
+      }
+
+      breadcrumbItems.push({
+        name: product.value.name,
+        url: `/products/${product.value.slug || product.value._id}`,
+      });
+
+      useBreadcrumbs(breadcrumbItems);
     }
   } catch (err) {
     error.value = err instanceof Error ? err.message : "Възникна грешка";
@@ -1932,7 +1963,6 @@ onMounted(() => {
     flex: 1;
     min-width: 0;
   }
-
 }
 
 .pdp-section-title {

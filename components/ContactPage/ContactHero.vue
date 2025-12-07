@@ -13,19 +13,30 @@
 <script setup lang="ts"></script>
 
 <style scoped lang="scss">
+@use "~/assets/styles/breakpoints" as *;
+
 .contact-hero {
   background-color: #fdf8f4;
   padding: 4rem 0;
   width: 100%;
 
   &__container {
-    max-width: 1200px;
+    width: 100%;
     margin: 0 auto;
-    padding: 0 1rem;
+    padding-inline: 16px;
     text-align: center;
 
-    @media (min-width: 768px) {
-      padding: 0 2rem;
+    @include up(md) {
+      max-width: 1104px;
+      padding-inline: 20px;
+    }
+    @include up(lg) {
+      max-width: 1472px;
+      padding-inline: 24px;
+    }
+    @include up(xl) {
+      max-width: 1656px;
+      padding-inline: 32px;
     }
   }
 

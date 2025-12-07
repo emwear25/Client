@@ -11,7 +11,7 @@
         height="400"
         loading="lazy"
         placeholder
-        :placeholder-class="['bg-gray-200', 'animate-pulse']"
+        placeholder-class="bg-gray-200 animate-pulse"
       />
 
       <!-- Quick View Button -->
@@ -45,7 +45,10 @@
     <div class="product-card__body">
       <h3 class="product-card__title">{{ product.name }}</h3>
       <!-- Ratings -->
-      <div v-if="product.reviewStats && product.reviewStats.totalReviews > 0" class="product-card__rating">
+      <div
+        v-if="product.reviewStats && product.reviewStats.totalReviews > 0"
+        class="product-card__rating"
+      >
         <span class="product-card__stars">
           <span
             v-for="star in 5"
@@ -62,6 +65,16 @@
           {{ product.reviewStats.averageRating.toFixed(1) }}
           <span class="product-card__rating-count">({{ product.reviewStats.totalReviews }})</span>
         </span>
+      </div>
+      <!-- Color Swatches -->
+      <div v-if="hasColors" class="product-card__colors">
+        <div
+          v-for="color in productColors"
+          :key="getColorKey(color)"
+          class="product-card__color-swatch"
+          :style="{ background: getColorHexValue(color) }"
+          :title="getColorName(color)"
+        />
       </div>
       <div class="product-card__price-wrapper">
         <div class="product-card__price">
@@ -101,6 +114,11 @@ interface ProductImage {
   publicId: string;
 }
 
+interface ColorObject {
+  name: string;
+  hex?: string;
+}
+
 interface Product {
   _id: string;
   slug?: string;
@@ -114,7 +132,7 @@ interface Product {
   customEmbroidery?: boolean;
   createdAt: string;
   sizes?: string[];
-  colors?: string[];
+  colors?: (string | ColorObject)[];
   isActive?: boolean;
   reviewStats?: {
     averageRating: number;
@@ -174,6 +192,99 @@ const formatPrice = (price?: number | null) => {
 const goToPDP = () => {
   const slug = props.product.slug || props.product._id;
   router.push(`/products/${slug}`);
+};
+
+// Color helpers
+const hasColors = computed(() => {
+  return props.product.colors && props.product.colors.length > 0;
+});
+
+const productColors = computed(() => {
+  return props.product.colors || [];
+});
+
+const getColorKey = (color: string | ColorObject): string => {
+  if (typeof color === "string") {
+    return color;
+  }
+  return color.name || "";
+};
+
+const getColorName = (color: string | ColorObject): string => {
+  if (typeof color === "string") {
+    return color;
+  }
+  return color.name || "";
+};
+
+const getColorHexValue = (color: string | ColorObject | null | undefined): string => {
+  const DEFAULT_GREY = "#9CA3AF";
+
+  if (!color) {
+    return DEFAULT_GREY;
+  }
+
+  const colorName = typeof color === "string" ? color : color?.name;
+
+  if (!colorName || typeof colorName !== "string") {
+    if (typeof color === "object" && color?.hex) {
+      return color.hex;
+    }
+    return DEFAULT_GREY;
+  }
+
+  const normalizedName = colorName.toLowerCase().trim();
+
+  const colorMap: Record<string, string> = {
+    // Bulgarian color names
+    червен: "#ef4444",
+    червено: "#ef4444",
+    син: "#3b82f6",
+    синьо: "#3b82f6",
+    зелен: "#10b981",
+    зелено: "#10b981",
+    жълт: "#f59e0b",
+    жълто: "#f59e0b",
+    бял: "#ffffff",
+    бяло: "#ffffff",
+    черен: "#000000",
+    черно: "#000000",
+    розов: "#ec4899",
+    розово: "#ec4899",
+    сив: "#6b7280",
+    коричнев: "#8b4513",
+    коричнево: "#8b4513",
+    // English color names
+    black: "#000000",
+    white: "#ffffff",
+    red: "#ef4444",
+    blue: "#3b82f6",
+    green: "#10b981",
+    yellow: "#f59e0b",
+    purple: "#8b5cf6",
+    pink: "#ec4899",
+    gray: "#6b7280",
+    grey: "#6b7280",
+    navy: "#1e40af",
+    crew: "#c5a572",
+    beige: "#f5f5dc",
+    brown: "#8b4513",
+  };
+
+  const mappedFromName = colorMap[normalizedName];
+  if (mappedFromName) {
+    return mappedFromName;
+  }
+
+  if (typeof color === "object" && color.hex) {
+    const hexValue = color.hex.trim().toLowerCase();
+    if (hexValue && hexValue !== DEFAULT_GREY.toLowerCase()) {
+      return color.hex;
+    }
+    return hexValue === DEFAULT_GREY.toLowerCase() ? DEFAULT_GREY : color.hex;
+  }
+
+  return DEFAULT_GREY;
 };
 </script>
 
@@ -468,6 +579,30 @@ const goToPDP = () => {
 
     @include up(md) {
       font-size: 0.875rem;
+    }
+  }
+
+  // Color Swatches
+  &__colors {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin: 8px 0;
+    flex-wrap: wrap;
+  }
+
+  &__color-swatch {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    border: 2px solid rgba(0, 0, 0, 0.1);
+    flex-shrink: 0;
+    cursor: default;
+    transition: transform 0.2s ease;
+
+    &:hover {
+      transform: scale(1.1);
+      border-color: rgba(0, 0, 0, 0.2);
     }
   }
 }

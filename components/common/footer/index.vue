@@ -36,15 +36,15 @@ import FooterBottom from "./FooterBottom.vue";
     padding-inline: 16px;
 
     @include up(md) {
-      max-width: 960px;
+      max-width: 1104px;
       padding-inline: 20px;
     }
     @include up(lg) {
-      max-width: 1280px;
+      max-width: 1472px;
       padding-inline: 24px;
     }
     @include up(xl) {
-      max-width: 1440px;
+      max-width: 1656px;
       padding-inline: 32px;
     }
   }
