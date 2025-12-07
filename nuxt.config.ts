@@ -155,7 +155,7 @@ export default defineNuxtConfig({
         // Category grid
         "mdi:backpack",
         "mdi:bathtub-outline",
-        "mdi:robe",
+        "mdi:tshirt-crew",
       ],
     },
   },
@@ -209,7 +209,7 @@ export default defineNuxtConfig({
   // SEO and performance
   routeRules: {
     // Static pages - pre-render for better SEO
-    "/": { prerender: true, index: true },
+    "/": { prerender: true },
     "/about": { prerender: true },
     "/contact": { prerender: true },
     "/blog": { prerender: true },
@@ -217,12 +217,12 @@ export default defineNuxtConfig({
     // Dynamic product pages - SSR for SEO
     "/products/**": { ssr: true, isr: 3600 },
     "/category/**": { ssr: true, isr: 3600 },
-    // Private pages - no index
-    "/checkout": { index: false },
-    "/cart": { index: false },
-    "/profile": { index: false },
-    "/orders": { index: false },
-    "/login": { index: false },
-    "/register": { index: false },
+    // Private pages - noindex via meta tags (handled in page components)
+    "/checkout": { prerender: false },
+    "/cart": { prerender: false },
+    "/profile": { prerender: false },
+    "/orders": { prerender: false },
+    "/login": { prerender: false },
+    "/register": { prerender: false },
   },
 });

@@ -417,7 +417,7 @@ const getStatusLabel = (status: string) => {
 </script>
 
 <style scoped lang="scss">
-@import "@/assets/styles/_colors.scss";
+@use "~/assets/styles/colors" as *;
 
 .order-success {
   min-height: 100vh;

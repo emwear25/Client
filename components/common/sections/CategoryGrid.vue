@@ -62,7 +62,7 @@ const categories: Category[] = [
     slug: "halati",
     title: "Халати",
     img: "/images/categories/robe.jpg",
-    icon: "mdi:robe",
+    icon: "mdi:tshirt-crew",
   },
 ];
 </script>
