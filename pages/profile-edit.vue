@@ -23,7 +23,7 @@
                   type="text"
                   class="form-input"
                   placeholder="Вашето име"
-                >
+                />
               </div>
 
               <div class="form-group">
@@ -34,7 +34,7 @@
                   type="text"
                   class="form-input"
                   placeholder="Вашата фамилия"
-                >
+                />
               </div>
             </div>
 
@@ -46,7 +46,7 @@
                 type="tel"
                 class="form-input"
                 placeholder="+359 ..."
-              >
+              />
             </div>
 
             <div class="form-group">
@@ -57,7 +57,7 @@
                 type="email"
                 class="form-input"
                 disabled
-              >
+              />
               <p class="form-hint">Имейлът не може да бъде променен</p>
             </div>
           </div>
@@ -166,7 +166,7 @@
                 class="form-input"
                 placeholder="Улица, номер, етаж, апартамент"
                 required
-              >
+              />
             </div>
 
             <div class="form-row">
@@ -178,7 +178,7 @@
                   type="text"
                   class="form-input"
                   required
-                >
+                />
               </div>
 
               <div class="form-group">
@@ -189,13 +189,13 @@
                   type="text"
                   class="form-input"
                   required
-                >
+                />
               </div>
             </div>
 
             <div class="form-group">
               <label class="checkbox-label">
-                <input v-model="addressForm.isDefault" type="checkbox" >
+                <input v-model="addressForm.isDefault" type="checkbox" />
                 <span>Задай като адрес по подразбиране</span>
               </label>
             </div>
@@ -376,6 +376,7 @@ useHead({
 </script>
 
 <style lang="scss" scoped>
+@use "sass:color";
 @use "~/assets/styles/colors" as *;
 @use "~/assets/styles/fonts" as *;
 @use "~/assets/styles/breakpoints" as *;
@@ -646,8 +647,8 @@ useHead({
       color: $brand-ink;
 
       &:hover {
-        background: darken($brand, 5%);
-        border-color: darken($brand, 5%);
+        background: color.adjust($brand, $lightness: -5%);
+        border-color: color.adjust($brand, $lightness: -5%);
       }
     }
 

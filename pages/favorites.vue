@@ -144,6 +144,7 @@ useHead({
 </script>
 
 <style scoped lang="scss">
+@use "sass:color";
 @use "~/assets/styles/colors" as *;
 @use "~/assets/styles/fonts" as *;
 @use "~/assets/styles/breakpoints" as *;
@@ -240,7 +241,7 @@ useHead({
       border: 2px solid $brand-ink;
 
       &:hover {
-        background: darken($brand-ink, 5%);
+        background: color.adjust($brand-ink, $lightness: -5%);
         transform: translateY(-2px);
         box-shadow: 0 4px 12px rgba($brand-ink, 0.3);
       }
