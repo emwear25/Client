@@ -313,9 +313,12 @@ const getColorHexValue = (color: string | ColorObject | null | undefined): strin
       transform: scale(1.02);
     }
 
-    .product-card__quick {
-      transform: translateY(0);
-      opacity: 1;
+    // Show quick view button on hover (desktop only)
+    @media (hover: hover) and (pointer: fine) {
+      .product-card__quick {
+        transform: translateY(0);
+        opacity: 1;
+      }
     }
   }
 
@@ -370,7 +373,7 @@ const getColorHexValue = (color: string | ColorObject | null | undefined): strin
     transition: color 0.2s ease;
   }
 
-  // Quick View Button (appears on hover) - NO ROUNDED CORNERS
+  // Quick View Button (appears on hover on desktop, always visible on mobile)
   &__quick {
     position: absolute;
     left: 0;
@@ -386,12 +389,27 @@ const getColorHexValue = (color: string | ColorObject | null | undefined): strin
     font-size: 0.8125rem;
     letter-spacing: 0.05em;
     text-transform: uppercase;
-    transform: translateY(100%);
-    opacity: 0;
     transition: all 0.25s ease;
     cursor: pointer;
+    z-index: 10;
+
+    // Always visible on mobile/tablet (touch devices)
+    transform: translateY(0);
+    opacity: 1;
+
+    // Hidden by default on desktop, shown on hover
+    @media (hover: hover) and (pointer: fine) {
+      transform: translateY(100%);
+      opacity: 0;
+    }
 
     &:hover {
+      background: $brand-ink;
+      color: $color-white;
+    }
+
+    // Active state for touch devices
+    &:active {
       background: $brand-ink;
       color: $color-white;
     }
