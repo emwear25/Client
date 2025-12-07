@@ -172,7 +172,7 @@ const isNew = computed(() => {
   const now = new Date();
   const diffTime = Math.abs(now.getTime() - productDate.getTime());
   const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-  return diffDays <= 30;
+  return diffDays <= 7; // 1 week
 });
 
 const isSale = computed(() => {

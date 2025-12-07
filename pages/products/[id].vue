@@ -81,6 +81,17 @@
               <!-- Title & Price -->
               <div class="pdp-header">
                 <h1 class="pdp-title">{{ product.name }}</h1>
+                <!-- Badges -->
+                <div v-if="badges.length > 0" class="pdp-badges">
+                  <span
+                    v-for="badge in badges"
+                    :key="badge.key"
+                    class="pdp-badge"
+                    :class="`pdp-badge--${badge.key}`"
+                  >
+                    {{ badge.label }}
+                  </span>
+                </div>
               </div>
 
               <!-- Social Share -->
@@ -671,6 +682,23 @@ const refreshKey = ref(0);
 const isInWishlist = computed(() =>
   product.value ? wishlistStore.ids.includes(product.value._id) : false
 );
+
+// Badges computed
+const isNew = computed(() => {
+  if (!product.value?.createdAt) return false;
+  const productDate = new Date(product.value.createdAt);
+  const now = new Date();
+  const diffTime = Math.abs(now.getTime() - productDate.getTime());
+  const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+  return diffDays <= 7; // 1 week
+});
+
+const badges = computed(() => {
+  const arr: Array<{ key: string; label: string }> = [];
+  if (isNew.value) arr.push({ key: "new", label: "Ново" });
+  if (product.value?.customEmbroidery) arr.push({ key: "personal", label: "Персонализация" });
+  return arr;
+});
 
 // Parsed markdown description
 const parsedDescription = computed(() => {
@@ -1291,12 +1319,40 @@ onMounted(() => {
   line-height: 40px;
   color: #333333;
   letter-spacing: -0.8px;
-  margin: 0 0 0.25rem 0;
+  margin: 0 0 0.5rem 0;
 
   @media (max-width: 767px) {
     font-size: 28px;
     line-height: 32px;
     letter-spacing: -0.6px;
+  }
+}
+
+/* Badges */
+.pdp-badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.pdp-badge {
+  padding: 6px 12px;
+  font-size: 0.6875rem;
+  font-weight: 700;
+  color: $color-white;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  display: inline-block;
+
+  &--new {
+    background: $color-honey;
+    color: $brand-ink;
+  }
+
+  &--personal {
+    background: $color-sage;
+    color: $brand-ink;
   }
 }
 
