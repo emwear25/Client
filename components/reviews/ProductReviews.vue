@@ -2,8 +2,8 @@
   <section class="product-reviews">
     <div class="product-reviews__header">
       <h2 class="product-reviews__title">Отзиви на клиенти</h2>
-      <div class="product-reviews__header-right">
-        <div v-if="stats.totalReviews > 0" class="product-reviews__quick-stats">
+      <div v-if="stats.totalReviews > 0" class="product-reviews__header-right">
+        <div class="product-reviews__quick-stats">
           <span class="product-reviews__average">{{ stats.averageRating.toFixed(1) }}</span>
           <div class="product-reviews__stars">
             <Icon
@@ -18,9 +18,6 @@
           </div>
           <span class="product-reviews__count">({{ stats.totalReviews }} отзива)</span>
         </div>
-        <button class="product-reviews__add-btn" @click="$emit('open-review-form')">
-          Добави отзив
-        </button>
       </div>
     </div>
 
@@ -82,15 +79,20 @@
             </div>
             <div class="review-card__info">
               <h3 class="review-card__name">
-                {{ review.user?.firstName && review.user?.lastName
-                  ? `${review.user.firstName} ${review.user.lastName}`
-                  : review.guestName || "Гост" }}
+                {{
+                  review.user?.firstName && review.user?.lastName
+                    ? `${review.user.firstName} ${review.user.lastName}`
+                    : review.guestName || "Гост"
+                }}
               </h3>
               <p class="review-card__date">{{ formatDate(review.createdAt) }}</p>
             </div>
           </div>
           <div class="review-card__badges">
-            <span v-if="review.verifiedPurchase" class="review-card__badge review-card__badge--verified">
+            <span
+              v-if="review.verifiedPurchase"
+              class="review-card__badge review-card__badge--verified"
+            >
               <Icon name="mdi:check-decagram" class="review-card__badge-icon" />
               Потвърдена покупка
             </span>
@@ -493,7 +495,7 @@ onMounted(() => {
       border-color: $brand-ink;
       color: white;
       box-shadow: 0 2px 8px rgba($brand-ink, 0.2);
-      
+
       &:hover {
         transform: translateY(-2px);
         box-shadow: 0 4px 12px rgba($brand-ink, 0.3);
@@ -558,14 +560,14 @@ onMounted(() => {
     opacity: 0.5;
     animation: float 3s ease-in-out infinite;
   }
-  
+
   &__empty h3 {
     font-size: 1.5rem;
     font-weight: 600;
     color: $brand-ink;
     margin: 0 0 0.75rem;
   }
-  
+
   &__empty p {
     font-size: 1rem;
     color: $text-secondary;
@@ -599,9 +601,10 @@ onMounted(() => {
       box-shadow: 0 2px 6px rgba($brand-ink, 0.2);
     }
   }
-  
+
   @keyframes float {
-    0%, 100% {
+    0%,
+    100% {
       transform: translateY(0);
     }
     50% {
@@ -662,7 +665,7 @@ onMounted(() => {
   overflow: hidden;
 
   &::before {
-    content: '';
+    content: "";
     position: absolute;
     top: 0;
     left: 0;
@@ -677,7 +680,7 @@ onMounted(() => {
     box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
     transform: translateY(-2px);
     border-color: rgba($brand, 0.3);
-    
+
     &::before {
       opacity: 1;
     }
@@ -713,7 +716,7 @@ onMounted(() => {
     flex-shrink: 0;
     box-shadow: 0 2px 8px rgba($brand-ink, 0.15);
     transition: transform 0.2s ease;
-    
+
     .review-card:hover & {
       transform: scale(1.05);
     }
@@ -757,7 +760,7 @@ onMounted(() => {
     flex-shrink: 0;
     box-shadow: 0 1px 3px rgba($success, 0.2);
     transition: transform 0.2s ease;
-    
+
     &:hover {
       transform: scale(1.05);
     }
@@ -872,4 +875,3 @@ onMounted(() => {
   }
 }
 </style>
-
