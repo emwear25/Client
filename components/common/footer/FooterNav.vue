@@ -54,6 +54,8 @@ const companyLinks: NavigationLink[] = [
   { name: "За Нас", path: "/about" },
   { name: "Контакти", path: "/contact" },
   { name: "Доставка и връщане", path: "/shipping" },
+  { name: "Политика за поверителност", path: "/privacy-policy" },
+  { name: "Общи условия", path: "/terms" },
 ];
 </script>
 
