@@ -52,7 +52,7 @@
             </div>
           </SwiperSlide>
         </Swiper>
-        <div class="feature-highlights__pagination"/>
+        <div class="feature-highlights__pagination" />
       </div>
     </div>
   </section>
@@ -114,20 +114,12 @@ const features = ref([
 
   &__container {
     width: 100%;
-    margin-inline: auto;
-    padding-inline: 16px;
+    max-width: 1610px;
+    margin: 0 auto;
+    padding: 0 1rem;
 
     @include up(md) {
-      max-width: 1104px;
-      padding-inline: 20px;
-    }
-    @include up(lg) {
-      max-width: 1472px;
-      padding-inline: 24px;
-    }
-    @include up(xl) {
-      max-width: 1656px;
-      padding-inline: 32px;
+      padding: 0 2rem;
     }
   }
 

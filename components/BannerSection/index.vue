@@ -4,7 +4,7 @@
       class="banner-section__background"
       :style="{ backgroundImage: `url('/img/banners/banner5.jpg')` }"
     />
-    <div class="banner-section__overlay"/>
+    <div class="banner-section__overlay" />
     <div class="banner-section__container">
       <div class="banner-section__content">
         <h2 class="banner-section__title">Дрехи с бродерия и без бродерия</h2>
@@ -87,14 +87,14 @@
     width: 100%;
     max-width: 1610px;
     margin: 0 auto;
-    padding: 3rem 1.5rem;
+    padding: 3rem 1rem;
 
     @include up(md) {
       padding: 4rem 2rem;
     }
 
     @include up(lg) {
-      padding: 5rem 2.5rem;
+      padding: 5rem 2rem;
     }
   }
 
