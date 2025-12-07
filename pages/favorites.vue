@@ -19,7 +19,7 @@
           <p class="favorites-empty__text">
             Започнете да добавяте продукти, които харесвате, за да ги проследявате тук.
           </p>
-          <NuxtLink to="/catalog" class="btn btn--primary"> Разгледай Продукти </NuxtLink>
+          <NuxtLink to="/products" class="btn btn--primary"> Разгледай Продукти </NuxtLink>
         </div>
 
         <!-- Products Grid -->
