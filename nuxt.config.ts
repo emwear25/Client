@@ -170,6 +170,9 @@ export default defineNuxtConfig({
         propsDestructure: true,
       },
     },
+    optimizeDeps: {
+      include: ["markdown-it", "dompurify"],
+    },
   },
 
   // Proxy API requests to backend server

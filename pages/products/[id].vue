@@ -383,7 +383,7 @@
               </svg>
             </button>
             <div v-show="openSection === 'description'" class="pdp-accordion__content">
-              <div class="pdp-description" v-html="formattedDescription"></div>
+              <div class="pdp-description" v-html="parsedDescription"></div>
             </div>
           </div>
 
@@ -541,9 +541,9 @@ import { useRoute, useRouter } from "vue-router";
 import { useCartStore } from "~/stores/cart";
 import { useWishlist } from "~/stores/useWishlist";
 import { useApi } from "~/composables/useApi";
-import { useProductDescription } from "~/composables/useProductDescription";
 import { useProductSEO } from "~/composables/useSEO";
 import { useBreadcrumbs } from "~/composables/useBreadcrumbs";
+import { useMarkdown } from "~/composables/useMarkdown";
 import ReviewStats from "~/components/reviews/ReviewStats.vue";
 import ProductReviews from "~/components/reviews/ProductReviews.vue";
 import ReviewForm from "~/components/reviews/ReviewForm.vue";
@@ -618,7 +618,7 @@ const route = useRoute();
 const router = useRouter();
 const cartStore = useCartStore();
 const wishlistStore = useWishlist();
-const { formatDescription } = useProductDescription();
+const { parseMarkdown, isReady } = useMarkdown();
 
 // State
 const product = ref<Product | null>(null);
@@ -672,10 +672,17 @@ const isInWishlist = computed(() =>
   product.value ? wishlistStore.ids.includes(product.value._id) : false
 );
 
-// Formatted description
-const formattedDescription = computed(() => {
+// Parsed markdown description
+const parsedDescription = computed(() => {
   if (!product.value?.description) return "";
-  return formatDescription(product.value.description);
+  // If libraries aren't ready yet, return escaped text (will update when ready)
+  if (!isReady.value) {
+    return product.value.description
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;");
+  }
+  return parseMarkdown(product.value.description);
 });
 
 // Computed
@@ -1808,33 +1815,70 @@ onMounted(() => {
   }
 }
 
-/* Formatted Product Description */
+/* Product Description - Markdown Styling */
 .pdp-description {
   font-family: $font-body;
   font-size: 16px;
   line-height: 1.7;
   color: $text-primary;
 
+  // Paragraphs
   p {
     margin: 0 0 1rem;
+    line-height: 1.7;
 
     &:last-child {
       margin-bottom: 0;
     }
   }
 
-  strong {
+  // Headings
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    font-family: $font-heading;
     font-weight: 600;
     color: $brand-ink;
+    margin: 1.5rem 0 0.75rem;
+    line-height: 1.4;
+
+    &:first-child {
+      margin-top: 0;
+    }
   }
 
-  em {
-    font-style: italic;
+  h1 {
+    font-size: 1.75rem;
   }
 
+  h2 {
+    font-size: 1.5rem;
+    border-bottom: 1px solid $border-base;
+    padding-bottom: 0.5rem;
+  }
+
+  h3 {
+    font-size: 1.25rem;
+    border-bottom: 1px solid $border-base;
+    padding-bottom: 0.5rem;
+  }
+
+  h4 {
+    font-size: 1.125rem;
+  }
+
+  h5,
+  h6 {
+    font-size: 1rem;
+  }
+
+  // Lists
   ul,
   ol {
-    margin: 1rem 0;
+    margin: 1rem 0 1.5rem;
     padding-left: 1.5rem;
     list-style-position: outside;
   }
@@ -1849,16 +1893,82 @@ onMounted(() => {
 
   li {
     margin-bottom: 0.5rem;
+    line-height: 1.6;
 
     &:last-child {
       margin-bottom: 0;
     }
   }
 
+  // Text formatting
+  strong {
+    font-weight: 600;
+    color: $brand-ink;
+  }
+
+  em {
+    font-style: italic;
+  }
+
+  u {
+    text-decoration: underline;
+  }
+
+  // Links
+  a {
+    color: $brand;
+    text-decoration: underline;
+    transition: color 0.2s;
+
+    &:hover {
+      color: $brand-hover;
+    }
+  }
+
+  // Blockquote
+  blockquote {
+    margin: 1rem 0;
+    padding: 0.75rem 1rem;
+    border-left: 3px solid $brand;
+    background: rgba($brand, 0.05);
+    font-style: italic;
+    color: $text-secondary;
+  }
+
+  // Code
+  code {
+    background: rgba($brand-ink, 0.05);
+    padding: 0.125rem 0.375rem;
+    border-radius: 4px;
+    font-family: monospace;
+    font-size: 0.9em;
+    color: $brand-ink;
+  }
+
+  pre {
+    background: rgba($brand-ink, 0.05);
+    padding: 1rem;
+    border-radius: 8px;
+    overflow-x: auto;
+    margin: 1rem 0;
+
+    code {
+      background: none;
+      padding: 0;
+    }
+  }
+
+  // Horizontal rule
+  hr {
+    border: none;
+    border-top: 1px solid $border-base;
+    margin: 1.5rem 0;
+  }
+
+  // Line breaks
   br {
     display: block;
     margin-bottom: 0.5rem;
-    content: "";
   }
 }
 
