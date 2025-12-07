@@ -208,21 +208,24 @@ export default defineNuxtConfig({
 
   // SEO and performance
   routeRules: {
-    // Static pages - pre-render for better SEO
-    "/": { prerender: true },
-    "/about": { prerender: true },
-    "/contact": { prerender: true },
-    "/blog": { prerender: true },
-    "/products": { prerender: true, isr: 3600 }, // ISR with 1 hour cache
-    // Dynamic product pages - SSR for SEO
-    "/products/**": { ssr: true, isr: 3600 },
-    "/category/**": { ssr: true, isr: 3600 },
-    // Private pages - noindex via meta tags (handled in page components)
-    "/checkout": { prerender: false },
-    "/cart": { prerender: false },
-    "/profile": { prerender: false },
-    "/orders": { prerender: false },
-    "/login": { prerender: false },
-    "/register": { prerender: false },
+    // Static pages - pre-render for better SEO (shorter cache for faster updates)
+    "/": { prerender: true, headers: { "Cache-Control": "public, s-maxage=300, stale-while-revalidate=600" } },
+    "/about": { prerender: true, headers: { "Cache-Control": "public, s-maxage=300, stale-while-revalidate=600" } },
+    "/contact": { prerender: true, headers: { "Cache-Control": "public, s-maxage=300, stale-while-revalidate=600" } },
+    "/blog": { prerender: true, headers: { "Cache-Control": "public, s-maxage=300, stale-while-revalidate=600" } },
+    "/privacy-policy": { prerender: true, headers: { "Cache-Control": "public, s-maxage=300, stale-while-revalidate=600" } },
+    "/terms": { prerender: true, headers: { "Cache-Control": "public, s-maxage=300, stale-while-revalidate=600" } },
+    "/shipping": { prerender: true, headers: { "Cache-Control": "public, s-maxage=300, stale-while-revalidate=600" } },
+    "/products": { prerender: true, isr: 300, headers: { "Cache-Control": "public, s-maxage=300, stale-while-revalidate=600" } }, // ISR with 5 min cache
+    // Dynamic product pages - SSR for SEO (shorter cache)
+    "/products/**": { ssr: true, isr: 300, headers: { "Cache-Control": "public, s-maxage=300, stale-while-revalidate=600" } },
+    "/category/**": { ssr: true, isr: 300, headers: { "Cache-Control": "public, s-maxage=300, stale-while-revalidate=600" } },
+    // Private pages - no cache
+    "/checkout": { prerender: false, headers: { "Cache-Control": "no-cache, no-store, must-revalidate" } },
+    "/cart": { prerender: false, headers: { "Cache-Control": "no-cache, no-store, must-revalidate" } },
+    "/profile": { prerender: false, headers: { "Cache-Control": "no-cache, no-store, must-revalidate" } },
+    "/orders": { prerender: false, headers: { "Cache-Control": "no-cache, no-store, must-revalidate" } },
+    "/login": { prerender: false, headers: { "Cache-Control": "no-cache, no-store, must-revalidate" } },
+    "/register": { prerender: false, headers: { "Cache-Control": "no-cache, no-store, must-revalidate" } },
   },
 });
