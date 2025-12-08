@@ -1,14 +1,10 @@
 <template>
-  <div class="shipping-page">
+  <section class="shipping-page">
     <!-- Hero Section -->
-    <div class="hero-shipping">
-      <div class="container">
-        <h1 class="hero-shipping__title">Доставка и Връщане</h1>
-        <p class="hero-shipping__subtitle">
-          Информация за доставка, срокове и условия за връщане на продукти
-        </p>
-      </div>
-    </div>
+    <CommonPageHero
+      title="Доставка и Връщане"
+      subtitle="Информация за доставка, срокове и условия за връщане на продукти"
+    />
 
     <div class="container">
       <section class="shipping-page__section">
@@ -81,7 +77,7 @@
         </div>
       </section>
     </div>
-  </div>
+  </section>
 </template>
 
 <script setup lang="ts">
@@ -100,50 +96,12 @@ usePageSEO({
 @use "~/assets/styles/fonts" as *;
 @use "~/assets/styles/breakpoints" as *;
 
-// Hero Section
-.hero-shipping {
-  background: $grad-brand-a;
-  padding: 3rem 0;
-  text-align: center;
-  color: $brand-ink;
-  width: 100%;
-
-  @include up(md) {
-    padding: 4rem 0;
-  }
-
-  &__title {
-    font-family: "Outfit", sans-serif;
-    font-size: 56px;
-    font-weight: 300;
-    color: $brand-ink;
-    margin: 0 0 0.75rem;
-    letter-spacing: 0.01em;
-    line-height: 60px;
-
-    @media (max-width: 767px) {
-      font-size: 36px;
-      line-height: 42px;
-    }
-  }
-
-  &__subtitle {
-    font-family:
-      -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", "Noto Sans",
-      "Liberation Sans", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji",
-      "Segoe UI Symbol", "Noto Color Emoji";
-    font-size: 18px;
-    font-weight: 300;
-    line-height: 31px;
-    color: $brand-ink;
-    max-width: 700px;
-    margin-inline: auto;
-  }
-}
-
 .shipping-page {
   min-height: 60vh;
-  padding: 4rem 1rem;
+  width: 100%;
+  max-width: 100%;
+  overflow-x: hidden;
+  padding: 0 0 4rem;
 
   &__section {
     margin-bottom: 3rem;
