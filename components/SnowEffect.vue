@@ -51,10 +51,13 @@ const getSnowflakeStyle = (_index: number) => {
 .snowflake {
   position: absolute;
   top: -10%;
-  color: #fff;
+  color: #ffffff !important;
+  -webkit-text-fill-color: #ffffff !important;
   text-shadow: 0 0 5px rgba(255, 255, 255, 0.8);
   animation: fall linear infinite;
   user-select: none;
+  filter: brightness(1) contrast(1);
+  -webkit-filter: brightness(1) contrast(1);
 }
 
 @keyframes fall {

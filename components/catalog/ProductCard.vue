@@ -401,14 +401,19 @@ const getColorHexValue = (color: string | ColorObject | null | undefined): strin
     // Mobile: Small icon button in bottom-right corner
     bottom: 0.75rem;
     right: 0.75rem;
-    width: 44px;
-    height: 44px;
-    background: rgba(255, 255, 255, 0.95);
+    width: 32px;
+    height: 32px;
+    background: rgba(255, 255, 255, 0.98);
     color: $brand-ink;
+    border: 1.5px solid rgba($brand-ink, 0.15);
     border-radius: 50%;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+    box-shadow:
+      0 2px 6px rgba(0, 0, 0, 0.12),
+      0 1px 2px rgba(0, 0, 0, 0.08);
     opacity: 1;
     transform: scale(1);
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
 
     // Desktop: Full-width button at bottom (appears on hover)
     @media (hover: hover) and (pointer: fine) {
@@ -434,7 +439,11 @@ const getColorHexValue = (color: string | ColorObject | null | undefined): strin
     &:hover {
       background: $brand-ink;
       color: $color-white;
-      transform: scale(1.1);
+      border-color: $brand-ink;
+      box-shadow:
+        0 4px 12px rgba($brand-ink, 0.25),
+        0 2px 4px rgba(0, 0, 0, 0.1);
+      transform: scale(1.08);
 
       @media (hover: hover) and (pointer: fine) {
         transform: translateY(0);
@@ -442,7 +451,8 @@ const getColorHexValue = (color: string | ColorObject | null | undefined): strin
     }
 
     &:active {
-      transform: scale(0.95);
+      transform: scale(0.92);
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.15);
 
       @media (hover: hover) and (pointer: fine) {
         transform: translateY(0);
@@ -459,10 +469,12 @@ const getColorHexValue = (color: string | ColorObject | null | undefined): strin
   }
 
   &__quick-icon {
-    width: 20px;
-    height: 20px;
+    width: 16px;
+    height: 16px;
     flex-shrink: 0;
     stroke: currentColor;
+    stroke-width: 2;
+    transition: all 0.2s ease;
 
     @media (hover: hover) and (pointer: fine) {
       display: none;
