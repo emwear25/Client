@@ -345,26 +345,13 @@
                 <span class="pdp-payment__label">Приемаме:</span>
                 <div class="pdp-payment__icons">
                   <div class="pdp-payment__icon pdp-payment__icon--visa" title="VISA">
-                    <NuxtImg src="/img/payments/visa.png" alt="VISA" width="60" height="40" />
+                    <img src="/img/payments/visa.png" alt="VISA" width="60" height="40" />
                   </div>
                   <div class="pdp-payment__icon pdp-payment__icon--mastercard" title="Mastercard">
-                    <NuxtImg src="/img/payments/card.png" alt="Mastercard" width="60" height="40" />
+                    <img src="/img/payments/card.png" alt="Mastercard" width="60" height="40" />
                   </div>
                   <div class="pdp-payment__icon pdp-payment__icon--applepay" title="Apple Pay">
-                    <NuxtImg
-                      src="/img/payments/apple-pay.png"
-                      alt="Apple Pay"
-                      width="60"
-                      height="40"
-                    />
-                  </div>
-                  <div class="pdp-payment__icon pdp-payment__icon--cod" title="Наложен платеж">
-                    <NuxtImg
-                      src="/img/payments/cash-on-delivery.png"
-                      alt="Наложен платеж"
-                      width="60"
-                      height="40"
-                    />
+                    <img src="/img/payments/apple-pay.png" alt="Apple Pay" width="60" height="40" />
                   </div>
                 </div>
               </div>

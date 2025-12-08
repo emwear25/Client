@@ -192,7 +192,7 @@ export const useCartStore = defineStore("cart", () => {
       couponDiscountPercentage.value = result.discountPercentage || 0;
 
       persist();
-      return { success: true, message: "Coupon applied successfully!" };
+      return { success: true, message: "Кодът за отстъпка е приложен успешно!" };
     } catch (error: any) {
       console.error("Error applying coupon:", error);
       throw error;

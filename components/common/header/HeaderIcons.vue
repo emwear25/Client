@@ -122,12 +122,14 @@ const showLoginIcon = computed(() => {
 watch(
   () => [authStore.isAuthenticated, authStore.user, showProfileIcon.value],
   ([isAuth, user, showProfile]) => {
-    console.log("[HeaderIcons] Auth state changed:", {
-      isAuthenticated: isAuth,
-      hasUser: !!user,
-      showProfileIcon: showProfile,
-      userEmail: user?.email,
-    });
+    if (import.meta.dev) {
+      console.log("[HeaderIcons] Auth state changed:", {
+        isAuthenticated: isAuth,
+        hasUser: !!user,
+        showProfileIcon: showProfile,
+        userEmail: user?.email,
+      });
+    }
   },
   { immediate: true, deep: true }
 );
@@ -139,7 +141,8 @@ const isUserMenuOpen = ref(false);
 watch(
   () => authStore.isAuthenticated,
   async (isAuth) => {
-    console.log("[HeaderIcons] Auth state changed:", {
+    if (import.meta.dev) {
+      console.log("[HeaderIcons] Auth state changed:", {
       isAuthenticated: isAuth,
       hasUser: !!authStore.user,
       userEmail: authStore.user?.email,
@@ -147,7 +150,9 @@ watch(
 
     // If authenticated but no user, fetch user (shouldn't happen, but safety check)
     if (isAuth && !authStore.user) {
-      console.log("[HeaderIcons] Authenticated but no user, fetching...");
+      if (import.meta.dev) {
+        console.log("[HeaderIcons] Authenticated but no user, fetching...");
+      }
       await authStore.fetchUser();
     }
   },
@@ -174,12 +179,14 @@ const handleLogout = async () => {
 
 // Toggle user menu
 const toggleUserMenu = () => {
-  console.log("[HeaderIcons] Toggling user menu:", {
-    currentState: isUserMenuOpen.value,
-    isAuthenticated: authStore.isAuthenticated,
-    hasUser: !!authStore.user,
-    userEmail: authStore.user?.email,
-  });
+  if (import.meta.dev) {
+    console.log("[HeaderIcons] Toggling user menu:", {
+      currentState: isUserMenuOpen.value,
+      isAuthenticated: authStore.isAuthenticated,
+      hasUser: !!authStore.user,
+      userEmail: authStore.user?.email,
+    });
+  }
   isUserMenuOpen.value = !isUserMenuOpen.value;
 };
 

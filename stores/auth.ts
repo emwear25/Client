@@ -84,8 +84,8 @@ export const useAuthStore = defineStore("auth", () => {
   const isLoading = ref(false);
   const isInitialized = ref(false); // Track if plugin has run
 
-  // Debug logging
-  if (import.meta.client) {
+  // Debug logging (only in development)
+  if (import.meta.client && import.meta.dev) {
     console.log("[Auth Store] Initialized with token:", !!savedAccessToken);
     if (savedAccessToken) {
       console.log("[Auth Store] Token preview:", savedAccessToken.substring(0, 20) + "...");
@@ -232,7 +232,11 @@ export const useAuthStore = defineStore("auth", () => {
 
   const fetchUser = async () => {
     isLoading.value = true;
-    console.log("[Auth] Fetching user...");
+    
+    // Only log in development
+    if (import.meta.dev) {
+      console.log("[Auth] Fetching user...");
+    }
 
     try {
       // Try cookie-based auth first (for Google OAuth users)
@@ -248,18 +252,23 @@ export const useAuthStore = defineStore("auth", () => {
 
         if (response.success && response.data) {
           user.value = response.data.user;
-          console.log("[Auth] User fetched successfully (cookie):", user.value.email);
+          if (import.meta.dev) {
+            console.log("[Auth] User fetched successfully (cookie):", user.value.email);
+          }
           return { success: true, user: response.data.user };
         }
       } catch (cookieError: any) {
-        console.log("[Auth] Cookie-based auth failed:", cookieError.status, cookieError.message);
+        // Cookie auth failed - this is expected for token-based users
+        // Only log in development to reduce console noise in production
+        if (import.meta.dev) {
+          console.log("[Auth] Cookie-based auth failed:", cookieError.status);
+        }
 
         // Fallback to token-based auth (for email/password users)
         if (accessToken.value) {
-          console.log(
-            "[Auth] Cookie auth failed, trying token:",
-            accessToken.value.substring(0, 20) + "..."
-          );
+          if (import.meta.dev) {
+            console.log("[Auth] Cookie auth failed, trying token...");
+          }
           const response = await $fetch(`${getApiUrl()}/me-token`, {
             headers: {
               Authorization: `Bearer ${accessToken.value}`,
@@ -268,29 +277,31 @@ export const useAuthStore = defineStore("auth", () => {
 
           if (response.success && response.data) {
             user.value = response.data.user;
-            console.log("[Auth] User fetched successfully (token):", user.value.email);
-            
-            // Merge guest wishlist if user just authenticated (e.g., after Google OAuth redirect)
-            if (import.meta.client && !authStore.isInitialized) {
-              const { useWishlist } = await import("~/stores/useWishlist");
-              const wishlistStore = useWishlist();
-              await wishlistStore.mergeWithBackend();
+            if (import.meta.dev) {
+              console.log("[Auth] User fetched successfully (token):", user.value.email);
             }
             
             return { success: true, user: response.data.user };
           }
         } else {
           // No token and cookie failed - user is not authenticated
-          console.log("[Auth] No token and cookie auth failed - user not authenticated");
+          if (import.meta.dev) {
+            console.log("[Auth] No token and cookie auth failed - user not authenticated");
+          }
           throw cookieError;
         }
       }
     } catch (error: any) {
-      console.error("[Auth] Fetch user error:", error);
+      // Only log errors in development, or if it's not a 401 (expected during auth flow)
+      if (import.meta.dev || error.status !== 401) {
+        console.error("[Auth] Fetch user error:", error);
+      }
 
       // If token is invalid, try to refresh
       if (error.status === 401 && refreshToken.value) {
-        console.log("[Auth] Token expired, attempting refresh...");
+        if (import.meta.dev) {
+          console.log("[Auth] Token expired, attempting refresh...");
+        }
         const refreshed = await refreshAccessToken();
         if (refreshed) {
           return await fetchUser();
@@ -300,7 +311,9 @@ export const useAuthStore = defineStore("auth", () => {
       // If refresh failed or no token, clear user but don't logout (cookie might still be valid)
       // Only logout if we're sure there's no valid auth
       if (error.status === 401 && !refreshToken.value) {
-        console.log("[Auth] No valid auth found, clearing user state");
+        if (import.meta.dev) {
+          console.log("[Auth] No valid auth found, clearing user state");
+        }
         user.value = null;
       }
     } finally {
@@ -337,7 +350,9 @@ export const useAuthStore = defineStore("auth", () => {
     if (!accessToken.value) throw new Error("Not authenticated");
 
     isLoading.value = true;
-    console.log("[Auth] Updating profile with data:", data);
+    if (import.meta.dev) {
+      console.log("[Auth] Updating profile with data:", data);
+    }
 
     try {
       const response = await $fetch(`${getApiUrl()}/profile`, {
@@ -348,11 +363,15 @@ export const useAuthStore = defineStore("auth", () => {
         body: data,
       });
 
-      console.log("[Auth] Profile update response:", response);
+      if (import.meta.dev) {
+        console.log("[Auth] Profile update response:", response);
+      }
 
       if (response.success && response.data) {
         user.value = response.data.user;
-        console.log("[Auth] User state updated:", user.value);
+        if (import.meta.dev) {
+          console.log("[Auth] User state updated:", user.value);
+        }
         return { success: true, user: response.data.user };
       }
 

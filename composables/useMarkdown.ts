@@ -40,7 +40,9 @@ const initializeMarkdown = async (): Promise<void> => {
         throw new Error("DOMPurify not found");
       }
       
-      console.log("✅ Markdown-it and DOMPurify initialized");
+      if (import.meta.dev) {
+        console.log("✅ Markdown-it and DOMPurify initialized");
+      }
     } catch (error) {
       console.error("❌ Error initializing markdown libraries:", error);
       mdInstance = null;
