@@ -139,7 +139,7 @@
                 class="form-input"
                 readonly
                 disabled
-              >
+              />
             </div>
 
             <div class="form-group">
@@ -151,7 +151,7 @@
                 placeholder="Минимум 6 символа"
                 required
                 minlength="6"
-              >
+              />
             </div>
 
             <div class="form-group">
@@ -162,7 +162,7 @@
                 class="form-input"
                 placeholder="Повторете паролата"
                 required
-              >
+              />
             </div>
 
             <div v-if="accountError" class="account-error">

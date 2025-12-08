@@ -162,16 +162,22 @@
               <div class="pdp-price">
                 <span class="pdp-price__current">{{ formatPrice(currentPrice) }}</span>
                 <span
-                  v-if="product.compareAt && product.compareAt > currentPrice"
+                  v-if="
+                    (product.compareAt || product.originalPrice) &&
+                    (product.compareAt || product.originalPrice) > currentPrice
+                  "
                   class="pdp-price__old"
-                  >{{ formatPrice(product.compareAt) }}</span
+                  >{{ formatPrice(product.compareAt || product.originalPrice) }}</span
                 >
                 <span
-                  v-if="product.compareAt && product.compareAt > currentPrice"
+                  v-if="
+                    (product.compareAt || product.originalPrice) &&
+                    (product.compareAt || product.originalPrice) > currentPrice
+                  "
                   class="pdp-price__badge"
                 >
                   Спести
-                  {{ Math.round(((product.compareAt - currentPrice) / product.compareAt) * 100) }}%
+                  {{ saveAmount.toFixed(2) }} лв
                 </span>
               </div>
 
@@ -599,6 +605,7 @@ interface Product {
   description: string;
   price: number;
   compareAt?: number | null;
+  originalPrice?: number | null;
   category:
     | string
     | {
@@ -693,10 +700,31 @@ const isNew = computed(() => {
   return diffDays <= 7; // 1 week
 });
 
+const isSale = computed(() => {
+  if (!product.value) return false;
+  const originalPrice = product.value.compareAt || product.value.originalPrice;
+  return originalPrice != null && originalPrice > currentPrice.value;
+});
+
+const savePercent = computed(() => {
+  if (!product.value) return 0;
+  const originalPrice = product.value.compareAt || product.value.originalPrice;
+  if (!originalPrice || originalPrice <= currentPrice.value) return 0;
+  return Math.round(100 - (currentPrice.value / originalPrice) * 100);
+});
+
+const saveAmount = computed(() => {
+  if (!product.value) return 0;
+  const originalPrice = product.value.compareAt || product.value.originalPrice;
+  if (!originalPrice || originalPrice <= currentPrice.value) return 0;
+  return originalPrice - currentPrice.value;
+});
+
 const badges = computed(() => {
   const arr: Array<{ key: string; label: string }> = [];
   if (isNew.value) arr.push({ key: "new", label: "Ново" });
   if (product.value?.customEmbroidery) arr.push({ key: "personal", label: "Персонализация" });
+  if (isSale.value) arr.push({ key: "sale", label: `${savePercent.value}% Отстъпка` });
   return arr;
 });
 
@@ -1353,6 +1381,11 @@ onMounted(() => {
   &--personal {
     background: $color-sage;
     color: $brand-ink;
+  }
+
+  &--sale {
+    background: #dc4f3e;
+    color: $color-white;
   }
 }
 

@@ -16,7 +16,17 @@
 
       <!-- Quick View Button -->
       <button class="product-card__quick" @click.stop="$emit('quick-view', product)">
-        Бърз Преглед
+        <span class="product-card__quick-text">Бърз Преглед</span>
+        <svg
+          class="product-card__quick-icon"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+        >
+          <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
+          <circle cx="12" cy="12" r="3" />
+        </svg>
       </button>
 
       <!-- Badges (top-left) -->
@@ -79,8 +89,8 @@
       <div class="product-card__price-wrapper">
         <div class="product-card__price">
           <span class="product-card__price-current">{{ formatPrice(product.price) }}</span>
-          <span v-if="product.compareAt" class="product-card__price-old">
-            {{ formatPrice(product.compareAt) }}
+          <span v-if="product.compareAt || product.originalPrice" class="product-card__price-old">
+            {{ formatPrice(product.compareAt || product.originalPrice) }}
           </span>
         </div>
         <!-- Heart/Wishlist Icon -->
@@ -176,12 +186,15 @@ const isNew = computed(() => {
 });
 
 const isSale = computed(() => {
-  return props.product.compareAt != null && props.product.compareAt > props.product.price;
+  const originalPrice = props.product.compareAt || props.product.originalPrice;
+  return originalPrice != null && originalPrice > props.product.price;
 });
 
 const savePercent = computed(() => {
-  if (!props.product.compareAt) return 0;
-  return Math.round(100 - (props.product.price / props.product.compareAt) * 100);
+  // Use compareAt if available, otherwise use originalPrice (from discount system)
+  const originalPrice = props.product.compareAt || props.product.originalPrice;
+  if (!originalPrice || originalPrice <= props.product.price) return 0;
+  return Math.round(100 - (props.product.price / originalPrice) * 100);
 });
 
 const formatPrice = (price?: number | null) => {
@@ -373,32 +386,47 @@ const getColorHexValue = (color: string | ColorObject | null | undefined): strin
     transition: color 0.2s ease;
   }
 
-  // Quick View Button (appears on hover on desktop, always visible on mobile)
+  // Quick View Button
   &__quick {
     position: absolute;
-    left: 0;
-    right: 0;
-    bottom: 0;
+    z-index: 10;
+    cursor: pointer;
+    transition: all 0.25s ease;
+    border: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+
+    // Mobile: Small icon button in bottom-right corner
+    bottom: 0.75rem;
+    right: 0.75rem;
+    width: 44px;
+    height: 44px;
     background: rgba(255, 255, 255, 0.95);
     color: $brand-ink;
-    border: none;
-    border-top: 1px solid $border-base;
-    padding: 0.75rem 1rem;
-    font-weight: 600;
-    font-family: $font-body;
-    font-size: 0.8125rem;
-    letter-spacing: 0.05em;
-    text-transform: uppercase;
-    transition: all 0.25s ease;
-    cursor: pointer;
-    z-index: 10;
-
-    // Always visible on mobile/tablet (touch devices)
-    transform: translateY(0);
+    border-radius: 50%;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
     opacity: 1;
+    transform: scale(1);
 
-    // Hidden by default on desktop, shown on hover
+    // Desktop: Full-width button at bottom (appears on hover)
     @media (hover: hover) and (pointer: fine) {
+      left: 0;
+      right: 0;
+      bottom: 0;
+      width: auto;
+      height: auto;
+      border-radius: 0;
+      box-shadow: none;
+      background: rgba(255, 255, 255, 0.95);
+      border-top: 1px solid $border-base;
+      padding: 0.75rem 1rem;
+      font-weight: 600;
+      font-family: $font-body;
+      font-size: 0.8125rem;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
       transform: translateY(100%);
       opacity: 0;
     }
@@ -406,12 +434,38 @@ const getColorHexValue = (color: string | ColorObject | null | undefined): strin
     &:hover {
       background: $brand-ink;
       color: $color-white;
+      transform: scale(1.1);
+
+      @media (hover: hover) and (pointer: fine) {
+        transform: translateY(0);
+      }
     }
 
-    // Active state for touch devices
     &:active {
-      background: $brand-ink;
-      color: $color-white;
+      transform: scale(0.95);
+
+      @media (hover: hover) and (pointer: fine) {
+        transform: translateY(0);
+      }
+    }
+  }
+
+  &__quick-text {
+    display: none;
+
+    @media (hover: hover) and (pointer: fine) {
+      display: inline;
+    }
+  }
+
+  &__quick-icon {
+    width: 20px;
+    height: 20px;
+    flex-shrink: 0;
+    stroke: currentColor;
+
+    @media (hover: hover) and (pointer: fine) {
+      display: none;
     }
   }
 
