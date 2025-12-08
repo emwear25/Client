@@ -125,10 +125,43 @@ export const useAuthStore = defineStore("auth", () => {
         return { success: true, user: response.data.user };
       }
 
-      throw new Error(response.message || "Registration failed");
+      throw new Error(response.message || "Грешка при регистрация");
     } catch (error: any) {
       console.error("Registration error:", error);
-      throw new Error(error.data?.message || error.message || "Registration failed");
+      
+      // Detect network errors (server down, connection issues)
+      const errorMessage = error.message || "";
+      const isNetworkError =
+        errorMessage.includes("Failed to fetch") ||
+        errorMessage.includes("NetworkError") ||
+        errorMessage.includes("Network request failed") ||
+        errorMessage.includes("fetch failed") ||
+        error.name === "TypeError" ||
+        !error.status ||
+        error.status === 0;
+
+      if (isNetworkError) {
+        throw new Error(
+          "Сървърът не е достъпен в момента. Моля проверете интернет връзката си и опитайте отново по-късно."
+        );
+      }
+
+      // Handle server error responses
+      if (error.data?.message) {
+        throw new Error(error.data.message);
+      }
+
+      // Handle status code errors
+      if (error.status === 401 || error.statusCode === 401) {
+        throw new Error("Невалидни данни за регистрация");
+      }
+
+      if (error.status === 500 || error.statusCode === 500) {
+        throw new Error("Възникна грешка на сървъра. Моля опитайте отново по-късно.");
+      }
+
+      // Default error message
+      throw new Error(error.message || "Грешка при регистрация. Моля опитайте отново.");
     } finally {
       isLoading.value = false;
     }
@@ -160,10 +193,43 @@ export const useAuthStore = defineStore("auth", () => {
         return { success: true, user: response.data.user };
       }
 
-      throw new Error(response.message || "Login failed");
+      throw new Error(response.message || "Грешка при влизане");
     } catch (error: any) {
       console.error("Login error:", error);
-      throw new Error(error.data?.message || error.message || "Login failed");
+      
+      // Detect network errors (server down, connection issues)
+      const errorMessage = error.message || "";
+      const isNetworkError =
+        errorMessage.includes("Failed to fetch") ||
+        errorMessage.includes("NetworkError") ||
+        errorMessage.includes("Network request failed") ||
+        errorMessage.includes("fetch failed") ||
+        error.name === "TypeError" ||
+        !error.status ||
+        error.status === 0;
+
+      if (isNetworkError) {
+        throw new Error(
+          "Сървърът не е достъпен в момента. Моля проверете интернет връзката си и опитайте отново по-късно."
+        );
+      }
+
+      // Handle server error responses
+      if (error.data?.message) {
+        throw new Error(error.data.message);
+      }
+
+      // Handle status code errors
+      if (error.status === 401 || error.statusCode === 401) {
+        throw new Error("Невалиден имейл или парола");
+      }
+
+      if (error.status === 500 || error.statusCode === 500) {
+        throw new Error("Възникна грешка на сървъра. Моля опитайте отново по-късно.");
+      }
+
+      // Default error message
+      throw new Error(error.message || "Грешка при влизане. Моля опитайте отново.");
     } finally {
       isLoading.value = false;
     }

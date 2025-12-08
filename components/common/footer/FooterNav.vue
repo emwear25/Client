@@ -13,6 +13,22 @@
           />
         </NuxtLink>
         <p class="footer-nav__desc">Персонализирани подаръци с грижа и стил.</p>
+
+        <!-- Payment Methods -->
+        <div class="footer-nav__payments">
+          <span class="footer-nav__payments-text">Приемаме:</span>
+          <div class="footer-nav__payment-icons">
+            <div class="footer-nav__payment-icon" title="VISA">
+              <img src="/img/payments/visa.png" alt="VISA" />
+            </div>
+            <div class="footer-nav__payment-icon" title="Mastercard">
+              <img src="/img/payments/card.png" alt="Mastercard" />
+            </div>
+            <div class="footer-nav__payment-icon" title="Apple Pay">
+              <img src="/img/payments/apple-pay.png" alt="Apple Pay" />
+            </div>
+          </div>
+        </div>
       </div>
       <div class="footer-nav__section">
         <h3 class="footer-nav__heading">Колекция</h3>
@@ -130,6 +146,52 @@ const companyLinks: NavigationLink[] = [
     line-height: 1.7;
     margin: 0;
     max-width: 280px;
+    margin-bottom: 2.5rem;
+  }
+
+  &__payments {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    margin-top: 0.5rem;
+  }
+
+  &__payments-text {
+    font-family: $font-body;
+    font-weight: 400;
+    font-size: 0.875rem;
+    color: rgba($color-white, 0.7);
+    white-space: nowrap;
+  }
+
+  &__payment-icons {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+  }
+
+  &__payment-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 50px;
+    height: 33px;
+    background: rgba($color-white, 0.1);
+    border-radius: 4px;
+    padding: 4px;
+    transition: transform 0.2s ease;
+
+    img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      display: block;
+    }
+
+    &:hover {
+      transform: scale(1.05);
+      background: rgba($color-white, 0.15);
+    }
   }
 
   &__heading {
