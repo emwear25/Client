@@ -13,8 +13,8 @@
       <div class="testimonials__carousel-wrapper">
         <Swiper
           :modules="modules"
-          :slides-per-view="1"
-          :space-between="24"
+          :slides-per-view="1.15"
+          :space-between="16"
           :loop="true"
           :autoplay="{
             delay: 5000,
@@ -22,6 +22,10 @@
             pauseOnMouseEnter: true,
           }"
           :breakpoints="{
+            480: {
+              slidesPerView: 1.25,
+              spaceBetween: 20,
+            },
             640: {
               slidesPerView: 1.5,
               spaceBetween: 24,
@@ -201,7 +205,7 @@ const testimonials: Testimonial[] = [
     width: 100%;
     max-width: 1610px;
     margin: 0 auto;
-    padding: 0 1rem;
+    padding: 0;
     position: relative;
     z-index: 1;
 
@@ -252,10 +256,20 @@ const testimonials: Testimonial[] = [
   &__carousel-wrapper {
     position: relative;
     padding: 1rem 0;
+    margin: 0 1rem;
+
+    @include up(md) {
+      margin: 0;
+    }
   }
 
   &__swiper {
     overflow: visible;
+    padding: 0 0.5rem;
+
+    @include up(md) {
+      padding: 0;
+    }
   }
 
   &__slide {
