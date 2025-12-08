@@ -160,25 +160,30 @@
 
               <!-- Price -->
               <div class="pdp-price">
-                <span class="pdp-price__current">{{ formatPrice(currentPrice) }}</span>
-                <span
-                  v-if="
-                    (product.compareAt || product.originalPrice) &&
-                    (product.compareAt || product.originalPrice) > currentPrice
-                  "
-                  class="pdp-price__old"
-                  >{{ formatPrice(product.compareAt || product.originalPrice) }}</span
-                >
-                <span
-                  v-if="
-                    (product.compareAt || product.originalPrice) &&
-                    (product.compareAt || product.originalPrice) > currentPrice
-                  "
-                  class="pdp-price__badge"
-                >
-                  Спести
-                  {{ saveAmount.toFixed(2) }} лв
-                </span>
+                <div class="pdp-price__main">
+                  <span class="pdp-price__current">{{ formatPrice(currentPrice) }}</span>
+                  <span class="pdp-price__vat">(вкл. 20% ДДС)</span>
+                </div>
+                <div class="pdp-price__discount">
+                  <span
+                    v-if="
+                      (product.compareAt || product.originalPrice) &&
+                      (product.compareAt || product.originalPrice) > currentPrice
+                    "
+                    class="pdp-price__old"
+                    >{{ formatPrice(product.compareAt || product.originalPrice) }}</span
+                  >
+                  <span
+                    v-if="
+                      (product.compareAt || product.originalPrice) &&
+                      (product.compareAt || product.originalPrice) > currentPrice
+                    "
+                    class="pdp-price__badge"
+                  >
+                    Спести
+                    {{ saveAmount.toFixed(2) }} лв
+                  </span>
+                </div>
               </div>
 
               <!-- Stock Status -->
@@ -1464,6 +1469,32 @@ onMounted(() => {
 }
 
 /* Price */
+.pdp-price {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.pdp-price__main {
+  display: flex;
+  align-items: baseline;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.pdp-price__vat {
+  font-size: 0.875rem;
+  color: $text-secondary;
+  font-weight: 400;
+}
+
+.pdp-price__discount {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
 .pdp-price {
   display: flex;
   align-items: baseline;
