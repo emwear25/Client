@@ -16,6 +16,9 @@
 
     <!-- Cart Drawer -->
     <CartDrawer />
+
+    <!-- Snow Effect -->
+    <SnowEffect />
   </div>
 </template>
 
