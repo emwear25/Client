@@ -5,17 +5,9 @@
         <!-- Image Side -->
         <div class="meet-maker__visual">
           <div class="meet-maker__image-wrapper">
-            <NuxtImg
-              src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=600&h=700&fit=crop&crop=faces"
-              alt="Севал - Създател на emWear"
-              class="meet-maker__image"
-              format="webp"
-              quality="80"
-              width="600"
-              height="700"
-              loading="lazy"
-              placeholder
-            />
+            <div class="meet-maker__avatar">
+              <span class="meet-maker__avatar-initial">С</span>
+            </div>
             <div class="meet-maker__image-decoration" />
           </div>
           <div class="meet-maker__badge">
@@ -159,29 +151,49 @@
     position: relative;
     width: 100%;
     max-width: 480px;
-    aspect-ratio: 6 / 7;
-    border-radius: 24px;
-    overflow: hidden;
-    box-shadow: 0 20px 50px rgba($brand-ink, 0.2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
 
-    &::before {
-      content: "";
-      position: absolute;
-      inset: 0;
-      background: linear-gradient(135deg, rgba($brand, 0.2) 0%, transparent 60%);
-      z-index: 1;
-      pointer-events: none;
+  &__avatar {
+    width: 320px;
+    height: 320px;
+    background: linear-gradient(135deg, $brand 0%, $brand-accent-1 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 20px 50px rgba($brand-ink, 0.2);
+    transition: transform 0.6s ease;
+
+    @include up(md) {
+      width: 400px;
+      height: 400px;
+    }
+
+    @include up(lg) {
+      width: 480px;
+      height: 480px;
     }
   }
 
-  &__image {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    transition: transform 0.6s ease;
+  &__avatar-initial {
+    font-family: $font-heading;
+    font-size: 8rem;
+    font-weight: 700;
+    color: $color-white;
+    letter-spacing: 0.02em;
+
+    @include up(md) {
+      font-size: 10rem;
+    }
+
+    @include up(lg) {
+      font-size: 12rem;
+    }
   }
 
-  &__image-wrapper:hover &__image {
+  &__image-wrapper:hover &__avatar {
     transform: scale(1.05);
   }
 

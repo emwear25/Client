@@ -16,7 +16,7 @@
           </p>
           <div class="our-story__stats">
             <div class="our-story__stat">
-              <span class="our-story__stat-number">2000+</span>
+              <span class="our-story__stat-number">500+</span>
               <span class="our-story__stat-label">Щастливи клиенти</span>
             </div>
             <div class="our-story__stat">
@@ -27,17 +27,7 @@
         </div>
         <div class="our-story__image">
           <div class="our-story__img-wrapper">
-            <NuxtImg
-              src="https://images.unsplash.com/photo-1556911220-bff31c812dba?w=800&h=600&fit=crop"
-              alt="Нашата история"
-              class="our-story__img"
-              format="webp"
-              quality="80"
-              width="800"
-              height="600"
-              loading="lazy"
-              placeholder
-            />
+            <img src="/logo-dark.png" alt="emWear Logo" class="our-story__img" loading="lazy" />
             <div class="our-story__img-overlay" />
           </div>
         </div>
@@ -198,7 +188,11 @@
   &__img {
     width: 100%;
     height: auto;
+    max-width: 400px;
+    margin: 0 auto;
     display: block;
+    object-fit: contain;
+    padding: 2rem;
     transition: transform 0.6s ease;
   }
 

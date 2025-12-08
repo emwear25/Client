@@ -86,7 +86,7 @@ const handleSubmit = async () => {
 .newsletter {
   width: 100%;
   padding: 4rem 0;
-  background: $grad-brand-a;
+  background: transparent;
   position: relative;
   overflow: hidden;
 
@@ -98,49 +98,24 @@ const handleSubmit = async () => {
     padding: 6rem 0;
   }
 
-  // Decorative elements
-  &::before {
-    content: "";
-    position: absolute;
-    top: -50%;
-    right: -10%;
-    width: 400px;
-    height: 400px;
-    background: radial-gradient(circle, rgba($brand, 0.15) 0%, transparent 70%);
-    border-radius: 50%;
-    pointer-events: none;
-  }
-
-  &::after {
-    content: "";
-    position: absolute;
-    bottom: -30%;
-    left: -5%;
-    width: 300px;
-    height: 300px;
-    background: radial-gradient(circle, rgba($brand-ink, 0.08) 0%, transparent 70%);
-    border-radius: 50%;
-    pointer-events: none;
-  }
-
   &__container {
-    max-width: 1035px;
+    width: 100%;
+    max-width: 1610px;
     margin: 0 auto;
-    padding: 0 16px;
+    padding: 0 1rem;
     position: relative;
     z-index: 1;
 
     @include up(md) {
-      padding: 0 24px;
+      padding: 0 2rem;
     }
   }
 
   &__content {
     background: $bg-card;
-    border-radius: 20px;
-    border: 2px solid $brand;
+    border: 1px solid $border-base;
     padding: 2.5rem 1.5rem;
-    box-shadow: 0 12px 32px rgba($brand-ink, 0.12);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
     text-align: center;
 
     @include up(md) {
@@ -156,27 +131,26 @@ const handleSubmit = async () => {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    width: 80px;
-    height: 80px;
-    background: $grad-brand-b;
-    border-radius: 50%;
-    box-shadow: 0 8px 20px rgba($brand, 0.3);
+    width: 64px;
+    height: 64px;
+    background: linear-gradient(135deg, $brand 0%, $brand-accent-1 100%);
+    box-shadow: 0 4px 12px rgba($brand, 0.2);
     margin: 0 auto;
 
     @include up(md) {
-      width: 96px;
-      height: 96px;
+      width: 80px;
+      height: 80px;
     }
   }
 
   &__icon {
-    width: 40px;
-    height: 40px;
+    width: 32px;
+    height: 32px;
     color: $color-white;
 
     @include up(md) {
-      width: 48px;
-      height: 48px;
+      width: 40px;
+      height: 40px;
     }
   }
 
@@ -240,14 +214,14 @@ const handleSubmit = async () => {
     height: 20px;
     color: $text-secondary;
     pointer-events: none;
+    z-index: 1;
   }
 
   &__input {
     font-family: $font-body;
     font-size: 1rem;
     padding: 14px 16px 14px 48px;
-    border: 2px solid $border-base;
-    border-radius: 10px;
+    border: 1px solid $border-base;
     outline: none;
     transition: all 0.2s ease;
     width: 100%;
@@ -260,11 +234,11 @@ const handleSubmit = async () => {
 
     &:focus {
       border-color: $brand;
-      box-shadow: 0 0 0 4px rgba($brand, 0.15);
+      box-shadow: 0 0 0 3px rgba($brand, 0.1);
       background: $color-white;
     }
 
-    &:focus + .newsletter__input-icon {
+    &:focus ~ .newsletter__input-icon {
       color: $brand;
     }
   }

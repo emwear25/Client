@@ -5,143 +5,175 @@
         <span class="testimonials__eyebrow">Отзиви</span>
         <h2 class="testimonials__heading">Какво казват нашите клиенти</h2>
         <p class="testimonials__intro">
-          Радваме се да споделим историите на хората, които избраха да направят своите моменти
-          специални с emWear
+          Доверието и удовлетворението на нашите клиенти е най-важното за нас
         </p>
       </div>
 
-      <div class="testimonials__grid">
-        <article v-for="testimonial in testimonials" :key="testimonial.id" class="testimonial-card">
-          <div class="testimonial-card__header">
-            <div class="testimonial-card__avatar">
-              <NuxtImg
-                :src="testimonial.avatar"
-                :alt="testimonial.name"
-                class="testimonial-card__avatar-img"
-                format="webp"
-                quality="75"
-                width="56"
-                height="56"
-                loading="lazy"
-                placeholder
-              />
-            </div>
-            <div class="testimonial-card__info">
-              <h3 class="testimonial-card__name">{{ testimonial.name }}</h3>
-              <div class="testimonial-card__meta">
-                <span class="testimonial-card__product">{{ testimonial.product }}</span>
-                <span class="testimonial-card__separator">•</span>
-                <span class="testimonial-card__date">{{ testimonial.date }}</span>
+      <!-- Sliding Carousel -->
+      <div class="testimonials__carousel-wrapper">
+        <Swiper
+          :modules="modules"
+          :slides-per-view="1"
+          :space-between="24"
+          :loop="true"
+          :autoplay="{
+            delay: 5000,
+            disableOnInteraction: false,
+            pauseOnMouseEnter: true,
+          }"
+          :breakpoints="{
+            640: {
+              slidesPerView: 1.5,
+              spaceBetween: 24,
+            },
+            768: {
+              slidesPerView: 2,
+              spaceBetween: 24,
+            },
+            1024: {
+              slidesPerView: 2.5,
+              spaceBetween: 32,
+            },
+            1280: {
+              slidesPerView: 3,
+              spaceBetween: 32,
+            },
+          }"
+          :grab-cursor="true"
+          class="testimonials__swiper"
+        >
+          <SwiperSlide
+            v-for="testimonial in testimonials"
+            :key="testimonial.id"
+            class="testimonials__slide"
+          >
+            <article class="testimonial-card">
+              <!-- Header (like social media post) -->
+              <div class="testimonial-card__header">
+                <div class="testimonial-card__avatar">
+                  <span class="testimonial-card__avatar-initial">{{ testimonial.initial }}</span>
+                </div>
+                <div class="testimonial-card__info">
+                  <h3 class="testimonial-card__name">{{ testimonial.name }}</h3>
+                  <span class="testimonial-card__date">{{ testimonial.date }}</span>
+                </div>
+                <div class="testimonial-card__rating">
+                  <Icon
+                    v-for="star in 5"
+                    :key="star"
+                    name="mdi:star"
+                    class="testimonial-card__star"
+                  />
+                </div>
               </div>
-            </div>
-          </div>
 
-          <div class="testimonial-card__rating">
-            <Icon
-              v-for="star in 5"
-              :key="star"
-              name="mdi:star"
-              class="testimonial-card__star"
-              :class="{
-                'testimonial-card__star--filled': star <= testimonial.rating,
-              }"
-            />
-          </div>
+              <!-- Content -->
+              <div class="testimonial-card__content">
+                <p class="testimonial-card__text">{{ testimonial.text }}</p>
+              </div>
 
-          <blockquote class="testimonial-card__quote">
-            <Icon name="mdi:format-quote-open" class="testimonial-card__quote-icon" />
-            <p class="testimonial-card__text">{{ testimonial.text }}</p>
-          </blockquote>
-
-          <div v-if="testimonial.verified" class="testimonial-card__footer">
-            <div class="testimonial-card__badge">
-              <Icon name="mdi:check-decagram" class="testimonial-card__badge-icon" />
-              <span class="testimonial-card__badge-text">Потвърдена покупка</span>
-            </div>
-          </div>
-        </article>
-      </div>
-
-      <div class="testimonials__cta">
-        <p class="testimonials__cta-text">Искате да споделите вашето преживяване?</p>
-        <a href="#contact" class="btn btn--ghost">Напишете ни отзив</a>
+              <!-- Source badge -->
+              <div class="testimonial-card__source">
+                <Icon :name="testimonial.sourceIcon" class="testimonial-card__source-icon" />
+                <span class="testimonial-card__source-text">{{ testimonial.source }}</span>
+              </div>
+            </article>
+          </SwiperSlide>
+        </Swiper>
       </div>
     </div>
   </section>
 </template>
 
 <script setup lang="ts">
+import { Swiper, SwiperSlide } from "swiper/vue";
+import { Autoplay } from "swiper/modules";
+import "swiper/css";
+
+const modules = [Autoplay];
+
 interface Testimonial {
   id: number;
   name: string;
-  avatar: string;
-  product: string;
+  initial: string;
   date: string;
-  rating: number;
   text: string;
-  verified: boolean;
+  source: string;
+  sourceIcon: string;
 }
 
 const testimonials: Testimonial[] = [
   {
     id: 1,
-    name: "Мария Петрова",
-    avatar: "https://i.pravatar.cc/150?img=5",
-    product: "Персонализирана раница",
-    date: "Ноември 2024",
-    rating: 5,
-    text: "Страхотно качество и изключително внимание към детайла! Моята дъщеря беше в екстаз от раницата с нейното име. Бродерията е перфектна и цветовете са точно такива, каквито поисках. Препоръчвам топло!",
-    verified: true,
+    name: "Кристина Стефанова",
+    initial: "КС",
+    date: "24 септември 2025",
+    text: "Раничките са прекрасни! Много ви благодаря!",
+    source: "Instagram",
+    sourceIcon: "mdi:instagram",
   },
   {
     id: 2,
-    name: "Георги Иванов",
-    avatar: "https://i.pravatar.cc/150?img=12",
-    product: "Персонализирана тениска",
-    date: "Октомври 2024",
-    rating: 5,
-    text: "Поръчах тениска за рождения ден на сина ми и резултатът надмина всички очаквания! Севал беше изключително отзивчива и ми помогна да избера най-добрия дизайн. Перфектен подарък!",
-    verified: true,
+    name: "Виктория Иванова",
+    initial: "ВИ",
+    date: "12 септември 2025",
+    text: "Вчера успях да видя раничката и супер много ми хареса, отново ви благодаря, че я направихте каквато исках да е!",
+    source: "Messenger",
+    sourceIcon: "mdi:facebook-messenger",
   },
   {
     id: 3,
-    name: "Елена Димитрова",
-    avatar: "https://i.pravatar.cc/150?img=9",
-    product: "Комплект раница + несесер",
-    date: "Септември 2024",
-    rating: 5,
-    text: "Невероятни продукти! Комплектът е толкова красив и качествен. Бродерията е изпълнена прецизно и изглежда толкова професионално. Определено ще поръчам отново за подаръци!",
-    verified: true,
+    name: "Боряна Манушева",
+    initial: "БМ",
+    date: "21 август 2025",
+    text: "Благодаря за прекрасните ранички, децата са много доволни и щастливи!",
+    source: "Instagram",
+    sourceIcon: "mdi:instagram",
   },
   {
     id: 4,
-    name: "Иван Стоянов",
-    avatar: "https://i.pravatar.cc/150?img=15",
-    product: "Персонализирана кърпа",
-    date: "Август 2024",
-    rating: 5,
-    text: "Много доволен от покупката! Кърпата е с отлично качество, а името е бродирано много красиво. Идеална за плажа и басейна. Благодаря за прекрасната работа!",
-    verified: true,
+    name: "Сашка Илиева",
+    initial: "СИ",
+    date: "20 август 2025",
+    text: "Взех раничката, много е хубава, а пратката беше много красиво опакована! Благодаря!",
+    source: "Messenger",
+    sourceIcon: "mdi:facebook-messenger",
   },
   {
     id: 5,
-    name: "Десислава Георгиева",
-    avatar: "https://i.pravatar.cc/150?img=16",
-    product: "Детска блуза с име",
-    date: "Юли 2024",
-    rating: 5,
-    text: "Много съм впечатлена от качеството! Блузата е много мека и удобна, а бродерията изглежда страхотно. Дъщеря ми я обича и иска да я носи всеки ден. Браво!",
-    verified: true,
+    name: "Надя Попова",
+    initial: "НП",
+    date: "5 юли 2025",
+    text: "Днес взех раничката. Прекрасна е! Благодаря!",
+    source: "Instagram",
+    sourceIcon: "mdi:instagram",
   },
   {
     id: 6,
-    name: "Николай Василев",
-    avatar: "https://i.pravatar.cc/150?img=13",
-    product: "Персонализиран суитчър",
-    date: "Юни 2024",
-    rating: 5,
-    text: "Поръчах суитчър за племенника си и той беше в чист възторг! Качеството е отлично, а доставката беше бърза. Със сигурност ще препоръчам на приятели и роднини!",
-    verified: true,
+    name: "Теодора В. Митева",
+    initial: "ТМ",
+    date: "13 юни 2025",
+    text: "Получих раничката, Уникална е, а вие сте просто страхотни в изработката и бързината",
+    source: "Messenger",
+    sourceIcon: "mdi:facebook-messenger",
+  },
+  {
+    id: 7,
+    name: "Лорита Фидосиева",
+    initial: "ЛФ",
+    date: "24 май 2025",
+    text: "Раничката ни е супер, излизаме и събираме погледите! Благодаря ви от Сърце",
+    source: "Instagram",
+    sourceIcon: "mdi:instagram",
+  },
+  {
+    id: 8,
+    name: "Лидия Кондова",
+    initial: "ЛК",
+    date: "16 август 2025",
+    text: "С голяма радост пиша, тези редове. Прекрасно е, когато си поръчаш нещо, а то е още по-красиви и качествено от това, което си очаквал. Първо да Благодаря за личното отношение. Второ за времето, което отделихте да ми изработите шрифт, който исках. Трето, но не на последно място за бързата реакция. Благодаря за прекрасната емоция Габи, Албена и Теди са безкрайно щастливи!",
+    source: "Messenger",
+    sourceIcon: "mdi:facebook-messenger",
   },
 ];
 </script>
@@ -153,7 +185,7 @@ const testimonials: Testimonial[] = [
 
 .testimonials {
   padding: 4rem 0;
-  background: $bg-page;
+  background: transparent;
   position: relative;
   overflow: hidden;
 
@@ -165,43 +197,22 @@ const testimonials: Testimonial[] = [
     padding: 6rem 0;
   }
 
-  // Decorative elements
-  &::before {
-    content: "";
-    position: absolute;
-    top: -15%;
-    right: -8%;
-    width: 400px;
-    height: 400px;
-    background: radial-gradient(circle, rgba($brand-accent-2, 0.12) 0%, transparent 70%);
-    border-radius: 50%;
-    pointer-events: none;
-  }
-
   &__container {
     width: 100%;
-    margin-inline: auto;
-    padding-inline: 16px;
+    max-width: 1610px;
+    margin: 0 auto;
+    padding: 0 1rem;
     position: relative;
     z-index: 1;
 
     @include up(md) {
-      max-width: 1104px;
-      padding-inline: 20px;
-    }
-    @include up(lg) {
-      max-width: 1472px;
-      padding-inline: 24px;
-    }
-    @include up(xl) {
-      max-width: 1656px;
-      padding-inline: 32px;
+      padding: 0 2rem;
     }
   }
 
   &__header {
     text-align: center;
-    max-width: 828px;
+    max-width: 700px;
     margin: 0 auto 3rem;
 
     @include up(md) {
@@ -238,96 +249,68 @@ const testimonials: Testimonial[] = [
     margin: 0;
   }
 
-  &__grid {
-    display: grid;
-    grid-template-columns: 1fr;
-    gap: 2rem;
-    margin-bottom: 3rem;
-
-    @include up(md) {
-      grid-template-columns: repeat(2, 1fr);
-      gap: 2rem;
-    }
-
-    @include up(lg) {
-      grid-template-columns: repeat(3, 1fr);
-      gap: 2.5rem;
-    }
+  &__carousel-wrapper {
+    position: relative;
+    padding: 1rem 0;
   }
 
-  &__cta {
-    text-align: center;
-    padding: 2.5rem 1.5rem;
-    background: $bg-card;
-    border-radius: 16px;
-    border: 2px dashed $border-base;
-    max-width: 690px;
-    margin: 0 auto;
-
-    @include up(md) {
-      padding: 3rem 2rem;
-    }
+  &__swiper {
+    overflow: visible;
   }
 
-  &__cta-text {
-    font-family: $font-body;
-    font-size: 1.125rem;
-    color: $text-primary;
-    font-weight: 500;
-    margin: 0 0 1.5rem 0;
+  &__slide {
+    height: auto;
   }
 }
 
 .testimonial-card {
   background: $bg-card;
-  padding: 2rem;
-  border-radius: 16px;
-  border: 2px solid $border-base;
-  box-shadow: 0 6px 16px $shadow-soft;
+  border: 1px solid $border-base;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
   display: flex;
   flex-direction: column;
-  gap: 1.25rem;
+  height: 100%;
+  min-height: 200px;
   transition: all 0.3s ease;
-  position: relative;
+  padding: 1.25rem;
 
-  &:hover {
-    transform: translateY(-4px);
-    box-shadow: 0 12px 28px $shadow-med;
-    border-color: $brand;
+  @include up(md) {
+    padding: 1.5rem;
+    min-height: 220px;
   }
 
-  // Decorative corner
-  &::before {
-    content: "";
-    position: absolute;
-    top: 0;
-    right: 0;
-    width: 60px;
-    height: 60px;
-    background: linear-gradient(135deg, transparent 50%, rgba($brand, 0.08) 50%);
-    border-top-right-radius: 14px;
+  &:hover {
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
+    transform: translateY(-2px);
+    border-color: $brand;
   }
 
   &__header {
     display: flex;
-    align-items: center;
-    gap: 1rem;
+    align-items: flex-start;
+    gap: 0.75rem;
+    margin-bottom: 1rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid $border-base;
   }
 
   &__avatar {
-    width: 56px;
-    height: 56px;
-    border-radius: 50%;
-    overflow: hidden;
-    border: 3px solid $brand;
+    width: 40px;
+    height: 40px;
+    background: linear-gradient(135deg, $brand 0%, $brand-accent-1 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
     flex-shrink: 0;
-    box-shadow: 0 4px 12px rgba($brand, 0.2);
+    box-shadow: 0 2px 8px rgba($brand, 0.2);
   }
 
-  &__avatar-img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
+  &__avatar-initial {
+    font-family: $font-heading;
+    font-size: 0.9375rem;
+    font-weight: 600;
+    color: $color-white;
+    letter-spacing: 0.02em;
   }
 
   &__info {
@@ -337,102 +320,70 @@ const testimonials: Testimonial[] = [
 
   &__name {
     font-family: $font-heading;
-    font-size: 1.125rem;
+    font-size: 0.9375rem;
     font-weight: 600;
     color: $brand-ink;
     margin: 0 0 0.25rem 0;
     line-height: 1.3;
   }
 
-  &__meta {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    flex-wrap: wrap;
+  &__date {
     font-family: $font-body;
     font-size: 0.8125rem;
     color: $text-secondary;
-  }
-
-  &__product {
-    font-weight: 500;
-  }
-
-  &__separator {
-    color: $border-base;
-  }
-
-  &__date {
-    color: $text-secondary;
+    display: block;
   }
 
   &__rating {
     display: flex;
-    gap: 4px;
+    gap: 2px;
+    flex-shrink: 0;
+    margin-top: 0.25rem;
   }
 
   &__star {
-    width: 18px;
-    height: 18px;
-    color: $border-base;
-    transition: color 0.2s ease;
-
-    &--filled {
-      color: $brand-accent-3;
-    }
+    width: 14px;
+    height: 14px;
+    color: $brand-accent-3;
+    flex-shrink: 0;
   }
 
-  &__quote {
-    position: relative;
-    margin: 0;
-    padding: 0;
-  }
-
-  &__quote-icon {
-    position: absolute;
-    top: -8px;
-    left: -8px;
-    width: 32px;
-    height: 32px;
-    color: rgba($brand, 0.15);
-    pointer-events: none;
+  &__content {
+    flex: 1;
+    margin-bottom: 1rem;
   }
 
   &__text {
     font-family: $font-body;
-    font-size: 0.9375rem;
+    font-size: 0.875rem;
     color: $text-primary;
-    line-height: 1.7;
+    line-height: 1.6;
     margin: 0;
-    position: relative;
-    z-index: 1;
   }
 
-  &__footer {
-    margin-top: auto;
+  &__source {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
     padding-top: 1rem;
     border-top: 1px solid $border-base;
+    margin-top: auto;
   }
 
-  &__badge {
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    padding: 6px 12px;
-    background: rgba($success, 0.1);
-    border: 1px solid rgba($success, 0.3);
-    border-radius: 20px;
+  &__source-icon {
+    width: 18px;
+    height: 18px;
+    color: $text-secondary;
+    flex-shrink: 0;
+  }
+
+  &__source-text {
     font-family: $font-body;
     font-size: 0.75rem;
-    font-weight: 600;
-    color: $success;
+    color: $text-secondary;
+    font-weight: 500;
     text-transform: uppercase;
-    letter-spacing: 0.03em;
-  }
-
-  &__badge-icon {
-    width: 14px;
-    height: 14px;
+    letter-spacing: 0.05em;
   }
 }
 </style>

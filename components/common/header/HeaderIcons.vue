@@ -143,10 +143,11 @@ watch(
   async (isAuth) => {
     if (import.meta.dev) {
       console.log("[HeaderIcons] Auth state changed:", {
-      isAuthenticated: isAuth,
-      hasUser: !!authStore.user,
-      userEmail: authStore.user?.email,
-    });
+        isAuthenticated: isAuth,
+        hasUser: !!authStore.user,
+        userEmail: authStore.user?.email,
+      });
+    }
 
     // If authenticated but no user, fetch user (shouldn't happen, but safety check)
     if (isAuth && !authStore.user) {

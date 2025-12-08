@@ -4,7 +4,7 @@
     <AboutUsOurStory />
     <AboutUsWhatMakesUsDifferent />
     <AboutUsMeetTheMaker />
-    <AboutUsTestimonials />
+    <Testimonials />
     <AboutUsCallToAction />
   </div>
 </template>
