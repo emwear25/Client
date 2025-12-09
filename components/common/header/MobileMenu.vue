@@ -151,29 +151,12 @@ const emit = defineEmits<{
 // Get current route for active link highlighting
 const route = useRoute();
 
-// Categories state
-const categoriesWithProducts = ref<Category[]>([]);
-
-// Fetch categories with products only
-const fetchCategories = async () => {
-  try {
-    const api = useApi();
-    const response = await api.get<{ success: boolean; data: Category[] }>(
-      "categories?withProductsOnly=true"
-    );
-
-    if (response && response.success) {
-      categoriesWithProducts.value = response.data || [];
-    }
-  } catch (err) {
-    console.error("Error fetching categories:", err);
-    categoriesWithProducts.value = [];
-  }
-};
+// Use shared categories composable to prevent duplicate requests
+const { categories: categoriesWithProducts, fetchCategories } = useCategories();
 
 // Fetch on mount
 onMounted(() => {
-  fetchCategories();
+  fetchCategories(true);
 });
 </script>
 

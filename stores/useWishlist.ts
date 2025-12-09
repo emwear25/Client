@@ -6,6 +6,8 @@ export const useWishlist = defineStore("wishlist", {
   state: () => ({
     ids: [] as string[],
     isSyncing: false,
+    isLoading: false,
+    isLoaded: false,
   }),
 
   getters: {
@@ -19,23 +21,32 @@ export const useWishlist = defineStore("wishlist", {
      */
     async load() {
       if (!import.meta.client) return;
+      
+      // Prevent duplicate loads
+      if (this.isLoading || this.isLoaded) return;
+      
+      this.isLoading = true;
+      try {
+        const authStore = useAuthStore();
 
-      const authStore = useAuthStore();
-
-      // If user is authenticated, load from backend
-      if (authStore.isAuthenticated) {
-        await this.syncFromBackend();
-      } else {
-        // Guest user: load from localStorage
-        const raw = localStorage.getItem("emw_wishlist");
-        if (raw) {
-          try {
-            this.ids = JSON.parse(raw);
-          } catch (e) {
-            console.error("Failed to load wishlist:", e);
-            this.ids = [];
+        // If user is authenticated, load from backend
+        if (authStore.isAuthenticated) {
+          await this.syncFromBackend();
+        } else {
+          // Guest user: load from localStorage
+          const raw = localStorage.getItem("emw_wishlist");
+          if (raw) {
+            try {
+              this.ids = JSON.parse(raw);
+            } catch (e) {
+              console.error("Failed to load wishlist:", e);
+              this.ids = [];
+            }
           }
         }
+        this.isLoaded = true;
+      } finally {
+        this.isLoading = false;
       }
     },
 
@@ -44,6 +55,9 @@ export const useWishlist = defineStore("wishlist", {
      */
     async syncFromBackend() {
       if (!import.meta.client) return;
+      
+      // Prevent duplicate syncs
+      if (this.isSyncing) return;
       
       const authStore = useAuthStore();
       if (!authStore.isAuthenticated) {
@@ -69,6 +83,7 @@ export const useWishlist = defineStore("wishlist", {
           this.ids = response.data;
           // Also update localStorage as backup
           this.persist();
+          this.isLoaded = true;
         }
       } catch (error: any) {
         // Handle 401 errors gracefully - user is not authenticated
@@ -127,6 +142,9 @@ export const useWishlist = defineStore("wishlist", {
         return;
       }
 
+      // Reset loaded flag to allow reload after merge
+      this.isLoaded = false;
+
       // Get guest wishlist from localStorage
       const guestWishlist: string[] = [];
       const raw = localStorage.getItem("emw_wishlist");
@@ -144,6 +162,7 @@ export const useWishlist = defineStore("wishlist", {
       if (guestWishlist.length === 0) {
         // No guest wishlist to merge, just load from backend
         await this.syncFromBackend();
+        this.isLoaded = true;
         return;
       }
 
@@ -156,6 +175,7 @@ export const useWishlist = defineStore("wishlist", {
         if (response?.success && Array.isArray(response.data)) {
           this.ids = response.data;
           this.persist();
+          this.isLoaded = true;
           // Clear guest wishlist from localStorage (now merged)
           localStorage.removeItem("emw_wishlist");
         }
@@ -173,6 +193,7 @@ export const useWishlist = defineStore("wishlist", {
         console.error("Failed to merge wishlist:", error);
         // On error, just load from backend (or localStorage if not authenticated)
         await this.syncFromBackend();
+        this.isLoaded = true;
       }
     },
 

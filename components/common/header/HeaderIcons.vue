@@ -102,7 +102,7 @@ const isMounted = ref(false);
 onMounted(() => {
   isMounted.value = true;
   cartStore.load();
-  wishlistStore.load();
+  // Wishlist is already loaded in cart.client.ts plugin, no need to load again
 });
 
 // Use a computed to check auth state more reliably

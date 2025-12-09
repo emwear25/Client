@@ -111,7 +111,9 @@ const route = useRoute();
 
 // Dropdown state
 const isProductsOpen = ref(false);
-const categoriesWithProducts = ref<Category[]>([]);
+
+// Use shared categories composable to prevent duplicate requests
+const { categories: categoriesWithProducts, fetchCategories } = useCategories();
 
 // Toggle dropdown on mobile/touch devices
 const toggleProductsOnMobile = (event: MouseEvent) => {
@@ -136,26 +138,9 @@ const dropdownItems = computed(() => [
   })),
 ]);
 
-// Fetch categories with products only
-const fetchCategories = async () => {
-  try {
-    const api = useApi();
-    const response = await api.get<{ success: boolean; data: Category[] }>(
-      "categories?withProductsOnly=true"
-    );
-
-    if (response && response.success) {
-      categoriesWithProducts.value = response.data || [];
-    }
-  } catch (err) {
-    console.error("Error fetching categories:", err);
-    categoriesWithProducts.value = [];
-  }
-};
-
 // Fetch on mount
 onMounted(() => {
-  fetchCategories();
+  fetchCategories(true);
 });
 </script>
 

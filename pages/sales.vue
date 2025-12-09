@@ -271,8 +271,7 @@ const openQuickView = (product: Product) => {
 };
 
 onMounted(() => {
-  const wishlist = useWishlist();
-  wishlist.load();
+  // Wishlist is already loaded in cart.client.ts plugin, no need to load again
   fetchProducts();
 });
 </script>

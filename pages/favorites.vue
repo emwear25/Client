@@ -74,7 +74,10 @@ const isQuickViewOpen = ref(false);
 
 // Load wishlist and fetch products
 onMounted(async () => {
-  wishlistStore.load();
+  // Wishlist is already loaded in cart.client.ts plugin, but ensure it's loaded for this page
+  if (!wishlistStore.isLoaded) {
+    await wishlistStore.load();
+  }
   await fetchFavoriteProducts();
 });
 
