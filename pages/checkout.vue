@@ -854,19 +854,33 @@ onMounted(async () => {
     return;
   }
 
-  // Fetch user data if not loaded
-  if (!authStore.user && authStore.accessToken) {
+  // Fetch user data if authenticated (works for both token-based and cookie-based auth)
+  // Check isAuthenticated instead of accessToken to support Google OAuth users
+  if (authStore.isAuthenticated && !authStore.user) {
     await authStore.fetchUser();
   }
 
+  // Populate forms with user profile data if user is authenticated
+  // This ensures saved information from previous orders is always shown
   if (authStore.user) {
-    // Populate form with user data
-    // For authenticated users, always use account email (it's the source of truth)
-    shippingForm.value.email = authStore.user.email || "";
-    // For other fields, use existing form values if present, otherwise use user data
-    shippingForm.value.firstName = shippingForm.value.firstName || authStore.user.firstName || "";
-    shippingForm.value.lastName = shippingForm.value.lastName || authStore.user.lastName || "";
-    shippingForm.value.phone = shippingForm.value.phone || authStore.user.phone || "";
+    // Always populate from user profile if data exists (from previous orders)
+    // Populate both shippingForm and guestForm so data is available regardless of mode
+    if (authStore.user.email) {
+      shippingForm.value.email = authStore.user.email;
+      guestForm.value.email = authStore.user.email;
+    }
+    if (authStore.user.firstName) {
+      shippingForm.value.firstName = authStore.user.firstName;
+      guestForm.value.firstName = authStore.user.firstName;
+    }
+    if (authStore.user.lastName) {
+      shippingForm.value.lastName = authStore.user.lastName;
+      guestForm.value.lastName = authStore.user.lastName;
+    }
+    if (authStore.user.phone) {
+      shippingForm.value.phone = authStore.user.phone;
+      guestForm.value.phone = authStore.user.phone;
+    }
 
     // Load default address if exists
     if (authStore.user.addresses && authStore.user.addresses.length > 0) {
