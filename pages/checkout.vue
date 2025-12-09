@@ -78,7 +78,11 @@
             <!-- Saved Addresses Component (for authenticated users) -->
             <!-- Only show address selection when courier delivery is selected, not for office/automat -->
             <CheckoutSavedAddresses
-              v-if="!isGuest && deliveryMethod === 'courier_address' && authStore.user?.addresses?.length"
+              v-if="
+                !isGuest &&
+                deliveryMethod === 'courier_address' &&
+                authStore.user?.addresses?.length
+              "
               :displayed-addresses="displayedAddresses"
               :selected-address-id="selectedAddressId"
               :has-more-addresses="hasMoreAddresses"
@@ -856,10 +860,13 @@ onMounted(async () => {
   }
 
   if (authStore.user) {
-    shippingForm.value.firstName = authStore.user.firstName || "";
-    shippingForm.value.lastName = authStore.user.lastName || "";
+    // Populate form with user data
+    // For authenticated users, always use account email (it's the source of truth)
     shippingForm.value.email = authStore.user.email || "";
-    shippingForm.value.phone = authStore.user.phone || "";
+    // For other fields, use existing form values if present, otherwise use user data
+    shippingForm.value.firstName = shippingForm.value.firstName || authStore.user.firstName || "";
+    shippingForm.value.lastName = shippingForm.value.lastName || authStore.user.lastName || "";
+    shippingForm.value.phone = shippingForm.value.phone || authStore.user.phone || "";
 
     // Load default address if exists
     if (authStore.user.addresses && authStore.user.addresses.length > 0) {
@@ -1413,6 +1420,37 @@ const handleSubmit = async () => {
   }
 
   try {
+    // Update user profile BEFORE creating order (for both COD and Stripe)
+    // This ensures user info is saved even if order creation fails or redirects
+    if (!isGuest.value && authStore.isAuthenticated && authStore.user) {
+      const needsProfileUpdate =
+        !authStore.user?.firstName ||
+        !authStore.user?.lastName ||
+        !authStore.user?.phone ||
+        authStore.user.firstName !== shippingForm.value.firstName ||
+        authStore.user.lastName !== shippingForm.value.lastName ||
+        authStore.user.phone !== shippingForm.value.phone;
+
+      if (needsProfileUpdate) {
+        console.log("[Checkout] Updating user profile before order creation...");
+        try {
+          await authStore.updateProfile({
+            firstName: shippingForm.value.firstName,
+            lastName: shippingForm.value.lastName,
+            phone: shippingForm.value.phone,
+          });
+          console.log("[Checkout] Profile updated successfully");
+
+          // Refresh user data
+          await authStore.fetchUser();
+          console.log("[Checkout] User data refreshed");
+        } catch (err) {
+          console.error("[Checkout] Failed to update profile:", err);
+          // Don't block order creation if profile update fails
+        }
+      }
+    }
+
     // Check payment method and route accordingly
     if (selectedPaymentMethod.value === "stripe_card") {
       // Handle Stripe checkout (redirects to Stripe)
