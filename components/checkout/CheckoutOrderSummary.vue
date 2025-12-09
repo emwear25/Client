@@ -73,9 +73,7 @@
         class="checkout-order-summary__total-row checkout-order-summary__total-row--highlighted"
       >
         <span>Нова цена:</span>
-        <span class="checkout-order-summary__new-price"
-          >{{ (totalPrice || 0).toFixed(2) }} лв</span
-        >
+        <span class="checkout-order-summary__new-price">{{ (totalPrice || 0).toFixed(2) }} лв</span>
       </div>
 
       <!-- Shipping (informational only - paid on delivery) -->
@@ -96,7 +94,7 @@
       </div>
       <div
         v-if="shippingCost > 0"
-        style="font-size: 0.85rem; color: #666; margin-top: 0.5rem; text-align: center;"
+        style="font-size: 0.85rem; color: #666; margin-top: 0.5rem; text-align: center"
       >
         * Доставката се плаща при получаване
       </div>
@@ -156,9 +154,9 @@ defineEmits<{
   submit: [];
 }>();
 
-// Computed final total (products + shipping for informational purposes)
+// Computed final total (products only, shipping is paid separately on delivery)
 const finalTotal = computed(() => {
-  return (props.totalPrice || 0) + (props.shippingCost || 0);
+  return props.totalPrice || 0;
 });
 </script>
 
@@ -408,4 +406,3 @@ const finalTotal = computed(() => {
   }
 }
 </style>
-
