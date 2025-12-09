@@ -57,3 +57,4 @@ export const useCategories = () => {
     fetchCategories,
   };
 };
+

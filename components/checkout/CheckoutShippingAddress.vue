@@ -1,6 +1,9 @@
 <template>
   <form class="checkout-shipping-address" @submit.prevent="$emit('submit')">
-    <div class="checkout-shipping-address__row checkout-shipping-address__row--names" style="margin-top: 0;">
+    <div
+      class="checkout-shipping-address__row checkout-shipping-address__row--names"
+      style="margin-top: 0"
+    >
       <div class="checkout-shipping-address__group">
         <label for="firstName" class="checkout-shipping-address__label">
           Име <span class="checkout-shipping-address__required">*</span>
@@ -134,10 +137,7 @@
     </template>
 
     <!-- Save Address Checkbox (only for authenticated users with new addresses) -->
-    <div
-      v-if="selectedAddressId === null"
-      class="checkout-shipping-address__group"
-    >
+    <div v-if="selectedAddressId === null" class="checkout-shipping-address__group">
       <label class="checkout-shipping-address__checkbox-label">
         <input
           :model-value="saveNewAddress"
@@ -323,4 +323,3 @@ const updateField = (field: keyof ShippingForm, event: Event) => {
   }
 }
 </style>
-

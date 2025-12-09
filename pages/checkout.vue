@@ -854,33 +854,16 @@ onMounted(async () => {
     return;
   }
 
-  // Fetch user data if authenticated (works for both token-based and cookie-based auth)
-  // Check isAuthenticated instead of accessToken to support Google OAuth users
-  if (authStore.isAuthenticated && !authStore.user) {
+  // Fetch user data if not loaded
+  if (!authStore.user && authStore.accessToken) {
     await authStore.fetchUser();
   }
 
-  // Populate forms with user profile data if user is authenticated
-  // This ensures saved information from previous orders is always shown
   if (authStore.user) {
-    // Always populate from user profile if data exists (from previous orders)
-    // Populate both shippingForm and guestForm so data is available regardless of mode
-    if (authStore.user.email) {
-      shippingForm.value.email = authStore.user.email;
-      guestForm.value.email = authStore.user.email;
-    }
-    if (authStore.user.firstName) {
-      shippingForm.value.firstName = authStore.user.firstName;
-      guestForm.value.firstName = authStore.user.firstName;
-    }
-    if (authStore.user.lastName) {
-      shippingForm.value.lastName = authStore.user.lastName;
-      guestForm.value.lastName = authStore.user.lastName;
-    }
-    if (authStore.user.phone) {
-      shippingForm.value.phone = authStore.user.phone;
-      guestForm.value.phone = authStore.user.phone;
-    }
+    shippingForm.value.firstName = authStore.user.firstName || "";
+    shippingForm.value.lastName = authStore.user.lastName || "";
+    shippingForm.value.email = authStore.user.email || "";
+    shippingForm.value.phone = authStore.user.phone || "";
 
     // Load default address if exists
     if (authStore.user.addresses && authStore.user.addresses.length > 0) {
@@ -1434,37 +1417,6 @@ const handleSubmit = async () => {
   }
 
   try {
-    // Update user profile BEFORE creating order (for both COD and Stripe)
-    // This ensures user info is saved even if order creation fails or redirects
-    if (!isGuest.value && authStore.isAuthenticated && authStore.user) {
-      const needsProfileUpdate =
-        !authStore.user?.firstName ||
-        !authStore.user?.lastName ||
-        !authStore.user?.phone ||
-        authStore.user.firstName !== shippingForm.value.firstName ||
-        authStore.user.lastName !== shippingForm.value.lastName ||
-        authStore.user.phone !== shippingForm.value.phone;
-
-      if (needsProfileUpdate) {
-        console.log("[Checkout] Updating user profile before order creation...");
-        try {
-          await authStore.updateProfile({
-            firstName: shippingForm.value.firstName,
-            lastName: shippingForm.value.lastName,
-            phone: shippingForm.value.phone,
-          });
-          console.log("[Checkout] Profile updated successfully");
-
-          // Refresh user data
-          await authStore.fetchUser();
-          console.log("[Checkout] User data refreshed");
-        } catch (err) {
-          console.error("[Checkout] Failed to update profile:", err);
-          // Don't block order creation if profile update fails
-        }
-      }
-    }
-
     // Check payment method and route accordingly
     if (selectedPaymentMethod.value === "stripe_card") {
       // Handle Stripe checkout (redirects to Stripe)
@@ -1528,16 +1480,22 @@ const handleSubmit = async () => {
           if (!hasMatchingAddress) {
             console.log("[Checkout] Saving new courier address...");
             try {
-              // Don't manually add Authorization header - let useApi handle it
-              // It will use token if available, or cookies for Google OAuth users
-              const addressResult = await api.post("users/addresses", {
-                type: "home",
-                street: shippingForm.value.street,
-                city: shippingForm.value.city,
-                postalCode: shippingForm.value.postalCode,
-                country: shippingForm.value.country,
-                isDefault: !authStore.user?.addresses?.length,
-              });
+              const addressResult = await api.post(
+                "users/addresses",
+                {
+                  type: "home",
+                  street: shippingForm.value.street,
+                  city: shippingForm.value.city,
+                  postalCode: shippingForm.value.postalCode,
+                  country: shippingForm.value.country,
+                  isDefault: !authStore.user?.addresses?.length,
+                },
+                {
+                  headers: {
+                    Authorization: `Bearer ${authStore.accessToken}`,
+                  },
+                }
+              );
               console.log("[Checkout] Address save result:", addressResult);
 
               // Refresh user data
@@ -1565,18 +1523,24 @@ const handleSubmit = async () => {
         if (!hasMatchingOfficeAddress) {
           console.log("[Checkout] Saving Econt office address...");
           try {
-            // Don't manually add Authorization header - let useApi handle it
-            // It will use token if available, or cookies for Google OAuth users
-            const addressResult = await api.post("users/addresses", {
-              type: deliveryMethod.value === "econt_automat" ? "econt_automat" : "econt_office",
-              street: officeAddressStreet,
-              city: officeCity,
-              postalCode: officePostalCode,
-              country: "България",
-              isDefault: !authStore.user?.addresses?.length,
-              econtOfficeCode: selectedOffice.value.code,
-              econtOfficeName: selectedOffice.value.name,
-            });
+            const addressResult = await api.post(
+              "users/addresses",
+              {
+                type: deliveryMethod.value === "econt_automat" ? "econt_automat" : "econt_office",
+                street: officeAddressStreet,
+                city: officeCity,
+                postalCode: officePostalCode,
+                country: "България",
+                isDefault: !authStore.user?.addresses?.length,
+                econtOfficeCode: selectedOffice.value.code,
+                econtOfficeName: selectedOffice.value.name,
+              },
+              {
+                headers: {
+                  Authorization: `Bearer ${authStore.accessToken}`,
+                },
+              }
+            );
             console.log("[Checkout] Econt office address save result:", addressResult);
 
             // Refresh user data

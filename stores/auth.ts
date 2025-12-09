@@ -250,29 +250,21 @@ export const useAuthStore = defineStore("auth", () => {
   };
 
   const loadFromStorage = () => {
-    if (import.meta.dev) {
-      console.log("[Auth loadFromStorage] Called, import.meta.client:", import.meta.client);
-    }
+    console.log("[Auth loadFromStorage] Called, import.meta.client:", import.meta.client);
     if (import.meta.client) {
       const tokens = loadTokens();
-      if (import.meta.dev) {
-        console.log("[Auth loadFromStorage] Tokens loaded:", {
-          accessToken: !!tokens.accessToken,
-          refreshToken: !!tokens.refreshToken,
-        });
-      }
+      console.log("[Auth loadFromStorage] Tokens loaded:", {
+        accessToken: !!tokens.accessToken,
+        refreshToken: !!tokens.refreshToken,
+      });
       accessToken.value = tokens.accessToken;
       refreshToken.value = tokens.refreshToken;
-      if (import.meta.dev) {
-        console.log("[Auth loadFromStorage] State updated:", {
-          accessToken: !!accessToken.value,
-          refreshToken: !!refreshToken.value,
-        });
-      }
+      console.log("[Auth loadFromStorage] State updated:", {
+        accessToken: !!accessToken.value,
+        refreshToken: !!refreshToken.value,
+      });
     } else {
-      if (import.meta.dev) {
-        console.log("[Auth loadFromStorage] Skipped - not on client");
-      }
+      console.log("[Auth loadFromStorage] Skipped - not on client");
     }
   };
 
