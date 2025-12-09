@@ -1514,22 +1514,16 @@ const handleSubmit = async () => {
           if (!hasMatchingAddress) {
             console.log("[Checkout] Saving new courier address...");
             try {
-              const addressResult = await api.post(
-                "users/addresses",
-                {
-                  type: "home",
-                  street: shippingForm.value.street,
-                  city: shippingForm.value.city,
-                  postalCode: shippingForm.value.postalCode,
-                  country: shippingForm.value.country,
-                  isDefault: !authStore.user?.addresses?.length,
-                },
-                {
-                  headers: {
-                    Authorization: `Bearer ${authStore.accessToken}`,
-                  },
-                }
-              );
+              // Don't manually add Authorization header - let useApi handle it
+              // It will use token if available, or cookies for Google OAuth users
+              const addressResult = await api.post("users/addresses", {
+                type: "home",
+                street: shippingForm.value.street,
+                city: shippingForm.value.city,
+                postalCode: shippingForm.value.postalCode,
+                country: shippingForm.value.country,
+                isDefault: !authStore.user?.addresses?.length,
+              });
               console.log("[Checkout] Address save result:", addressResult);
 
               // Refresh user data
@@ -1557,24 +1551,18 @@ const handleSubmit = async () => {
         if (!hasMatchingOfficeAddress) {
           console.log("[Checkout] Saving Econt office address...");
           try {
-            const addressResult = await api.post(
-              "users/addresses",
-              {
-                type: deliveryMethod.value === "econt_automat" ? "econt_automat" : "econt_office",
-                street: officeAddressStreet,
-                city: officeCity,
-                postalCode: officePostalCode,
-                country: "България",
-                isDefault: !authStore.user?.addresses?.length,
-                econtOfficeCode: selectedOffice.value.code,
-                econtOfficeName: selectedOffice.value.name,
-              },
-              {
-                headers: {
-                  Authorization: `Bearer ${authStore.accessToken}`,
-                },
-              }
-            );
+            // Don't manually add Authorization header - let useApi handle it
+            // It will use token if available, or cookies for Google OAuth users
+            const addressResult = await api.post("users/addresses", {
+              type: deliveryMethod.value === "econt_automat" ? "econt_automat" : "econt_office",
+              street: officeAddressStreet,
+              city: officeCity,
+              postalCode: officePostalCode,
+              country: "България",
+              isDefault: !authStore.user?.addresses?.length,
+              econtOfficeCode: selectedOffice.value.code,
+              econtOfficeName: selectedOffice.value.name,
+            });
             console.log("[Checkout] Econt office address save result:", addressResult);
 
             // Refresh user data
