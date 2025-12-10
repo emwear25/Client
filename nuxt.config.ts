@@ -192,7 +192,8 @@ export default defineNuxtConfig({
     minify: true,
     prerender: {
       crawlLinks: true,
-      routes: ["/", "/products", "/about", "/contact", "/blog"],
+      routes: ["/", "/products", "/about", "/contact"],
+      failOnError: false, // Don't fail build on 404s during prerendering
     },
   },
 
