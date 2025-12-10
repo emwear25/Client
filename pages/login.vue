@@ -1,5 +1,5 @@
 <template>
-  <div v-if="!checkingAuth" class="auth-page">
+  <div  class="auth-page">
     <div class="auth-page__container">
       <div class="auth-card">
         <!-- Logo/Header -->

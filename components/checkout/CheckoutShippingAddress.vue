@@ -10,7 +10,7 @@
         </label>
         <input
           id="firstName"
-          :model-value="shippingForm.firstName"
+          :value="shippingForm.firstName"
           type="text"
           class="checkout-shipping-address__input"
           required
@@ -24,7 +24,7 @@
         </label>
         <input
           id="lastName"
-          :model-value="shippingForm.lastName"
+          :value="shippingForm.lastName"
           type="text"
           class="checkout-shipping-address__input"
           required
@@ -40,7 +40,7 @@
         </label>
         <input
           id="email"
-          :model-value="shippingForm.email"
+          :value="shippingForm.email"
           type="email"
           class="checkout-shipping-address__input"
           required
@@ -54,7 +54,7 @@
         </label>
         <input
           id="phone"
-          :model-value="shippingForm.phone"
+          :value="shippingForm.phone"
           type="tel"
           class="checkout-shipping-address__input"
           required
@@ -63,22 +63,22 @@
       </div>
     </div>
 
-    <!-- Address fields (only for courier delivery) -->
-    <template v-if="deliveryMethod === 'courier_address'">
+    <!-- Address fields (only for courier delivery AND when creating new address) -->
+    <template v-if="deliveryMethod === 'courier_address' && selectedAddressId === null">
       <div class="checkout-shipping-address__group checkout-shipping-address__group--address">
         <label for="street" class="checkout-shipping-address__label">
           Адрес <span class="checkout-shipping-address__required">*</span>
         </label>
         <input
           id="street"
-          :model-value="shippingForm.street"
+          :value="shippingForm.street"
           type="text"
           :class="[
             'checkout-shipping-address__input',
             { 'checkout-shipping-address__input--error': validationErrors.shippingStreet },
           ]"
           placeholder="Улица, номер, етаж, апартамент"
-          :required="deliveryMethod === 'courier_address'"
+          :required="deliveryMethod === 'courier_address' && selectedAddressId === null"
           @blur="$emit('validate-field', 'shippingStreet', shippingForm.street)"
           @input="updateField('street', $event)"
         />
@@ -94,13 +94,13 @@
           </label>
           <input
             id="city"
-            :model-value="shippingForm.city"
+            :value="shippingForm.city"
             type="text"
             :class="[
               'checkout-shipping-address__input',
               { 'checkout-shipping-address__input--error': validationErrors.shippingCity },
             ]"
-            :required="deliveryMethod === 'courier_address'"
+            :required="deliveryMethod === 'courier_address' && selectedAddressId === null"
             @blur="$emit('validate-field', 'shippingCity', shippingForm.city)"
             @input="updateField('city', $event)"
           />
@@ -115,14 +115,14 @@
           </label>
           <input
             id="postalCode"
-            :model-value="shippingForm.postalCode"
+            :value="shippingForm.postalCode"
             type="text"
             :class="[
               'checkout-shipping-address__input',
               { 'checkout-shipping-address__input--error': validationErrors.shippingPostalCode },
             ]"
             maxlength="5"
-            :required="deliveryMethod === 'courier_address'"
+            :required="deliveryMethod === 'courier_address' && selectedAddressId === null"
             @blur="$emit('validate-field', 'shippingPostalCode', shippingForm.postalCode)"
             @input="updateField('postalCode', $event)"
           />
@@ -136,8 +136,8 @@
       </div>
     </template>
 
-    <!-- Save Address Checkbox (only for authenticated users with new addresses) -->
-    <div v-if="selectedAddressId === null" class="checkout-shipping-address__group">
+    <!-- Save Address Checkbox (only for new courier addresses) -->
+    <div v-if="deliveryMethod === 'courier_address' && selectedAddressId === null" class="checkout-shipping-address__group">
       <label class="checkout-shipping-address__checkbox-label">
         <input
           :model-value="saveNewAddress"
@@ -154,7 +154,7 @@
       </label>
       <textarea
         id="notes"
-        :model-value="shippingForm.notes"
+        :value="shippingForm.notes"
         class="checkout-shipping-address__textarea"
         rows="3"
         placeholder="Допълнителни инструкции за доставка..."
@@ -165,6 +165,8 @@
 </template>
 
 <script setup lang="ts">
+import { watch, onMounted, toRefs } from 'vue';
+
 interface ShippingForm {
   firstName: string;
   lastName: string;
@@ -187,6 +189,9 @@ interface Props {
 
 const props = defineProps<Props>();
 
+// Make props reactive using toRefs
+const { shippingForm, deliveryMethod, validationErrors, saveNewAddress, selectedAddressId } = toRefs(props);
+
 const emit = defineEmits<{
   "update:shippingForm": [value: ShippingForm];
   "update:saveNewAddress": [value: boolean];
@@ -194,10 +199,25 @@ const emit = defineEmits<{
   submit: [];
 }>();
 
+// Debug logging
+onMounted(() => {
+  console.log('[CheckoutShippingAddress] Component mounted with props:', {
+    shippingForm: shippingForm.value,
+    firstName: shippingForm.value?.firstName,
+    lastName: shippingForm.value?.lastName,
+    email: shippingForm.value?.email,
+    phone: shippingForm.value?.phone,
+  });
+});
+
+watch(shippingForm, (newVal) => {
+  console.log('[CheckoutShippingAddress] shippingForm prop changed:', newVal);
+}, { deep: true });
+
 const updateField = (field: keyof ShippingForm, event: Event) => {
   const target = event.target as HTMLInputElement | HTMLTextAreaElement;
   emit("update:shippingForm", {
-    ...props.shippingForm,
+    ...shippingForm.value,
     [field]: target.value,
   });
   emit("validate-field", `shipping${field.charAt(0).toUpperCase() + field.slice(1)}`, target.value);

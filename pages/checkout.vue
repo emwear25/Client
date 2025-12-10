@@ -184,7 +184,8 @@
 
             <!-- Shipping Address Component (for authenticated users) -->
             <CheckoutShippingAddress
-              v-if="!isGuest"
+              v-if="!isGuest && shippingForm.firstName"
+              :key="`shipping-${authStore.user?.email || 'guest'}`"
               v-model:shipping-form="shippingForm"
               v-model:save-new-address="saveNewAddress"
               :delivery-method="deliveryMethod"
@@ -856,14 +857,33 @@ onMounted(async () => {
 
   // Fetch user data if not loaded
   if (!authStore.user && authStore.accessToken) {
+    console.log("[Checkout] Fetching user data...");
     await authStore.fetchUser();
   }
 
+  console.log("[Checkout] Auth state:", {
+    isAuthenticated: authStore.isAuthenticated,
+    hasUser: !!authStore.user,
+    user: authStore.user,
+  });
+
   if (authStore.user) {
+    console.log("[Checkout] Populating shipping form with user data:", {
+      firstName: authStore.user.firstName,
+      lastName: authStore.user.lastName,
+      email: authStore.user.email,
+      phone: authStore.user.phone,
+    });
+
+    // Use nextTick to ensure reactivity updates properly
+    await nextTick();
+    
     shippingForm.value.firstName = authStore.user.firstName || "";
     shippingForm.value.lastName = authStore.user.lastName || "";
     shippingForm.value.email = authStore.user.email || "";
     shippingForm.value.phone = authStore.user.phone || "";
+
+    console.log("[Checkout] Shipping form after population:", shippingForm.value);
 
     // Load default address if exists
     if (authStore.user.addresses && authStore.user.addresses.length > 0) {
@@ -877,6 +897,11 @@ onMounted(async () => {
         shippingForm.value.country = defaultAddress.country || "България";
       }
     }
+    
+    // Force another nextTick to ensure all updates are applied
+    await nextTick();
+  } else {
+    console.log("[Checkout] No user found, staying in guest mode");
   }
 
   // Load Econt cities

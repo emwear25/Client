@@ -215,7 +215,8 @@ export default defineNuxtConfig({
     "/": { prerender: true, headers: { "Cache-Control": "public, s-maxage=300, stale-while-revalidate=600" } },
     "/about": { prerender: true, headers: { "Cache-Control": "public, s-maxage=300, stale-while-revalidate=600" } },
     "/contact": { prerender: true, headers: { "Cache-Control": "public, s-maxage=300, stale-while-revalidate=600" } },
-    "/blog": { prerender: true, headers: { "Cache-Control": "public, s-maxage=300, stale-while-revalidate=600" } },
+    "/blog": { ssr: true, isr: 300, headers: { "Cache-Control": "public, s-maxage=300, stale-while-revalidate=600" } }, // SSR for dynamic blog content
+    "/blog/**": { ssr: true, isr: 300, headers: { "Cache-Control": "public, s-maxage=300, stale-while-revalidate=600" } }, // Individual blog posts
     "/privacy-policy": { prerender: true, headers: { "Cache-Control": "public, s-maxage=300, stale-while-revalidate=600" } },
     "/terms": { prerender: true, headers: { "Cache-Control": "public, s-maxage=300, stale-while-revalidate=600" } },
     "/shipping": { prerender: true, headers: { "Cache-Control": "public, s-maxage=300, stale-while-revalidate=600" } },
@@ -228,7 +229,7 @@ export default defineNuxtConfig({
     "/cart": { prerender: false, headers: { "Cache-Control": "no-cache, no-store, must-revalidate" } },
     "/profile": { prerender: false, headers: { "Cache-Control": "no-cache, no-store, must-revalidate" } },
     "/orders": { prerender: false, headers: { "Cache-Control": "no-cache, no-store, must-revalidate" } },
-    "/login": { prerender: false, headers: { "Cache-Control": "no-cache, no-store, must-revalidate" } },
+    // "/login": { prerender: false, headers: { "Cache-Control": "no-cache, no-store, must-revalidate" } },
     "/register": { prerender: false, headers: { "Cache-Control": "no-cache, no-store, must-revalidate" } },
   },
 });

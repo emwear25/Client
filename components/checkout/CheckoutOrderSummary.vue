@@ -92,12 +92,6 @@
         <span>Обща сума (вкл. ДДС):</span>
         <span>{{ finalTotal.toFixed(2) }} лв</span>
       </div>
-      <div
-        v-if="shippingCost > 0"
-        style="font-size: 0.85rem; color: #666; margin-top: 0.5rem; text-align: center"
-      >
-        * Доставката се плаща при получаване
-      </div>
     </div>
 
     <!-- Submit Button -->
