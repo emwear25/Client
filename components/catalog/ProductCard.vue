@@ -50,6 +50,11 @@
           </div>
         </div>
       </div>
+
+      <!-- Out of Stock Overlay -->
+      <div v-if="isOutOfStock" class="product-card__out-of-stock">
+        <div class="product-card__out-of-stock-badge">Не е Налично</div>
+      </div>
     </div>
 
     <div class="product-card__body">
@@ -136,6 +141,7 @@ interface Product {
   description: string;
   price: number;
   compareAt?: number | null;
+  originalPrice?: number | null;
   category: string | { _id: string; name: string };
   images?: ProductImage[];
   stock: number;
@@ -175,6 +181,10 @@ const badges = computed(() => {
   if (props.product.customEmbroidery) arr.push({ key: "personal", label: "Персонализация" });
 
   return arr;
+});
+
+const isOutOfStock = computed(() => {
+  return props.product.stock === 0 || props.product.stock < 0;
 });
 
 const isNew = computed(() => {
@@ -688,6 +698,30 @@ const getColorHexValue = (color: string | ColorObject | null | undefined): strin
       transform: scale(1.1);
       border-color: rgba(0, 0, 0, 0.2);
     }
+  }
+
+  // Out of Stock Overlay
+  &__out-of-stock {
+    position: absolute;
+    inset: 0;
+    background: rgba(255, 255, 255, 0.85);
+    backdrop-filter: blur(2px);
+    -webkit-backdrop-filter: blur(2px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 15;
+  }
+
+  &__out-of-stock-badge {
+    background: #dc4f3e;
+    color: $color-white;
+    padding: 12px 24px;
+    font-size: 0.875rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
   }
 }
 </style>
