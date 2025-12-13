@@ -56,7 +56,7 @@
       </div>
 
       <!-- Empty State -->
-      <div v-else-if="sortedProducts.length === 0" class="state-card">
+      <div v-else-if="products.length === 0" class="state-card">
         <svg
           class="state-card__icon"
           viewBox="0 0 24 24"
@@ -75,7 +75,7 @@
       <div v-else>
         <div class="products-grid">
           <CatalogProductCard
-            v-for="product in sortedProducts"
+            v-for="product in products"
             :key="product._id"
             :product="product"
             @quick-view="openQuickView"
@@ -177,21 +177,7 @@ const hasMore = computed(() => currentPage.value < totalPages.value);
 // Ref for infinite scroll trigger element
 const loadMoreTrigger = ref<HTMLElement | null>(null);
 
-// Computed - Sorted Products
-const sortedProducts = computed(() => {
-  const arr = [...products.value];
 
-  switch (sortBy.value) {
-    case "price-asc":
-      return arr.sort((a, b) => a.price - b.price);
-    case "price-desc":
-      return arr.sort((a, b) => b.price - a.price);
-    case "name-asc":
-      return arr.sort((a, b) => a.name.localeCompare(b.name, "bg"));
-    default: // newest
-      return arr.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
-  }
-});
 
 // Functions
 const { normalizeError, getUserFriendlyMessage } = useErrorHandler();
@@ -253,7 +239,7 @@ const fetchProducts = async (page = 1, append = false) => {
     // Add cache-busting timestamp to ensure fresh data
     const timestamp = Date.now();
     const response = await api.get(
-      `products?active=true&page=${page}&limit=12&_t=${timestamp}`
+      `products?active=true&page=${page}&limit=12&sortBy=${sortBy.value}&_t=${timestamp}`
     );
 
     if (response && response.success) {

@@ -45,7 +45,7 @@
       </div>
 
       <!-- Empty State -->
-      <div v-else-if="sortedProducts.length === 0" class="state-card">
+      <div v-else-if="products.length === 0" class="state-card">
         <h2 class="state-card__title">Няма намерени продукти</h2>
         <p class="state-card__text">Скоро ще добавим нови продукти в тази категория</p>
         <NuxtLink to="/products" class="btn btn--primary">Виж всички продукти</NuxtLink>
@@ -55,7 +55,7 @@
       <div v-else>
         <div class="products-grid">
           <CatalogProductCard
-            v-for="product in sortedProducts"
+            v-for="product in products"
             :key="product._id"
             :product="product"
             @quick-view="openQuickView"
@@ -159,24 +159,10 @@ const hasMore = computed(() => currentPage.value < totalPages.value);
 // Ref for infinite scroll trigger element
 const loadMoreTrigger = ref<HTMLElement | null>(null);
 
+
 // Computed
 const categoryDisplayName = computed(() => {
   return category.value?.displayName || "Категория";
-});
-
-const sortedProducts = computed(() => {
-  const arr = [...products.value];
-
-  switch (sortBy.value) {
-    case "price-asc":
-      return arr.sort((a, b) => a.price - b.price);
-    case "price-desc":
-      return arr.sort((a, b) => b.price - a.price);
-    case "name-asc":
-      return arr.sort((a, b) => a.name.localeCompare(b.name, "bg"));
-    default: // newest
-      return arr.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
-  }
 });
 
 // Functions
@@ -210,7 +196,7 @@ const fetchProducts = async (page = 1, append = false) => {
     // Fetch products for this category with pagination
     const timestamp = Date.now();
     const productsResponse = await api.get(
-      `products?category=${category.value._id}&active=true&page=${page}&limit=12&_t=${timestamp}`
+      `products?category=${category.value._id}&active=true&page=${page}&limit=12&sortBy=${sortBy.value}&_t=${timestamp}`
     );
 
     if (productsResponse && productsResponse.success) {

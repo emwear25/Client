@@ -14,9 +14,9 @@
     <div class="container sales-toolbar">
       <div class="sales-toolbar__spacer" />
       <div class="sales-toolbar__count">
-        <span v-if="!isLoading && sortedProducts.length > 0" class="sales-toolbar__count-text">
-          Намерени {{ sortedProducts.length }}
-          {{ sortedProducts.length === 1 ? "продукт" : "продукта" }}
+        <span v-if="!isLoading && products.length > 0" class="sales-toolbar__count-text">
+          Намерени {{ products.length }}
+          {{ products.length === 1 ? "продукт" : "продукта" }}
         </span>
       </div>
       <div class="sales-toolbar__sort">
@@ -63,7 +63,7 @@
       </div>
 
       <!-- Empty State -->
-      <div v-else-if="sortedProducts.length === 0" class="state-card">
+      <div v-else-if="products.length === 0" class="state-card">
         <svg
           class="state-card__icon"
           viewBox="0 0 24 24"
@@ -83,7 +83,7 @@
       <div v-else>
         <div class="products-grid">
           <CatalogProductCard
-            v-for="product in sortedProducts"
+            v-for="product in products"
             :key="product._id"
             :product="product"
             @quick-view="openQuickView"
@@ -195,40 +195,6 @@ const hasMore = computed(() => currentPage.value < totalPages.value);
 // Ref for infinite scroll trigger element
 const loadMoreTrigger = ref<HTMLElement | null>(null);
 
-// Computed - Calculate discount percentage for sorting
-const getDiscountPercent = (product: Product): number => {
-  if (product.compareAt && product.compareAt > product.price) {
-    return Math.round(100 - (product.price / product.compareAt) * 100);
-  }
-  if (product.discount) {
-    if (product.discount.type === "percentage") {
-      return product.discount.value;
-    }
-    if (product.discount.type === "fixed_amount" && product.discount.amount) {
-      const originalPrice = product.price + product.discount.amount;
-      return Math.round((product.discount.amount / originalPrice) * 100);
-    }
-  }
-  return 0;
-};
-
-// Computed - Sorted Products
-const sortedProducts = computed(() => {
-  const arr = [...products.value];
-
-  switch (sortBy.value) {
-    case "discount-desc":
-      return arr.sort((a, b) => getDiscountPercent(b) - getDiscountPercent(a));
-    case "price-asc":
-      return arr.sort((a, b) => a.price - b.price);
-    case "price-desc":
-      return arr.sort((a, b) => b.price - a.price);
-    case "name-asc":
-      return arr.sort((a, b) => a.name.localeCompare(b.name, "bg"));
-    default: // newest
-      return arr.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
-  }
-});
 
 // Functions
 const { normalizeError, getUserFriendlyMessage } = useErrorHandler();
@@ -285,7 +251,7 @@ const fetchProducts = async (page = 1, append = false) => {
     const timestamp = Date.now();
     // Fetch products with onSale filter to get only discounted products
     const response = await api.get(
-      `products?active=true&onSale=true&page=${page}&limit=12&_t=${timestamp}`
+      `products?active=true&onSale=true&page=${page}&limit=12&sortBy=${sortBy.value}&_t=${timestamp}`
     );
 
     if (response && response.success) {
