@@ -256,21 +256,22 @@ const fetchProducts = async (page = 1, append = false) => {
       `products?active=true&page=${page}&limit=12&_t=${timestamp}`
     );
 
-    if (response && response.success && response.data) {
-      const data = response.data as PaginationResponse;
+    if (response && response.success) {
+      // The API returns: { success: true, data: [...products], pagination: {...} }
+      const productsData = Array.isArray(response.data) ? response.data : [];
       
       if (append) {
         // Append new products to existing list
-        products.value = [...products.value, ...(data.products || [])];
+        products.value = [...products.value, ...productsData];
       } else {
         // Replace products list
-        products.value = data.products || [];
+        products.value = productsData;
       }
       
-      // Update pagination info
-      if (data.pagination) {
-        currentPage.value = data.pagination.page;
-        totalPages.value = data.pagination.pages;
+      // Update pagination info (pagination is at root level, not inside data)
+      if (response.pagination) {
+        currentPage.value = response.pagination.page;
+        totalPages.value = response.pagination.pages;
       }
     } else if (Array.isArray(response)) {
       if (append) {

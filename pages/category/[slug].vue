@@ -213,21 +213,22 @@ const fetchProducts = async (page = 1, append = false) => {
       `products?category=${category.value._id}&active=true&page=${page}&limit=12&_t=${timestamp}`
     );
 
-    if (productsResponse && productsResponse.success && productsResponse.data) {
-      const data = productsResponse.data as PaginationResponse;
+    if (productsResponse && productsResponse.success) {
+      // The API returns: { success: true, data: [...products], pagination: {...} }
+      const productsData = Array.isArray(productsResponse.data) ? productsResponse.data : [];
       
       if (append) {
         // Append new products to existing list
-        products.value = [...products.value, ...(data.products || [])];
+        products.value = [...products.value, ...productsData];
       } else {
         // Replace products list
-        products.value = data.products || [];
+        products.value = productsData;
       }
       
-      // Update pagination info
-      if (data.pagination) {
-        currentPage.value = data.pagination.page;
-        totalPages.value = data.pagination.pages;
+      // Update pagination info (pagination is at root level)
+      if (productsResponse.pagination) {
+        currentPage.value = productsResponse.pagination.page;
+        totalPages.value = productsResponse.pagination.pages;
       }
     } else if (Array.isArray(productsResponse?.data)) {
       if (append) {
