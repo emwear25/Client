@@ -59,7 +59,7 @@
         </svg>
         <h2 class="state-card__title">Нещо се обърка</h2>
         <p class="state-card__text">{{ error }}</p>
-        <button class="btn btn--primary" @click="fetchProducts">Опитай отново</button>
+        <button class="btn btn--primary" @click="() => fetchProducts()">Опитай отново</button>
       </div>
 
       <!-- Empty State -->
@@ -80,13 +80,32 @@
       </div>
 
       <!-- Products Grid -->
-      <div v-else class="products-grid">
-        <CatalogProductCard
-          v-for="product in sortedProducts"
-          :key="product._id"
-          :product="product"
-          @quick-view="openQuickView"
-        />
+      <div v-else>
+        <div class="products-grid">
+          <CatalogProductCard
+            v-for="product in sortedProducts"
+            :key="product._id"
+            :product="product"
+            @quick-view="openQuickView"
+          />
+        </div>
+
+        <!-- Infinite Scroll Trigger -->
+        <div ref="loadMoreTrigger" class="load-more-trigger" />
+
+        <!-- Load More Button -->
+        <div v-if="hasMore" class="load-more-section">
+          <button
+            v-if="!isLoadingMore"
+            class="btn btn--secondary load-more-btn"
+            @click="loadMore"
+          >
+            Зареди още продукти
+          </button>
+          <div v-else class="load-more-spinner">
+            <div class="spinner" />
+          </div>
+        </div>
       </div>
     </div>
 
@@ -105,6 +124,7 @@ import { useWishlist } from "~/stores/useWishlist";
 import { useApi } from "~/composables/useApi";
 import { useErrorHandler } from "~/composables/useErrorHandler";
 import { usePageSEO } from "~/composables/useSEO";
+import { useInfiniteScroll } from "~/composables/useInfiniteScroll";
 
 usePageSEO({
   title: "Намаления",
@@ -146,15 +166,34 @@ interface Product {
   };
 }
 
+interface PaginationResponse {
+  products: Product[];
+  pagination: {
+    page: number;
+    limit: number;
+    total: number;
+    pages: number;
+  };
+}
+
 // State
 const products = ref<Product[]>([]);
 const isLoading = ref(true);
+const isLoadingMore = ref(false);
 const error = ref<string | null>(null);
 const sortBy = ref<"newest" | "price-asc" | "price-desc" | "name-asc" | "discount-desc">(
   "discount-desc"
 );
 const drawerOpen = ref(false);
 const activeProduct = ref<Product | null>(null);
+
+// Pagination state
+const currentPage = ref(1);
+const totalPages = ref(1);
+const hasMore = computed(() => currentPage.value < totalPages.value);
+
+// Ref for infinite scroll trigger element
+const loadMoreTrigger = ref<HTMLElement | null>(null);
 
 // Computed - Calculate discount percentage for sorting
 const getDiscountPercent = (product: Product): number => {
@@ -233,35 +272,68 @@ const getErrorMessage = (err: unknown): string => {
   );
 };
 
-const fetchProducts = async () => {
-  isLoading.value = true;
+const fetchProducts = async (page = 1, append = false) => {
+  if (append) {
+    isLoadingMore.value = true;
+  } else {
+    isLoading.value = true;
+  }
   error.value = null;
 
   try {
     const api = useApi();
     const timestamp = Date.now();
     // Fetch products with onSale filter to get only discounted products
-    const response = await api.get(`products?active=true&onSale=true&limit=100&_t=${timestamp}`);
+    const response = await api.get(
+      `products?active=true&onSale=true&page=${page}&limit=12&_t=${timestamp}`
+    );
 
     if (response && response.success && response.data) {
-      const productsData = Array.isArray(response.data)
-        ? response.data
-        : response.data.products || [];
+      const data = response.data as PaginationResponse;
+      const productsData = data.products || [];
+      
       // Filter products that have discounts (compareAt or discount object)
-      products.value = productsData.filter((product: Product) => {
+      const filteredProducts = productsData.filter((product: Product) => {
         return product.compareAt != null || product.discount != null;
       });
+      
+      if (append) {
+        products.value = [...products.value, ...filteredProducts];
+      } else {
+        products.value = filteredProducts;
+      }
+      
+      // Update pagination info
+      if (data.pagination) {
+        currentPage.value = data.pagination.page;
+        totalPages.value = data.pagination.pages;
+      }
     } else if (Array.isArray(response)) {
-      products.value = response.filter((product: Product) => {
+      const filteredProducts = response.filter((product: Product) => {
         return product.compareAt != null || product.discount != null;
       });
+      
+      if (append) {
+        products.value = [...products.value, ...filteredProducts];
+      } else {
+        products.value = filteredProducts;
+      }
     } else {
-      products.value = [];
+      if (!append) {
+        products.value = [];
+      }
     }
   } catch (err) {
     error.value = getErrorMessage(err);
   } finally {
     isLoading.value = false;
+    isLoadingMore.value = false;
+  }
+};
+
+const loadMore = async () => {
+  if (hasMore.value && !isLoadingMore.value) {
+    await fetchProducts(currentPage.value + 1, true);
   }
 };
 
@@ -269,6 +341,22 @@ const openQuickView = (product: Product) => {
   activeProduct.value = product;
   drawerOpen.value = true;
 };
+
+// Watch sortBy changes - reset to page 1
+watch(sortBy, () => {
+  currentPage.value = 1;
+  totalPages.value = 1;
+  fetchProducts(1, false);
+});
+
+// Setup infinite scroll
+useInfiniteScroll({
+  target: loadMoreTrigger,
+  onLoadMore: loadMore,
+  hasMore,
+  isLoading: isLoadingMore,
+  rootMargin: "200px",
+});
 
 onMounted(() => {
   // Wishlist is already loaded in cart.client.ts plugin, no need to load again
@@ -528,4 +616,50 @@ onMounted(() => {
     }
   }
 }
+
+// ═══════════════════════════════════════════════════
+// LOAD MORE SECTION - Infinite scroll trigger & button
+// ═══════════════════════════════════════════════════
+
+.load-more-trigger {
+  height: 1px;
+  width: 100%;
+  visibility: hidden;
+}
+
+.load-more-section {
+  display: flex;
+  justify-content: center;
+  padding: 2rem 0 4rem;
+}
+
+.load-more-btn {
+  min-width: 200px;
+  padding: 0.875rem 2rem;
+  font-size: 0.9375rem;
+  font-weight: 500;
+}
+
+.load-more-spinner {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 1rem;
+
+  .spinner {
+    width: 32px;
+    height: 32px;
+    border: 3px solid $border-base;
+    border-top-color: $brand;
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+  }
+
+  @keyframes spin {
+    to {
+      transform: rotate(360deg);
+    }
+  }
+}
+
 </style>
