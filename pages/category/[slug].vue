@@ -204,8 +204,10 @@ const fetchProducts = async (page = 1, append = false) => {
       const productsData = Array.isArray(productsResponse.data) ? productsResponse.data : [];
       
       if (append) {
-        // Append new products to existing list
-        products.value = [...products.value, ...productsData];
+        // Check for duplicates before appending
+        const existingIds = new Set(products.value.map((p: Product) => p._id));
+        const newProducts = productsData.filter((p: Product) => !existingIds.has(p._id));
+        products.value = [...products.value, ...newProducts];
       } else {
         // Replace products list
         products.value = productsData;

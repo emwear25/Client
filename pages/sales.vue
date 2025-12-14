@@ -264,7 +264,10 @@ const fetchProducts = async (page = 1, append = false) => {
       });
       
       if (append) {
-        products.value = [...products.value, ...filteredProducts];
+        // Check for duplicates before appending
+        const existingIds = new Set(products.value.map((p: Product) => p._id));
+        const newProducts = filteredProducts.filter((p: Product) => !existingIds.has(p._id));
+        products.value = [...products.value, ...newProducts];
       } else {
         products.value = filteredProducts;
       }
