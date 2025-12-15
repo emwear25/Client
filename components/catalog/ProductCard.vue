@@ -184,7 +184,9 @@ const badges = computed(() => {
 });
 
 const isOutOfStock = computed(() => {
-  return props.product.stock === 0 || props.product.stock < 0;
+  // Handle undefined, null, or 0 stock
+  const stock = props.product.stock;
+  return stock == null || stock <= 0;
 });
 
 const isNew = computed(() => {

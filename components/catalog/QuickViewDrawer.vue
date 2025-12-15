@@ -107,13 +107,12 @@
             </div>
           </div>
 
-          <!-- Add to Cart Button -->
           <button
             class="btn btn--primary qv__cta"
-            :disabled="!product?.stock || product.stock === 0"
+            :disabled="!product?.stock || product.stock <= 0"
             @click="addToCart"
           >
-            {{ product?.stock > 0 ? "Добави в количката" : "Изчерпан" }}
+            {{ product?.stock && product.stock > 0 ? "Добави в количката" : "Не е Налично" }}
           </button>
 
           <!-- USP List -->
