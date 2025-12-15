@@ -112,13 +112,13 @@ const categories: CategoryPromo[] = [
     id: 1,
     title: "Детски ранички",
     image: "/img/banners/banner1.jpg",
-    link: "/products?category=backpacks",
+    link: "/category/kids-backpacks",
   },
   {
     id: 2,
     title: "Халати",
     image: "/img/banners/banner2.jpg",
-    link: "/products?category=robes",
+    link: "/category/kid-bathrobes",
   },
   {
     id: 3,
