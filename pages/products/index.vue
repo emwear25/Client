@@ -227,7 +227,6 @@ const getErrorMessage = (err: unknown): string => {
 };
 
 const fetchProducts = async (page = 1, append = false) => {
-  console.log(`🔍 fetchProducts called - page: ${page}, append: ${append}, currentPage: ${currentPage.value}`);
   
   if (append) {
     isLoadingMore.value = true;
@@ -241,7 +240,6 @@ const fetchProducts = async (page = 1, append = false) => {
     // Add cache-busting timestamp to ensure fresh data
     const timestamp = Date.now();
     const url = `products?active=true&page=${page}&limit=12&sortBy=${sortBy.value}&_t=${timestamp}`;
-    console.log(`📡 Fetching: ${url}`);
     
     const response = await api.get(url);
 
@@ -249,18 +247,15 @@ const fetchProducts = async (page = 1, append = false) => {
       // The API returns: { success: true, data: [...products], pagination: {...} }
       const productsData = Array.isArray(response.data) ? response.data : [];
       
-      console.log(`📦 Received ${productsData.length} products, pagination:`, response.pagination);
-      console.log(`📋 Current products count: ${products.value.length}`);
+      
       
       if (append) {
         // Check for duplicates before appending
         const existingIds = new Set(products.value.map(p => p._id));
         const newProducts = productsData.filter(p => !existingIds.has(p._id));
-        console.log(`✅ Appending ${newProducts.length} new products (filtered ${productsData.length - newProducts.length} duplicates)`);
         products.value = [...products.value, ...newProducts];
       } else {
         // Replace products list
-        console.log(`🔄 Replacing products list with ${productsData.length} products`);
         products.value = productsData;
       }
       
@@ -268,7 +263,6 @@ const fetchProducts = async (page = 1, append = false) => {
       if (response.pagination) {
         currentPage.value = response.pagination.page;
         totalPages.value = response.pagination.pages;
-        console.log(`📊 Updated pagination - current: ${currentPage.value}, total: ${totalPages.value}, hasMore: ${hasMore.value}`);
       }
     } else if (Array.isArray(response)) {
       if (append) {
@@ -290,7 +284,6 @@ const fetchProducts = async (page = 1, append = false) => {
 };
 
 const loadMore = async () => {
-  console.log(`🔽 loadMore called - hasMore: ${hasMore.value}, isLoadingMore: ${isLoadingMore.value}, currentPage: ${currentPage.value}`);
   if (hasMore.value && !isLoadingMore.value) {
     await fetchProducts(currentPage.value + 1, true);
   }
