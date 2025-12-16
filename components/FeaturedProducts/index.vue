@@ -148,24 +148,43 @@ const fetchFeaturedProducts = async () => {
   try {
     const api = useApi();
     
-    // Fetch categories first
+    // Fetch categories first with cache busting
+    const timestamp = Date.now();
     const categoriesResponse = await api.get<{ success: boolean; data: any[] }>(
-      "categories?active=true"
+      `categories?active=true&_t=${timestamp}`
     );
     const categories = categoriesResponse?.data || [];
     
-    // Fetch 2 products from each category
-    const allProducts: Product[] = [];
+    console.log('[FeaturedProducts] Categories:', categories.map(c => ({ id: c._id, name: c.name })));
     
-    for (const category of categories.slice(0, 4)) { // Limit to 4 categories = 8 products
-      const productsResponse = await api.get<{ success: boolean; data: Product[] }>(
-        `products?category=${category._id}&active=true&limit=2&sortBy=createdAt`
-      );
+    // Fetch 2 products from each category using Promise.all for parallel requests
+    const allProducts: Product[] = [];
+    const categoriesToFetch = categories.slice(0, 4); // Limit to 4 categories = 8 products
+    
+    // Use Promise.all to fetch in parallel but with unique cache-busting params
+    const productPromises = categoriesToFetch.map(async (category, index) => {
+      const uniqueId = `${Date.now()}_${index}_${Math.random().toString(36).substring(7)}`;
+      const url = `products?category=${category._id}&active=true&limit=2&sortBy=createdAt&_nocache=${uniqueId}`;
       
-      if (productsResponse?.data && Array.isArray(productsResponse.data)) {
-        allProducts.push(...productsResponse.data);
+      console.log(`[FeaturedProducts] Fetching products for ${category.name} (${category._id}):`, url);
+      
+      const response = await api.get<{ success: boolean; data: Product[] }>(url);
+      
+      console.log(`[FeaturedProducts] Got ${response?.data?.length || 0} products for ${category.name}`);
+      
+      return response?.data || [];
+    });
+    
+    const results = await Promise.all(productPromises);
+    
+    // Flatten results
+    for (const productsData of results) {
+      if (Array.isArray(productsData)) {
+        allProducts.push(...productsData);
       }
     }
+    
+    console.log('[FeaturedProducts] Total products:', allProducts.length);
     
     products.value = allProducts;
   } catch (error) {
