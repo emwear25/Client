@@ -36,7 +36,7 @@
                 loading="lazy"
               />
               <div v-if="product.discount" class="featured-products__badge">
-                -{{ product.discount }}%
+                -{{ getDiscountPercent(product) }}%
               </div>
             </div>
             <div class="featured-products__content">
@@ -87,7 +87,7 @@
                     loading="lazy"
                   />
                   <div v-if="product.discount" class="featured-products__badge">
-                    -{{ product.discount }}%
+                    -{{ getDiscountPercent(product) }}%
                   </div>
                 </div>
                 <div class="featured-products__content">
@@ -214,6 +214,19 @@ const getDiscountedPrice = (product: Product) => {
     return product.price * (1 - product.discount / 100);
   }
   return product.price;
+};
+
+const getDiscountPercent = (product: Product) => {
+  // Handle discount as object (from API with appliedDiscounts)
+  if (product.discount && typeof product.discount === 'object') {
+    // @ts-ignore - discount might be an object with value property
+    return product.discount.value || 0;
+  }
+  // Handle discount as number (legacy)
+  if (typeof product.discount === 'number') {
+    return product.discount;
+  }
+  return 0;
 };
 
 // Fetch on mount
