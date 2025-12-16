@@ -200,9 +200,8 @@ const isOutOfStock = computed(() => {
     return totalStock <= 0;
   }
   
-  // Otherwise use the stock field
-  const stock = props.product.stock;
-  return stock == null || stock <= 0;
+  // Otherwise check main stock field
+  return (props.product.stock || 0) <= 0;
 });
 
 const isNew = computed(() => {
