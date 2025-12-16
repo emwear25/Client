@@ -299,12 +299,16 @@ watch(
 watch(
   () => route.params.slug,
   (newSlug, oldSlug) => {
-    if (newSlug !== oldSlug) {
+    // Only reset if slug actually changed (not on initial load)
+    if (newSlug && newSlug !== oldSlug && oldSlug !== undefined) {
+      console.log('[Category] Route changed from', oldSlug, 'to', newSlug);
       // Reset state when category changes
       category.value = null;
       products.value = [];
       currentPage.value = 1;
       totalPages.value = 1;
+      isLoading.value = false;
+      isLoadingMore.value = false;
       // Fetch new category products
       fetchProducts(1, false);
     }
