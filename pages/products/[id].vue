@@ -293,12 +293,12 @@
                 </div>
                 <div class="pdp-custom-notice__content">
                   <p class="pdp-custom-notice__text">
-                    <strong>Искате специален дизайн?</strong> Свържете се с нас във 
+                    <strong>Искате индивидуален дизайн?</strong> Свържете се с нас във 
                     <a href="https://m.me/emwearbg" target="_blank" rel="noopener" class="pdp-custom-notice__link">
                       Facebook Messenger
                     </a> или се обадете на 
-                    <a href="tel:+359894366008" class="pdp-custom-notice__link">
-                      +359 894 366 008
+                    <a href="tel:+359890927520" class="pdp-custom-notice__link">
+                      +359 890 927 520
                     </a>
                   </p>
                 </div>
