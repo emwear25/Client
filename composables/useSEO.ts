@@ -133,6 +133,11 @@ export function usePageSEO(options: PageSEO) {
         rel: "canonical",
         href: currentUrl,
       },
+      {
+        rel: "alternate",
+        media: "only screen and (max-width: 640px)",
+        href: currentUrl,
+      },
     ],
   });
 }
@@ -236,6 +241,11 @@ export function useProductSEO(product: ProductSEO) {
         rel: "canonical",
         href: productUrl,
       },
+      {
+        rel: "alternate",
+        media: "only screen and (max-width: 640px)",
+        href: productUrl,
+      },
     ],
   });
 
@@ -264,6 +274,48 @@ export function useProductSEO(product: ProductSEO) {
           ? "https://schema.org/InStock"
           : "https://schema.org/OutOfStock",
       url: productUrl,
+      seller: {
+        "@type": "Organization",
+        name: "emWear",
+        url: siteUrl,
+      },
+      priceValidUntil: new Date(new Date().setFullYear(new Date().getFullYear() + 1)).toISOString().split('T')[0],
+      itemCondition: "https://schema.org/NewCondition",
+      shippingDetails: {
+        "@type": "OfferShippingDetails",
+        shippingRate: {
+          "@type": "MonetaryAmount",
+          value: "0",
+          currency: "BGN",
+        },
+        shippingDestination: {
+          "@type": "DefinedRegion",
+          addressCountry: "BG",
+        },
+        deliveryTime: {
+          "@type": "ShippingDeliveryTime",
+          handlingTime: {
+            "@type": "QuantitativeValue",
+            minValue: 1,
+            maxValue: 2,
+            unitCode: "DAY",
+          },
+          transitTime: {
+            "@type": "QuantitativeValue",
+            minValue: 1,
+            maxValue: 3,
+            unitCode: "DAY",
+          },
+        },
+      },
+      hasMerchantReturnPolicy: {
+        "@type": "MerchantReturnPolicy",
+        applicableCountry: "BG",
+        returnPolicyCategory: "https://schema.org/MerchantReturnFiniteReturnWindow",
+        merchantReturnDays: 14,
+        returnMethod: "https://schema.org/ReturnByMail",
+        returnFees: "https://schema.org/FreeReturn",
+      },
     },
   };
 
