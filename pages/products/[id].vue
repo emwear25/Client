@@ -284,6 +284,26 @@
                 </div>
               </div>
 
+              <!-- Custom Design Notice -->
+              <div v-if="product.customEmbroidery" class="pdp-custom-notice">
+                <div class="pdp-custom-notice__icon">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
+                  </svg>
+                </div>
+                <div class="pdp-custom-notice__content">
+                  <p class="pdp-custom-notice__text">
+                    <strong>Искате специален дизайн?</strong> Свържете се с нас във 
+                    <a href="https://m.me/emwearbg" target="_blank" rel="noopener" class="pdp-custom-notice__link">
+                      Facebook Messenger
+                    </a> или се обадете на 
+                    <a href="tel:+359894366008" class="pdp-custom-notice__link">
+                      +359 894 366 008
+                    </a>
+                  </p>
+                </div>
+              </div>
+
               <!-- Action Buttons -->
               <div class="pdp-actions">
                 <button
