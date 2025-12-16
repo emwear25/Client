@@ -175,7 +175,7 @@ const fetchArticle = async () => {
         script: [
           {
             type: "application/ld+json",
-            children: JSON.stringify({
+            innerHTML: JSON.stringify({
               "@context": "https://schema.org",
               "@type": "BlogPosting",
               headline: article.value.title,
@@ -191,7 +191,7 @@ const fetchArticle = async () => {
                 name: "emWear",
                 logo: {
                   "@type": "ImageObject",
-                  url: "https://emwear.bg/logo.png",
+                  url: "https://emwear.bg/logo-dark.png",
                 },
               },
               description: article.value.excerpt,
@@ -203,7 +203,7 @@ const fetchArticle = async () => {
           },
           {
             type: "application/ld+json",
-            children: JSON.stringify({
+            innerHTML: JSON.stringify({
               "@context": "https://schema.org",
               "@type": "BreadcrumbList",
               itemListElement: [

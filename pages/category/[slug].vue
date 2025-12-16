@@ -365,6 +365,51 @@ watchEffect(() => {
   });
 });
 
+// ===== BREADCRUMB SCHEMA =====
+// SEO Benefit: Shows navigation path in Google search results
+const breadcrumbSchema = computed(() => {
+  if (!category.value) return null;
+
+  return {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      {
+        "@type": "ListItem",
+        position: 1,
+        name: "Начало",
+        item: "https://emwear.bg"
+      },
+      {
+        "@type": "ListItem",
+        position: 2,
+        name: "Категории",
+        item: "https://emwear.bg/products"
+      },
+      {
+        "@type": "ListItem",
+        position: 3,
+        name: category.value.name,
+        item: `https://emwear.bg/category/${category.value.slug}`
+      }
+    ]
+  };
+});
+
+// Inject breadcrumb schema
+watchEffect(() => {
+  if (!breadcrumbSchema.value) return;
+
+  useHead({
+    script: [
+      {
+        type: 'application/ld+json',
+        innerHTML: JSON.stringify(breadcrumbSchema.value),
+      },
+    ],
+  });
+});
+
 // Fetch on mount
 onMounted(() => {
   fetchProducts();

@@ -1301,6 +1301,133 @@ watchEffect(() => {
   });
 });
 
+// ===== FAQ SCHEMA =====
+// SEO Benefit: FAQ rich results in Google for product questions
+const faqSchema = computed(() => {
+  if (!product.value) return null;
+
+  // Common FAQ questions for personalized products
+  const faqItems = [
+    {
+      "@type": "Question",
+      name: "Колко време отнема изработката на персонализиран продукт?",
+      acceptedAnswer: {
+        "@type": "Answer",
+        text: "Изработката на персонализиран продукт с бродерия обикновено отнема 1-2 работни дни. След това доставката е в рамките на 1-3 работни дни в зависимост от избрания куриер."
+      }
+    },
+    {
+      "@type": "Question",
+      name: "Мога ли да избера свой собствен шрифт за бродерията?",
+      acceptedAnswer: {
+        "@type": "Answer",
+        text: "Предлагаме богат избор от шрифтове за бродерия, от които можете да изберете. При поръчка ще имате възможност да видите как изглежда вашият текст в различни стилове."
+      }
+    },
+    {
+      "@type": "Question",
+      name: "Как да се грижа за продукта с бродерия?",
+      acceptedAnswer: {
+        "@type": "Answer",
+        text: "Препоръчваме пране при 30-40°C на деликатен режим. Избягвайте използването на белина и сушене в сушилня. Бродерията е издръжлива и запазва качеството си при правилна грижа."
+      }
+    },
+    {
+      "@type": "Question",
+      name: "Предлагате ли безплатна доставка?",
+      acceptedAnswer: {
+        "@type": "Answer",
+        text: "Да, предлагаме безплатна доставка за поръчки над 110 лв. За поръчки под тази сума, доставката се заплаща според тарифите на избрания куриер."
+      }
+    }
+  ];
+
+  return {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    mainEntity: faqItems
+  };
+});
+
+// Inject FAQ schema
+watchEffect(() => {
+  if (!faqSchema.value) return;
+
+  useHead({
+    script: [
+      {
+        type: 'application/ld+json',
+        innerHTML: JSON.stringify(faqSchema.value),
+      },
+    ],
+  });
+});
+
+// ===== BREADCRUMB SCHEMA =====
+// SEO Benefit: Shows navigation path in Google search results
+const breadcrumbSchema = computed(() => {
+  if (!product.value) return null;
+
+  const items: any[] = [
+    {
+      "@type": "ListItem",
+      position: 1,
+      name: "Начало",
+      item: "https://emwear.bg"
+    },
+    {
+      "@type": "ListItem",
+      position: 2,
+      name: "Продукти",
+      item: "https://emwear.bg/products"
+    }
+  ];
+
+  // Add category if exists
+  if (typeof product.value.category === 'object' && product.value.category?.slug) {
+    items.push({
+      "@type": "ListItem",
+      position: 3,
+      name: product.value.category.name,
+      item: `https://emwear.bg/category/${product.value.category.slug}`
+    });
+    
+    items.push({
+      "@type": "ListItem",
+      position: 4,
+      name: product.value.name,
+      item: `https://emwear.bg/products/${product.value.slug || product.value._id}`
+    });
+  } else {
+    items.push({
+      "@type": "ListItem",
+      position: 3,
+      name: product.value.name,
+      item: `https://emwear.bg/products/${product.value.slug || product.value._id}`
+    });
+  }
+
+  return {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: items
+  };
+});
+
+// Inject breadcrumb schema
+watchEffect(() => {
+  if (!breadcrumbSchema.value) return;
+
+  useHead({
+    script: [
+      {
+        type: 'application/ld+json',
+        innerHTML: JSON.stringify(breadcrumbSchema.value),
+      },
+    ],
+  });
+});
+
 // Handle review events
 const handleRatingFilter = (_rating: number) => {
   // Triggered by ReviewStats component - refresh reviews list
