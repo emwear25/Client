@@ -702,11 +702,24 @@ const refreshKey = ref(0);
 
 // ===== SSR DATA FETCHING =====
 // Fetch product data on server-side for SEO and Facebook crawlers
+// Support both slug and ID (with 301 redirect from ID to slug)
+const identifier = route.params.slug as string;
+const isObjectId = /^[0-9a-fA-F]{24}$/.test(identifier);
+
 const { data: productData, error: fetchError } = await useAsyncData(
-  `product-${route.params.id}`,
+  `product-${identifier}`,
   async () => {
     const api = useApi();
-    const response = await api.get(`products/${route.params.id}`);
+    let response;
+
+    // Fetch by ID or slug
+    if (isObjectId) {
+      // Fetch by ID
+      response = await api.get(`products/${identifier}`);
+    } else {
+      // Fetch by slug
+      response = await api.get(`products/slug/${identifier}`);
+    }
     
     if (response.success && response.data) {
       return response.data;
@@ -718,6 +731,14 @@ const { data: productData, error: fetchError } = await useAsyncData(
     lazy: false,
   }
 );
+
+// If fetched by ID and product has slug, redirect to slug URL (301)
+if (productData.value && isObjectId && productData.value.slug) {
+  await navigateTo(`/products/${productData.value.slug}`, {
+    redirectCode: 301,
+    external: false,
+  });
+}
 
 // Set product from server data
 if (productData.value) {
