@@ -65,6 +65,10 @@ export default defineNuxtConfig({
           name: "facebook-domain-verification",
           content: "6hxpk71iufv6pwh7sxcxk2wm5dt26e",
         },
+        {
+          property: "fb:app_id",
+          content: "1363872864704654", // Your Facebook Pixel ID
+        },
       ],
       link: [
         {
