@@ -69,6 +69,7 @@ const collectionLinks: NavigationLink[] = [
 const companyLinks: NavigationLink[] = [
   { name: "За Нас", path: "/about" },
   { name: "Контакти", path: "/contact" },
+  { name: "Често Задавани Въпроси", path: "/faq" },
   { name: "Доставка и връщане", path: "/shipping" },
   { name: "Политика за поверителност", path: "/privacy-policy" },
   { name: "Общи условия", path: "/terms" },
