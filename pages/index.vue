@@ -2,6 +2,7 @@
   <div class="home-page">
     <HeroSlider />
     <CategoryPromos />
+    <FeaturedProducts />
     <FeatureHighlights />
     <BannerSection />
     <Testimonials />
