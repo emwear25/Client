@@ -91,12 +91,14 @@
 </template>
 
 <script setup lang="ts">
+import { nextTick } from 'vue';
 import { useApi } from "~/composables/useApi";
 import { usePageSEO } from "~/composables/useSEO";
 import { useInfiniteScroll } from "~/composables/useInfiniteScroll";
 
 const route = useRoute();
-const slug = route.params.slug as string;
+// Make slug reactive so it updates on client-side navigation
+const slug = computed(() => route.params.slug as string);
 
 interface Category {
   _id: string;
@@ -177,27 +179,41 @@ const fetchProducts = async (page = 1, append = false) => {
   try {
     const api = useApi();
 
-    // Fetch category first (only on initial load)
+    // Always get current slug from route (reactive)
+    const currentSlug = slug.value;
+    
+    console.log('[Category] Fetching for slug:', currentSlug);
+    
+    // Fetch category - always refetch to ensure we have the right category
+    const categoriesResponse = await api.get<{ success: boolean; data: Category[] }>(
+      `categories?active=true&_nocache=${Date.now()}`
+    );
+
+    const categories = categoriesResponse?.data || [];
+    const foundCategory = categories.find((c) => c.slug === currentSlug) || null;
+    
+    console.log('[Category] Found category:', foundCategory?.name, 'ID:', foundCategory?._id);
+    
+    // Update category ref
+    category.value = foundCategory;
+
     if (!category.value) {
-      const categoriesResponse = await api.get<{ success: boolean; data: Category[] }>(
-        "categories?active=true"
-      );
-
-      const categories = categoriesResponse?.data || [];
-      category.value = categories.find((c) => c.slug === slug) || null;
-
-      if (!category.value) {
-        error.value = "Категорията не е намерена";
-        isLoading.value = false;
-        return;
-      }
+      error.value = "Категорията не е намерена";
+      isLoading.value = false;
+      return;
     }
 
     // Fetch products for this category with pagination
+    // Use multiple cache-busting params to prevent any caching
     const timestamp = Date.now();
-    const productsResponse = await api.get(
-      `products?category=${category.value._id}&active=true&page=${page}&limit=12&sortBy=${sortBy.value}&_t=${timestamp}`
-    );
+    const randomId = Math.random().toString(36).substring(7);
+    const productUrl = `products?category=${category.value._id}&active=true&page=${page}&limit=12&sortBy=${sortBy.value}&_t=${timestamp}&_r=${randomId}`;
+    
+    console.log('[Category] Fetching products:', productUrl);
+    
+    const productsResponse = await api.get(productUrl);
+    
+    console.log('[Category] Products received:', productsResponse?.data?.length, 'items');
 
     if (productsResponse && productsResponse.success) {
       // The API returns: { success: true, data: [...products], pagination: {...} }
@@ -298,21 +314,28 @@ watch(
 // Watch for route changes (when navigating between categories)
 watch(
   () => route.params.slug,
-  (newSlug, oldSlug) => {
+  async (newSlug, oldSlug) => {
     // Only reset if slug actually changed (not on initial load)
     if (newSlug && newSlug !== oldSlug && oldSlug !== undefined) {
       console.log('[Category] Route changed from', oldSlug, 'to', newSlug);
-      // Reset state when category changes
+      
+      // CRITICAL: Reset ALL state immediately
       category.value = null;
       products.value = [];
       currentPage.value = 1;
       totalPages.value = 1;
-      isLoading.value = false;
+      isLoading.value = true;
       isLoadingMore.value = false;
-      // Fetch new category products
-      fetchProducts(1, false);
+      error.value = null;
+      
+      // Wait for next tick to ensure state is updated
+      await nextTick();
+      
+      // Fetch new category products with the new slug
+      await fetchProducts(1, false);
     }
-  }
+  },
+  { flush: 'sync' } // Use sync to ensure immediate execution
 );
 
 // ===== CATEGORY PAGE ITEMLIST SCHEMA =====
