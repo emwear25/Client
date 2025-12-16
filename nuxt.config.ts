@@ -256,6 +256,9 @@ export default defineNuxtConfig({
       apiBase: process.env.NUXT_PUBLIC_API_BASE || "http://localhost:3030",
       frontendUrl: process.env.NUXT_PUBLIC_FRONTEND_URL || "http://localhost:3000",
       gtagId: process.env.NUXT_PUBLIC_GTAG_ID || "",
+      // Christmas mode: set to false to disable holiday decorations
+      // Or use NUXT_PUBLIC_CHRISTMAS_MODE=false in .env
+      christmasMode: process.env.NUXT_PUBLIC_CHRISTMAS_MODE !== "false",
     },
   },
 

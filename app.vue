@@ -1,5 +1,6 @@
 <template>
   <ErrorBoundary>
+    <ChristmasDecorations />
     <NuxtLayout>
       <NuxtPage />
     </NuxtLayout>
