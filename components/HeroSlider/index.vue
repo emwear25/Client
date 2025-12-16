@@ -98,7 +98,7 @@
               />
             </svg>
 
-            <NuxtLink to="/category/kids-backpacks" class="hero-slider__cta hero-slider__cta--primary">
+            <NuxtLink to="/category/kids-bags" class="hero-slider__cta hero-slider__cta--primary">
               <span class="hero-slider__cta-text">Разгледай колекцията</span>
               <svg
                 class="hero-slider__cta-arrow"
