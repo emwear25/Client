@@ -166,13 +166,15 @@ const fetchFeaturedProducts = async () => {
       const uniqueId = `${Date.now()}_${index}_${Math.random().toString(36).substring(7)}`;
       const url = `products?category=${category._id}&active=true&limit=2&sortBy=createdAt&_nocache=${uniqueId}`;
       
-      console.log(`[FeaturedProducts] Fetching products for ${category.name} (${category._id}):`, url);
+      console.log(`[FeaturedProducts] Fetching products for ${category.name} (${category._id})`);
       
       const response = await api.get<{ success: boolean; data: Product[] }>(url);
       
-      console.log(`[FeaturedProducts] Got ${response?.data?.length || 0} products for ${category.name}`);
+      const productsData = response?.data || [];
+      console.log(`[FeaturedProducts] Got ${productsData.length} products for ${category.name}:`, 
+        productsData.map(p => p.name));
       
-      return response?.data || [];
+      return productsData;
     });
     
     const results = await Promise.all(productPromises);
