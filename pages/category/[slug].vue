@@ -295,6 +295,22 @@ watch(
   { immediate: true }
 );
 
+// Watch for route changes (when navigating between categories)
+watch(
+  () => route.params.slug,
+  (newSlug, oldSlug) => {
+    if (newSlug !== oldSlug) {
+      // Reset state when category changes
+      category.value = null;
+      products.value = [];
+      currentPage.value = 1;
+      totalPages.value = 1;
+      // Fetch new category products
+      fetchProducts(1, false);
+    }
+  }
+);
+
 // Fetch on mount
 onMounted(() => {
   fetchProducts();
