@@ -22,6 +22,13 @@ interface ProductImage {
   publicId: string;
 }
 
+interface ProductVariant {
+  size: string;
+  color: string;
+  stock: number;
+  reserved?: number;
+}
+
 interface Product {
   _id: string;
   slug?: string;
@@ -32,6 +39,7 @@ interface Product {
   category: string | { _id: string; name: string };
   images?: ProductImage[];
   stock: number;
+  variants?: ProductVariant[];
   customEmbroidery?: boolean;
   createdAt: string;
   sizes?: string[];
