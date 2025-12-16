@@ -109,10 +109,10 @@
 
           <button
             class="btn btn--primary qv__cta"
-            :disabled="!product?.stock || product.stock <= 0"
+            :disabled="availableStock <= 0"
             @click="addToCart"
           >
-            {{ product?.stock && product.stock > 0 ? "Добави в количката" : "Не е Налично" }}
+            {{ availableStock > 0 ? "Добави в количката" : "Не е Налично" }}
           </button>
 
           <!-- USP List -->
@@ -146,6 +146,13 @@ interface ProductImage {
   publicId: string;
 }
 
+interface Variant {
+  size: string;
+  color: string;
+  stock: number;
+  reserved?: number;
+}
+
 interface Product {
   _id: string;
   slug?: string;
@@ -156,6 +163,7 @@ interface Product {
   colors?: (string | { name: string; hex?: string })[];
   sizes?: string[];
   stock: number;
+  variants?: Variant[];
   weight?: number;
   customEmbroidery?: boolean;
 }
@@ -215,6 +223,22 @@ watch(
   },
   { immediate: true }
 );
+
+// Calculate actual available stock (from variants if they exist)
+const availableStock = computed(() => {
+  if (!props.product) return 0;
+  
+  // If product has variants, calculate total stock from variants
+  if (props.product.variants && props.product.variants.length > 0) {
+    return props.product.variants.reduce((total, variant) => {
+      const available = Math.max(0, variant.stock - (variant.reserved || 0));
+      return total + available;
+    }, 0);
+  }
+  
+  // Otherwise use base stock
+  return props.product.stock || 0;
+});
 
 // Validation for embroidery
 const validateEmbroidery = () => {
