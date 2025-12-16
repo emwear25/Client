@@ -373,7 +373,7 @@ onMounted(() => {
   &__card {
     display: block;
     background: #ffffff;
-    border-radius: 16px;
+    border-radius: 0;
     overflow: hidden;
     text-decoration: none;
     color: inherit;
