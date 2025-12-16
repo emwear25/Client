@@ -1204,6 +1204,10 @@ watchEffect(() => {
       { property: 'product:price:currency', content: 'BGN' },
       { property: 'product:retailer_item_id', content: product.value._id },
       { property: 'product:category', content: formatCategory(product.value.category) },
+      // Google Product Category for Facebook Product Catalog
+      ...(typeof product.value.category === 'object' && (product.value.category as any).googleProductCategory
+        ? [{ property: 'product:google_product_category', content: (product.value.category as any).googleProductCategory }]
+        : []),
       
       // Twitter Card
       { name: 'twitter:card', content: 'product' },
