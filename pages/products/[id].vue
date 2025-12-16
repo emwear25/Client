@@ -299,7 +299,7 @@
                     </a> или 
                     <a href="https://www.instagram.com/emwear.bg/" target="_blank" rel="noopener" class="pdp-custom-notice__link">
                       Instagram
-                    </a> · 
+                    </a>. Или на телефон 
                     <a href="tel:+359890927520" class="pdp-custom-notice__link">
                       +359 890 927 520
                     </a>
