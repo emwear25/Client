@@ -61,6 +61,10 @@ export default defineNuxtConfig({
           name: "twitter:site",
           content: "@emwear",
         },
+        {
+          name: "facebook-domain-verification",
+          content: "6hxpk71iufv6pwh7sxcxk2wm5dt26e",
+        },
       ],
       link: [
         {
