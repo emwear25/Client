@@ -19,13 +19,13 @@
           <span class="footer-nav__payments-text">Приемаме:</span>
           <div class="footer-nav__payment-icons">
             <div class="footer-nav__payment-icon" title="VISA">
-              <img src="/img/payments/visa.png" alt="VISA" />
+              <img src="/img/payments/visa.png" alt="VISA" loading="lazy" />
             </div>
             <div class="footer-nav__payment-icon" title="Mastercard">
-              <img src="/img/payments/card.png" alt="Mastercard" />
+              <img src="/img/payments/card.png" alt="Mastercard" loading="lazy" />
             </div>
             <div class="footer-nav__payment-icon" title="Apple Pay">
-              <img src="/img/payments/apple-pay.png" alt="Apple Pay" />
+              <img src="/img/payments/apple-pay.png" alt="Apple Pay" loading="lazy" />
             </div>
           </div>
         </div>
