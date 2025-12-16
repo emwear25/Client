@@ -42,6 +42,10 @@ export default defineNuxtConfig({
           content: "telephone=no",
         },
         {
+          name: "google-site-verification",
+          content: "sHIs7mS_DUrEeMcB8eEyoKtupqBx-m1G8MrW67zKl4U",
+        },
+        {
           property: "og:site_name",
           content: "emWear",
         },
