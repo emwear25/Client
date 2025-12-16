@@ -38,9 +38,6 @@
               <div v-if="product.discount" class="featured-products__badge">
                 -{{ product.discount }}%
               </div>
-              <div class="featured-products__category-tag">
-                {{ getCategoryName(product.category) }}
-              </div>
             </div>
             <div class="featured-products__content">
               <h3 class="featured-products__product-name">{{ product.name }}</h3>
@@ -91,9 +88,6 @@
                   />
                   <div v-if="product.discount" class="featured-products__badge">
                     -{{ product.discount }}%
-                  </div>
-                  <div class="featured-products__category-tag">
-                    {{ getCategoryName(product.category) }}
                   </div>
                 </div>
                 <div class="featured-products__content">
