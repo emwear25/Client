@@ -69,8 +69,8 @@ const copyCode = async () => {
 </script>
 
 <style lang="scss" scoped>
-// Sage green matching your site's design
-$sage-green: #728a7b;
+// Updated green color as requested
+$sage-green: #6c8474;
 $sage-dark: #5a7262;
 $cream: #f8f6f3;
 

@@ -24,10 +24,11 @@
 @use "~/assets/styles/fonts" as *;
 
 .topbar {
-  background: $bg-page;
-  border-bottom: 1px solid $border-base;
+  background: #6c8474;
+  border-bottom: none;
   font-family: $font-body;
   font-size: 0.875rem;
+  color: white;
 
   &__container {
     width: 100%;
@@ -88,7 +89,7 @@
   }
 
   &__info {
-    color: $text-secondary;
+    color: white;
     font-weight: 500;
     font-size: 0.8125rem;
 
@@ -98,7 +99,7 @@
   }
 
   &__promo {
-    color: $brand-ink;
+    color: white;
     font-weight: 500;
     font-family: $font-heading;
     font-size: 0.9375rem;
