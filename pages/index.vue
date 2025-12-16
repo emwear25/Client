@@ -17,7 +17,7 @@ usePageSEO({
   title: "emWear - Персонализирани подаръци с бродерия",
   description:
     "Персонализирани подаръци с качествена бродерия. Детски раници, торби, чанти с име. Безплатна доставка над 110 лв. Поръчайте сега!",
-  image: "/logo.png",
+  image: "/logo-dark.png",
   type: "website",
 });
 
@@ -26,14 +26,14 @@ useHead({
   script: [
     {
       type: "application/ld+json",
-      children: JSON.stringify({
+      innerHTML: JSON.stringify({
         "@context": "https://schema.org",
         "@graph": [
           {
             "@type": "Organization",
             name: "emWear",
             url: "https://emwear.bg",
-            logo: "https://emwear.bg/logo.png",
+            logo: "https://emwear.bg/logo-dark.png",
             description: "Персонализирани подаръци с качествена бродерия",
             sameAs: [
               "https://www.facebook.com/emwearbg/",

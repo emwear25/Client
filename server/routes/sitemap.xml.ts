@@ -62,6 +62,36 @@ export default defineEventHandler(async (event) => {
       priority: 0.6,
     });
 
+    urls.push({
+      loc: `${baseUrl}/privacy-policy`,
+      changefreq: "monthly",
+      priority: 0.3,
+    });
+
+    urls.push({
+      loc: `${baseUrl}/terms`,
+      changefreq: "monthly",
+      priority: 0.3,
+    });
+
+    urls.push({
+      loc: `${baseUrl}/shipping`,
+      changefreq: "monthly",
+      priority: 0.5,
+    });
+
+    urls.push({
+      loc: `${baseUrl}/collections`,
+      changefreq: "weekly",
+      priority: 0.7,
+    });
+
+    urls.push({
+      loc: `${baseUrl}/sales`,
+      changefreq: "daily",
+      priority: 0.8,
+    });
+
     // Category pages
     categories.forEach((category: any) => {
       if (category.slug) {
@@ -90,14 +120,14 @@ export default defineEventHandler(async (event) => {
     const sitemap = `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 ${urls
-  .map(
-    (url) => `  <url>
+        .map(
+          (url) => `  <url>
     <loc>${url.loc}</loc>${url.lastmod ? `\n    <lastmod>${url.lastmod}</lastmod>` : ""}
     <changefreq>${url.changefreq}</changefreq>
     <priority>${url.priority}</priority>
   </url>`
-  )
-  .join("\n")}
+        )
+        .join("\n")}
 </urlset>`;
 
     event.node.res.setHeader("Content-Type", "application/xml");

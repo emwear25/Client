@@ -47,7 +47,7 @@ export function usePageSEO(options: PageSEO) {
       : options.description;
 
   // Default image - handle both relative and absolute URLs
-  let ogImage = options.image || `${siteUrl}/logo.png`;
+  let ogImage = options.image || `${siteUrl}/logo-dark.png`;
   if (options.image && !options.image.startsWith("http")) {
     ogImage = options.image.startsWith("/") ? `${siteUrl}${options.image}` : `${siteUrl}/${options.image}`;
   }
@@ -161,7 +161,7 @@ export function useProductSEO(product: ProductSEO) {
   const productUrl = getFullUrl(`/products/${productSlug}`);
 
   // Product image - handle both relative and absolute URLs (Cloudinary)
-  let productImage = `${siteUrl}/logo.png`;
+  let productImage = `${siteUrl}/logo-dark.png`;
   if (product.images?.[0]?.url) {
     productImage = product.images[0].url.startsWith("http")
       ? product.images[0].url
@@ -273,7 +273,7 @@ export function useProductSEO(product: ProductSEO) {
   }
 
   // Add reviews if available
-  if (product.reviewStats && product.reviewStats.totalReviews > 0) {
+  if (product.reviewStats && product.reviewStats.totalReviews && product.reviewStats.totalReviews > 0) {
     structuredData.aggregateRating = {
       "@type": "AggregateRating",
       ratingValue: product.reviewStats.averageRating,
@@ -285,7 +285,7 @@ export function useProductSEO(product: ProductSEO) {
     script: [
       {
         type: "application/ld+json",
-        children: JSON.stringify(structuredData),
+        innerHTML: JSON.stringify(structuredData),
       },
     ],
   });
