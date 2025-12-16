@@ -293,10 +293,13 @@
                 </div>
                 <div class="pdp-custom-notice__content">
                   <p class="pdp-custom-notice__text">
-                    <strong>Искате индивидуален дизайн?</strong> Свържете се с нас във 
+                    <strong>Искате индивидуален дизайн?</strong> Свържете се с нас в 
                     <a href="https://m.me/emwearbg" target="_blank" rel="noopener" class="pdp-custom-notice__link">
-                      Facebook Messenger
-                    </a> или се обадете на 
+                      Messenger
+                    </a> или 
+                    <a href="https://www.instagram.com/emwear.bg/" target="_blank" rel="noopener" class="pdp-custom-notice__link">
+                      Instagram
+                    </a> · 
                     <a href="tel:+359890927520" class="pdp-custom-notice__link">
                       +359 890 927 520
                     </a>
