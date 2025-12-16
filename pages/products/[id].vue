@@ -1184,6 +1184,82 @@ watchEffect(() => {
   useBreadcrumbs(breadcrumbItems);
 });
 
+// ===== GOOGLE SCHEMA.ORG STRUCTURED DATA =====
+// Generate Product schema for Google Rich Results
+const productSchema = computed(() => {
+  if (!product.value) return null;
+
+  // Map availability string to Schema.org format
+  const availabilityMap: Record<string, string> = {
+    'in stock': 'https://schema.org/InStock',
+    'out of stock': 'https://schema.org/OutOfStock',
+    'preorder': 'https://schema.org/PreOrder',
+    'discontinued': 'https://schema.org/Discontinued',
+  };
+
+  const availability = currentStock.value > 0 ? 'in stock' : 'out of stock';
+  const schemaAvailability = availabilityMap[availability] || 'https://schema.org/InStock';
+
+  // Base product schema
+  const schema: any = {
+    '@context': 'https://schema.org/',
+    '@type': 'Product',
+    name: product.value.name,
+    description: product.value.description
+      ? product.value.description.substring(0, 500).replace(/<[^>]*>/g, '')
+      : `Персонализиран ${product.value.name} от emWear`,
+    image: product.value.images && product.value.images.length > 0
+      ? product.value.images.map((img: any) => img.url)
+      : ['/img/placeholder-product.jpg'],
+    brand: {
+      '@type': 'Brand',
+      name: 'emWear',
+    },
+    offers: {
+      '@type': 'Offer',
+      url: `https://emwear.bg/products/${product.value.slug || product.value._id}`,
+      priceCurrency: 'BGN',
+      price: currentPrice.value.toFixed(2),
+      availability: schemaAvailability,
+      priceValidUntil: new Date(new Date().setFullYear(new Date().getFullYear() + 1)).toISOString().split('T')[0],
+      itemCondition: 'https://schema.org/NewCondition',
+      seller: {
+        '@type': 'Organization',
+        name: 'emWear',
+      },
+    },
+    sku: product.value._id,
+    mpn: product.value._id,
+  };
+
+  // Add aggregate rating ONLY if reviews exist
+  if (reviewStats.value && reviewStats.value.totalReviews > 0) {
+    schema.aggregateRating = {
+      '@type': 'AggregateRating',
+      ratingValue: reviewStats.value.averageRating.toFixed(1),
+      reviewCount: reviewStats.value.totalReviews,
+      bestRating: '5',
+      worstRating: '1',
+    };
+  }
+
+  return schema;
+});
+
+// Inject schema into head
+watchEffect(() => {
+  if (!productSchema.value) return;
+
+  useHead({
+    script: [
+      {
+        type: 'application/ld+json',
+        innerHTML: JSON.stringify(productSchema.value),
+      },
+    ],
+  });
+});
+
 // Handle review events
 const handleRatingFilter = (_rating: number) => {
   // Triggered by ReviewStats component - refresh reviews list
