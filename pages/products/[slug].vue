@@ -265,7 +265,9 @@
                     Забележка: Персонализираните артикули се нуждаят от допълнително време за
                     обработка.
                   </p>
-                  <div class="pdp-custom__field">
+                  
+                  <!-- Standard Name Field (only if NO category-specific fields) -->
+                  <div v-if="personalizationFields.length === 0" class="pdp-custom__field">
                     <label class="pdp-custom__field-label">Име за бродерия</label>
                     <input
                       v-model="embroideryName"
@@ -280,6 +282,83 @@
                     <span v-if="embroideryError" class="pdp-custom__error">{{
                       embroideryError
                     }}</span>
+                  </div>
+                  
+                  <!-- Category-Specific Personalization Fields (e.g., birth details for гергефи) -->
+                  <template v-if="personalizationFields.length > 0">
+                    <div 
+                      v-for="field in personalizationFields" 
+                      :key="field.name" 
+                      class="pdp-custom__field"
+                    >
+                      <label class="pdp-custom__field-label">
+                        {{ field.label }}
+                        <span v-if="field.required" class="pdp-custom__required">*</span>
+                      </label>
+                      
+                      <!-- Text input -->
+                      <input
+                        v-if="field.type === 'text' || field.type === 'number'"
+                        v-model="customFields[field.name]"
+                        :type="field.type"
+                        :placeholder="field.placeholder"
+                        class="pdp-custom__input"
+                        :class="{ 'pdp-custom__input--error': customFieldErrors[field.name] }"
+                        @blur="validateEmbroidery"
+                      />
+                      
+                      <!-- Date input -->
+                      <input
+                        v-else-if="field.type === 'date'"
+                        v-model="customFields[field.name]"
+                        type="date"
+                        class="pdp-custom__input"
+                        :class="{ 'pdp-custom__input--error': customFieldErrors[field.name] }"
+                        @blur="validateEmbroidery"
+                      />
+                      
+                      <!-- Time input -->
+                      <input
+                        v-else-if="field.type === 'time'"
+                        v-model="customFields[field.name]"
+                        type="time"
+                        :placeholder="field.placeholder"
+                        class="pdp-custom__input"
+                        :class="{ 'pdp-custom__input--error': customFieldErrors[field.name] }"
+                        @blur="validateEmbroidery"
+                      />
+                      
+                      <!-- Textarea -->
+                      <textarea
+                        v-else-if="field.type === 'textarea'"
+                        v-model="customFields[field.name]"
+                        :placeholder="field.placeholder"
+                        rows="3"
+                        class="pdp-custom__input pdp-custom__textarea"
+                        :class="{ 'pdp-custom__input--error': customFieldErrors[field.name] }"
+                        @blur="validateEmbroidery"
+                      />
+                      
+                      <span v-if="customFieldErrors[field.name]" class="pdp-custom__error">
+                        {{ customFieldErrors[field.name] }}
+                      </span>
+                    </div>
+                  </template>
+                  
+                  <!-- General Notes Field (always visible) -->
+                  <div class="pdp-custom__field pdp-custom__field--notes">
+                    <label class="pdp-custom__field-label">
+                      Специални инструкции 
+                      <span class="pdp-custom__optional">(по желание)</span>
+                    </label>
+                    <textarea
+                      v-model="embroideryNotes"
+                      placeholder="Въведете специални пожелания или инструкции..."
+                      rows="2"
+                      class="pdp-custom__input pdp-custom__textarea"
+                      maxlength="200"
+                    />
+                    <span class="pdp-custom__char-count">{{ embroideryNotes.length }}/200</span>
                   </div>
                 </div>
               </div>
@@ -669,15 +748,41 @@ const embroideryName = ref("");
 const embroideryColor = ref("");
 const embroideryFont = ref("");
 const embroideryError = ref("");
+const embroideryNotes = ref(""); // General notes/instructions field
+const customFields = ref<Record<string, string>>({}); // Category-specific fields (e.g., birth details)
+const customFieldErrors = ref<Record<string, string>>({}); // Validation errors for custom fields
+
+// Computed: Get personalization fields from category
+const personalizationFields = computed(() => {
+  if (!product.value?.category || typeof product.value.category !== 'object') return [];
+  const category = product.value.category as any;
+  return category.personalizationFields || [];
+});
 
 // Validation for embroidery
 const validateEmbroidery = () => {
+  let isValid = true;
+  
+  // Validate name field
   if (embroideryEnabled.value && !embroideryName.value.trim()) {
     embroideryError.value = "Това поле е задължително.";
-    return false;
+    isValid = false;
+  } else {
+    embroideryError.value = "";
   }
-  embroideryError.value = "";
-  return true;
+  
+  // Validate custom fields
+  customFieldErrors.value = {};
+  if (embroideryEnabled.value) {
+    personalizationFields.value.forEach((field: any) => {
+      if (field.required && !customFields.value[field.name]?.trim()) {
+        customFieldErrors.value[field.name] = "Това поле е задължително.";
+        isValid = false;
+      }
+    });
+  }
+  
+  return isValid;
 };
 
 // Accordion state
@@ -1124,9 +1229,14 @@ const addToCart = () => {
   // Prepare embroidery data if enabled
   const embroidery = embroideryEnabled.value
     ? {
-        name: embroideryName.value.trim(),
+        name: embroideryName.value.trim() || undefined,
         color: embroideryColor.value || undefined,
         font: embroideryFont.value || undefined,
+        notes: embroideryNotes.value.trim() || undefined,
+        // Include category-specific custom fields (e.g., birth details)
+        customFields: Object.keys(customFields.value).length > 0 
+          ? { ...customFields.value }
+          : undefined,
       }
     : undefined;
 
@@ -2044,6 +2154,37 @@ const handleStatsUpdated = (stats?: ReviewStats) => {
     font-size: 0.875rem;
     color: $error;
     margin-top: 0.25rem;
+  }
+  
+  &__required {
+    color: $error;
+    font-weight: 600;
+  }
+  
+  &__optional {
+    color: #888;
+    font-weight: 400;
+    font-size: 0.85em;
+  }
+  
+  &__textarea {
+    resize: vertical;
+    min-height: 60px;
+    font-family: inherit;
+  }
+  
+  &__char-count {
+    display: block;
+    text-align: right;
+    font-size: 0.75rem;
+    color: #888;
+    margin-top: 0.25rem;
+  }
+  
+  &__field--notes {
+    margin-top: 1rem;
+    padding-top: 1rem;
+    border-top: 1px dashed #e0e0e0;
   }
 }
 
