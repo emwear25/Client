@@ -222,7 +222,7 @@
                 >
                 <div class="pdp-option__buttons">
                   <button
-                    v-for="size in product.sizes"
+                    v-for="size in sortedSizes"
                     :key="size"
                     class="pdp-option__btn"
                     :class="{
@@ -881,6 +881,38 @@ const formatPrice = (price?: number | null) => {
   if (price == null) return "";
   return `${price.toFixed(2)} лв.`;
 };
+
+// Sort sizes in correct order: months first, then years
+const sortedSizes = computed(() => {
+  if (!product.value?.sizes) return [];
+  
+  const sizes = [...product.value.sizes];
+  
+  return sizes.sort((a, b) => {
+    // Extract numbers and units from size strings
+    // Format: "6-12(м)" or "3-4(г)"
+    const parseSize = (size: string) => {
+      const match = size.match(/(\d+)-(\d+)\(([мг])\)/);
+      if (!match) return { start: 0, end: 0, unit: '' };
+      return {
+        start: parseInt(match[1]),
+        end: parseInt(match[2]),
+        unit: match[3] // 'м' for months, 'г' for years
+      };
+    };
+    
+    const sizeA = parseSize(a);
+    const sizeB = parseSize(b);
+    
+    // Sort by unit first (months before years)
+    if (sizeA.unit !== sizeB.unit) {
+      return sizeA.unit === 'м' ? -1 : 1;
+    }
+    
+    // Then sort by start number
+    return sizeA.start - sizeB.start;
+  });
+});
 
 const formatCategory = (category: string | { name: string } | undefined) => {
   if (!category) return "";
