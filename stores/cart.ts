@@ -21,9 +21,12 @@ export interface CartItem {
     };
   };
   embroidery?: {
-    name: string;
+    name?: string;
     color?: string | null;
     font?: string | null;
+    notes?: string | null;
+    // Category-specific custom fields (e.g., birth details for гергефи)
+    customFields?: Record<string, string>;
   };
 }
 
