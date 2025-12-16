@@ -1987,6 +1987,58 @@ const handleStatsUpdated = (stats?: ReviewStats) => {
   }
 }
 
+/* Custom Design Notice */
+.pdp-custom-notice {
+  display: flex;
+  gap: 0.75rem;
+  padding: 1rem;
+  background: linear-gradient(135deg, rgba($brand, 0.06) 0%, rgba($brand, 0.03) 100%);
+  border-left: 3px solid $brand;
+  border-radius: 6px;
+  margin-top: 1.25rem;
+
+  &__icon {
+    flex-shrink: 0;
+    width: 20px;
+    height: 20px;
+    color: $brand;
+    margin-top: 2px;
+
+    svg {
+      width: 100%;
+      height: 100%;
+    }
+  }
+
+  &__content {
+    flex: 1;
+  }
+
+  &__text {
+    font-size: 0.875rem;
+    line-height: 1.5;
+    color: $text-primary;
+    margin: 0;
+
+    strong {
+      color: $brand-ink;
+      font-weight: 600;
+    }
+  }
+
+  &__link {
+    color: $brand;
+    text-decoration: none;
+    font-weight: 600;
+    transition: all 0.2s ease;
+
+    &:hover {
+      text-decoration: underline;
+      color: darken($brand, 10%);
+    }
+  }
+}
+
 /* Action Buttons */
 .pdp-actions {
   display: flex;
