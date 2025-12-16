@@ -315,6 +315,56 @@ watch(
   }
 );
 
+// ===== CATEGORY PAGE ITEMLIST SCHEMA =====
+// SEO Benefit: Category pages appear as collections in Google
+const categorySchema = computed(() => {
+  if (!category.value || !products.value || products.value.length === 0) return null;
+
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'CollectionPage',
+    name: category.value.name,
+    description: category.value.description || `Разгледайте нашата колекция ${category.value.name}`,
+    url: `https://emwear.bg/category/${category.value.slug}`,
+    mainEntity: {
+      '@type': 'ItemList',
+      numberOfItems: products.value.length,
+      itemListElement: products.value.slice(0, 10).map((product: any, index: number) => ({
+        '@type': 'ListItem',
+        position: index + 1,
+        item: {
+          '@type': 'Product',
+          name: product.name,
+          url: `https://emwear.bg/products/${product.slug || product._id}`,
+          image: product.images?.[0]?.url || '',
+          offers: {
+            '@type': 'Offer',
+            price: product.price?.toFixed(2) || '0.00',
+            priceCurrency: 'BGN',
+            availability: product.stock > 0 
+              ? 'https://schema.org/InStock' 
+              : 'https://schema.org/OutOfStock',
+          },
+        },
+      })),
+    },
+  };
+});
+
+// Inject category schema
+watchEffect(() => {
+  if (!categorySchema.value) return;
+
+  useHead({
+    script: [
+      {
+        type: 'application/ld+json',
+        innerHTML: JSON.stringify(categorySchema.value),
+      },
+    ],
+  });
+});
+
 // Fetch on mount
 onMounted(() => {
   fetchProducts();

@@ -1,28 +1,28 @@
-# robots.txt for emWear
-# https://emwear.bg/robots.txt
-
+# Allow all major search engines
 User-agent: *
-Allow: /
-Disallow: /api/
-Disallow: /admin/
-Disallow: /dashboard/
-Disallow: /checkout/
-Disallow: /cart/
-Disallow: /profile/
-Disallow: /orders/
-Disallow: /login/
-Disallow: /register/
-Disallow: /favorites/
 
-# Allow important pages
+# Disallow sensitive/private pages
+Disallow: /admin
+Disallow: /admin/*
+Disallow: /dashboard
+Disallow: /dashboard/*
+Disallow: /checkout
+Disallow: /checkout/*
+Disallow: /cart
+Disallow: /account
+Disallow: /profile
+Disallow: /orders
+Disallow: /login
+Disallow: /register
+
+# Allow product and category pages
 Allow: /products
-Allow: /category/
-Allow: /blog
-Allow: /about
-Allow: /contact
+Allow: /products/*
+Allow: /category
+Allow: /category/*
 
-# Sitemap
+# Sitemap location
 Sitemap: https://emwear.bg/sitemap.xml
 
-# Crawl-delay (optional, helps with server load)
+# Crawl delay (optional, prevents server overload)
 Crawl-delay: 1

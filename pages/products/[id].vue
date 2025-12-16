@@ -1184,17 +1184,18 @@ watchEffect(() => {
   useBreadcrumbs(breadcrumbItems);
 });
 
-// ===== GOOGLE SCHEMA.ORG STRUCTURED DATA =====
-// Generate Product schema for Google Rich Results
+// ===== ENHANCED GOOGLE SCHEMA.ORG PRODUCT DATA =====
+// SEO Benefit: Rich product cards in Google with price, stars, availability, shipping
 const productSchema = computed(() => {
   if (!product.value) return null;
 
-  // Map availability string to Schema.org format
+  // Map availability to Schema.org format
   const availabilityMap: Record<string, string> = {
     'in stock': 'https://schema.org/InStock',
     'out of stock': 'https://schema.org/OutOfStock',
     'preorder': 'https://schema.org/PreOrder',
     'discontinued': 'https://schema.org/Discontinued',
+    'limited availability': 'https://schema.org/LimitedAvailability',
   };
 
   const availability = currentStock.value > 0 ? 'in stock' : 'out of stock';
@@ -1206,11 +1207,11 @@ const productSchema = computed(() => {
     '@type': 'Product',
     name: product.value.name,
     description: product.value.description
-      ? product.value.description.substring(0, 500).replace(/<[^>]*>/g, '')
+      ? product.value.description.substring(0, 500).replace(/<[^>]*>/g, '').trim()
       : `Персонализиран ${product.value.name} от emWear`,
     image: product.value.images && product.value.images.length > 0
       ? product.value.images.map((img: any) => img.url)
-      : ['/img/placeholder-product.jpg'],
+      : ['https://emwear.bg/img/placeholder-product.jpg'],
     brand: {
       '@type': 'Brand',
       name: 'emWear',
@@ -1221,19 +1222,59 @@ const productSchema = computed(() => {
       priceCurrency: 'BGN',
       price: currentPrice.value.toFixed(2),
       availability: schemaAvailability,
-      priceValidUntil: new Date(new Date().setFullYear(new Date().getFullYear() + 1)).toISOString().split('T')[0],
+      priceValidUntil: new Date(new Date().setFullYear(new Date().getFullYear() + 1))
+        .toISOString()
+        .split('T')[0],
       itemCondition: 'https://schema.org/NewCondition',
       seller: {
         '@type': 'Organization',
         name: 'emWear',
       },
+      // Merchant Return Policy (Google recommendation)
+      hasMerchantReturnPolicy: {
+        '@type': 'MerchantReturnPolicy',
+        applicableCountry: 'BG',
+        returnPolicyCategory: 'https://schema.org/MerchantReturnFiniteReturnWindow',
+        merchantReturnDays: 30,
+        returnMethod: 'https://schema.org/ReturnByMail',
+        returnFees: 'https://schema.org/FreeReturn',
+      },
+      // Shipping Details (Google recommendation)
+      shippingDetails: {
+        '@type': 'OfferShippingDetails',
+        shippingRate: {
+          '@type': 'MonetaryAmount',
+          value: '0',
+          currency: 'BGN',
+        },
+        shippingDestination: {
+          '@type': 'DefinedRegion',
+          addressCountry: 'BG',
+        },
+        deliveryTime: {
+          '@type': 'ShippingDeliveryTime',
+          handlingTime: {
+            '@type': 'QuantitativeValue',
+            minValue: 1,
+            maxValue: 2,
+            unitCode: 'DAY',
+          },
+          transitTime: {
+            '@type': 'QuantitativeValue',
+            minValue: 1,
+            maxValue: 3,
+            unitCode: 'DAY',
+          },
+        },
+      },
     },
     sku: product.value._id,
     mpn: product.value._id,
+    gtin: product.value._id,
   };
 
-  // Add aggregate rating ONLY if reviews exist
-  if (reviewStats.value && reviewStats.value.totalReviews > 0) {
+  // Add aggregate rating ONLY if real reviews exist (Google strict policy)
+  if (reviewStats.value && reviewStats.value.totalReviews > 0 && reviewStats.value.averageRating > 0) {
     schema.aggregateRating = {
       '@type': 'AggregateRating',
       ratingValue: reviewStats.value.averageRating.toFixed(1),
