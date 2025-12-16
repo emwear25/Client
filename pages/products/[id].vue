@@ -545,7 +545,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted } from "vue";
+import { ref, computed, watchEffect } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import { useCartStore } from "~/stores/cart";
 import { useWishlist } from "~/stores/useWishlist";
@@ -676,6 +676,68 @@ const reviewStats = ref({
   },
 });
 const refreshKey = ref(0);
+
+// ===== SSR DATA FETCHING =====
+// Fetch product data on server-side for SEO and Facebook crawlers
+const { data: productData, error: fetchError } = await useAsyncData(
+  `product-${route.params.id}`,
+  async () => {
+    const api = useApi();
+    const response = await api.get(`products/${route.params.id}`);
+    
+    if (response.success && response.data) {
+      return response.data;
+    }
+    throw new Error('Product not found');
+  },
+  {
+    server: true,
+    lazy: false,
+  }
+);
+
+// Set product from server data
+if (productData.value) {
+  product.value = productData.value;
+  isLoading.value = false;
+  
+  // Auto-select single color
+  if (product.value.colors && product.value.colors.length === 1) {
+    const firstColor = product.value.colors[0];
+    if (firstColor) {
+      const colorName = typeof firstColor === 'string' ? firstColor : firstColor.name;
+      selectedColor.value = colorName || '';
+    }
+  }
+  
+  // Auto-select first size
+  if (product.value.sizes && product.value.sizes.length > 0) {
+    selectedSize.value = product.value.sizes[0];
+  }
+
+  // Set default embroidery options
+  if (product.value.embroideryFonts && product.value.embroideryFonts.length > 0) {
+    embroideryFont.value = product.value.embroideryFonts[0] || '';
+  }
+  if (product.value.embroideryColors && product.value.embroideryColors.length > 0) {
+    const firstColor = product.value.embroideryColors[0];
+    embroideryColor.value = firstColor?.value || '';
+  }
+
+  // Load review stats if available
+  if (product.value?.reviewStats) {
+    reviewStats.value = {
+      averageRating: product.value.reviewStats.averageRating || 0,
+      totalReviews: product.value.reviewStats.totalReviews || 0,
+      ratingDistribution: product.value.reviewStats.ratingDistribution || {
+        1: 0, 2: 0, 3: 0, 4: 0, 5: 0,
+      },
+    };
+  }
+} else if (fetchError.value) {
+  error.value = fetchError.value.message || 'Product not found';
+  isLoading.value = false;
+}
 
 // Wishlist computed
 const isInWishlist = computed(() =>
@@ -1055,111 +1117,72 @@ const fetchReviewStats = async (productId: string) => {
   }
 };
 
-const fetchProduct = async () => {
-  const id = route.params.id;
-  isLoading.value = true;
-  error.value = null;
+// ===== FACEBOOK CATALOG META TAGS =====
+watchEffect(() => {
+  if (!product.value) return;
 
-  try {
-    const api = useApi();
-    const response = await api.get(`products/${id}`);
+  const productImage = product.value.images && product.value.images.length > 0
+    ? product.value.images[0].url
+    : '/img/placeholder-product.jpg';
 
-    if (response.success && response.data) {
-      product.value = response.data;
+  const productDescription = product.value.description
+    ? product.value.description.substring(0, 200).replace(/<[^>]*>/g, '')
+    : `Персонализиран ${product.value.name} от emWear`;
 
-      // Load review stats if available from product
-      if (product.value?.reviewStats) {
-        reviewStats.value = {
-          averageRating: product.value.reviewStats.averageRating || 0,
-          totalReviews: product.value.reviewStats.totalReviews || 0,
-          ratingDistribution: product.value.reviewStats.ratingDistribution || {
-            1: 0,
-            2: 0,
-            3: 0,
-            4: 0,
-            5: 0,
-          },
-        };
-      } else if (product.value) {
-        // Fetch review stats from API
-        await fetchReviewStats(product.value._id);
-      }
-    } else {
-      throw new Error("Продуктът не е намерен");
-    }
+  const availability = currentStock.value > 0 ? 'in stock' : 'out of stock';
 
-    // Set defaults
-    if (product.value) {
-      // Auto-select first color ONLY if exactly 1 color exists
-      if (product.value.colors && product.value.colors.length === 1) {
-        const firstColor = product.value.colors[0];
-        if (firstColor) {
-          const colorName = getColorName(firstColor);
-          selectedColor.value = colorName || "";
-        } else {
-          selectedColor.value = "";
-        }
-      } else {
-        selectedColor.value = "";
-      }
+  useHead({
+    title: product.value.name,
+    meta: [
+      // Open Graph / Facebook
+      { property: 'og:type', content: 'product' },
+      { property: 'og:title', content: product.value.name },
+      { property: 'og:description', content: productDescription },
+      { property: 'og:image', content: productImage },
+      { property: 'og:url', content: `https://emwear.bg/products/${product.value.slug || product.value._id}` },
+      
+      // Facebook Product Catalog - Critical Tags
+      { property: 'product:brand', content: 'emWear' },
+      { property: 'product:availability', content: availability },
+      { property: 'product:condition', content: 'new' },
+      { property: 'product:price:amount', content: currentPrice.value.toFixed(2) },
+      { property: 'product:price:currency', content: 'BGN' },
+      { property: 'product:retailer_item_id', content: product.value._id },
+      { property: 'product:category', content: formatCategory(product.value.category) },
+      
+      // Twitter Card
+      { name: 'twitter:card', content: 'product' },
+      { name: 'twitter:title', content: product.value.name },
+      { name: 'twitter:description', content: productDescription },
+      { name: 'twitter:image', content: productImage },
+      
+      // Standard meta
+      { name: 'description', content: productDescription },
+    ],
+  });
 
-      // Auto-select first size if sizes exist (always if there's at least 1)
-      if (product.value.sizes && product.value.sizes.length > 0 && product.value.sizes[0]) {
-        selectedSize.value = product.value.sizes[0];
-      } else {
-        selectedSize.value = "";
-      }
+  // Set breadcrumbs
+  const categoryName = formatCategory(product.value.category);
+  const categorySlug = typeof product.value.category === 'object' 
+    ? (product.value.category as any).slug 
+    : undefined;
 
-      // Set default embroidery options
-      if (product.value.embroideryFonts && product.value.embroideryFonts.length > 0) {
-        embroideryFont.value = product.value.embroideryFonts[0] || "";
-      }
-      if (product.value.embroideryColors && product.value.embroideryColors.length > 0) {
-        const firstColor = product.value.embroideryColors[0];
-        embroideryColor.value = firstColor?.value || "";
-      }
+  const breadcrumbItems = [
+    { name: 'Начало', url: '/' },
+    { name: 'Продукти', url: '/products' },
+  ];
 
-      // Set SEO for product page
-      useProductSEO({
-        name: product.value.name,
-        description: product.value.description,
-        images: product.value.images || [],
-        price: product.value.price,
-        category: product.value.category,
-        seoTitle: (product.value as any).seoTitle,
-        metaDescription: (product.value as any).metaDescription,
-        slug: product.value.slug,
-        reviewStats: product.value.reviewStats,
-      });
-
-      // Add breadcrumbs
-      const categoryName =
-        typeof product.value.category === "object" ? product.value.category?.name : "Продукти";
-      const categorySlug =
-        typeof product.value.category === "object" ? (product.value.category as any)?.slug : null;
-
-      const breadcrumbItems = [
-        { name: "Начало", url: "/" },
-        { name: "Продукти", url: "/products" },
-      ];
-
-      if (categoryName !== "Продукти" && categorySlug) {
-        breadcrumbItems.push({ name: categoryName, url: `/category/${categorySlug}` });
-      }
-
-      breadcrumbItems.push({
-        name: product.value.name,
-        url: `/products/${product.value.slug || product.value._id}`,
-      });
-
-      useBreadcrumbs(breadcrumbItems);
-    }
-  } catch (err) {
-    error.value = err instanceof Error ? err.message : "Възникна грешка";
-  } finally {
-    isLoading.value = false;
+  if (categoryName !== 'Продукти' && categorySlug) {
+    breadcrumbItems.push({ name: categoryName, url: `/category/${categorySlug}` });
   }
-};
+
+  breadcrumbItems.push({
+    name: product.value.name,
+    url: `/products/${product.value.slug || product.value._id}`,
+  });
+
+  useBreadcrumbs(breadcrumbItems);
+});
 
 // Handle review events
 const handleRatingFilter = (_rating: number) => {
@@ -1185,9 +1208,8 @@ const handleStatsUpdated = (stats?: ReviewStats) => {
   }
 };
 
-onMounted(() => {
-  fetchProduct();
-});
+// SSR data fetching is now handled above with useAsyncData
+// No need for onMounted - data is loaded on server
 </script>
 
 <style lang="scss" scoped>
