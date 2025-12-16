@@ -134,6 +134,13 @@ interface ColorObject {
   hex?: string;
 }
 
+interface ProductVariant {
+  size: string;
+  color: string;
+  stock: number;
+  reserved?: number;
+}
+
 interface Product {
   _id: string;
   slug?: string;
@@ -145,6 +152,7 @@ interface Product {
   category: string | { _id: string; name: string };
   images?: ProductImage[];
   stock: number;
+  variants?: ProductVariant[];
   customEmbroidery?: boolean;
   createdAt: string;
   sizes?: string[];
@@ -184,7 +192,15 @@ const badges = computed(() => {
 });
 
 const isOutOfStock = computed(() => {
-  // Handle undefined, null, or 0 stock
+  // If product has variants (sizes/colors), calculate total stock from variants
+  if (props.product.variants && props.product.variants.length > 0) {
+    const totalStock = props.product.variants.reduce((sum, variant) => {
+      return sum + (variant.stock || 0);
+    }, 0);
+    return totalStock <= 0;
+  }
+  
+  // Otherwise use the stock field
   const stock = props.product.stock;
   return stock == null || stock <= 0;
 });
