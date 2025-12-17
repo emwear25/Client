@@ -1385,11 +1385,19 @@ watchEffect(() => {
 
   // Canonical URL pointing to current product page (not category)
   useHead({
+    htmlAttrs: {
+      lang: 'bg',
+    },
     link: [
       { rel: 'canonical', href: productUrl },
     ],
     meta: [
-      // Facebook Product Catalog - Critical Tags (keep in useHead for custom properties)
+      // Open Graph Price & Availability (for modern platforms)
+      { property: 'og:price:amount', content: currentPrice.value.toFixed(2) },
+      { property: 'og:price:currency', content: 'BGN' },
+      { property: 'og:availability', content: currentStock.value > 0 ? 'instock' : 'out of stock' },
+      
+      // Facebook Product Catalog - Critical Tags (keep for Meta tracking)
       { property: 'product:brand', content: 'emWear' },
       { property: 'product:availability', content: availability },
       { property: 'product:condition', content: 'new' },
