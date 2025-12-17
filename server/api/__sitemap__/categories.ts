@@ -1,20 +1,36 @@
 // Server API endpoint to fetch all categories for sitemap generation
-// Returns category slugs and lastmod for sitemap entries
+// Uses @nuxtjs/sitemap v7 defineSitemapEventHandler
+import { defineSitemapEventHandler } from '#imports';
+import type { SitemapUrlInput } from '#sitemap/types';
 
-export default defineEventHandler(async () => {
+export default defineSitemapEventHandler(async () => {
     const apiBase = process.env.NUXT_PUBLIC_API_BASE || 'https://api.emwear.bg';
+
+    console.log('[Sitemap Categories] Fetching categories from:', apiBase);
 
     try {
         const response = await $fetch<any[]>(`${apiBase}/categories`);
 
-        return (response || []).map((category: any) => ({
+        console.log('[Sitemap Categories] Fetched categories count:', response?.length || 0);
+
+        if (!response?.length) {
+            console.log('[Sitemap Categories] No categories found, returning empty array');
+            return [];
+        }
+
+        const urls: SitemapUrlInput[] = response.map((category: any) => ({
             loc: `/category/${category.slug || category._id}`,
-            lastmod: category.updatedAt || new Date().toISOString(),
+            lastmod: category.updatedAt ? new Date(category.updatedAt).toISOString() : new Date().toISOString(),
             changefreq: 'weekly',
             priority: 0.8,
         }));
+
+        console.log('[Sitemap Categories] Generated URLs count:', urls.length);
+        console.log('[Sitemap Categories] Sample URL:', urls[0]);
+
+        return urls;
     } catch (error) {
-        console.error('Sitemap categories fetch error:', error);
+        console.error('[Sitemap Categories] Error fetching categories:', error);
         return [];
     }
 });

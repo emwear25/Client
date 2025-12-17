@@ -1,31 +1,52 @@
 // Server API endpoint to fetch all products for sitemap generation
-// Returns product slugs, images, and lastmod for sitemap entries
+// Uses @nuxtjs/sitemap v7 defineSitemapEventHandler
+import { defineSitemapEventHandler } from '#imports';
+import type { SitemapUrlInput } from '#sitemap/types';
 
-export default defineEventHandler(async () => {
+export default defineSitemapEventHandler(async () => {
     const apiBase = process.env.NUXT_PUBLIC_API_BASE || 'https://api.emwear.bg';
+
+    console.log('[Sitemap Products] Fetching products from:', apiBase);
 
     try {
         const response = await $fetch<{ products: any[] }>(`${apiBase}/products`, {
             query: {
                 limit: 1000, // Get all products
-                fields: 'slug,images,updatedAt,name,price',
             },
         });
 
-        return (response.products || []).map((product: any) => ({
-            loc: `/products/${product.slug || product._id}`,
-            lastmod: product.updatedAt || new Date().toISOString(),
-            changefreq: 'weekly',
-            priority: 0.9,
-            images: product.images?.length
-                ? product.images.map((img: any) => ({
+        console.log('[Sitemap Products] Fetched products count:', response?.products?.length || 0);
+
+        if (!response?.products?.length) {
+            console.log('[Sitemap Products] No products found, returning empty array');
+            return [];
+        }
+
+        const urls: SitemapUrlInput[] = response.products.map((product: any) => {
+            const url: SitemapUrlInput = {
+                loc: `/products/${product.slug || product._id}`,
+                lastmod: product.updatedAt ? new Date(product.updatedAt).toISOString() : new Date().toISOString(),
+                changefreq: 'weekly',
+                priority: 0.9,
+            };
+
+            // Add images if available
+            if (product.images?.length) {
+                url.images = product.images.map((img: any) => ({
                     loc: img.url,
                     title: product.name,
-                }))
-                : undefined,
-        }));
+                }));
+            }
+
+            return url;
+        });
+
+        console.log('[Sitemap Products] Generated URLs count:', urls.length);
+        console.log('[Sitemap Products] Sample URL:', urls[0]);
+
+        return urls;
     } catch (error) {
-        console.error('Sitemap products fetch error:', error);
+        console.error('[Sitemap Products] Error fetching products:', error);
         return [];
     }
 });
