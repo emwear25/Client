@@ -179,14 +179,23 @@ const fetchFeaturedProducts = async () => {
     
     const results = await Promise.all(productPromises);
     
-    // Flatten results
+    // Flatten results and deduplicate by product ID
+    const seenIds = new Set<string>();
     for (const productsData of results) {
       if (Array.isArray(productsData)) {
-        allProducts.push(...productsData);
+        for (const product of productsData) {
+          // Only add if we haven't seen this product ID before
+          if (!seenIds.has(product._id)) {
+            seenIds.add(product._id);
+            allProducts.push(product);
+          } else {
+            console.log(`[FeaturedProducts] Skipping duplicate product: ${product.name} (${product._id})`);
+          }
+        }
       }
     }
     
-    console.log('[FeaturedProducts] Total products:', allProducts.length);
+    console.log('[FeaturedProducts] Total unique products:', allProducts.length);
     
     products.value = allProducts;
   } catch (error) {
