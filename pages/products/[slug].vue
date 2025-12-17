@@ -2194,6 +2194,7 @@ const handleStatsUpdated = (stats?: ReviewStats) => {
     line-height: 14px;
     color: #333333;
     margin: 0 0 1rem 0;
+    grid-column: 1 / -1; // Span full width so fields appear below
   }
 
   &__error {
