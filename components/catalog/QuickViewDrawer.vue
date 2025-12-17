@@ -88,7 +88,9 @@
               <p class="qv__custom-note">
                 Забележка: Персонализираните артикули се нуждаят от допълнително време за обработка.
               </p>
-              <div class="qv__custom-field">
+              
+              <!-- Standard Name Field (only if NO category-specific fields) -->
+              <div v-if="personalizationFields.length === 0" class="qv__custom-field">
                 <label class="qv__custom-field-label">Име за бродерия</label>
                 <input
                   v-model="embroideryName"
@@ -100,9 +102,64 @@
                   required
                   @blur="validateEmbroidery"
                 />
-                <span v-if="embroideryError" class="qv__custom-error">{{
-                  embroideryError
-                }}</span>
+                <span v-if="embroideryError" class="qv__custom-error">{{ embroideryError }}</span>
+              </div>
+              
+              <!-- Category-Specific Personalization Fields -->
+              <template v-if="personalizationFields.length > 0">
+                <div 
+                  v-for="field in personalizationFields" 
+                  :key="field.name" 
+                  class="qv__custom-field"
+                >
+                  <label class="qv__custom-field-label">
+                    {{ field.label }}
+                    <span v-if="field.required" class="qv__custom-required">*</span>
+                  </label>
+                  <input
+                    v-if="field.type === 'text' || field.type === 'number'"
+                    v-model="customFields[field.name]"
+                    :type="field.type"
+                    :placeholder="field.placeholder"
+                    class="qv__custom-input"
+                    :class="{ 'qv__custom-input--error': customFieldErrors[field.name] }"
+                    @blur="validateEmbroidery"
+                  />
+                  <input
+                    v-else-if="field.type === 'date'"
+                    v-model="customFields[field.name]"
+                    type="date"
+                    class="qv__custom-input"
+                    :class="{ 'qv__custom-input--error': customFieldErrors[field.name] }"
+                    @blur="validateEmbroidery"
+                  />
+                  <input
+                    v-else-if="field.type === 'time'"
+                    v-model="customFields[field.name]"
+                    type="time"
+                    class="qv__custom-input"
+                    :class="{ 'qv__custom-input--error': customFieldErrors[field.name] }"
+                    @blur="validateEmbroidery"
+                  />
+                  <span v-if="customFieldErrors[field.name]" class="qv__custom-error">
+                    {{ customFieldErrors[field.name] }}
+                  </span>
+                </div>
+              </template>
+              
+              <!-- Notes Field (always visible) -->
+              <div class="qv__custom-field qv__custom-field--notes">
+                <label class="qv__custom-field-label">
+                  Специални инструкции <span class="qv__custom-optional">(по желание)</span>
+                </label>
+                <textarea
+                  v-model="embroideryNotes"
+                  placeholder="Въведете специални пожелания..."
+                  rows="2"
+                  class="qv__custom-input qv__custom-textarea"
+                  maxlength="200"
+                />
+                <span class="qv__char-count">{{ embroideryNotes.length }}/200</span>
               </div>
             </div>
           </div>
@@ -166,6 +223,18 @@ interface Product {
   variants?: Variant[];
   weight?: number;
   customEmbroidery?: boolean;
+  category?: {
+    _id?: string;
+    name?: string;
+    personalizationFields?: {
+      name: string;
+      label: string;
+      type: string;
+      placeholder?: string;
+      required?: boolean;
+      order?: number;
+    }[];
+  };
 }
 
 const props = defineProps<{
@@ -188,6 +257,15 @@ const selectedSize = ref<string>("");
 const embroideryEnabled = ref(false);
 const embroideryName = ref("");
 const embroideryError = ref("");
+const embroideryNotes = ref("");
+const customFields = ref<Record<string, string>>({});
+const customFieldErrors = ref<Record<string, string>>({});
+
+// Computed: Get personalization fields from category
+const personalizationFields = computed(() => {
+  if (!props.product?.category || typeof props.product.category !== 'object') return [];
+  return props.product.category.personalizationFields || [];
+});
 
 // Auto-select first color/size when product changes
 watch(
@@ -220,6 +298,9 @@ watch(
     embroideryEnabled.value = false;
     embroideryName.value = "";
     embroideryError.value = "";
+    embroideryNotes.value = "";
+    customFields.value = {};
+    customFieldErrors.value = {};
   },
   { immediate: true }
 );
@@ -242,12 +323,28 @@ const availableStock = computed(() => {
 
 // Validation for embroidery
 const validateEmbroidery = () => {
-  if (embroideryEnabled.value && !embroideryName.value.trim()) {
+  let isValid = true;
+  
+  // Validate name field (only if no category-specific fields)
+  if (embroideryEnabled.value && personalizationFields.value.length === 0 && !embroideryName.value.trim()) {
     embroideryError.value = "Това поле е задължително.";
-    return false;
+    isValid = false;
+  } else {
+    embroideryError.value = "";
   }
-  embroideryError.value = "";
-  return true;
+  
+  // Validate custom fields
+  customFieldErrors.value = {};
+  if (embroideryEnabled.value) {
+    personalizationFields.value.forEach((field: any) => {
+      if (field.required && !customFields.value[field.name]?.trim()) {
+        customFieldErrors.value[field.name] = "Това поле е задължително.";
+        isValid = false;
+      }
+    });
+  }
+  
+  return isValid;
 };
 
 const formatPrice = (price?: number | null) => {
@@ -377,11 +474,15 @@ const addToCart = () => {
   }
 
   // Prepare embroidery data if enabled
-  const embroidery = embroideryEnabled.value && embroideryName.value.trim()
+  const embroidery = embroideryEnabled.value
     ? {
-        name: embroideryName.value.trim(),
+        name: embroideryName.value.trim() || undefined,
         color: undefined,
         font: undefined,
+        notes: embroideryNotes.value.trim() || undefined,
+        customFields: Object.keys(customFields.value).length > 0 
+          ? { ...customFields.value }
+          : undefined,
       }
     : undefined;
 

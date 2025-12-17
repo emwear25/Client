@@ -28,8 +28,22 @@
           <p class="checkout-order-summary__item-details">
             <span v-if="item.size">Размер: {{ item.size }}</span>
             <span v-if="item.color"> • Цвят: {{ item.color }}</span>
-            <span v-if="item.embroidery?.name"> • Бродерия: {{ item.embroidery.name }}</span>
           </p>
+          <!-- Embroidery Details -->
+          <div v-if="item.embroidery" class="checkout-order-summary__embroidery">
+            <span v-if="item.embroidery.name">🧵 Бродерия: {{ item.embroidery.name }}</span>
+            <template v-if="item.embroidery.customFields">
+              <span 
+                v-for="(value, key) in item.embroidery.customFields" 
+                :key="key"
+              >
+                {{ formatFieldLabel(String(key)) }}: {{ value }}
+              </span>
+            </template>
+            <span v-if="item.embroidery.notes" class="checkout-order-summary__notes">
+              📝 {{ item.embroidery.notes }}
+            </span>
+          </div>
           <p class="checkout-order-summary__item-quantity">Количество: {{ item.quantity }}</p>
         </div>
         <div class="checkout-order-summary__item-price">
@@ -123,9 +137,11 @@ interface CartItem {
   quantity: number;
   price: number;
   embroidery?: {
-    name: string;
+    name?: string | null;
     color?: string | null;
     font?: string | null;
+    notes?: string | null;
+    customFields?: Record<string, string>;
   };
 }
 
@@ -152,6 +168,21 @@ defineEmits<{
 const finalTotal = computed(() => {
   return props.totalPrice || 0;
 });
+
+// Helper to convert camelCase field names to readable Bulgarian labels
+const formatFieldLabel = (fieldName: string): string => {
+  const fieldLabels: Record<string, string> = {
+    babyName: 'Име на бебето',
+    birthDate: 'Дата на раждане',
+    birthTime: 'Час на раждане',
+    babyWeight: 'Тегло при раждане',
+    babyLength: 'Ръст при раждане',
+  };
+  return fieldLabels[fieldName] || fieldName
+    .replace(/([A-Z])/g, ' $1')
+    .replace(/^./, (str) => str.toUpperCase())
+    .trim();
+};
 </script>
 
 <style scoped lang="scss">

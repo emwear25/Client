@@ -69,9 +69,25 @@
                   <span v-if="item.color" class="cart-item__attr">
                     Цвят: {{ getColorDisplayName(item.color) }}
                   </span>
-                  <span v-if="item.embroidery?.name" class="cart-item__attr">
-                    Бродерия: {{ item.embroidery.name }}
-                  </span>
+                  <!-- Embroidery Info -->
+                  <template v-if="item.embroidery">
+                    <span v-if="item.embroidery.name" class="cart-item__attr cart-item__attr--embroidery">
+                      🧵 Бродерия: {{ item.embroidery.name }}
+                    </span>
+                    <!-- Custom Fields -->
+                    <template v-if="item.embroidery.customFields">
+                      <span 
+                        v-for="(value, key) in item.embroidery.customFields" 
+                        :key="key" 
+                        class="cart-item__attr cart-item__attr--embroidery"
+                      >
+                        {{ formatFieldLabel(String(key)) }}: {{ value }}
+                      </span>
+                    </template>
+                    <span v-if="item.embroidery.notes" class="cart-item__attr cart-item__attr--notes">
+                      📝 {{ item.embroidery.notes }}
+                    </span>
+                  </template>
                 </div>
                 <div class="cart-item__footer">
                   <div class="cart-item__quantity">
@@ -193,6 +209,21 @@ const getColorDisplayName = (color: string | { name: string; hex?: string } | nu
 
   // Return original name if no translation found
   return colorName;
+};
+
+// Helper to convert camelCase field names to readable Bulgarian labels
+const formatFieldLabel = (fieldName: string): string => {
+  const fieldLabels: Record<string, string> = {
+    babyName: 'Име на бебето',
+    birthDate: 'Дата на раждане',
+    birthTime: 'Час на раждане',
+    babyWeight: 'Тегло при раждане',
+    babyLength: 'Ръст при раждане',
+  };
+  return fieldLabels[fieldName] || fieldName
+    .replace(/([A-Z])/g, ' $1')
+    .replace(/^./, (str) => str.toUpperCase())
+    .trim();
 };
 
 // Navigate to checkout
