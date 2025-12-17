@@ -794,8 +794,12 @@ const personalizationFields = computed(() => {
 const validateEmbroidery = () => {
   let isValid = true;
   
-  // Only validate embroideryName if there are NO category-specific personalization fields
-  if (embroideryEnabled.value && personalizationFields.value.length === 0 && !embroideryName.value.trim()) {
+  // Get non-checkbox personalization fields
+  const nonCheckboxFields = personalizationFields.value.filter((f: any) => f.type !== 'checkbox');
+  
+  // Validate embroideryName if there are NO non-checkbox category-specific personalization fields
+  // (i.e., category has only checkbox optionals or no fields at all)
+  if (embroideryEnabled.value && nonCheckboxFields.length === 0 && !embroideryName.value.trim()) {
     embroideryError.value = "Това поле е задължително.";
     isValid = false;
   } else {
@@ -805,12 +809,10 @@ const validateEmbroidery = () => {
   // Validate custom fields (skip checkbox fields - they're optional by nature)
   customFieldErrors.value = {};
   if (embroideryEnabled.value) {
-    personalizationFields.value.forEach((field: any) => {
-      // Skip checkbox fields from required validation
-      if (field.type === 'checkbox') return;
-      
+    nonCheckboxFields.forEach((field: any) => {
+      // All non-checkbox fields are required when embroidery is enabled
       const value = customFields.value[field.name];
-      if (field.required && (!value || (typeof value === 'string' && !value.trim()))) {
+      if (!value || (typeof value === 'string' && !value.trim())) {
         customFieldErrors.value[field.name] = "Това поле е задължително.";
         isValid = false;
       }
