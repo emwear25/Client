@@ -78,8 +78,24 @@
                     <span v-if="item.color" class="cart-item__meta-item">
                       <strong>Цвят:</strong> {{ item.color }}
                     </span>
-                    <span v-if="item.embroidery?.name" class="cart-item__meta-item">
-                      <strong>Бродерия:</strong> {{ item.embroidery.name }}
+                  </div>
+                  
+                  <!-- Embroidery Details -->
+                  <div v-if="item.embroidery" class="cart-item__embroidery">
+                    <span v-if="item.embroidery.name" class="cart-item__emb-item">
+                      🧵 <strong>Бродерия:</strong> {{ item.embroidery.name }}
+                    </span>
+                    <template v-if="item.embroidery.customFields">
+                      <span 
+                        v-for="(value, key) in item.embroidery.customFields" 
+                        :key="key"
+                        class="cart-item__emb-item"
+                      >
+                        <strong>{{ formatFieldLabel(String(key)) }}:</strong> {{ value }}
+                      </span>
+                    </template>
+                    <span v-if="item.embroidery.notes" class="cart-item__emb-item cart-item__emb-notes">
+                      📝 {{ item.embroidery.notes }}
                     </span>
                   </div>
 
@@ -262,6 +278,21 @@ const removeItem = (item: any) => {
   if (confirm(`Сигурни ли сте, че искате да премахнете "${item.name}" от количката?`)) {
     cartStore.removeItem(item.id, item.size, item.color);
   }
+};
+
+// Helper to convert camelCase field names to readable Bulgarian labels
+const formatFieldLabel = (fieldName: string): string => {
+  const fieldLabels: Record<string, string> = {
+    babyName: 'Име на бебето',
+    birthDate: 'Дата на раждане',
+    birthTime: 'Час на раждане',
+    babyWeight: 'Тегло при раждане',
+    babyLength: 'Ръст при раждане',
+  };
+  return fieldLabels[fieldName] || fieldName
+    .replace(/([A-Z])/g, ' $1')
+    .replace(/^./, (str) => str.toUpperCase())
+    .trim();
 };
 
 // SEO
@@ -526,6 +557,33 @@ useHead({
       font-weight: 500;
       color: $text-primary;
     }
+  }
+  
+  &__embroidery {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+    padding: 0.5rem 0.75rem;
+    margin-top: 0.5rem;
+    background: #fef9f3;
+    border-radius: 6px;
+    border-left: 3px solid #b07b2c;
+    font-size: 0.8125rem;
+    color: #8b6914;
+  }
+  
+  &__emb-item {
+    strong {
+      font-weight: 600;
+      color: #7a5f12;
+    }
+  }
+  
+  &__emb-notes {
+    font-style: italic;
+    padding-top: 0.25rem;
+    border-top: 1px dashed #e5d4b3;
+    margin-top: 0.25rem;
   }
 
   &__price {

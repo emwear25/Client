@@ -289,6 +289,34 @@ const formatFieldLabel = (fieldName: string): string => {
       font-size: 0.75rem;
     }
   }
+  
+  &__embroidery {
+    display: flex;
+    flex-direction: column;
+    gap: 0.125rem;
+    padding: 0.375rem 0.5rem;
+    margin: 0.25rem 0;
+    background: #fef9f3;
+    border-radius: 4px;
+    border-left: 2px solid #b07b2c;
+    font-size: 0.625rem;
+    color: #8b6914;
+    
+    @media (min-width: 768px) {
+      font-size: 0.6875rem;
+    }
+    
+    span {
+      display: block;
+    }
+  }
+  
+  &__notes {
+    font-style: italic;
+    padding-top: 0.125rem;
+    border-top: 1px dashed #e5d4b3;
+    margin-top: 0.125rem;
+  }
 
   &__item-price {
     font-weight: 600;

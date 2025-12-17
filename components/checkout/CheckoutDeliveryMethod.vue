@@ -14,7 +14,8 @@
             @change="handleProviderChange('econt')"
           />
           <span class="checkout-delivery-method__provider-label">
-            <strong>Доставка с Econt</strong>
+            <strong class="full-text">Доставка с Econt</strong>
+            <strong class="short-text">Econt</strong>
           </span>
         </label>
 
@@ -26,7 +27,8 @@
             @change="handleProviderChange('speedy')"
           />
           <span class="checkout-delivery-method__provider-label">
-            <strong>Доставка със Speedy</strong>
+            <strong class="full-text">Доставка със Speedy</strong>
+            <strong class="short-text">Speedy</strong>
           </span>
         </label>
       </div>
@@ -480,6 +482,24 @@ const speedyIframeUrl = computed(() => {
 
     strong {
       font-weight: 600;
+    }
+    
+    .full-text {
+      display: inline;
+    }
+    
+    .short-text {
+      display: none;
+    }
+    
+    @media (max-width: 640px) {
+      .full-text {
+        display: none;
+      }
+      
+      .short-text {
+        display: inline;
+      }
     }
   }
 
