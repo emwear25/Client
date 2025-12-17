@@ -1492,9 +1492,14 @@ const handleSubmit = async () => {
       }
 
       // Save address based on delivery method
-      if (deliveryMethod.value === "courier_address") {
-        // Save courier address if user chose to save new address
-        if (saveNewAddress.value && selectedAddressId.value === null) {
+      if (deliveryMethod.value === "courier_address" && authStore.isAuthenticated) {
+        // Save courier address for authenticated users entering a new address
+        // - Save if user explicitly checked "save address" checkbox
+        // - OR if user doesn't have any addresses yet (auto-save their first address)
+        const shouldSaveAddress = selectedAddressId.value === null && 
+          (saveNewAddress.value || !authStore.user?.addresses?.length);
+        
+        if (shouldSaveAddress) {
           const hasMatchingAddress = authStore.user?.addresses?.some(
             (addr) =>
               addr.street === shippingForm.value.street &&
@@ -1502,7 +1507,7 @@ const handleSubmit = async () => {
               addr.postalCode === shippingForm.value.postalCode
           );
 
-          if (!hasMatchingAddress) {
+          if (!hasMatchingAddress && shippingForm.value.street && shippingForm.value.city) {
             console.log("[Checkout] Saving new courier address...");
             try {
               const addressResult = await api.post(

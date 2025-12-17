@@ -100,6 +100,7 @@
               'checkout-shipping-address__input',
               { 'checkout-shipping-address__input--error': validationErrors.shippingCity },
             ]"
+            placeholder="Напр. София, Пловдив, Варна"
             :required="deliveryMethod === 'courier_address' && selectedAddressId === null"
             @blur="$emit('validate-field', 'shippingCity', shippingForm.city)"
             @input="updateField('city', $event)"
@@ -121,6 +122,7 @@
               'checkout-shipping-address__input',
               { 'checkout-shipping-address__input--error': validationErrors.shippingPostalCode },
             ]"
+            placeholder="Напр. 1000, 4000"
             maxlength="5"
             :required="deliveryMethod === 'courier_address' && selectedAddressId === null"
             @blur="$emit('validate-field', 'shippingPostalCode', shippingForm.postalCode)"
