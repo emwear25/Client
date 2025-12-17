@@ -1,52 +1,57 @@
 // Server API endpoint to fetch all products for sitemap generation
-// Uses @nuxtjs/sitemap v7 defineSitemapEventHandler
-import { defineSitemapEventHandler } from '#imports';
-import type { SitemapUrlInput } from '#sitemap/types';
+// Uses @nuxtjs/sitemap v7 format
 
-export default defineSitemapEventHandler(async () => {
-    const apiBase = process.env.NUXT_PUBLIC_API_BASE || 'https://api.emwear.bg';
+export default defineEventHandler(async (event) => {
+    const config = useRuntimeConfig(event);
+    const apiBase = config.public?.apiBase || 'https://api.emwear.bg';
 
-    console.log('[Sitemap Products] Fetching products from:', apiBase);
+    console.log('[Sitemap Products] Starting sitemap generation...');
+    console.log('[Sitemap Products] API Base:', apiBase);
 
     try {
+        // Fetch products from API
         const response = await $fetch<{ products: any[] }>(`${apiBase}/products`, {
             query: {
-                limit: 1000, // Get all products
+                limit: 1000,
             },
         });
 
-        console.log('[Sitemap Products] Fetched products count:', response?.products?.length || 0);
+        console.log('[Sitemap Products] API Response received');
+        console.log('[Sitemap Products] Products count:', response?.products?.length || 0);
 
         if (!response?.products?.length) {
-            console.log('[Sitemap Products] No products found, returning empty array');
+            console.warn('[Sitemap Products] No products found!');
             return [];
         }
 
-        const urls: SitemapUrlInput[] = response.products.map((product: any) => {
-            const url: SitemapUrlInput = {
+        // Map products to sitemap URLs
+        const urls = response.products.map((product: any) => {
+            const entry: any = {
                 loc: `/products/${product.slug || product._id}`,
-                lastmod: product.updatedAt ? new Date(product.updatedAt).toISOString() : new Date().toISOString(),
+                lastmod: product.updatedAt || new Date().toISOString(),
                 changefreq: 'weekly',
                 priority: 0.9,
             };
 
             // Add images if available
             if (product.images?.length) {
-                url.images = product.images.map((img: any) => ({
+                entry.images = product.images.map((img: any) => ({
                     loc: img.url,
-                    title: product.name,
+                    title: product.name || 'Product Image',
                 }));
             }
 
-            return url;
+            return entry;
         });
 
-        console.log('[Sitemap Products] Generated URLs count:', urls.length);
-        console.log('[Sitemap Products] Sample URL:', urls[0]);
+        console.log('[Sitemap Products] Generated', urls.length, 'URLs');
+        if (urls.length > 0) {
+            console.log('[Sitemap Products] First URL:', JSON.stringify(urls[0]));
+        }
 
         return urls;
-    } catch (error) {
-        console.error('[Sitemap Products] Error fetching products:', error);
+    } catch (error: any) {
+        console.error('[Sitemap Products] Error:', error.message || error);
         return [];
     }
 });

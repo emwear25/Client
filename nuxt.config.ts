@@ -301,6 +301,8 @@ export default defineNuxtConfig({
 
   // Sitemap Configuration - 2025 ecommerce best practices
   sitemap: {
+    // Enable debug mode to see what's happening
+    debug: process.env.NODE_ENV === 'development',
     // Multi-sitemap indexing
     sitemaps: {
       // Main pages sitemap
@@ -318,15 +320,21 @@ export default defineNuxtConfig({
           '/admin',
           '/admin/**',
           '/api/**',
+          '/products/**', // Exclude individual products from pages sitemap
+          '/category/**', // Exclude categories from pages sitemap
         ],
         defaults: {
           changefreq: 'weekly',
           priority: 0.7,
         },
       },
-      // Products sitemap with dynamic routes
+      // Products sitemap with dynamic routes from server API
       products: {
-        sources: ['/api/__sitemap__/products'],
+        includeAppSources: true,
+        sources: [
+          '/api/__sitemap__/products',
+        ],
+        exclude: ['/**'], // Exclude all app routes, only use sources
         defaults: {
           changefreq: 'weekly',
           priority: 0.9,
@@ -334,7 +342,11 @@ export default defineNuxtConfig({
       },
       // Categories sitemap
       categories: {
-        sources: ['/api/__sitemap__/categories'],
+        includeAppSources: true,
+        sources: [
+          '/api/__sitemap__/categories',
+        ],
+        exclude: ['/**'], // Exclude all app routes, only use sources
         defaults: {
           changefreq: 'weekly',
           priority: 0.8,
