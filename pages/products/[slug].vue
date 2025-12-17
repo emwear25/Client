@@ -1361,43 +1361,18 @@ watchEffect(() => {
     : `Персонализиран ${product.value.name} от emWear`;
 
   const availability = currentStock.value > 0 ? 'in stock' : 'out of stock';
-  const productUrl = `https://emwear.bg/products/${product.value.slug || product.value._id}`;
 
-  // 2025 SEO Best Practices: Use useSeoMeta for standard meta tags
-  useSeoMeta({
-    title: product.value.name,
-    description: productDescription,
-    robots: 'index, follow, max-image-preview:large',
-    
-    // Open Graph (use 'website' - product type handled by Facebook Catalog meta)
-    ogType: 'website',
-    ogTitle: product.value.name,
-    ogDescription: productDescription,
-    ogImage: productImage,
-    ogUrl: productUrl,
-    
-    // Twitter Card - 2025: use summary_large_image for better engagement
-    twitterCard: 'summary_large_image',
-    twitterTitle: product.value.name,
-    twitterDescription: productDescription,
-    twitterImage: productImage,
-  });
-
-  // Canonical URL pointing to current product page (not category)
   useHead({
-    htmlAttrs: {
-      lang: 'bg',
-    },
-    link: [
-      { rel: 'canonical', href: productUrl },
-    ],
+    title: product.value.name,
     meta: [
-      // Open Graph Price & Availability (for modern platforms)
-      { property: 'og:price:amount', content: currentPrice.value.toFixed(2) },
-      { property: 'og:price:currency', content: 'BGN' },
-      { property: 'og:availability', content: currentStock.value > 0 ? 'instock' : 'out of stock' },
+      // Open Graph / Facebook
+      { property: 'og:type', content: 'product' },
+      { property: 'og:title', content: product.value.name },
+      { property: 'og:description', content: productDescription },
+      { property: 'og:image', content: productImage },
+      { property: 'og:url', content: `https://emwear.bg/products/${product.value.slug || product.value._id}` },
       
-      // Facebook Product Catalog - Critical Tags (keep for Meta tracking)
+      // Facebook Product Catalog - Critical Tags
       { property: 'product:brand', content: 'emWear' },
       { property: 'product:availability', content: availability },
       { property: 'product:condition', content: 'new' },
@@ -1409,6 +1384,15 @@ watchEffect(() => {
       ...(typeof product.value.category === 'object' && (product.value.category as any).googleProductCategory
         ? [{ property: 'product:google_product_category', content: (product.value.category as any).googleProductCategory }]
         : []),
+      
+      // Twitter Card
+      { name: 'twitter:card', content: 'product' },
+      { name: 'twitter:title', content: product.value.name },
+      { name: 'twitter:description', content: productDescription },
+      { name: 'twitter:image', content: productImage },
+      
+      // Standard meta
+      { name: 'description', content: productDescription },
     ],
   });
 
@@ -1524,22 +1508,12 @@ const productSchema = computed(() => {
     gtin: product.value._id,
   };
 
-  // Add aggregate rating - use real reviews if available, otherwise default for rich snippets
-  // Default values: 5 stars, 12 reviews (per user request)
+  // Add aggregate rating ONLY if real reviews exist (Google strict policy)
   if (reviewStats.value && reviewStats.value.totalReviews > 0 && reviewStats.value.averageRating > 0) {
     schema.aggregateRating = {
       '@type': 'AggregateRating',
       ratingValue: reviewStats.value.averageRating.toFixed(1),
       reviewCount: reviewStats.value.totalReviews,
-      bestRating: '5',
-      worstRating: '1',
-    };
-  } else {
-    // Default aggregate rating for products without reviews (for Google rich snippets)
-    schema.aggregateRating = {
-      '@type': 'AggregateRating',
-      ratingValue: '5.0',
-      reviewCount: 12,
       bestRating: '5',
       worstRating: '1',
     };

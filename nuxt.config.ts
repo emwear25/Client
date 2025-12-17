@@ -14,8 +14,6 @@ export default defineNuxtConfig({
     "@pinia/nuxt",
     "@vueuse/nuxt",
     "nuxt-gtag",
-    "@nuxtjs/sitemap",
-    "@nuxtjs/robots",
   ],
 
   // Google Analytics Configuration
@@ -291,38 +289,5 @@ export default defineNuxtConfig({
     "/orders": { prerender: false, headers: { "Cache-Control": "no-cache, no-store, must-revalidate" } },
     // "/login": { prerender: false, headers: { "Cache-Control": "no-cache, no-store, must-revalidate" } },
     "/register": { prerender: false, headers: { "Cache-Control": "no-cache, no-store, must-revalidate" } },
-  },
-
-  // Site URL configuration
-  site: {
-    url: 'https://emwear.bg',
-    name: 'emWear',
-  },
-
-  // Sitemap Configuration
-  // Note: We use a custom server/routes/sitemap.xml.ts for dynamic sitemap generation
-  // The @nuxtjs/sitemap module is kept for robots.txt generation and sitemap index
-  sitemap: {
-    // Disable module sitemap generation - we use custom route at /sitemap.xml
-    enabled: false,
-  },
-
-  // Robots.txt Configuration
-  robots: {
-    // Allow all crawlers for production
-    allow: ['/'],
-    // Disallow private paths
-    disallow: [
-      '/checkout',
-      '/cart',
-      '/profile',
-      '/orders',
-      '/login',
-      '/register',
-      '/admin',
-      '/api/',
-    ],
-    // Point to custom sitemap route
-    sitemap: 'https://emwear.bg/sitemap.xml',
   },
 });
