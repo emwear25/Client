@@ -763,8 +763,8 @@ const personalizationFields = computed(() => {
 const validateEmbroidery = () => {
   let isValid = true;
   
-  // Validate name field
-  if (embroideryEnabled.value && !embroideryName.value.trim()) {
+  // Only validate embroideryName if there are NO category-specific personalization fields
+  if (embroideryEnabled.value && personalizationFields.value.length === 0 && !embroideryName.value.trim()) {
     embroideryError.value = "Това поле е задължително.";
     isValid = false;
   } else {
@@ -2106,9 +2106,13 @@ const handleStatsUpdated = (stats?: ReviewStats) => {
     margin-top: 1rem;
     padding-top: 1rem;
     border-top: 1px solid $border-base;
-    display: flex;
-    flex-direction: column;
-    gap: 1rem;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.75rem 1rem;
+    
+    @media (max-width: 600px) {
+      grid-template-columns: 1fr;
+    }
   }
 
   &__field-label {
@@ -2185,6 +2189,7 @@ const handleStatsUpdated = (stats?: ReviewStats) => {
     margin-top: 1rem;
     padding-top: 1rem;
     border-top: 1px dashed #e0e0e0;
+    grid-column: 1 / -1;
   }
 }
 
