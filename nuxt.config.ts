@@ -14,6 +14,8 @@ export default defineNuxtConfig({
     "@pinia/nuxt",
     "@vueuse/nuxt",
     "nuxt-gtag",
+    "@nuxtjs/sitemap",
+    "@nuxtjs/robots",
   ],
 
   // Google Analytics Configuration
@@ -289,5 +291,83 @@ export default defineNuxtConfig({
     "/orders": { prerender: false, headers: { "Cache-Control": "no-cache, no-store, must-revalidate" } },
     // "/login": { prerender: false, headers: { "Cache-Control": "no-cache, no-store, must-revalidate" } },
     "/register": { prerender: false, headers: { "Cache-Control": "no-cache, no-store, must-revalidate" } },
+  },
+
+  // Site URL configuration
+  site: {
+    url: 'https://emwear.bg',
+    name: 'emWear',
+  },
+
+  // Sitemap Configuration - 2025 ecommerce best practices
+  sitemap: {
+    // Multi-sitemap indexing
+    sitemaps: {
+      // Main pages sitemap
+      pages: {
+        includeAppSources: true,
+        exclude: [
+          '/checkout',
+          '/cart',
+          '/profile',
+          '/profile/**',
+          '/orders',
+          '/orders/**',
+          '/login',
+          '/register',
+          '/admin',
+          '/admin/**',
+          '/api/**',
+        ],
+        defaults: {
+          changefreq: 'weekly',
+          priority: 0.7,
+        },
+      },
+      // Products sitemap with dynamic routes
+      products: {
+        sources: ['/api/__sitemap__/products'],
+        defaults: {
+          changefreq: 'weekly',
+          priority: 0.9,
+        },
+      },
+      // Categories sitemap
+      categories: {
+        sources: ['/api/__sitemap__/categories'],
+        defaults: {
+          changefreq: 'weekly',
+          priority: 0.8,
+        },
+      },
+    },
+    // Homepage special priority
+    urls: [
+      {
+        loc: '/',
+        changefreq: 'daily',
+        priority: 1.0,
+      },
+    ],
+    xsl: false, // Disable XSL for cleaner XML
+  },
+
+  // Robots.txt Configuration
+  robots: {
+    // Allow all crawlers for production
+    allow: ['/'],
+    // Disallow private paths
+    disallow: [
+      '/checkout',
+      '/cart',
+      '/profile',
+      '/orders',
+      '/login',
+      '/register',
+      '/admin',
+      '/api/',
+    ],
+    // Point to sitemap index
+    sitemap: 'https://emwear.bg/sitemap_index.xml',
   },
 });
