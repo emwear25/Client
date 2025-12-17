@@ -85,13 +85,26 @@
                     <span v-if="item.embroidery.name" class="cart-item__emb-item">
                       🧵 <strong>Бродерия:</strong> {{ item.embroidery.name }}
                     </span>
+                    <!-- Custom fields (skip boolean values - those are checkbox options) -->
                     <template v-if="item.embroidery.customFields">
                       <span 
                         v-for="(value, key) in item.embroidery.customFields" 
                         :key="key"
                         class="cart-item__emb-item"
                       >
-                        <strong>{{ formatFieldLabel(String(key)) }}:</strong> {{ value }}
+                        <template v-if="typeof value === 'string'">
+                          <strong>{{ formatFieldLabel(String(key)) }}:</strong> {{ value }}
+                        </template>
+                      </span>
+                    </template>
+                    <!-- Priced options (checkboxes with price) -->
+                    <template v-if="item.embroidery.pricedOptions && item.embroidery.pricedOptions.length > 0">
+                      <span 
+                        v-for="option in item.embroidery.pricedOptions" 
+                        :key="option.name"
+                        class="cart-item__emb-item cart-item__emb-option"
+                      >
+                        ✅ {{ option.label }} <span class="cart-item__emb-price">+{{ option.price.toFixed(2) }} лв.</span>
                       </span>
                     </template>
                     <span v-if="item.embroidery.notes" class="cart-item__emb-item cart-item__emb-notes">
@@ -584,6 +597,21 @@ useHead({
     padding-top: 0.25rem;
     border-top: 1px dashed #e5d4b3;
     margin-top: 0.25rem;
+  }
+  
+  &__emb-option {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  
+  &__emb-price {
+    background: #6c8474;
+    color: white;
+    padding: 0.1rem 0.4rem;
+    border-radius: 3px;
+    font-size: 0.75rem;
+    font-weight: 600;
   }
 
   &__price {

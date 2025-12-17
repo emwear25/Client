@@ -266,8 +266,8 @@
                     обработка.
                   </p>
                   
-                  <!-- Standard Name Field (only if NO category-specific fields) -->
-                  <div v-if="personalizationFields.length === 0" class="pdp-custom__field">
+                  <!-- Standard Name Field (shows if no NON-checkbox category-specific fields) -->
+                  <div v-if="personalizationFields.filter(f => f.type !== 'checkbox').length === 0" class="pdp-custom__field">
                     <label class="pdp-custom__field-label">Име за бродерия</label>
                     <input
                       v-model="embroideryName"
