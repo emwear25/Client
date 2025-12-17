@@ -32,12 +32,25 @@
           <!-- Embroidery Details -->
           <div v-if="item.embroidery" class="checkout-order-summary__embroidery">
             <span v-if="item.embroidery.name">🧵 Бродерия: {{ item.embroidery.name }}</span>
+            <!-- Custom fields (skip boolean values - those are checkbox options) -->
             <template v-if="item.embroidery.customFields">
               <span 
                 v-for="(value, key) in item.embroidery.customFields" 
                 :key="key"
               >
-                {{ formatFieldLabel(String(key)) }}: {{ value }}
+                <template v-if="typeof value === 'string'">
+                  {{ formatFieldLabel(String(key)) }}: {{ value }}
+                </template>
+              </span>
+            </template>
+            <!-- Priced options (checkboxes with price) -->
+            <template v-if="item.embroidery.pricedOptions && item.embroidery.pricedOptions.length > 0">
+              <span 
+                v-for="option in item.embroidery.pricedOptions" 
+                :key="option.name"
+                class="checkout-order-summary__priced-option"
+              >
+                ✅ {{ option.label }} <span class="checkout-order-summary__option-price">+{{ option.price.toFixed(2) }} лв.</span>
               </span>
             </template>
             <span v-if="item.embroidery.notes" class="checkout-order-summary__notes">
@@ -316,6 +329,21 @@ const formatFieldLabel = (fieldName: string): string => {
     padding-top: 0.125rem;
     border-top: 1px dashed #e5d4b3;
     margin-top: 0.125rem;
+  }
+  
+  &__priced-option {
+    display: flex !important;
+    align-items: center;
+    gap: 0.25rem;
+  }
+  
+  &__option-price {
+    background: #6c8474;
+    color: white;
+    padding: 0.05rem 0.25rem;
+    border-radius: 2px;
+    font-size: 0.5625rem;
+    font-weight: 600;
   }
 
   &__item-price {

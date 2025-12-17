@@ -74,14 +74,26 @@
                     <span v-if="item.embroidery.name" class="cart-item__attr cart-item__attr--embroidery">
                       🧵 Бродерия: {{ item.embroidery.name }}
                     </span>
-                    <!-- Custom Fields -->
+                    <!-- Custom Fields (skip boolean values - those are checkbox options) -->
                     <template v-if="item.embroidery.customFields">
                       <span 
                         v-for="(value, key) in item.embroidery.customFields" 
                         :key="key" 
                         class="cart-item__attr cart-item__attr--embroidery"
                       >
-                        {{ formatFieldLabel(String(key)) }}: {{ value }}
+                        <template v-if="typeof value === 'string'">
+                          {{ formatFieldLabel(String(key)) }}: {{ value }}
+                        </template>
+                      </span>
+                    </template>
+                    <!-- Priced options (checkboxes with price) -->
+                    <template v-if="item.embroidery.pricedOptions && item.embroidery.pricedOptions.length > 0">
+                      <span 
+                        v-for="option in item.embroidery.pricedOptions" 
+                        :key="option.name"
+                        class="cart-item__attr cart-item__attr--priced"
+                      >
+                        ✅ {{ option.label }} <span class="cart-item__option-price">+{{ option.price.toFixed(2) }} лв.</span>
                       </span>
                     </template>
                     <span v-if="item.embroidery.notes" class="cart-item__attr cart-item__attr--notes">
