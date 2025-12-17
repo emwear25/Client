@@ -89,9 +89,9 @@
                 Забележка: Персонализираните артикули се нуждаят от допълнително време за обработка.
               </p>
               
-              <!-- Standard Name Field (only if NO category-specific fields) -->
-              <div v-if="personalizationFields.length === 0" class="qv__custom-field">
-                <label class="qv__custom-field-label">Име за бродерия</label>
+              <!-- Standard Name Field (shows if no NON-checkbox category-specific fields) -->
+              <div v-if="personalizationFields.filter(f => f.type !== 'checkbox').length === 0" class="qv__custom-field">
+                <label class="qv__custom-field-label">Име за бродерия <span class="qv__custom-required">*</span></label>
                 <input
                   v-model="embroideryName"
                   type="text"
@@ -105,16 +105,16 @@
                 <span v-if="embroideryError" class="qv__custom-error">{{ embroideryError }}</span>
               </div>
               
-              <!-- Category-Specific Personalization Fields -->
-              <template v-if="personalizationFields.length > 0">
+              <!-- Category-Specific Personalization Fields (exclude checkboxes) -->
+              <template v-if="personalizationFields.filter(f => f.type !== 'checkbox').length > 0">
                 <div 
-                  v-for="field in personalizationFields" 
+                  v-for="field in personalizationFields.filter(f => f.type !== 'checkbox')" 
                   :key="field.name" 
                   class="qv__custom-field"
                 >
                   <label class="qv__custom-field-label">
                     {{ field.label }}
-                    <span v-if="field.required" class="qv__custom-required">*</span>
+                    <span class="qv__custom-required">*</span>
                   </label>
                   <input
                     v-if="field.type === 'text' || field.type === 'number'"
@@ -146,6 +146,26 @@
                   </span>
                 </div>
               </template>
+              
+              <!-- Checkbox fields with price (optional add-ons) -->
+              <div 
+                v-for="field in personalizationFields.filter(f => f.type === 'checkbox')" 
+                :key="field.name" 
+                class="qv__custom-checkbox-field"
+              >
+                <label class="qv__custom-checkbox-label">
+                  <input
+                    type="checkbox"
+                    :checked="customFields[field.name] === true"
+                    class="qv__custom-checkbox-input"
+                    @change="customFields[field.name] = ($event.target as HTMLInputElement).checked"
+                  />
+                  <span class="qv__custom-checkbox-text">
+                    {{ field.label }}
+                    <span v-if="field.price" class="qv__custom-checkbox-price">+{{ field.price.toFixed(2) }} лв.</span>
+                  </span>
+                </label>
+              </div>
               
               <!-- Notes Field (always visible) -->
               <div class="qv__custom-field qv__custom-field--notes">
@@ -258,8 +278,19 @@ const embroideryEnabled = ref(false);
 const embroideryName = ref("");
 const embroideryError = ref("");
 const embroideryNotes = ref("");
-const customFields = ref<Record<string, string>>({});
+const customFields = ref<Record<string, string | boolean>>({});
 const customFieldErrors = ref<Record<string, string>>({});
+
+// Computed: Total price of checked priced options (checkboxes with price)
+const pricedOptionsTotal = computed(() => {
+  let total = 0;
+  for (const field of personalizationFields.value) {
+    if (field.type === 'checkbox' && field.price && customFields.value[field.name] === true) {
+      total += field.price;
+    }
+  }
+  return total;
+});
 
 // Computed: Get personalization fields from category
 const personalizationFields = computed(() => {
@@ -325,19 +356,23 @@ const availableStock = computed(() => {
 const validateEmbroidery = () => {
   let isValid = true;
   
-  // Validate name field (only if no category-specific fields)
-  if (embroideryEnabled.value && personalizationFields.value.length === 0 && !embroideryName.value.trim()) {
+  // Get non-checkbox personalization fields
+  const nonCheckboxFields = personalizationFields.value.filter((f: any) => f.type !== 'checkbox');
+  
+  // Validate name field if there are NO non-checkbox category-specific fields
+  if (embroideryEnabled.value && nonCheckboxFields.length === 0 && !embroideryName.value.trim()) {
     embroideryError.value = "Това поле е задължително.";
     isValid = false;
   } else {
     embroideryError.value = "";
   }
   
-  // Validate custom fields
+  // Validate custom fields (all non-checkbox fields are required when embroidery is enabled)
   customFieldErrors.value = {};
   if (embroideryEnabled.value) {
-    personalizationFields.value.forEach((field: any) => {
-      if (field.required && !customFields.value[field.name]?.trim()) {
+    nonCheckboxFields.forEach((field: any) => {
+      const value = customFields.value[field.name];
+      if (!value || (typeof value === 'string' && !value.trim())) {
         customFieldErrors.value[field.name] = "Това поле е задължително.";
         isValid = false;
       }
@@ -473,6 +508,18 @@ const addToCart = () => {
     colorForCart = getColorDisplayName(props.product.colors[0]);
   }
 
+  // Build priced options array from checked checkboxes with prices
+  const pricedOptions = personalizationFields.value
+    .filter((f: any) => f.type === 'checkbox' && f.price && customFields.value[f.name] === true)
+    .map((f: any) => ({
+      name: f.name,
+      label: f.label,
+      price: f.price,
+    }));
+
+  // Calculate final price including priced options
+  const finalPrice = props.product.price + pricedOptionsTotal.value;
+
   // Prepare embroidery data if enabled
   const embroidery = embroideryEnabled.value
     ? {
@@ -483,6 +530,8 @@ const addToCart = () => {
         customFields: Object.keys(customFields.value).length > 0 
           ? { ...customFields.value }
           : undefined,
+        pricedOptions: pricedOptions.length > 0 ? pricedOptions : undefined,
+        optionsTotal: pricedOptionsTotal.value > 0 ? pricedOptionsTotal.value : undefined,
       }
     : undefined;
 
@@ -490,7 +539,7 @@ const addToCart = () => {
     {
       id: props.product._id,
       name: props.product.name,
-      price: props.product.price,
+      price: finalPrice,
       image: props.product.images?.[0]?.url,
       size: selectedSize.value || props.product.sizes?.[0],
       color: colorForCart,
@@ -795,6 +844,44 @@ const addToCart = () => {
     font-size: 0.875rem;
     color: $error;
     margin-top: 0.25rem;
+  }
+  
+  &__custom-checkbox-field {
+    margin-top: 0.75rem;
+    padding: 0.75rem;
+    background: #e8f5e9;
+    border-radius: 8px;
+    border: 1px solid #c8e6c9;
+  }
+  
+  &__custom-checkbox-label {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    cursor: pointer;
+    font-size: 0.875rem;
+    color: #333;
+  }
+  
+  &__custom-checkbox-input {
+    width: 18px;
+    height: 18px;
+    accent-color: #6c8474;
+    cursor: pointer;
+  }
+  
+  &__custom-checkbox-text {
+    flex: 1;
+  }
+  
+  &__custom-checkbox-price {
+    background: #6c8474;
+    color: white;
+    padding: 0.15rem 0.5rem;
+    border-radius: 4px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    margin-left: 0.25rem;
   }
 
   &__cta {
