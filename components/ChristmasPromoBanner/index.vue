@@ -206,39 +206,112 @@ $cream: #f8f6f3;
     color: rgba(255, 255, 255, 0.8);
   }
   
-  // Responsive
+  // Responsive - show all 3 sections on mobile with dividers like Moonkie
   @media (max-width: 768px) {
-    padding: 1rem;
+    padding: 0.75rem 0.5rem;
     
     &__inner {
-      gap: 1rem;
+      display: grid;
+      grid-template-columns: 1fr auto 1fr auto 1fr;
+      gap: 0;
+      align-items: stretch;
     }
     
     &__divider {
-      display: none;
+      display: block;
+      width: 1px;
+      height: auto;
+      min-height: 50px;
+      background: rgba(255, 255, 255, 0.25);
+      align-self: stretch;
     }
     
-    &__section--gift {
-      display: none;
+    &__section {
+      flex-direction: column;
+      text-align: center;
+      padding: 0 0.5rem;
+      
+      &--main {
+        gap: 0.25rem;
+        
+        .christmas-promo__content {
+          align-items: center;
+        }
+      }
+      
+      &--code {
+        gap: 0.25rem;
+      }
+      
+      &--gift {
+        display: flex;
+        gap: 0.25rem;
+      }
+    }
+    
+    &__icon {
+      font-size: 1.25rem;
     }
     
     &__percent {
       font-size: 1.5rem;
     }
     
-    &__icon {
-      font-size: 1.5rem;
+    &__off {
+      font-size: 0.7rem;
+    }
+    
+    &__label {
+      font-size: 0.55rem;
+      letter-spacing: 0.1em;
+    }
+    
+    &__desc {
+      font-size: 0.6rem;
+    }
+    
+    &__code-label {
+      font-size: 0.55rem;
+    }
+    
+    &__code-btn {
+      padding: 0.35rem 0.75rem;
+      font-size: 0.75rem;
+    }
+    
+    &__gift-icon {
+      font-size: 1.25rem;
+    }
+    
+    &__gift-title {
+      font-size: 0.7rem;
+    }
+    
+    &__gift-sub {
+      font-size: 0.55rem;
+    }
+    
+    &__gift-text {
+      align-items: center;
     }
   }
   
-  @media (max-width: 480px) {
-    &__section--main {
-      flex-direction: column;
-      text-align: center;
-      
-      .christmas-promo__content {
-        align-items: center;
-      }
+  @media (max-width: 380px) {
+    &__inner {
+      gap: 0;
+    }
+    
+    &__section {
+      padding: 0 0.25rem;
+    }
+    
+    &__percent {
+      font-size: 1.25rem;
+    }
+    
+    &__code-btn {
+      padding: 0.25rem 0.5rem;
+      font-size: 0.65rem;
     }
   }
 }
