@@ -280,80 +280,83 @@ const formatFieldLabel = (fieldName: string): string => {
 
   &__item-name {
     font-weight: 600;
-    margin: 0 0 0.125rem 0;
-    font-size: 0.8125rem;
+    margin: 0 0 0.25rem 0;
+    font-size: 0.875rem;
     word-wrap: break-word;
     line-height: 1.3;
     color: #1a1a1a;
 
     @media (min-width: 768px) {
-      font-size: 0.875rem;
+      font-size: 0.9375rem;
     }
   }
 
   &__item-details,
   &__item-quantity {
-    font-size: 0.6875rem;
+    font-size: 0.8125rem;
     color: #6b7280;
     line-height: 1.4;
     margin: 0;
 
     @media (min-width: 768px) {
-      font-size: 0.75rem;
+      font-size: 0.8125rem;
     }
   }
   
   &__embroidery {
     display: flex;
     flex-direction: column;
-    gap: 0.125rem;
-    padding: 0.375rem 0.5rem;
-    margin: 0.25rem 0;
+    gap: 0.375rem;
+    padding: 0.5rem 0.625rem;
+    margin: 0.375rem 0;
     background: #fef9f3;
-    border-radius: 4px;
-    border-left: 2px solid #b07b2c;
-    font-size: 0.625rem;
-    color: #8b6914;
+    border-radius: 6px;
+    border-left: 3px solid #b07b2c;
+    font-size: 0.8125rem;
+    color: #7a5f12;
     
     @media (min-width: 768px) {
-      font-size: 0.6875rem;
+      font-size: 0.8125rem;
     }
     
     span {
       display: block;
+      line-height: 1.4;
     }
   }
   
   &__notes {
     font-style: italic;
-    padding-top: 0.125rem;
+    padding-top: 0.25rem;
     border-top: 1px dashed #e5d4b3;
-    margin-top: 0.125rem;
+    margin-top: 0.25rem;
   }
   
   &__priced-option {
     display: flex !important;
     align-items: center;
-    gap: 0.25rem;
+    gap: 0.375rem;
+    flex-wrap: wrap;
   }
   
   &__option-price {
     background: #6c8474;
     color: white;
-    padding: 0.05rem 0.25rem;
-    border-radius: 2px;
-    font-size: 0.5625rem;
+    padding: 0.125rem 0.375rem;
+    border-radius: 4px;
+    font-size: 0.6875rem;
     font-weight: 600;
+    white-space: nowrap;
   }
 
   &__item-price {
     font-weight: 600;
     color: #1a1a1a;
     flex-shrink: 0;
-    font-size: 0.8125rem;
+    font-size: 0.875rem;
 
     @media (min-width: 768px) {
-      font-size: 0.875rem;
+      font-size: 0.9375rem;
     }
   }
 
