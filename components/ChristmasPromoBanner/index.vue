@@ -208,31 +208,35 @@ $cream: #f8f6f3;
   
   // Responsive - show all 3 sections on mobile with dividers like Moonkie
   @media (max-width: 768px) {
-    padding: 0.75rem 0.5rem;
+    padding: 1.25rem 0.75rem;
     
     &__inner {
       display: grid;
       grid-template-columns: 1fr auto 1fr auto 1fr;
       gap: 0;
-      align-items: stretch;
+      align-items: center;
+      min-height: 80px;
     }
     
     &__divider {
       display: block;
       width: 1px;
-      height: auto;
-      min-height: 50px;
-      background: rgba(255, 255, 255, 0.25);
-      align-self: stretch;
+      height: 60px;
+      background: rgba(255, 255, 255, 0.35);
+      align-self: center;
     }
     
     &__section {
+      display: flex;
       flex-direction: column;
+      align-items: center;
+      justify-content: center;
       text-align: center;
       padding: 0 0.5rem;
+      height: 100%;
       
       &--main {
-        gap: 0.25rem;
+        gap: 0.15rem;
         
         .christmas-promo__content {
           align-items: center;
@@ -240,13 +244,83 @@ $cream: #f8f6f3;
       }
       
       &--code {
-        gap: 0.25rem;
+        gap: 0.35rem;
+        justify-content: center;
       }
       
       &--gift {
         display: flex;
-        gap: 0.25rem;
+        gap: 0.15rem;
       }
+    }
+    
+    &__icon {
+      font-size: 1.5rem;
+    }
+    
+    &__percent {
+      font-size: 1.75rem;
+      font-weight: 800;
+    }
+    
+    &__off {
+      font-size: 0.85rem;
+      font-weight: 700;
+    }
+    
+    &__label {
+      font-size: 0.6rem;
+      letter-spacing: 0.1em;
+      font-weight: 600;
+    }
+    
+    &__desc {
+      font-size: 0.65rem;
+    }
+    
+    &__code-label {
+      font-size: 0.6rem;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+    }
+    
+    &__code-btn {
+      padding: 0.4rem 0.9rem;
+      font-size: 0.85rem;
+      font-weight: 700;
+    }
+    
+    &__gift-icon {
+      font-size: 1.5rem;
+    }
+    
+    &__gift-title {
+      font-size: 0.8rem;
+      font-weight: 700;
+    }
+    
+    &__gift-sub {
+      font-size: 0.6rem;
+    }
+    
+    &__gift-text {
+      align-items: center;
+    }
+  }
+  
+  @media (max-width: 420px) {
+    padding: 1rem 0.5rem;
+    
+    &__inner {
+      min-height: 70px;
+    }
+    
+    &__divider {
+      height: 55px;
+    }
+    
+    &__section {
+      padding: 0 0.35rem;
     }
     
     &__icon {
@@ -258,24 +332,15 @@ $cream: #f8f6f3;
     }
     
     &__off {
-      font-size: 0.7rem;
+      font-size: 0.75rem;
     }
     
     &__label {
-      font-size: 0.55rem;
-      letter-spacing: 0.1em;
-    }
-    
-    &__desc {
-      font-size: 0.6rem;
-    }
-    
-    &__code-label {
-      font-size: 0.55rem;
+      font-size: 0.5rem;
     }
     
     &__code-btn {
-      padding: 0.35rem 0.75rem;
+      padding: 0.35rem 0.7rem;
       font-size: 0.75rem;
     }
     
@@ -289,29 +354,6 @@ $cream: #f8f6f3;
     
     &__gift-sub {
       font-size: 0.55rem;
-    }
-    
-    &__gift-text {
-      align-items: center;
-    }
-  }
-  
-  @media (max-width: 380px) {
-    &__inner {
-      gap: 0;
-    }
-    
-    &__section {
-      padding: 0 0.25rem;
-    }
-    
-    &__percent {
-      font-size: 1.25rem;
-    }
-    
-    &__code-btn {
-      padding: 0.25rem 0.5rem;
-      font-size: 0.65rem;
     }
   }
 }
