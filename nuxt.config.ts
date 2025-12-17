@@ -299,69 +299,12 @@ export default defineNuxtConfig({
     name: 'emWear',
   },
 
-  // Sitemap Configuration - 2025 ecommerce best practices
+  // Sitemap Configuration
+  // Note: We use a custom server/routes/sitemap.xml.ts for dynamic sitemap generation
+  // The @nuxtjs/sitemap module is kept for robots.txt generation and sitemap index
   sitemap: {
-    // Enable debug mode to see what's happening
-    debug: process.env.NODE_ENV === 'development',
-    // Multi-sitemap indexing
-    sitemaps: {
-      // Main pages sitemap
-      pages: {
-        includeAppSources: true,
-        exclude: [
-          '/checkout',
-          '/cart',
-          '/profile',
-          '/profile/**',
-          '/orders',
-          '/orders/**',
-          '/login',
-          '/register',
-          '/admin',
-          '/admin/**',
-          '/api/**',
-          '/products/**', // Exclude individual products from pages sitemap
-          '/category/**', // Exclude categories from pages sitemap
-        ],
-        defaults: {
-          changefreq: 'weekly',
-          priority: 0.7,
-        },
-      },
-      // Products sitemap with dynamic routes from server API
-      products: {
-        includeAppSources: true,
-        sources: [
-          '/api/__sitemap__/products',
-        ],
-        exclude: ['/**'], // Exclude all app routes, only use sources
-        defaults: {
-          changefreq: 'weekly',
-          priority: 0.9,
-        },
-      },
-      // Categories sitemap
-      categories: {
-        includeAppSources: true,
-        sources: [
-          '/api/__sitemap__/categories',
-        ],
-        exclude: ['/**'], // Exclude all app routes, only use sources
-        defaults: {
-          changefreq: 'weekly',
-          priority: 0.8,
-        },
-      },
-    },
-    // Homepage special priority
-    urls: [
-      {
-        loc: '/',
-        changefreq: 'daily',
-        priority: 1.0,
-      },
-    ],
-    xsl: false, // Disable XSL for cleaner XML
+    // Disable module sitemap generation - we use custom route at /sitemap.xml
+    enabled: false,
   },
 
   // Robots.txt Configuration
@@ -379,7 +322,7 @@ export default defineNuxtConfig({
       '/admin',
       '/api/',
     ],
-    // Point to sitemap index
-    sitemap: 'https://emwear.bg/sitemap_index.xml',
+    // Point to custom sitemap route
+    sitemap: 'https://emwear.bg/sitemap.xml',
   },
 });
