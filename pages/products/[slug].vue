@@ -287,7 +287,7 @@
                   <!-- Category-Specific Personalization Fields (e.g., birth details for гергефи) -->
                   <template v-if="personalizationFields.length > 0">
                     <div 
-                      v-for="field in personalizationFields" 
+                      v-for="field in personalizationFields.filter(f => f.type !== 'checkbox')" 
                       :key="field.name" 
                       class="pdp-custom__field"
                     >
@@ -344,6 +344,26 @@
                       </span>
                     </div>
                   </template>
+                  
+                  <!-- Checkbox fields with price (separate section) -->
+                  <div 
+                    v-for="field in personalizationFields.filter(f => f.type === 'checkbox')" 
+                    :key="field.name" 
+                    class="pdp-custom__checkbox-field"
+                  >
+                    <label class="pdp-custom__checkbox-label">
+                      <input
+                        type="checkbox"
+                        :checked="customFields[field.name] === true"
+                        class="pdp-custom__checkbox-input"
+                        @change="customFields[field.name] = ($event.target as HTMLInputElement).checked"
+                      />
+                      <span class="pdp-custom__checkbox-text">
+                        {{ field.label }}
+                        <span v-if="field.price" class="pdp-custom__checkbox-price">+{{ field.price.toFixed(2) }} лв.</span>
+                      </span>
+                    </label>
+                  </div>
                   
                   <!-- General Notes Field (always visible) -->
                   <div class="pdp-custom__field pdp-custom__field--notes">
@@ -749,8 +769,19 @@ const embroideryColor = ref("");
 const embroideryFont = ref("");
 const embroideryError = ref("");
 const embroideryNotes = ref(""); // General notes/instructions field
-const customFields = ref<Record<string, string>>({}); // Category-specific fields (e.g., birth details)
-const customFieldErrors = ref<Record<string, string>>({}); // Validation errors for custom fields
+const customFields = ref<Record<string, string | boolean>>({}); // Category-specific fields (e.g., birth details, checkbox options)
+const customFieldErrors = ref<Record<string, string>>({});
+
+// Computed: Total price of checked priced options (checkboxes with price)
+const pricedOptionsTotal = computed(() => {
+  let total = 0;
+  for (const field of personalizationFields.value) {
+    if (field.type === 'checkbox' && field.price && customFields.value[field.name] === true) {
+      total += field.price;
+    }
+  }
+  return total;
+}); // Validation errors for custom fields
 
 // Computed: Get personalization fields from category
 const personalizationFields = computed(() => {
@@ -771,11 +802,15 @@ const validateEmbroidery = () => {
     embroideryError.value = "";
   }
   
-  // Validate custom fields
+  // Validate custom fields (skip checkbox fields - they're optional by nature)
   customFieldErrors.value = {};
   if (embroideryEnabled.value) {
     personalizationFields.value.forEach((field: any) => {
-      if (field.required && !customFields.value[field.name]?.trim()) {
+      // Skip checkbox fields from required validation
+      if (field.type === 'checkbox') return;
+      
+      const value = customFields.value[field.name];
+      if (field.required && (!value || (typeof value === 'string' && !value.trim()))) {
         customFieldErrors.value[field.name] = "Това поле е задължително.";
         isValid = false;
       }
@@ -1223,8 +1258,13 @@ const addToCart = () => {
     return;
   }
 
-  // Calculate final price (use variant price or base price, NO embroidery cost)
-  const finalPrice = currentPrice.value;
+  // Calculate final price (use variant price or base price + priced options)
+  const finalPrice = currentPrice.value + pricedOptionsTotal.value;
+
+  // Build priced options array for checked checkboxes with prices
+  const pricedOptions = personalizationFields.value
+    .filter((f: any) => f.type === 'checkbox' && f.price && customFields.value[f.name] === true)
+    .map((f: any) => ({ name: f.name, label: f.label, price: f.price }));
 
   // Prepare embroidery data if enabled
   const embroidery = embroideryEnabled.value
@@ -1237,6 +1277,9 @@ const addToCart = () => {
         customFields: Object.keys(customFields.value).length > 0 
           ? { ...customFields.value }
           : undefined,
+        // Include priced options (checkboxes with prices)
+        pricedOptions: pricedOptions.length > 0 ? pricedOptions : undefined,
+        optionsTotal: pricedOptionsTotal.value > 0 ? pricedOptionsTotal.value : undefined,
       }
     : undefined;
 
@@ -2190,6 +2233,54 @@ const handleStatsUpdated = (stats?: ReviewStats) => {
     padding-top: 1rem;
     border-top: 1px dashed #e0e0e0;
     grid-column: 1 / -1;
+  }
+  
+  &__checkbox-field {
+    grid-column: 1 / -1;
+    margin-top: 0.75rem;
+    padding: 0.875rem 1rem;
+    background: linear-gradient(135deg, rgba(#6c8474, 0.08) 0%, rgba(#6c8474, 0.03) 100%);
+    border: 1px solid rgba(#6c8474, 0.2);
+    border-radius: 8px;
+    transition: all 0.2s ease;
+    
+    &:hover {
+      border-color: rgba(#6c8474, 0.4);
+      background: linear-gradient(135deg, rgba(#6c8474, 0.12) 0%, rgba(#6c8474, 0.05) 100%);
+    }
+  }
+  
+  &__checkbox-label {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    cursor: pointer;
+    font-size: 0.9375rem;
+    color: $brand-ink;
+  }
+  
+  &__checkbox-input {
+    width: 20px;
+    height: 20px;
+    accent-color: #6c8474;
+    cursor: pointer;
+    flex-shrink: 0;
+  }
+  
+  &__checkbox-text {
+    flex: 1;
+    font-weight: 500;
+  }
+  
+  &__checkbox-price {
+    display: inline-block;
+    margin-left: 0.5rem;
+    padding: 0.2rem 0.6rem;
+    background: #6c8474;
+    color: white;
+    font-size: 0.8125rem;
+    font-weight: 700;
+    border-radius: 4px;
   }
 }
 

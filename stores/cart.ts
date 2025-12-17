@@ -26,7 +26,10 @@ export interface CartItem {
     font?: string | null;
     notes?: string | null;
     // Category-specific custom fields (e.g., birth details for гергефи)
-    customFields?: Record<string, string>;
+    customFields?: Record<string, string | boolean>;
+    // Priced options (checkboxes with additional cost)
+    pricedOptions?: Array<{ name: string; label: string; price: number }>;
+    optionsTotal?: number;
   };
 }
 
