@@ -19,12 +19,12 @@ export default defineSitemapEventHandler(async () => {
 
     try {
         // Fetch all categories with images
-        const response = await $fetch<Category[]>(
-            `${apiBase}/categories?fields=slug,name,description,updatedAt,image`
+        const response = await $fetch<{ success: boolean; data: Category[] }>(
+            `${apiBase}/api/categories?fields=slug,name,description,updatedAt,image`
         );
 
-        if (Array.isArray(response)) {
-            for (const category of response) {
+        if (response?.data && Array.isArray(response.data)) {
+            for (const category of response.data) {
                 if (category.slug) {
                     const entry: SitemapUrlInput = {
                         loc: `/category/${category.slug}`,

@@ -24,12 +24,12 @@ export default defineSitemapEventHandler(async () => {
 
     try {
         // Fetch all products with images for sitemap
-        const response = await $fetch<{ products: Product[] }>(
-            `${apiBase}/products?limit=1000&fields=slug,name,description,updatedAt,images`
+        const response = await $fetch<{ success: boolean; data: Product[] }>(
+            `${apiBase}/api/products?limit=1000&fields=slug,name,description,updatedAt,images`
         );
 
-        if (response?.products) {
-            for (const product of response.products) {
+        if (response?.data) {
+            for (const product of response.data) {
                 if (product.slug) {
                     const entry: SitemapUrlInput = {
                         loc: `/products/${product.slug}`,
