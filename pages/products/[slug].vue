@@ -1369,15 +1369,21 @@ watchEffect(() => {
       { rel: 'canonical', href: `https://emwear.bg/products/${product.value.slug || product.value._id}` },
     ],
     meta: [
-      // Open Graph / Facebook
+      // Open Graph / Facebook (Shopify-style)
+      // Note: og:site_name, og:locale set globally in nuxt.config.ts
       { property: 'og:type', content: 'product' },
       { property: 'og:title', content: product.value.name },
       { property: 'og:description', content: productDescription },
       { property: 'og:image', content: productImage },
+      { property: 'og:image:secure_url', content: productImage },
       { property: 'og:image:width', content: '1200' },
       { property: 'og:image:height', content: '630' },
       { property: 'og:image:alt', content: product.value.name },
       { property: 'og:url', content: `https://emwear.bg/products/${product.value.slug || product.value._id}` },
+      
+      // Open Graph Product Price (og: prefix for wider compatibility)
+      { property: 'og:price:amount', content: currentPrice.value.toFixed(2) },
+      { property: 'og:price:currency', content: 'BGN' },
       
       // Facebook Product Catalog - Critical Tags
       { property: 'product:brand', content: 'emWear' },
@@ -1392,8 +1398,8 @@ watchEffect(() => {
         ? [{ property: 'product:google_product_category', content: (product.value.category as any).googleProductCategory }]
         : []),
       
-      // Twitter Card (summary_large_image is correct, 'product' is not valid)
-      { name: 'twitter:card', content: 'summary_large_image' },
+      // Twitter Card - title/description/image override globals for this product
+      // Note: twitter:card and twitter:site set globally in nuxt.config.ts
       { name: 'twitter:title', content: product.value.name },
       { name: 'twitter:description', content: productDescription },
       { name: 'twitter:image', content: productImage },
