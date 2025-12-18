@@ -14,34 +14,25 @@ Disallow: /profile
 Disallow: /orders
 Disallow: /register
 Disallow: /login
+
+# Block API routes EXCEPT sitemap endpoints
 Disallow: /api/
-Disallow: /_nuxt/
-Disallow: /__nuxt/
+Allow: /api/__sitemap__/
 
 # Block search result pages with filters to avoid duplicate content
 Disallow: /*?*sort=
 Disallow: /*?*page=
 Disallow: /*?*filter=
+Disallow: /*?*utm_
 
-# Allow search engine crawlers to access static assets
-Allow: /images/
-Allow: /*.js
-Allow: /*.css
-Allow: /*.png
-Allow: /*.jpg
-Allow: /*.jpeg
-Allow: /*.webp
-Allow: /*.svg
-
-# Crawl delay for polite crawling
-Crawl-delay: 1
+# Note: removed /_nuxt/ and /__nuxt/ disallows to avoid conflicts with JS rendering
+# Note: removed Crawl-delay as Google ignores it
 
 # Google specific
 User-agent: Googlebot
 Allow: /
-Crawl-delay: 0
 
-# Bing specific
+# Bing specific (Bing respects Crawl-delay)
 User-agent: Bingbot
 Allow: /
 Crawl-delay: 1

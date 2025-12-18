@@ -283,25 +283,33 @@ useInfiniteScroll({
 
 // SEO - watch for category changes
 watch(
-  () => categoryDisplayName.value,
-  (name) => {
-    if (name) {
+  () => category.value,
+  (cat) => {
+    if (cat) {
       usePageSEO({
-        title: name,
-        description: `Разгледайте нашите ${name.toLowerCase()} - персонализирани бродирани изделия от emWear.`,
+        title: cat.displayName || cat.name,
+        description: `Разгледайте нашите ${(cat.displayName || cat.name).toLowerCase()} - персонализирани бродирани изделия от emWear.`,
         type: "website",
       });
 
-      // Add CollectionPage structured data
+      // Add canonical link and enhanced meta tags
       useHead({
+        link: [
+          { rel: 'canonical', href: `https://emwear.bg/category/${cat.slug}` },
+        ],
+        meta: [
+          { property: 'og:url', content: `https://emwear.bg/category/${cat.slug}` },
+          { name: 'twitter:card', content: 'summary_large_image' },
+        ],
         script: [
           {
             type: "application/ld+json",
             children: JSON.stringify({
               "@context": "https://schema.org",
               "@type": "CollectionPage",
-              name: name,
-              description: `Разгледайте нашите ${name.toLowerCase()} - персонализирани бродирани изделия`,
+              name: cat.displayName || cat.name,
+              url: `https://emwear.bg/category/${cat.slug}`,
+              description: `Разгледайте нашите ${(cat.displayName || cat.name).toLowerCase()} - персонализирани бродирани изделия`,
             }),
           },
         ],

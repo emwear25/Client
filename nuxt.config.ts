@@ -120,10 +120,8 @@ export default defineNuxtConfig({
         },
       ],
       link: [
-        {
-          rel: "canonical",
-          href: process.env.NUXT_PUBLIC_FRONTEND_URL || "https://emwear.bg",
-        },
+        // Note: Canonical links are set per-page dynamically, not globally
+        // See product/category/blog pages for canonical implementation
         // Favicons
         {
           rel: "icon",
@@ -327,12 +325,15 @@ export default defineNuxtConfig({
     // Dynamic product pages - SSR for SEO (shorter cache)
     "/products/**": { ssr: true, isr: 300, headers: { "Cache-Control": "public, s-maxage=300, stale-while-revalidate=600" } },
     "/category/**": { ssr: true, isr: 300, headers: { "Cache-Control": "public, s-maxage=300, stale-while-revalidate=600" } },
-    // Private pages - no cache
-    "/checkout": { prerender: false, headers: { "Cache-Control": "no-cache, no-store, must-revalidate" } },
-    "/cart": { prerender: false, headers: { "Cache-Control": "no-cache, no-store, must-revalidate" } },
-    "/profile": { prerender: false, headers: { "Cache-Control": "no-cache, no-store, must-revalidate" } },
-    "/orders": { prerender: false, headers: { "Cache-Control": "no-cache, no-store, must-revalidate" } },
-    // "/login": { prerender: false, headers: { "Cache-Control": "no-cache, no-store, must-revalidate" } },
-    "/register": { prerender: false, headers: { "Cache-Control": "no-cache, no-store, must-revalidate" } },
+    // Private pages - no cache + noindex for search engines
+    "/checkout": { prerender: false, headers: { "Cache-Control": "no-cache, no-store, must-revalidate", "X-Robots-Tag": "noindex, nofollow" } },
+    "/cart": { prerender: false, headers: { "Cache-Control": "no-cache, no-store, must-revalidate", "X-Robots-Tag": "noindex, nofollow" } },
+    "/profile": { prerender: false, headers: { "Cache-Control": "no-cache, no-store, must-revalidate", "X-Robots-Tag": "noindex, nofollow" } },
+    "/profile/**": { prerender: false, headers: { "Cache-Control": "no-cache, no-store, must-revalidate", "X-Robots-Tag": "noindex, nofollow" } },
+    "/orders": { prerender: false, headers: { "Cache-Control": "no-cache, no-store, must-revalidate", "X-Robots-Tag": "noindex, nofollow" } },
+    "/orders/**": { prerender: false, headers: { "Cache-Control": "no-cache, no-store, must-revalidate", "X-Robots-Tag": "noindex, nofollow" } },
+    "/login": { prerender: false, headers: { "Cache-Control": "no-cache, no-store, must-revalidate", "X-Robots-Tag": "noindex, nofollow" } },
+    "/register": { prerender: false, headers: { "Cache-Control": "no-cache, no-store, must-revalidate", "X-Robots-Tag": "noindex, nofollow" } },
+    "/favorites": { prerender: false, headers: { "Cache-Control": "no-cache, no-store, must-revalidate", "X-Robots-Tag": "noindex, nofollow" } },
   },
 });

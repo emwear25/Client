@@ -1364,12 +1364,19 @@ watchEffect(() => {
 
   useHead({
     title: product.value.name,
+    link: [
+      // Dynamic canonical per product page (SEO best practice)
+      { rel: 'canonical', href: `https://emwear.bg/products/${product.value.slug || product.value._id}` },
+    ],
     meta: [
       // Open Graph / Facebook
       { property: 'og:type', content: 'product' },
       { property: 'og:title', content: product.value.name },
       { property: 'og:description', content: productDescription },
       { property: 'og:image', content: productImage },
+      { property: 'og:image:width', content: '1200' },
+      { property: 'og:image:height', content: '630' },
+      { property: 'og:image:alt', content: product.value.name },
       { property: 'og:url', content: `https://emwear.bg/products/${product.value.slug || product.value._id}` },
       
       // Facebook Product Catalog - Critical Tags
@@ -1385,11 +1392,12 @@ watchEffect(() => {
         ? [{ property: 'product:google_product_category', content: (product.value.category as any).googleProductCategory }]
         : []),
       
-      // Twitter Card
-      { name: 'twitter:card', content: 'product' },
+      // Twitter Card (summary_large_image is correct, 'product' is not valid)
+      { name: 'twitter:card', content: 'summary_large_image' },
       { name: 'twitter:title', content: product.value.name },
       { name: 'twitter:description', content: productDescription },
       { name: 'twitter:image', content: productImage },
+      { name: 'twitter:image:alt', content: product.value.name },
       
       // Standard meta
       { name: 'description', content: productDescription },
@@ -1474,38 +1482,11 @@ const productSchema = computed(() => {
         returnMethod: 'https://schema.org/ReturnByMail',
         returnFees: 'https://schema.org/FreeReturn',
       },
-      // Shipping Details (Google recommendation)
-      shippingDetails: {
-        '@type': 'OfferShippingDetails',
-        shippingRate: {
-          '@type': 'MonetaryAmount',
-          value: '0',
-          currency: 'BGN',
-        },
-        shippingDestination: {
-          '@type': 'DefinedRegion',
-          addressCountry: 'BG',
-        },
-        deliveryTime: {
-          '@type': 'ShippingDeliveryTime',
-          handlingTime: {
-            '@type': 'QuantitativeValue',
-            minValue: 1,
-            maxValue: 2,
-            unitCode: 'DAY',
-          },
-          transitTime: {
-            '@type': 'QuantitativeValue',
-            minValue: 1,
-            maxValue: 3,
-            unitCode: 'DAY',
-          },
-        },
-      },
+      // Note: shippingDetails removed - free shipping only applies over 110 лв
+      // Including conditional shipping in schema is complex; rely on on-page copy instead
     },
+    // Use internal product ID as SKU (valid) - do NOT include fake GTIN/MPN
     sku: product.value._id,
-    mpn: product.value._id,
-    gtin: product.value._id,
   };
 
   // Add aggregate rating ONLY if real reviews exist (Google strict policy)
