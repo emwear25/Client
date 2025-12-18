@@ -14,11 +14,23 @@ export default defineNuxtConfig({
     "@pinia/nuxt",
     "@vueuse/nuxt",
     "nuxt-gtag",
+    "@nuxtjs/sitemap",
   ],
 
   // Google Analytics Configuration
   gtag: {
     id: process.env.NUXT_PUBLIC_GTAG_ID,
+  },
+
+  // Sitemap Configuration
+  site: {
+    url: process.env.NUXT_PUBLIC_FRONTEND_URL || "https://emwear.bg",
+  },
+  sitemap: {
+    sources: [
+      "/api/__sitemap__/urls",
+    ],
+    excludeAppSources: true,
   },
 
   // SEO Configuration
