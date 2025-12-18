@@ -22,14 +22,47 @@ export default defineNuxtConfig({
     id: process.env.NUXT_PUBLIC_GTAG_ID,
   },
 
-  // Sitemap Configuration
+  // Sitemap Configuration - E-commerce Best Practices
+  // Uses sitemap index with separate sitemaps for products, categories, pages, blog
   site: {
     url: process.env.NUXT_PUBLIC_FRONTEND_URL || "https://emwear.bg",
   },
   sitemap: {
-    sources: [
-      "/api/__sitemap__/urls",
-    ],
+    // Enable sitemap index with multiple sub-sitemaps
+    sitemaps: {
+      // Static pages sitemap
+      pages: {
+        sources: ["/api/__sitemap__/pages"],
+        defaults: {
+          changefreq: "monthly",
+          priority: 0.7,
+        },
+      },
+      // Products sitemap with images
+      products: {
+        sources: ["/api/__sitemap__/products"],
+        defaults: {
+          changefreq: "weekly",
+          priority: 0.8,
+        },
+      },
+      // Categories/Collections sitemap
+      collections: {
+        sources: ["/api/__sitemap__/categories"],
+        defaults: {
+          changefreq: "weekly",
+          priority: 0.7,
+        },
+      },
+      // Blog articles sitemap
+      blog: {
+        sources: ["/api/__sitemap__/blog"],
+        defaults: {
+          changefreq: "monthly",
+          priority: 0.6,
+        },
+      },
+    },
     excludeAppSources: true,
   },
 
