@@ -112,7 +112,7 @@
                     </span>
                   </div>
 
-                  <div class="cart-item__price">{{ formatPrice(item.price) }} лв.</div>
+                  <div class="cart-item__price">{{ formatPrice(item.price) }}</div>
                 </div>
 
                 <!-- Quantity Controls -->
@@ -162,7 +162,7 @@
                 <div class="cart-item__subtotal">
                   <span class="cart-item__subtotal-label">Сума</span>
                   <span class="cart-item__subtotal-value">
-                    {{ formatPrice(item.price * item.quantity) }} лв.
+                    {{ formatPrice(item.price * item.quantity) }}
                   </span>
                 </div>
 
@@ -194,7 +194,7 @@
                 <div class="order-summary__row">
                   <span class="order-summary__label">Междинна сума</span>
                   <span class="order-summary__value"
-                    >{{ formatPrice(cartStore.totalPrice) }} лв.</span
+                    >{{ formatPrice(cartStore.totalPrice) }}</span
                   >
                 </div>
 
@@ -232,6 +232,9 @@ import { useCartStore } from "~/stores/cart";
 import { useAuthStore } from "~/stores/auth";
 import { useRouter } from "vue-router";
 import { useToast } from "~/composables/useToast";
+import { useCurrency } from "~/composables/useCurrency";
+
+const { formatDualPrice } = useCurrency();
 
 const cartStore = useCartStore();
 const router = useRouter();
@@ -265,9 +268,9 @@ const _totalWithShipping = computed(() => {
   return cartStore.totalPrice + shippingCost.value;
 });
 
-// Format price to 2 decimal places
+// Format price to dual currency (EUR + BGN)
 const formatPrice = (price: number): string => {
-  return price.toFixed(2);
+  return formatDualPrice(price);
 };
 
 // Quantity controls

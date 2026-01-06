@@ -147,7 +147,7 @@
           <button class="btn btn--primary cart-drawer__cta" @click="goToCheckout">
             Към плащане
           </button>
-          <p class="cart-drawer__shipping">Безплатна доставка над 110 лв</p>
+          <p class="cart-drawer__shipping">Безплатна доставка над €56 (110 лв)</p>
         </div>
       </aside>
     </div>
@@ -159,6 +159,9 @@ import { useCartStore } from "~/stores/cart";
 import { useAuthStore } from "~/stores/auth";
 import { useRouter } from "vue-router";
 import { useToast } from "~/composables/useToast";
+import { useCurrency } from "~/composables/useCurrency";
+
+const { formatDualPrice } = useCurrency();
 
 const cartStore = useCartStore();
 const router = useRouter();
@@ -171,7 +174,7 @@ const closeCart = () => {
 };
 
 const formatPrice = (price: number) => {
-  return `${price.toFixed(2)} лв.`;
+  return formatDualPrice(price);
 };
 
 // Color translation map: English to Bulgarian

@@ -46,7 +46,7 @@
                   {{ formatPrice(product.price) }} лв.
                 </span>
                 <span class="featured-products__price">
-                  {{ formatPrice(getDiscountedPrice(product)) }} лв.
+                  {{ formatPrice(getDiscountedPrice(product)) }}
                 </span>
               </div>
             </div>
@@ -126,8 +126,10 @@ import { Swiper, SwiperSlide } from "swiper/vue";
 import { Pagination } from "swiper/modules";
 import "swiper/css";
 import "swiper/css/pagination";
+import { useCurrency } from "~/composables/useCurrency";
 
 const modules = [Pagination];
+const { formatDualPrice } = useCurrency();
 
 interface Product {
   _id: string;
@@ -215,7 +217,7 @@ const getCategoryName = (category: Product["category"]) => {
 };
 
 const formatPrice = (price: number) => {
-  return price?.toFixed(2) || "0.00";
+  return formatDualPrice(price);
 };
 
 const getDiscountedPrice = (product: Product) => {

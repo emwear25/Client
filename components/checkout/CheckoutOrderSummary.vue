@@ -60,7 +60,7 @@
           <p class="checkout-order-summary__item-quantity">Количество: {{ item.quantity }}</p>
         </div>
         <div class="checkout-order-summary__item-price">
-          {{ ((item.price || 0) * (item.quantity || 0)).toFixed(2) }} лв
+          {{ formatDualPrice((item.price || 0) * (item.quantity || 0)) }}
         </div>
       </div>
     </div>
@@ -80,7 +80,7 @@
         }"
       >
         <span>Стойност на продуктите:</span>
-        <span>{{ (subtotalBeforeDiscount || 0).toFixed(2) }} лв</span>
+        <span>{{ formatDualPrice(subtotalBeforeDiscount || 0) }}</span>
       </div>
 
       <!-- Coupon discount row -->
@@ -90,7 +90,7 @@
       >
         <span> Отстъпка ({{ appliedCoupon }}) </span>
         <span class="checkout-order-summary__discount-amount"
-          >-{{ (discountTotal || 0).toFixed(2) }} лв</span
+          >-{{ formatDualPrice(discountTotal || 0) }}</span
         >
       </div>
 
@@ -100,7 +100,7 @@
         class="checkout-order-summary__total-row checkout-order-summary__total-row--highlighted"
       >
         <span>Нова цена:</span>
-        <span class="checkout-order-summary__new-price">{{ (totalPrice || 0).toFixed(2) }} лв</span>
+        <span class="checkout-order-summary__new-price">{{ formatDualPrice(totalPrice || 0) }}</span>
       </div>
 
       <!-- Shipping (informational only - paid on delivery) -->
@@ -110,14 +110,14 @@
       >
         <span>Доставка (плаща се при получаване):</span>
         <span class="checkout-order-summary__info-price"
-          >{{ (shippingCost || 0).toFixed(2) }} лв</span
+          >{{ formatDualPrice(shippingCost || 0) }}</span
         >
       </div>
 
       <!-- Final Total (with VAT included note) -->
       <div class="checkout-order-summary__total-row checkout-order-summary__total-row--final">
         <span>Обща сума (вкл. ДДС):</span>
-        <span>{{ finalTotal.toFixed(2) }} лв</span>
+        <span>{{ formatDualPrice(finalTotal) }}</span>
       </div>
     </div>
 
@@ -140,6 +140,9 @@
 
 <script setup lang="ts">
 import { computed } from "vue";
+import { useCurrency } from "~/composables/useCurrency";
+
+const { formatDualPrice } = useCurrency();
 
 interface CartItem {
   id: string;

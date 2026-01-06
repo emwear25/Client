@@ -44,7 +44,7 @@
               </div>
 
               <div class="product-card__footer">
-                <span class="product-card__price">{{ product.price.toFixed(2) }} лв.</span>
+                <span class="product-card__price">{{ formatDualPrice(product.price) }}</span>
                 <span v-if="product.stock > 0" class="badge badge--in-stock"> На Склад </span>
               </div>
             </div>
@@ -63,6 +63,9 @@
 <script setup lang="ts">
 import { ref, onMounted } from "vue";
 import { useApi } from "~/composables/useApi";
+import { useCurrency } from "~/composables/useCurrency";
+
+const { formatDualPrice } = useCurrency();
 
 interface ProductImage {
   url: string;

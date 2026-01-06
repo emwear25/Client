@@ -56,14 +56,14 @@
                   <span> • Количество: {{ item.quantity }}</span>
                 </p>
               </div>
-              <div class="order-item__price">{{ (item.price * item.quantity).toFixed(2) }} лв</div>
+              <div class="order-item__price">{{ formatDualPrice(item.price * item.quantity) }}</div>
             </div>
           </div>
 
           <div class="order-card__summary">
             <div class="order-card__row">
               <span>Общо:</span>
-              <span>{{ order.total.toFixed(2) }} лв</span>
+              <span>{{ formatDualPrice(order.total) }}</span>
             </div>
           </div>
         </div>
@@ -76,6 +76,9 @@
 import { useAuthStore } from "~/stores/auth";
 import { useToast } from "~/composables/useToast";
 import { useApi } from "~/composables/useApi";
+import { useCurrency } from "~/composables/useCurrency";
+
+const { formatDualPrice } = useCurrency();
 
 console.log("[Orders Page] Component loading...");
 

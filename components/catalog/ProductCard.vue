@@ -93,7 +93,7 @@
       </div>
       <div class="product-card__price-wrapper">
         <div class="product-card__price">
-          <span class="product-card__price-current">{{ formatPrice(product.price) }}</span>
+          <span class="product-card__price-current">{{ formatPrice(displayPrice) }}</span>
           <span v-if="product.compareAt || product.originalPrice" class="product-card__price-old">
             {{ formatPrice(product.compareAt || product.originalPrice) }}
           </span>
@@ -123,6 +123,7 @@
 import { computed } from "vue";
 import { useRouter } from "vue-router";
 import { useWishlist } from "~/stores/useWishlist";
+import { useCurrency } from "~/composables/useCurrency";
 
 interface ProductImage {
   url: string;
@@ -139,6 +140,7 @@ interface ProductVariant {
   color: string;
   stock: number;
   reserved?: number;
+  price?: number; // Optional variant-specific price
 }
 
 interface Product {
@@ -224,9 +226,28 @@ const savePercent = computed(() => {
   return Math.round(100 - (props.product.price / originalPrice) * 100);
 });
 
+const { formatDualPrice } = useCurrency();
+
+// Get display price - use variant prices if available, otherwise base price
+const displayPrice = computed(() => {
+  if (props.product.variants && props.product.variants.length > 0) {
+    // Check if any variants have custom prices
+    const variantPrices = props.product.variants
+      .filter(v => v.price != null && v.price > 0)
+      .map(v => v.price as number);
+    
+    if (variantPrices.length > 0) {
+      // Use the lowest variant price for display
+      return Math.min(...variantPrices);
+    }
+  }
+  // Fall back to base product price
+  return props.product.price;
+});
+
 const formatPrice = (price?: number | null) => {
   if (price == null) return "";
-  return `${price.toFixed(2)} лв.`;
+  return formatDualPrice(price);
 };
 
 const goToPDP = () => {
