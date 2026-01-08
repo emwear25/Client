@@ -11,7 +11,7 @@
       <!-- Products Grid -->
       <div v-else-if="products.length > 0" class="best-sellers__grid">
         <article v-for="product in products" :key="product._id" class="product-card">
-          <NuxtLink :to="`/products/${product._id}`" class="product-card__link">
+          <NuxtLink :to="`/products/${product.slug || product._id}`" class="product-card__link">
             <div class="product-card__media">
               <NuxtImg
                 :src="product.images?.[0]?.url || '/img/placeholder.png'"
@@ -79,6 +79,7 @@ interface ColorObject {
 
 interface Product {
   _id: string;
+  slug?: string;
   name: string;
   price: number;
   category: string;
