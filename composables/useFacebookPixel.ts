@@ -20,7 +20,7 @@ export const useFacebookPixel = () => {
             content_name: product.name,
             content_type: 'product',
             value: product.price,
-            currency: 'BGN',
+            currency: 'EUR',
             content_category: product.category || '',
         });
     };
@@ -39,7 +39,7 @@ export const useFacebookPixel = () => {
             content_name: product.name,
             content_type: 'product',
             value: product.price * (product.quantity || 1),
-            currency: 'BGN',
+            currency: 'EUR',
         });
     };
 
@@ -54,7 +54,7 @@ export const useFacebookPixel = () => {
             content_ids: data.items.map((item) => item.id),
             num_items: data.items.reduce((sum, item) => sum + item.quantity, 0),
             value: data.value,
-            currency: 'BGN',
+            currency: 'EUR',
         });
     };
 
@@ -70,7 +70,7 @@ export const useFacebookPixel = () => {
             content_ids: order.items.map((item) => item.id),
             content_type: 'product',
             value: order.total,
-            currency: 'BGN',
+            currency: 'EUR',
             num_items: order.items.reduce((sum, item) => sum + item.quantity, 0),
         });
     };
@@ -96,7 +96,7 @@ export const useFacebookPixel = () => {
             content_ids: [product.id],
             content_name: product.name,
             value: product.price,
-            currency: 'BGN',
+            currency: 'EUR',
         });
     };
 
