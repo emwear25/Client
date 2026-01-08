@@ -235,6 +235,7 @@ import CheckoutShippingAddress from "~/components/checkout/CheckoutShippingAddre
 import CheckoutSavedAddresses from "~/components/checkout/CheckoutSavedAddresses.vue";
 import CheckoutPaymentMethod from "~/components/checkout/CheckoutPaymentMethod.vue";
 import CheckoutOrderSummary from "~/components/checkout/CheckoutOrderSummary.vue";
+import { useFacebookPixel } from "~/composables/useFacebookPixel";
 
 // No middleware - checkout supports both guest and authenticated users
 
@@ -854,6 +855,21 @@ onMounted(async () => {
     router.push("/cart");
     return;
   }
+
+  // ===== FACEBOOK PIXEL INITIATE CHECKOUT TRACKING =====
+  // Track InitiateCheckout event when user enters checkout page
+  const { trackInitiateCheckout } = useFacebookPixel();
+  trackInitiateCheckout({
+    value: cartStore.totalPrice || 0,
+    items: cartItems.value.map((item) => ({
+      id: item.id,
+      quantity: item.quantity,
+    })),
+  });
+  console.log('[Checkout] Facebook Pixel InitiateCheckout tracked', {
+    value: cartStore.totalPrice,
+    itemsCount: cartItems.value.length,
+  });
 
   // Fetch user data if not loaded
   if (!authStore.user && authStore.accessToken) {

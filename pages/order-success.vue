@@ -226,6 +226,7 @@ import { useAuthStore } from "~/stores/auth";
 import { useToast } from "~/composables/useToast";
 import { useApi } from "~/composables/useApi";
 import { useCurrency } from "~/composables/useCurrency";
+import { useFacebookPixel } from "~/composables/useFacebookPixel";
 
 const { formatDualPrice } = useCurrency();
 
@@ -359,6 +360,47 @@ onMounted(async () => {
     loading.value = false;
   }
 });
+
+// ===== FACEBOOK PIXEL PURCHASE TRACKING =====
+// Track the Purchase event when order is successfully loaded
+// Uses sessionStorage to prevent duplicate tracking on page refresh
+const { trackPurchase } = useFacebookPixel();
+const hasPurchaseTracked = ref(false);
+
+watch(order, (newOrder) => {
+  if (newOrder && !hasPurchaseTracked.value) {
+    // Check if we've already tracked this order (prevents double tracking on refresh)
+    const trackedOrdersKey = 'fb_tracked_orders';
+    const trackedOrders = JSON.parse(sessionStorage.getItem(trackedOrdersKey) || '[]');
+    
+    if (!trackedOrders.includes(newOrder._id)) {
+      // Prepare items array for Purchase event
+      const items = (newOrder.items || []).map((item: any) => ({
+        id: item.product?._id || item.product || item.productId,
+        quantity: item.quantity || 1,
+        price: item.price || 0,
+      }));
+      
+      // Track Purchase event
+      trackPurchase({
+        orderId: newOrder._id,
+        total: newOrder.total || newOrder.subtotal || 0,
+        items,
+      });
+      
+      // Mark as tracked
+      trackedOrders.push(newOrder._id);
+      sessionStorage.setItem(trackedOrdersKey, JSON.stringify(trackedOrders));
+      hasPurchaseTracked.value = true;
+      
+      console.log('[OrderSuccess] Facebook Pixel Purchase event tracked', {
+        orderId: newOrder._id,
+        total: newOrder.total,
+        itemsCount: items.length,
+      });
+    }
+  }
+}, { immediate: true });
 
 // Handle account creation for guest orders
 const handleCreateAccount = async () => {

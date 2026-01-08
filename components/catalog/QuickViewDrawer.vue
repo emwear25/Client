@@ -218,6 +218,7 @@ import { ref, computed, watch, onMounted } from "vue";
 import { useCartStore } from "~/stores/cart";
 import { useToast } from "~/composables/useToast";
 import { useCurrency } from "~/composables/useCurrency";
+import { useFacebookPixel } from "~/composables/useFacebookPixel";
 
 interface ProductImage {
   url: string;
@@ -551,6 +552,15 @@ const addToCart = () => {
     },
     1
   );
+
+  // Track AddToCart event for Facebook Pixel
+  const { trackAddToCart } = useFacebookPixel();
+  trackAddToCart({
+    id: props.product._id,
+    name: props.product.name,
+    price: finalPrice,
+    quantity: 1,
+  });
 
   toast.success(`${props.product.name} е добавен в количката!`);
 

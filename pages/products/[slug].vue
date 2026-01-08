@@ -667,7 +667,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, watchEffect } from "vue";
+import { ref, computed, watchEffect, onMounted } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import { useCartStore } from "~/stores/cart";
 import { useWishlist } from "~/stores/useWishlist";
@@ -681,6 +681,7 @@ import ProductReviews from "~/components/reviews/ProductReviews.vue";
 import ReviewForm from "~/components/reviews/ReviewForm.vue";
 import RelatedProducts from "~/components/products/RelatedProducts.vue";
 import Modal from "~/components/common/Modal.vue";
+import { useFacebookPixel } from "~/composables/useFacebookPixel";
 
 const { formatDualPrice, bgnToEur, formatEur } = useCurrency();
 
@@ -927,6 +928,28 @@ if (productData.value) {
   error.value = fetchError.value.message || 'Product not found';
   isLoading.value = false;
 }
+
+// ===== FACEBOOK PIXEL TRACKING =====
+// Initialize Facebook Pixel tracking (client-side only)
+const { trackViewContent, trackAddToCart: fbTrackAddToCart } = useFacebookPixel();
+
+// Track ViewContent on client-side when product page loads
+onMounted(() => {
+  if (product.value) {
+    // Get category name for tracking
+    const categoryName = typeof product.value.category === 'object' 
+      ? product.value.category.name 
+      : product.value.category || '';
+    
+    // Track ViewContent event for Facebook Pixel
+    trackViewContent({
+      id: product.value._id,
+      name: product.value.name,
+      price: currentPrice.value,
+      category: categoryName,
+    });
+  }
+});
 
 // Wishlist computed
 const isInWishlist = computed(() =>
@@ -1315,6 +1338,14 @@ const addToCart = () => {
     },
     1
   );
+
+  // Track AddToCart event for Facebook Pixel
+  fbTrackAddToCart({
+    id: product.value._id,
+    name: product.value.name,
+    price: finalPrice,
+    quantity: 1,
+  });
 
   // Show success toast
   const toast = useToast();
