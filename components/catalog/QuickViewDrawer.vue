@@ -162,7 +162,7 @@
                   />
                   <span class="qv__custom-checkbox-text">
                     {{ field.label }}
-                    <span v-if="field.price" class="qv__custom-checkbox-price">+{{ field.price.toFixed(2) }} лв.</span>
+                    <span v-if="field.price" class="qv__custom-checkbox-price">+{{ field.price.toFixed(2) }} €</span>
                   </span>
                 </label>
               </div>

@@ -360,7 +360,7 @@
                       />
                       <span class="pdp-custom__checkbox-text">
                         {{ field.label }}
-                        <span v-if="field.price" class="pdp-custom__checkbox-price">+{{ field.price.toFixed(2) }} лв.</span>
+                        <span v-if="field.price" class="pdp-custom__checkbox-price">+{{ field.price.toFixed(2) }} €</span>
                       </span>
                     </label>
                   </div>
