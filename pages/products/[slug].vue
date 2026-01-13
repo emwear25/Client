@@ -683,7 +683,7 @@ import RelatedProducts from "~/components/products/RelatedProducts.vue";
 import Modal from "~/components/common/Modal.vue";
 import { useFacebookPixel } from "~/composables/useFacebookPixel";
 
-const { formatDualPrice, bgnToEur, formatEur } = useCurrency();
+const { formatDualPrice, formatEur } = useCurrency();
 
 interface ProductImage {
   url: string;
