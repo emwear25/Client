@@ -228,7 +228,6 @@ const officesByCity = computed((): CityGroup[] => {
     return countryCode === "BGR"; // Bulgaria only
   });
 
-  console.log("[EcontMap] After Bulgaria filter:", filtered.length, "offices");
 
   // Filter by office type
   if (props.officeType === "office") {
