@@ -1,7 +1,7 @@
 <template>
   <div class="home-page">
     <HeroSlider />
-    <ChristmasPromoBanner />
+    <PromoBanner />
     <CategoryPromos />
     <FeaturedProducts />
     <FeatureHighlights />
