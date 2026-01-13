@@ -1415,9 +1415,34 @@ const handleSubmit = async () => {
       quantity: item.quantity,
       size: item.size,
       color: item.color,
-      customization: item.embroidery
-        ? `Бродерия: ${item.embroidery.name}${item.embroidery.color ? `, Цвят: ${item.embroidery.color}` : ""}${item.embroidery.font ? `, Шрифт: ${item.embroidery.font}` : ""}`
-        : null,
+        customization: item.embroidery
+          ? (() => {
+              // Standard embroidery fields
+              const parts = [];
+              if (item.embroidery.name) parts.push(`Бродерия: ${item.embroidery.name}`);
+              if (item.embroidery.color) parts.push(`Цвят: ${item.embroidery.color}`);
+              if (item.embroidery.font) parts.push(`Шрифт: ${item.embroidery.font}`);
+              
+              // Add custom fields
+              if (item.embroidery.customFields) {
+                Object.entries(item.embroidery.customFields).forEach(([key, value]) => {
+                  if (value && typeof value !== 'boolean') {
+                     // Try to format key nicely if possible, or just use value
+                     parts.push(`${value}`);
+                  }
+                });
+              }
+              
+              // Add priced options
+              if (item.embroidery.pricedOptions) {
+                item.embroidery.pricedOptions.forEach(opt => {
+                   parts.push(opt.label || opt.name);
+                });
+              }
+
+              return parts.length > 0 ? parts.join(", ") : "Персонализиран";
+            })()
+          : null,
     })),
     shippingAddress,
     paymentMethod: selectedPaymentMethod.value === "cod" ? "cash_on_delivery" : "stripe_card",
