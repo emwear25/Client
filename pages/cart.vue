@@ -234,7 +234,7 @@ import { useRouter } from "vue-router";
 import { useToast } from "~/composables/useToast";
 import { useCurrency } from "~/composables/useCurrency";
 
-const { formatDualPrice } = useCurrency();
+const { formatDualPrice, FREE_SHIPPING_EUR } = useCurrency();
 
 const cartStore = useCartStore();
 const router = useRouter();
@@ -259,9 +259,9 @@ const goToCheckout = () => {
   router.push("/checkout");
 };
 
-// Shipping calculation (free shipping over 110 BGN)
+// Shipping calculation (free shipping over 60 EUR)
 const shippingCost = computed(() => {
-  return cartStore.totalPrice >= 110 ? 0 : 5.99;
+  return cartStore.totalPrice >= FREE_SHIPPING_EUR ? 0 : 5.99;
 });
 
 const _totalWithShipping = computed(() => {

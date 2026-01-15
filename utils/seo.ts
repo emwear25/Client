@@ -59,7 +59,7 @@ export function generateMetaDescription(
 
   // If description is too short, add key info
   if (metaDesc.length < 100) {
-    metaDesc += " Безплатна доставка над 110 лв.";
+    metaDesc += " Безплатна доставка над €60.";
   }
 
   metaDesc += " | emWear";
@@ -110,7 +110,7 @@ export const SOCIAL_LINKS = {
  */
 export const SITE_METADATA = {
   name: "emWear",
-  description: "Персонализирани подаръци с качествена бродерия. Детски раници, торби, чанти с име. Безплатна доставка над 110 лв.",
+  description: "Персонализирани подаръци с качествена бродерия. Детски раници, торби, чанти с име. Безплатна доставка над €60.",
   tagline: "Персонализирани подаръци с грижа и стил",
   locale: "bg_BG",
   siteUrl: "https://emwear.bg",

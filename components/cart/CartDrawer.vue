@@ -147,7 +147,7 @@
           <button class="btn btn--primary cart-drawer__cta" @click="goToCheckout">
             Към плащане
           </button>
-          <p class="cart-drawer__shipping">Безплатна доставка над €56 (110 лв)</p>
+          <p class="cart-drawer__shipping">Безплатна доставка над €60</p>
         </div>
       </aside>
     </div>

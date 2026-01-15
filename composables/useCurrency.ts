@@ -10,8 +10,8 @@
 // Fixed conversion rate (official Bulgarian Euro adoption rate)
 export const EUR_TO_BGN_RATE = 1.95583;
 
-// Free shipping threshold in EUR (was 110 BGN ≈ 56.25 EUR, rounded to 55 EUR)
-export const FREE_SHIPPING_EUR = 55;
+// Free shipping threshold in EUR
+export const FREE_SHIPPING_EUR = 60;
 export const FREE_SHIPPING_BGN = FREE_SHIPPING_EUR * EUR_TO_BGN_RATE;
 
 /**

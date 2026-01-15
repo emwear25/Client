@@ -202,7 +202,7 @@ const faqs = [
     question: 'Колко струва доставката?',
     answer: `<p><strong>Цени на доставка:</strong></p>
       <ul>
-        <li><strong>Безплатна доставка</strong> при поръчки над 110 лв</li>
+        <li><strong>Безплатна доставка</strong> при поръчки над €60</li>
         <li><strong>5.99 лв</strong> - Доставка до офис на Еконт/Спиди</li>
         <li><strong>7.99 лв</strong> - Доставка до адрес</li>
       </ul>
