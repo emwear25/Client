@@ -80,6 +80,14 @@ export function usePageSEO(options: PageSEO) {
         content: ogImage,
       },
       {
+        property: "og:image:width",
+        content: "1200",
+      },
+      {
+        property: "og:image:height",
+        content: "630",
+      },
+      {
         property: "og:url",
         content: currentUrl,
       },
@@ -135,7 +143,12 @@ export function usePageSEO(options: PageSEO) {
       },
       {
         rel: "alternate",
-        media: "only screen and (max-width: 640px)",
+        hreflang: "bg",
+        href: currentUrl,
+      },
+      {
+        rel: "alternate",
+        hreflang: "x-default",
         href: currentUrl,
       },
     ],
@@ -196,6 +209,14 @@ export function useProductSEO(product: ProductSEO) {
         content: productImage,
       },
       {
+        property: "og:image:width",
+        content: "1200",
+      },
+      {
+        property: "og:image:height",
+        content: "630",
+      },
+      {
         property: "og:url",
         content: productUrl,
       },
@@ -213,7 +234,7 @@ export function useProductSEO(product: ProductSEO) {
       },
       {
         property: "product:price:currency",
-        content: "BGN",
+        content: "EUR",
       },
       {
         name: "twitter:card",
@@ -243,7 +264,12 @@ export function useProductSEO(product: ProductSEO) {
       },
       {
         rel: "alternate",
-        media: "only screen and (max-width: 640px)",
+        hreflang: "bg",
+        href: productUrl,
+      },
+      {
+        rel: "alternate",
+        hreflang: "x-default",
         href: productUrl,
       },
     ],
@@ -268,7 +294,7 @@ export function useProductSEO(product: ProductSEO) {
     offers: {
       "@type": "Offer",
       price: product.price || 0,
-      priceCurrency: "BGN",
+      priceCurrency: "EUR",
       availability:
         product.price && product.price > 0
           ? "https://schema.org/InStock"

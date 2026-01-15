@@ -184,22 +184,80 @@ usePageSEO({
   type: "website",
 });
 
-// Add ContactPage structured data
+// Add ContactPage and LocalBusiness structured data
 useHead({
   script: [
     {
       type: "application/ld+json",
-      children: JSON.stringify({
+      innerHTML: JSON.stringify({
         "@context": "https://schema.org",
         "@type": "ContactPage",
         name: "Контакти - emWear",
         description: "Свържете се с emWear за въпроси относно персонализирани подаръци",
-        mainEntity: {
-          "@type": "Organization",
-          name: "emWear",
-          email: "info@emwear.bg",
-          telephone: "+359890927520",
-          url: "https://emwear.bg",
+        url: "https://emwear.bg/contact",
+      }),
+    },
+    {
+      type: "application/ld+json",
+      innerHTML: JSON.stringify({
+        "@context": "https://schema.org",
+        "@type": "LocalBusiness",
+        "@id": "https://emwear.bg/#business",
+        name: "emWear",
+        description: "Персонализирани подаръци с качествена бродерия. Детски раници, торби, чанти с име.",
+        url: "https://emwear.bg",
+        logo: "https://emwear.bg/logo-dark.png",
+        image: "https://emwear.bg/emwear-front-page.png",
+        telephone: "+359890927520",
+        email: "info@emwear.bg",
+        priceRange: "€€",
+        currenciesAccepted: "EUR, BGN",
+        paymentAccepted: "Cash, Credit Card, Bank Transfer",
+        areaServed: {
+          "@type": "Country",
+          name: "Bulgaria",
+        },
+        address: {
+          "@type": "PostalAddress",
+          addressCountry: "BG",
+          addressLocality: "Bulgaria",
+        },
+        openingHoursSpecification: [
+          {
+            "@type": "OpeningHoursSpecification",
+            dayOfWeek: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"],
+            opens: "09:00",
+            closes: "18:00",
+          },
+          {
+            "@type": "OpeningHoursSpecification",
+            dayOfWeek: "Saturday",
+            opens: "10:00",
+            closes: "14:00",
+          },
+        ],
+        sameAs: [
+          "https://www.facebook.com/emwearbg/",
+          "https://www.instagram.com/emwea.r/",
+          "https://www.tiktok.com/@emwear.bg",
+        ],
+        hasOfferCatalog: {
+          "@type": "OfferCatalog",
+          name: "Персонализирани продукти",
+          itemListElement: [
+            {
+              "@type": "OfferCatalog",
+              name: "Раници с бродерия",
+            },
+            {
+              "@type": "OfferCatalog",
+              name: "Торби с име",
+            },
+            {
+              "@type": "OfferCatalog",
+              name: "Халати за деца",
+            },
+          ],
         },
       }),
     },

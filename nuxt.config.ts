@@ -157,6 +157,17 @@ export default defineNuxtConfig({
           sizes: "512x512",
           href: "/android-chrome-512x512.png",
         },
+        // hreflang for Bulgarian language site
+        {
+          rel: "alternate",
+          hreflang: "bg",
+          href: "https://emwear.bg",
+        },
+        {
+          rel: "alternate",
+          hreflang: "x-default",
+          href: "https://emwear.bg",
+        },
       ],
     },
   },
