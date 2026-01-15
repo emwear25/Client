@@ -338,13 +338,16 @@ export default defineNuxtConfig({
     "/category/**": { ssr: true, isr: 300, headers: { "Cache-Control": "public, s-maxage=300, stale-while-revalidate=600" } },
     // Private pages - no cache + noindex for search engines
     "/checkout": { prerender: false, headers: { "Cache-Control": "no-cache, no-store, must-revalidate", "X-Robots-Tag": "noindex, nofollow" } },
+    "/checkout/**": { prerender: false, headers: { "Cache-Control": "no-cache, no-store, must-revalidate", "X-Robots-Tag": "noindex, nofollow" } },
     "/cart": { prerender: false, headers: { "Cache-Control": "no-cache, no-store, must-revalidate", "X-Robots-Tag": "noindex, nofollow" } },
     "/profile": { prerender: false, headers: { "Cache-Control": "no-cache, no-store, must-revalidate", "X-Robots-Tag": "noindex, nofollow" } },
     "/profile/**": { prerender: false, headers: { "Cache-Control": "no-cache, no-store, must-revalidate", "X-Robots-Tag": "noindex, nofollow" } },
+    "/profile-edit": { prerender: false, headers: { "Cache-Control": "no-cache, no-store, must-revalidate", "X-Robots-Tag": "noindex, nofollow" } },
     "/orders": { prerender: false, headers: { "Cache-Control": "no-cache, no-store, must-revalidate", "X-Robots-Tag": "noindex, nofollow" } },
     "/orders/**": { prerender: false, headers: { "Cache-Control": "no-cache, no-store, must-revalidate", "X-Robots-Tag": "noindex, nofollow" } },
     "/login": { prerender: false, headers: { "Cache-Control": "no-cache, no-store, must-revalidate", "X-Robots-Tag": "noindex, nofollow" } },
     "/register": { prerender: false, headers: { "Cache-Control": "no-cache, no-store, must-revalidate", "X-Robots-Tag": "noindex, nofollow" } },
     "/favorites": { prerender: false, headers: { "Cache-Control": "no-cache, no-store, must-revalidate", "X-Robots-Tag": "noindex, nofollow" } },
+    "/order-success": { prerender: false, headers: { "Cache-Control": "no-cache, no-store, must-revalidate", "X-Robots-Tag": "noindex, nofollow" } },
   },
 });

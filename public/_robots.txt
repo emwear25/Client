@@ -11,9 +11,12 @@ Disallow: /checkout/*
 Disallow: /cart
 Disallow: /account
 Disallow: /profile
+Disallow: /profile-edit
 Disallow: /orders
 Disallow: /login
 Disallow: /register
+Disallow: /favorites
+Disallow: /order-success
 
 # Allow product and category pages
 Allow: /products

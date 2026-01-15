@@ -736,6 +736,8 @@ interface Product {
           height: number;
         };
       };
+  seoTitle?: string | null;
+  metaDescription?: string | null;
   sizes: string[];
   colors: string[];
   variants?: Variant[];
@@ -1386,61 +1388,43 @@ const fetchReviewStats = async (productId: string) => {
 watchEffect(() => {
   if (!product.value) return;
 
-  const productImage = product.value.images && product.value.images.length > 0
-    ? product.value.images[0].url
-    : '/img/placeholder-product.jpg';
-
-  const productDescription = product.value.description
-    ? product.value.description.substring(0, 200).replace(/<[^>]*>/g, '')
-    : `Персонализиран ${product.value.name} от emWear`;
+  useProductSEO({
+    name: product.value.name,
+    description: product.value.description || "",
+    images: product.value.images,
+    price: currentPrice.value,
+    priceCurrency: "EUR",
+    stock: currentStock.value,
+    category: product.value.category,
+    seoTitle: product.value.seoTitle || null,
+    metaDescription: product.value.metaDescription || null,
+    slug: product.value.slug,
+    reviewStats: {
+      averageRating: reviewStats.value.averageRating,
+      totalReviews: reviewStats.value.totalReviews,
+    },
+  });
 
   const availability = currentStock.value > 0 ? 'in stock' : 'out of stock';
 
   useHead({
-    title: product.value.name,
-    link: [
-      // Dynamic canonical per product page (SEO best practice)
-      { rel: 'canonical', href: `https://emwear.bg/products/${product.value.slug || product.value._id}` },
-    ],
     meta: [
-      // Open Graph / Facebook (Shopify-style)
-      // Note: og:site_name, og:locale set globally in nuxt.config.ts
-      { property: 'og:type', content: 'product' },
-      { property: 'og:title', content: product.value.name },
-      { property: 'og:description', content: productDescription },
-      { property: 'og:image', content: productImage },
-      { property: 'og:image:secure_url', content: productImage },
-      { property: 'og:image:width', content: '1200' },
-      { property: 'og:image:height', content: '630' },
-      { property: 'og:image:alt', content: product.value.name },
-      { property: 'og:url', content: `https://emwear.bg/products/${product.value.slug || product.value._id}` },
-      
       // Open Graph Product Price (og: prefix for wider compatibility)
       { property: 'og:price:amount', content: currentPrice.value.toFixed(2) },
-      { property: 'og:price:currency', content: 'BGN' },
+      { property: 'og:price:currency', content: 'EUR' },
       
       // Facebook Product Catalog - Critical Tags
       { property: 'product:brand', content: 'emWear' },
       { property: 'product:availability', content: availability },
       { property: 'product:condition', content: 'new' },
-      { property: 'product:price:amount', content: currentPrice.value.toFixed(2) },
-      { property: 'product:price:currency', content: 'BGN' },
       { property: 'product:retailer_item_id', content: product.value._id },
       { property: 'product:category', content: formatCategory(product.value.category) },
       // Google Product Category for Facebook Product Catalog
       ...(typeof product.value.category === 'object' && (product.value.category as any).googleProductCategory
         ? [{ property: 'product:google_product_category', content: (product.value.category as any).googleProductCategory }]
         : []),
-      
-      // Twitter Card - title/description/image override globals for this product
-      // Note: twitter:card and twitter:site set globally in nuxt.config.ts
-      { name: 'twitter:title', content: product.value.name },
-      { name: 'twitter:description', content: productDescription },
-      { name: 'twitter:image', content: productImage },
+      { property: 'og:image:alt', content: product.value.name },
       { name: 'twitter:image:alt', content: product.value.name },
-      
-      // Standard meta
-      { name: 'description', content: productDescription },
     ],
   });
 
@@ -1465,96 +1449,6 @@ watchEffect(() => {
   });
 
   useBreadcrumbs(breadcrumbItems);
-});
-
-// ===== ENHANCED GOOGLE SCHEMA.ORG PRODUCT DATA =====
-// SEO Benefit: Rich product cards in Google with price, stars, availability, shipping
-const productSchema = computed(() => {
-  if (!product.value) return null;
-
-  // Map availability to Schema.org format
-  const availabilityMap: Record<string, string> = {
-    'in stock': 'https://schema.org/InStock',
-    'out of stock': 'https://schema.org/OutOfStock',
-    'preorder': 'https://schema.org/PreOrder',
-    'discontinued': 'https://schema.org/Discontinued',
-    'limited availability': 'https://schema.org/LimitedAvailability',
-  };
-
-  const availability = currentStock.value > 0 ? 'in stock' : 'out of stock';
-  const schemaAvailability = availabilityMap[availability] || 'https://schema.org/InStock';
-
-  // Base product schema
-  const schema: any = {
-    '@context': 'https://schema.org/',
-    '@type': 'Product',
-    name: product.value.name,
-    description: product.value.description
-      ? product.value.description.substring(0, 500).replace(/<[^>]*>/g, '').trim()
-      : `Персонализиран ${product.value.name} от emWear`,
-    image: product.value.images && product.value.images.length > 0
-      ? product.value.images.map((img: any) => img.url)
-      : ['https://emwear.bg/img/placeholder-product.jpg'],
-    brand: {
-      '@type': 'Brand',
-      name: 'emWear',
-    },
-    offers: {
-      '@type': 'Offer',
-      url: `https://emwear.bg/products/${product.value.slug || product.value._id}`,
-      priceCurrency: 'BGN',
-      price: currentPrice.value.toFixed(2),
-      availability: schemaAvailability,
-      priceValidUntil: new Date(new Date().setFullYear(new Date().getFullYear() + 1))
-        .toISOString()
-        .split('T')[0],
-      itemCondition: 'https://schema.org/NewCondition',
-      seller: {
-        '@type': 'Organization',
-        name: 'emWear',
-      },
-      // Merchant Return Policy (Google recommendation)
-      hasMerchantReturnPolicy: {
-        '@type': 'MerchantReturnPolicy',
-        applicableCountry: 'BG',
-        returnPolicyCategory: 'https://schema.org/MerchantReturnFiniteReturnWindow',
-        merchantReturnDays: 30,
-        returnMethod: 'https://schema.org/ReturnByMail',
-        returnFees: 'https://schema.org/FreeReturn',
-      },
-      // Note: shippingDetails removed - free shipping only applies over 110 лв
-      // Including conditional shipping in schema is complex; rely on on-page copy instead
-    },
-    // Use internal product ID as SKU (valid) - do NOT include fake GTIN/MPN
-    sku: product.value._id,
-  };
-
-  // Add aggregate rating ONLY if real reviews exist (Google strict policy)
-  if (reviewStats.value && reviewStats.value.totalReviews > 0 && reviewStats.value.averageRating > 0) {
-    schema.aggregateRating = {
-      '@type': 'AggregateRating',
-      ratingValue: reviewStats.value.averageRating.toFixed(1),
-      reviewCount: reviewStats.value.totalReviews,
-      bestRating: '5',
-      worstRating: '1',
-    };
-  }
-
-  return schema;
-});
-
-// Inject schema into head
-watchEffect(() => {
-  if (!productSchema.value) return;
-
-  useHead({
-    script: [
-      {
-        type: 'application/ld+json',
-        innerHTML: JSON.stringify(productSchema.value),
-      },
-    ],
-  });
 });
 
 // ===== FAQ SCHEMA =====
@@ -1614,71 +1508,6 @@ watchEffect(() => {
       {
         type: 'application/ld+json',
         innerHTML: JSON.stringify(faqSchema.value),
-      },
-    ],
-  });
-});
-
-// ===== BREADCRUMB SCHEMA =====
-// SEO Benefit: Shows navigation path in Google search results
-const breadcrumbSchema = computed(() => {
-  if (!product.value) return null;
-
-  const items: any[] = [
-    {
-      "@type": "ListItem",
-      position: 1,
-      name: "Начало",
-      item: "https://emwear.bg"
-    },
-    {
-      "@type": "ListItem",
-      position: 2,
-      name: "Продукти",
-      item: "https://emwear.bg/products"
-    }
-  ];
-
-  // Add category if exists
-  if (typeof product.value.category === 'object' && product.value.category?.slug) {
-    items.push({
-      "@type": "ListItem",
-      position: 3,
-      name: product.value.category.name,
-      item: `https://emwear.bg/category/${product.value.category.slug}`
-    });
-    
-    items.push({
-      "@type": "ListItem",
-      position: 4,
-      name: product.value.name,
-      item: `https://emwear.bg/products/${product.value.slug || product.value._id}`
-    });
-  } else {
-    items.push({
-      "@type": "ListItem",
-      position: 3,
-      name: product.value.name,
-      item: `https://emwear.bg/products/${product.value.slug || product.value._id}`
-    });
-  }
-
-  return {
-    "@context": "https://schema.org",
-    "@type": "BreadcrumbList",
-    itemListElement: items
-  };
-});
-
-// Inject breadcrumb schema
-watchEffect(() => {
-  if (!breadcrumbSchema.value) return;
-
-  useHead({
-    script: [
-      {
-        type: 'application/ld+json',
-        innerHTML: JSON.stringify(breadcrumbSchema.value),
       },
     ],
   });

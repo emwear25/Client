@@ -371,7 +371,7 @@ const categorySchema = computed(() => {
           offers: {
             '@type': 'Offer',
             price: product.price?.toFixed(2) || '0.00',
-            priceCurrency: 'BGN',
+            priceCurrency: 'EUR',
             availability: product.stock > 0 
               ? 'https://schema.org/InStock' 
               : 'https://schema.org/OutOfStock',

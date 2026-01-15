@@ -10,6 +10,8 @@ export interface ProductSEO {
   description: string;
   images?: Array<{ url: string; alt?: string }>;
   price?: number;
+  priceCurrency?: string;
+  stock?: number;
   category?: string | { name: string };
   seoTitle?: string | null;
   metaDescription?: string | null;
@@ -162,20 +164,24 @@ export function useProductSEO(product: ProductSEO) {
   const route = useRoute();
   const config = useRuntimeConfig();
   const siteUrl = config.public.frontendUrl || SITE_METADATA.siteUrl;
+  const priceCurrency = product.priceCurrency || "EUR";
 
   // Get category name
   const categoryName =
     typeof product.category === "object" ? product.category?.name : product.category;
 
+  const cleanDescription = product.description
+    ? product.description.replace(/<[^>]*>/g, "").replace(/\s+/g, " ").trim()
+    : "";
+
   // Generate SEO data
   const seoTitle = generateSEOTitle(product.name, categoryName, product.seoTitle || null);
-  const metaDescription = generateMetaDescription(
-    product.description,
-    product.metaDescription || null
-  );
+  const metaDescription = generateMetaDescription(cleanDescription, product.metaDescription || null);
 
   // Product URL
-  const productSlug = product.slug || route.params.id;
+  const routeSlug = route.params.slug || route.params.id;
+  const resolvedRouteSlug = Array.isArray(routeSlug) ? routeSlug[0] : routeSlug;
+  const productSlug = product.slug || resolvedRouteSlug || "";
   const productUrl = getFullUrl(`/products/${productSlug}`);
 
   // Product image - handle both relative and absolute URLs (Cloudinary)
@@ -234,7 +240,7 @@ export function useProductSEO(product: ProductSEO) {
       },
       {
         property: "product:price:currency",
-        content: "EUR",
+        content: priceCurrency,
       },
       {
         name: "twitter:card",
@@ -276,11 +282,24 @@ export function useProductSEO(product: ProductSEO) {
   });
 
   // Add structured data (JSON-LD)
+  const availability =
+    typeof product.stock === "number"
+      ? product.stock > 0
+        ? "https://schema.org/InStock"
+        : "https://schema.org/OutOfStock"
+      : product.price && product.price > 0
+        ? "https://schema.org/InStock"
+        : "https://schema.org/OutOfStock";
+
+  const schemaDescription = cleanDescription
+    ? cleanDescription.substring(0, 500).trim()
+    : `Персонализиран ${product.name} от emWear`;
+
   const structuredData: any = {
     "@context": "https://schema.org",
     "@type": "Product",
     name: product.name,
-    description: product.description,
+    description: schemaDescription,
     image:
       product.images?.map((img) => {
         // Handle both relative and absolute URLs
@@ -294,11 +313,8 @@ export function useProductSEO(product: ProductSEO) {
     offers: {
       "@type": "Offer",
       price: product.price || 0,
-      priceCurrency: "EUR",
-      availability:
-        product.price && product.price > 0
-          ? "https://schema.org/InStock"
-          : "https://schema.org/OutOfStock",
+      priceCurrency,
+      availability,
       url: productUrl,
       seller: {
         "@type": "Organization",
@@ -307,33 +323,6 @@ export function useProductSEO(product: ProductSEO) {
       },
       priceValidUntil: new Date(new Date().setFullYear(new Date().getFullYear() + 1)).toISOString().split('T')[0],
       itemCondition: "https://schema.org/NewCondition",
-      shippingDetails: {
-        "@type": "OfferShippingDetails",
-        shippingRate: {
-          "@type": "MonetaryAmount",
-          value: "0",
-          currency: "BGN",
-        },
-        shippingDestination: {
-          "@type": "DefinedRegion",
-          addressCountry: "BG",
-        },
-        deliveryTime: {
-          "@type": "ShippingDeliveryTime",
-          handlingTime: {
-            "@type": "QuantitativeValue",
-            minValue: 1,
-            maxValue: 2,
-            unitCode: "DAY",
-          },
-          transitTime: {
-            "@type": "QuantitativeValue",
-            minValue: 1,
-            maxValue: 3,
-            unitCode: "DAY",
-          },
-        },
-      },
       hasMerchantReturnPolicy: {
         "@type": "MerchantReturnPolicy",
         applicableCountry: "BG",
@@ -393,5 +382,3 @@ export function useDefaultSEO() {
     ],
   });
 }
-
-
