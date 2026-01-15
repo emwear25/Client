@@ -3,7 +3,7 @@
     <div class="topbar__container">
       <!-- Left side - Shipping info -->
       <div class="topbar__left">
-        <span class="topbar__info"> Безплатна доставка над €60 </span>
+        <span class="topbar__info"> Безплатна доставка над €60 (~117 лв) </span>
       </div>
 
       <!-- Center - Main promotional text -->
