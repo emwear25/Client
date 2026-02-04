@@ -25,7 +25,7 @@ useHead({
             url: 'https://emwear.bg',
             logo: {
               '@type': 'ImageObject',
-              url: 'https://emwear.bg/img/logo.png',
+              url: 'https://emwear.bg/logo-dark.png',
               width: 200,
               height: 60,
             },
@@ -37,8 +37,9 @@ useHead({
               availableLanguage: 'Bulgarian',
             },
             sameAs: [
-              'https://www.facebook.com/emwear.bg',
-              'https://www.instagram.com/emwear.bg',
+              'https://www.facebook.com/emwearbg/',
+              'https://www.instagram.com/emwea.r/',
+              'https://www.tiktok.com/@emwear.bg',
             ],
             address: {
               '@type': 'PostalAddress',
