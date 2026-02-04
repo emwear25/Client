@@ -1422,7 +1422,7 @@ const handleSubmit = async () => {
               if (item.embroidery.name) parts.push(`Бродерия: ${item.embroidery.name}`);
               if (item.embroidery.color) parts.push(`Цвят: ${item.embroidery.color}`);
               if (item.embroidery.font) parts.push(`Шрифт: ${item.embroidery.font}`);
-              
+
               // Add custom fields
               if (item.embroidery.customFields) {
                 Object.entries(item.embroidery.customFields).forEach(([key, value]) => {
@@ -1432,7 +1432,7 @@ const handleSubmit = async () => {
                   }
                 });
               }
-              
+
               // Add priced options
               if (item.embroidery.pricedOptions) {
                 item.embroidery.pricedOptions.forEach(opt => {
@@ -1450,6 +1450,8 @@ const handleSubmit = async () => {
     deliveryProvider: deliveryProvider.value,
     shippingCost: shippingCost.value || 0, // Include calculated shipping cost
     econtCustomerInfoId: econtCustomerInfoId.value || null, // Add Econt customer info ID
+    // Include coupon code if applied
+    couponCode: cartStore.appliedCoupon || null,
     isGuest: isGuest.value && !authStore.isAuthenticated, // Add guest flag
     guestInfo:
       isGuest.value && !authStore.isAuthenticated

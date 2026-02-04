@@ -156,6 +156,9 @@ export const useCartStore = defineStore("cart", () => {
 
   const clearCart = () => {
     items.value = [];
+    appliedCoupon.value = null;
+    couponDiscountPercentage.value = 0;
+    appliedDiscounts.value = [];
     persist();
   };
 
