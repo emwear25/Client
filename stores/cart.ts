@@ -113,8 +113,24 @@ export const useCartStore = defineStore("cart", () => {
 
   // Actions
   const addItem = (product: Omit<CartItem, "quantity">, quantity = 1) => {
+    // Generate embroidery key for matching - items with different embroidery are different items
+    const getEmbroideryKey = (emb: CartItem['embroidery']) => {
+      if (!emb) return '';
+      return JSON.stringify({
+        name: emb.name || '',
+        customFields: emb.customFields || {},
+        pricedOptions: emb.pricedOptions?.map(o => o.name).sort() || [],
+      });
+    };
+
+    const productEmbKey = getEmbroideryKey(product.embroidery);
+
     const existingItem = items.value.find(
-      (item) => item.id === product.id && item.size === product.size && item.color === product.color
+      (item) =>
+        item.id === product.id &&
+        item.size === product.size &&
+        item.color === product.color &&
+        getEmbroideryKey(item.embroidery) === productEmbKey
     );
 
     if (existingItem) {
