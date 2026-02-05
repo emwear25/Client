@@ -661,6 +661,14 @@ const calculateSpeedyShipping = async () => {
 
     // Determine if COD based on payment method
     const isCOD = selectedPaymentMethod.value === "cod";
+    const codAmount = isCOD ? cartStore.totalPrice : 0;
+
+    console.log("[Checkout] Speedy COD check:", {
+      selectedPaymentMethod: selectedPaymentMethod.value,
+      isCOD,
+      codAmount,
+      cartTotal: cartStore.totalPrice,
+    });
 
     const requestData: any = {
       weight: shippingCalc.chargeableWeight,
@@ -672,7 +680,7 @@ const calculateSpeedyShipping = async () => {
       // COD: receiver pays shipping; Card: sender pays shipping
       paymentSide: isCOD ? "RECEIVER" : "SENDER",
       // Include COD amount in EUR for accurate pricing (includes COD processing fee)
-      codAmount: isCOD ? cartStore.totalPrice : 0,
+      codAmount: codAmount,
     };
 
     // If office/automat selected, add office ID or use siteId
