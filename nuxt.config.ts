@@ -25,7 +25,7 @@ export default defineNuxtConfig({
   // Sitemap Configuration - E-commerce Best Practices
   // Uses sitemap index with separate sitemaps for products, categories, pages, blog
   site: {
-    url: process.env.NUXT_PUBLIC_FRONTEND_URL || "https://emwear.bg",
+    url: process.env.NUXT_PUBLIC_FRONTEND_URL || "https://www.emwear.bg",
   },
   sitemap: {
     // Enable sitemap index with multiple sub-sitemaps
