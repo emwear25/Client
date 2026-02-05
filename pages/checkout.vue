@@ -838,6 +838,19 @@ watch(selectedPaymentMethod, (newMethod, oldMethod) => {
   }
 });
 
+// Watch for cart total changes (coupon applied/removed) to recalculate COD shipping
+watch(() => cartStore.totalPrice, (newTotal, oldTotal) => {
+  if (newTotal !== oldTotal && selectedPaymentMethod.value === "cod") {
+    console.log("[Checkout] Cart total changed from", oldTotal, "to", newTotal, "- recalculating COD shipping");
+    // Recalculate shipping with new COD amount
+    if (deliveryProvider.value === "speedy") {
+      debouncedCalculateSpeedyShipping();
+    } else {
+      debouncedCalculateEcontShipping();
+    }
+  }
+});
+
 // Cleanup on unmount
 onUnmounted(() => {
   // Cancel any pending calculations
