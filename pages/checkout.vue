@@ -228,6 +228,7 @@ import { useToast } from "~/composables/useToast";
 import { useApi } from "~/composables/useApi";
 import { useCheckoutValidation } from "~/composables/useCheckoutValidation";
 import { useDebounce } from "~/composables/useDebounce";
+import { useShippingCalculation } from "~/composables/useShippingCalculation";
 import { nextTick, computed, watch, onUnmounted } from "vue";
 import CheckoutDeliveryMethod from "~/components/checkout/CheckoutDeliveryMethod.vue";
 import CheckoutGuestForm from "~/components/checkout/CheckoutGuestForm.vue";
@@ -250,6 +251,7 @@ const { validationErrors, handleBlur, handleInput } = useCheckoutValidation();
 
 // Use debounce composable
 const { debounceAsync } = useDebounce();
+const { calculateShipping, getShippingSummary } = useShippingCalculation();
 
 // State
 const isGuest = ref(!authStore.isAuthenticated); // Start in guest mode if not authenticated
@@ -495,65 +497,34 @@ const calculateEcontShipping = async () => {
   console.log("[Checkout] Calculating Econt shipping...");
 
   try {
-    // Calculate total weight from cart using actual product weights
-    const totalWeight = cartItems.value.reduce((total, item) => {
-      // Use category default weight if available, otherwise fallback to 0.5kg
-      const itemWeight = item.category?.defaultWeight || item.weight || 0.5;
-      return total + itemWeight * item.quantity;
-    }, 0);
+    // Use shipping calculation composable for weight and dimensions
+    const shippingCalc = calculateShipping(cartItems.value, 'econt', deliveryMethod.value);
 
-    // Calculate stacked dimensions
-    // We stack boxes height-wise, so height = sum of all heights
-    let maxLength = 0;
-    let maxWidth = 0;
-    let totalHeight = 0;
-
-    cartItems.value.forEach((item) => {
-      const dims = item.category?.defaultDimensions;
-      if (dims) {
-        // Track the largest length and width
-        if (dims.length > maxLength) maxLength = dims.length;
-        if (dims.width > maxWidth) maxWidth = dims.width;
-        // Stack heights
-        totalHeight += dims.height * item.quantity;
-      } else {
-        // Fallback dimensions if category doesn't have them
-        if (40 > maxLength) maxLength = 40;
-        if (30 > maxWidth) maxWidth = 30;
-        totalHeight += 20 * item.quantity;
-      }
+    console.log("[Checkout] Econt shipping calculation:", {
+      actualWeight: shippingCalc.actualWeight,
+      volumetricWeight: shippingCalc.volumetricWeight,
+      chargeableWeight: shippingCalc.chargeableWeight,
+      dimensions: shippingCalc.dimensions,
+      warnings: shippingCalc.warnings,
     });
 
-    // Ensure minimum dimensions
-    if (maxLength === 0) maxLength = 40;
-    if (maxWidth === 0) maxWidth = 30;
-    if (totalHeight === 0) totalHeight = 20;
-
-    console.log("[Checkout] Total cart weight:", totalWeight, "kg");
-    console.log("[Checkout] Stacked dimensions:", `${maxLength}×${maxWidth}×${totalHeight} cm`);
-    console.log(
-      "[Checkout] Cart items:",
-      cartItems.value.map((item) => ({
-        name: item.name,
-        quantity: item.quantity,
-        categoryWeight: item.category?.defaultWeight,
-        categoryDimensions: item.category?.defaultDimensions,
-        usedWeight: item.category?.defaultWeight || item.weight || 0.5,
-        totalWeight: (item.category?.defaultWeight || item.weight || 0.5) * item.quantity,
-        totalHeight: (item.category?.defaultDimensions?.height || 20) * item.quantity,
-      }))
-    );
+    // Show warnings to user if any
+    if (shippingCalc.warnings.length > 0) {
+      shippingCalc.warnings.forEach(warning => {
+        console.warn("[Checkout] Shipping warning:", warning);
+      });
+      // Show first warning as toast (don't spam user)
+      if (shippingCalc.exceedsLimits) {
+        toast.warning(shippingCalc.warnings[0]);
+      }
+    }
 
     // Determine if COD based on payment method
     const isCOD = selectedPaymentMethod.value === "cod";
 
     const requestData: any = {
-      weight: Math.max(totalWeight, 0.5), // Minimum 0.5kg
-      dimensions: {
-        length: maxLength,
-        width: maxWidth,
-        height: totalHeight,
-      },
+      weight: shippingCalc.chargeableWeight,
+      dimensions: shippingCalc.dimensions,
       receiverCityName: cityName,
       receiverPostCode: postCode || "1000",
       receiverName: `${shippingForm.value.firstName} ${shippingForm.value.lastName}`,
@@ -658,47 +629,42 @@ const calculateSpeedyShipping = async () => {
   console.log("[Checkout] Calculating Speedy shipping...");
 
   try {
-    // Calculate total weight from cart
-    const totalWeight = cartItems.value.reduce((total, item) => {
-      const itemWeight = item.category?.defaultWeight || item.weight || 0.5;
-      return total + itemWeight * item.quantity;
-    }, 0);
+    // Use shipping calculation composable for weight and dimensions
+    const shippingCalc = calculateShipping(cartItems.value, 'speedy', deliveryMethod.value);
 
-    // Calculate stacked dimensions (same logic as Econt)
-    let maxLength = 0;
-    let maxWidth = 0;
-    let totalHeight = 0;
-
-    cartItems.value.forEach((item) => {
-      const dims = item.category?.defaultDimensions;
-      if (dims) {
-        if (dims.length > maxLength) maxLength = dims.length;
-        if (dims.width > maxWidth) maxWidth = dims.width;
-        totalHeight += dims.height * item.quantity;
-      } else {
-        if (40 > maxLength) maxLength = 40;
-        if (30 > maxWidth) maxWidth = 30;
-        totalHeight += 20 * item.quantity;
-      }
+    console.log("[Checkout] Speedy shipping calculation:", {
+      actualWeight: shippingCalc.actualWeight,
+      volumetricWeight: shippingCalc.volumetricWeight,
+      chargeableWeight: shippingCalc.chargeableWeight,
+      dimensions: shippingCalc.dimensions,
+      warnings: shippingCalc.warnings,
     });
 
-    if (maxLength === 0) maxLength = 40;
-    if (maxWidth === 0) maxWidth = 30;
-    if (totalHeight === 0) totalHeight = 20;
+    // Show warnings to user if any
+    if (shippingCalc.warnings.length > 0) {
+      shippingCalc.warnings.forEach(warning => {
+        console.warn("[Checkout] Shipping warning:", warning);
+      });
+      // Show first warning as toast (don't spam user)
+      if (shippingCalc.exceedsLimits) {
+        toast.warning(shippingCalc.warnings[0]);
+      }
+    }
 
-    console.log("[Checkout] Total cart weight:", totalWeight, "kg");
-    console.log("[Checkout] Stacked dimensions:", `${maxLength}×${maxWidth}×${totalHeight} cm`);
+    // For Speedy APT, block if dimensions exceed limits
+    if (deliveryMethod.value === "speedy_apt" && shippingCalc.exceedsLimits) {
+      toast.error("Пратката е твърде голяма за автомат. Моля, изберете офис или доставка до адрес.");
+      speedyShippingCost.value = 0;
+      calculatingShipping.value = false;
+      return;
+    }
 
     // Determine if COD based on payment method
     const isCOD = selectedPaymentMethod.value === "cod";
 
     const requestData: any = {
-      weight: Math.max(totalWeight, 0.5),
-      dimensions: {
-        length: maxLength,
-        width: maxWidth,
-        height: totalHeight,
-      },
+      weight: shippingCalc.chargeableWeight,
+      dimensions: shippingCalc.dimensions,
       receiverCityName: cityName,
       receiverPostCode: shippingForm.value.postalCode || "1000",
       receiverName: `${shippingForm.value.firstName} ${shippingForm.value.lastName}`,
