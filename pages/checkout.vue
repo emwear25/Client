@@ -838,18 +838,26 @@ watch(selectedPaymentMethod, (newMethod, oldMethod) => {
   }
 });
 
-// Watch for cart total changes (coupon applied/removed) to recalculate COD shipping
-watch(() => cartStore.totalPrice, (newTotal, oldTotal) => {
-  if (newTotal !== oldTotal && selectedPaymentMethod.value === "cod") {
-    console.log("[Checkout] Cart total changed from", oldTotal, "to", newTotal, "- recalculating COD shipping");
-    // Recalculate shipping with new COD amount
-    if (deliveryProvider.value === "speedy") {
-      debouncedCalculateSpeedyShipping();
-    } else {
-      debouncedCalculateEcontShipping();
+// Watch for coupon changes to recalculate COD shipping (coupon affects COD amount)
+watch(
+  [() => cartStore.appliedCoupon, () => cartStore.discountTotal],
+  ([newCoupon, newDiscount], [oldCoupon, oldDiscount]) => {
+    const couponChanged = newCoupon !== oldCoupon || newDiscount !== oldDiscount;
+    if (couponChanged && selectedPaymentMethod.value === "cod") {
+      console.log("[Checkout] Coupon changed - recalculating COD shipping", {
+        newCoupon,
+        newDiscount,
+        newTotal: cartStore.totalPrice,
+      });
+      // Recalculate shipping with new COD amount
+      if (deliveryProvider.value === "speedy") {
+        calculateSpeedyShipping().catch(() => {});
+      } else {
+        calculateEcontShipping().catch(() => {});
+      }
     }
   }
-});
+);
 
 // Cleanup on unmount
 onUnmounted(() => {
