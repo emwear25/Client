@@ -7,7 +7,17 @@ interface Article {
     title: string;
     excerpt?: string;
     updatedAt?: string;
-    coverImage?: string;
+    featuredImage?: {
+        url: string;
+        alt?: string;
+    };
+}
+
+interface ArticlesResponse {
+    success: boolean;
+    data: {
+        articles: Article[];
+    };
 }
 
 // Blog sitemap source - Includes blog index and all published articles
@@ -26,12 +36,12 @@ export default defineSitemapEventHandler(async () => {
 
     try {
         // Fetch all published articles for sitemap
-        const response = await $fetch<{ success: boolean; data: Article[] }>(
-            `${apiBase}/api/articles`
+        const response = await $fetch<ArticlesResponse>(
+            `${apiBase}/articles`
         );
 
-        if (response?.data) {
-            for (const article of response.data) {
+        if (response?.data?.articles) {
+            for (const article of response.data.articles) {
                 if (article.slug) {
                     const entry: SitemapUrlInput = {
                         loc: `/blog/${article.slug}`,
@@ -40,11 +50,11 @@ export default defineSitemapEventHandler(async () => {
                         priority: 0.6,
                     };
 
-                    // Add cover image if available
-                    if (article.coverImage) {
+                    // Add featured image if available
+                    if (article.featuredImage?.url) {
                         entry.images = [{
-                            loc: article.coverImage,
-                            title: article.title,
+                            loc: article.featuredImage.url,
+                            title: article.featuredImage.alt || article.title,
                             caption: article.excerpt?.substring(0, 200) || article.title,
                         }];
                     }
