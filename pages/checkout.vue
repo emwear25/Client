@@ -539,7 +539,7 @@ const calculateEcontShipping = async () => {
         {
           type: "CD",
           amount: cartStore.totalPrice,
-          currency: "BGN",
+          currency: "EUR",
         },
       ];
     }
@@ -581,7 +581,7 @@ const calculateEcontShipping = async () => {
       // Show Econt API price directly - no discount factors
       econtShippingCost.value = parseFloat(response.data.totalPrice);
 
-      console.log("[Checkout] Econt shipping price:", econtShippingCost.value, "BGN");
+      console.log("[Checkout] Econt shipping price:", econtShippingCost.value, "EUR");
     } else {
       // API failed to return price
       econtShippingCost.value = 0;
@@ -671,7 +671,7 @@ const calculateSpeedyShipping = async () => {
       receiverPhone: shippingForm.value.phone || "0888000000",
       // COD: receiver pays shipping; Card: sender pays shipping
       paymentSide: isCOD ? "RECEIVER" : "SENDER",
-      // Include COD amount for accurate pricing when COD is selected
+      // Include COD amount in EUR for accurate pricing (includes COD processing fee)
       codAmount: isCOD ? cartStore.totalPrice : 0,
     };
 
@@ -710,7 +710,7 @@ const calculateSpeedyShipping = async () => {
 
     if (response.success && response.price && response.price.total) {
       speedyShippingCost.value = parseFloat(response.price.total);
-      console.log("[Checkout] Speedy shipping price:", speedyShippingCost.value, "BGN");
+      console.log("[Checkout] Speedy shipping price:", speedyShippingCost.value, "EUR");
     } else {
       speedyShippingCost.value = 0;
       console.error("[Checkout] No price returned from Speedy API:", response);
