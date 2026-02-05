@@ -544,6 +544,9 @@ const calculateEcontShipping = async () => {
       }))
     );
 
+    // Determine if COD based on payment method
+    const isCOD = selectedPaymentMethod.value === "cod";
+
     const requestData: any = {
       weight: Math.max(totalWeight, 0.5), // Minimum 0.5kg
       dimensions: {
@@ -555,15 +558,20 @@ const calculateEcontShipping = async () => {
       receiverPostCode: postCode || "1000",
       receiverName: `${shippingForm.value.firstName} ${shippingForm.value.lastName}`,
       receiverPhone: shippingForm.value.phone || "0888000000",
-      paymentSide: "RECEIVER", // Receiver pays shipping
-      services: [
+      // COD: receiver pays shipping; Card: sender pays shipping
+      paymentSide: isCOD ? "RECEIVER" : "SENDER",
+    };
+
+    // Only add COD service if payment method is cash on delivery
+    if (isCOD) {
+      requestData.services = [
         {
           type: "CD",
-          amount: cartStore.totalPrice, // Cash on delivery amount
+          amount: cartStore.totalPrice,
           currency: "BGN",
         },
-      ],
-    };
+      ];
+    }
 
     console.log("[Checkout] Delivery method:", deliveryMethod.value);
     console.log("[Checkout] Request data:", {
@@ -681,6 +689,9 @@ const calculateSpeedyShipping = async () => {
     console.log("[Checkout] Total cart weight:", totalWeight, "kg");
     console.log("[Checkout] Stacked dimensions:", `${maxLength}×${maxWidth}×${totalHeight} cm`);
 
+    // Determine if COD based on payment method
+    const isCOD = selectedPaymentMethod.value === "cod";
+
     const requestData: any = {
       weight: Math.max(totalWeight, 0.5),
       dimensions: {
@@ -692,6 +703,10 @@ const calculateSpeedyShipping = async () => {
       receiverPostCode: shippingForm.value.postalCode || "1000",
       receiverName: `${shippingForm.value.firstName} ${shippingForm.value.lastName}`,
       receiverPhone: shippingForm.value.phone || "0888000000",
+      // COD: receiver pays shipping; Card: sender pays shipping
+      paymentSide: isCOD ? "RECEIVER" : "SENDER",
+      // Include COD amount for accurate pricing when COD is selected
+      codAmount: isCOD ? cartStore.totalPrice : 0,
     };
 
     // If office/automat selected, add office ID or use siteId
@@ -829,6 +844,25 @@ watch(
     }
   }
 );
+
+// Watch for payment method changes to recalculate shipping (COD vs Card affects price)
+watch(selectedPaymentMethod, (newMethod, oldMethod) => {
+  if (newMethod !== oldMethod) {
+    console.log("[Checkout] Payment method changed from", oldMethod, "to", newMethod, "- recalculating shipping");
+    // Cancel any pending calculations
+    debouncedCalculateEcontShipping.cancel();
+    debouncedCalculateSpeedyShipping.cancel();
+    if (currentShippingCalculation) {
+      currentShippingCalculation.cancel();
+    }
+    // Recalculate shipping with new payment method
+    if (deliveryProvider.value === "speedy") {
+      calculateSpeedyShipping().catch(() => {});
+    } else {
+      calculateEcontShipping().catch(() => {});
+    }
+  }
+});
 
 // Cleanup on unmount
 onUnmounted(() => {
