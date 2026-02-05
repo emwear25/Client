@@ -522,12 +522,6 @@ const calculateEcontShipping = async () => {
     // Determine if COD based on payment method
     const isCOD = selectedPaymentMethod.value === "cod";
 
-    // For COD, the amount includes products + shipping (what customer pays at delivery)
-    // Use current shipping estimate if available, otherwise just products
-    const codTotalAmount = isCOD
-      ? cartStore.totalPrice + (econtShippingCost.value || 0)
-      : 0;
-
     const requestData: any = {
       weight: shippingCalc.chargeableWeight,
       dimensions: shippingCalc.dimensions,
@@ -544,7 +538,7 @@ const calculateEcontShipping = async () => {
       requestData.services = [
         {
           type: "CD",
-          amount: codTotalAmount,
+          amount: cartStore.totalPrice,
           currency: "EUR",
         },
       ];
@@ -668,12 +662,6 @@ const calculateSpeedyShipping = async () => {
     // Determine if COD based on payment method
     const isCOD = selectedPaymentMethod.value === "cod";
 
-    // For COD, the amount includes products + shipping (what customer pays at delivery)
-    // Use current shipping estimate if available, otherwise just products
-    const codTotalAmount = isCOD
-      ? cartStore.totalPrice + (speedyShippingCost.value || 0)
-      : 0;
-
     const requestData: any = {
       weight: shippingCalc.chargeableWeight,
       dimensions: shippingCalc.dimensions,
@@ -683,8 +671,8 @@ const calculateSpeedyShipping = async () => {
       receiverPhone: shippingForm.value.phone || "0888000000",
       // COD: receiver pays shipping; Card: sender pays shipping
       paymentSide: isCOD ? "RECEIVER" : "SENDER",
-      // Include full COD amount (products + shipping) for accurate COD fee calculation
-      codAmount: codTotalAmount,
+      // Include COD amount in EUR for accurate pricing (includes COD processing fee)
+      codAmount: isCOD ? cartStore.totalPrice : 0,
     };
 
     // If office/automat selected, add office ID or use siteId
