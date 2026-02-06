@@ -5,7 +5,7 @@ User-agent: *
 Allow: /
 
 # Sitemap location
-Sitemap: https://www.emwear.bg/sitemap.xml
+Sitemap: https://www.emwear.bg/sitemap_index.xml
 
 # Block sensitive/private pages
 Disallow: /checkout
