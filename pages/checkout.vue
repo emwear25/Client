@@ -1444,6 +1444,8 @@ const handleSubmit = async () => {
       quantity: item.quantity,
       size: item.size,
       color: item.color,
+        // Send selected priced option names - server resolves prices from the category
+        pricedOptions: item.embroidery?.pricedOptions?.map((o) => o.name) || undefined,
         customization: item.embroidery
           ? (() => {
               // Standard embroidery fields
