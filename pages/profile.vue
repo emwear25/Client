@@ -151,7 +151,7 @@ onMounted(async () => {
 
 // SEO
 useHead({
-  title: "Профил - emWear",
+  title: "Профил",
   meta: [{ name: "description", content: "Управлявайте вашия профил в emWear" }],
 });
 </script>

@@ -313,7 +313,7 @@ const formatFieldLabel = (fieldName: string): string => {
 
 // SEO
 useHead({
-  title: "Количка - emWear",
+  title: "Количка",
   meta: [
     {
       name: "description",

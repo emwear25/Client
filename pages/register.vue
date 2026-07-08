@@ -325,7 +325,7 @@ const handleGoogleLogin = async () => {
 
 // SEO
 useHead({
-  title: "Регистрация - emWear",
+  title: "Регистрация",
   meta: [
     {
       name: "description",

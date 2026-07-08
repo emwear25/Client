@@ -136,7 +136,7 @@ const closeQuickView = () => {
 
 // SEO
 useHead({
-  title: "Моите Любими - emWear",
+  title: "Моите Любими",
   meta: [
     {
       name: "description",

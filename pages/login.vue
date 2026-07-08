@@ -215,7 +215,7 @@ onMounted(() => {
 
 // SEO
 useHead({
-  title: "Вход - emWear",
+  title: "Вход",
   meta: [
     {
       name: "description",

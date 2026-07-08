@@ -371,7 +371,7 @@ const setDefaultAddress = async (addressId: string) => {
 };
 
 useHead({
-  title: "Редактиране на профил - emWear",
+  title: "Редактиране на профил",
 });
 </script>
 

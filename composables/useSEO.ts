@@ -57,6 +57,9 @@ export function usePageSEO(options: PageSEO) {
   // Set meta tags
   useHead({
     title,
+    // Title already contains the "| emWear" suffix - disable the global
+    // titleTemplate so the brand is not appended a second time
+    titleTemplate: null,
     meta: [
       // Basic meta
       {
@@ -197,6 +200,9 @@ export function useProductSEO(product: ProductSEO) {
   // Set meta tags
   useHead({
     title: seoTitle,
+    // generateSEOTitle already appends "| emWear" - disable the global
+    // titleTemplate so the brand is not appended a second time
+    titleTemplate: null,
     meta: [
       {
         name: "description",

@@ -189,7 +189,7 @@ onMounted(() => {
 });
 
 useHead({
-  title: "Моите Поръчки - emWear",
+  title: "Моите Поръчки",
 });
 </script>
 
