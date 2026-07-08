@@ -18,8 +18,25 @@ export default defineNuxtConfig({
   ],
 
   // Google Analytics Configuration
+  // GDPR: the gtag.js script is NOT loaded until the visitor accepts
+  // analytics cookies (see composables/useCookieConsent.ts).
+  // Google Consent Mode v2 defaults everything to "denied".
   gtag: {
     id: process.env.NUXT_PUBLIC_GTAG_ID,
+    initMode: "manual",
+    initCommands: [
+      [
+        "consent",
+        "default",
+        {
+          analytics_storage: "denied",
+          ad_storage: "denied",
+          ad_user_data: "denied",
+          ad_personalization: "denied",
+          wait_for_update: 500,
+        },
+      ],
+    ],
   },
 
   // Sitemap Configuration - E-commerce Best Practices

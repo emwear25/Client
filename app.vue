@@ -4,6 +4,7 @@
     <NuxtLayout>
       <NuxtPage />
     </NuxtLayout>
+    <CookieConsent />
   </ErrorBoundary>
 </template>
 

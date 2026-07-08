@@ -12,15 +12,26 @@
       >
         {{ link.name }}
       </NuxtLink>
+      <button
+        type="button"
+        class="footer-legal__link footer-legal__link--button"
+        @click="openSettings"
+      >
+        Настройки на бисквитките
+      </button>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
+import { useCookieConsent } from "~/composables/useCookieConsent";
+
 interface LegalLink {
   name: string;
   path: string;
 }
+
+const { openSettings } = useCookieConsent();
 
 const currentYear = new Date().getFullYear();
 
@@ -83,6 +94,13 @@ const legalLinks: LegalLink[] = [
 
     &:hover {
       color: #e67e22;
+    }
+
+    &--button {
+      background: none;
+      border: none;
+      padding: 0;
+      cursor: pointer;
     }
   }
 }
