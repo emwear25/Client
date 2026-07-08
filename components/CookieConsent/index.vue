@@ -22,13 +22,13 @@
             </p>
           </div>
           <div class="cookie-banner__actions">
-            <button class="cookie-btn cookie-btn--primary" type="button" @click="acceptAll">
+            <button class="btn btn--primary cookie-banner__btn" type="button" @click="acceptAll">
               Приемам всички
             </button>
-            <button class="cookie-btn cookie-btn--secondary" type="button" @click="rejectAll">
+            <button class="btn btn--ghost cookie-banner__btn" type="button" @click="rejectAll">
               Само необходимите
             </button>
-            <button class="cookie-btn cookie-btn--text" type="button" @click="openSettings">
+            <button class="cookie-banner__settings-btn" type="button" @click="openSettings">
               Настройки
             </button>
           </div>
@@ -129,10 +129,10 @@
           </div>
 
           <div class="cookie-modal__actions">
-            <button class="cookie-btn cookie-btn--primary" type="button" @click="savePreferences">
+            <button class="btn btn--primary cookie-modal__btn" type="button" @click="savePreferences">
               Запази избора
             </button>
-            <button class="cookie-btn cookie-btn--secondary" type="button" @click="acceptAll">
+            <button class="btn btn--ghost cookie-modal__btn" type="button" @click="acceptAll">
               Приемам всички
             </button>
           </div>
@@ -198,100 +198,113 @@ onMounted(() => {
 </script>
 
 <style scoped lang="scss">
+@use "~/assets/styles/colors" as *;
+@use "~/assets/styles/fonts" as *;
+@use "~/assets/styles/breakpoints" as *;
+
 .cookie-banner {
   position: fixed;
-  left: 1rem;
-  right: 1rem;
-  bottom: 1rem;
+  left: 0;
+  right: 0;
+  bottom: 0;
   z-index: 10001;
-  max-width: 720px;
-  margin: 0 auto;
-  background: #ffffff;
-  border: 1px solid #e5e7eb;
-  border-radius: 16px;
-  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.18);
-  font-family: "Inter", sans-serif;
+  background: $bg-card;
+  border-top: 1px solid $border-base;
+  box-shadow: 0 -8px 32px $shadow-med;
+  font-family: $font-ui;
+  padding-bottom: env(safe-area-inset-bottom, 0);
+
+  @include up(md) {
+    left: 1.5rem;
+    right: auto;
+    bottom: 1.5rem;
+    max-width: 480px;
+    border: 1px solid $border-base;
+    border-radius: 16px;
+    padding-bottom: 0;
+  }
 
   &__content {
-    padding: 1.25rem 1.5rem;
+    padding: 1.25rem 1rem;
+
+    @include up(sm) {
+      padding: 1.25rem 1.5rem;
+    }
   }
 
   &__title {
     margin: 0 0 0.35rem;
-    font-size: 16px;
-    font-weight: 700;
-    color: #1f2937;
+    font-family: $font-heading;
+    font-size: 1rem;
+    font-weight: 600;
+    color: $brand-ink;
   }
 
   &__description {
     margin: 0;
-    font-size: 13.5px;
+    font-size: 0.845rem;
     line-height: 1.55;
-    color: #4b5563;
+    color: $text-secondary;
   }
 
   &__link {
-    color: #e67e22;
+    color: $brand-ink;
+    font-weight: 500;
     text-decoration: underline;
+    text-underline-offset: 2px;
 
     &:hover {
-      color: #cf6d15;
+      color: $color-sage-deep;
     }
   }
 
   &__actions {
     display: flex;
-    flex-wrap: wrap;
-    gap: 0.6rem;
+    flex-direction: column;
+    gap: 0.5rem;
     margin-top: 1rem;
-  }
-}
 
-.cookie-btn {
-  font-family: "Inter", sans-serif;
-  font-size: 14px;
-  font-weight: 600;
-  border-radius: 10px;
-  padding: 0.6rem 1.2rem;
-  cursor: pointer;
-  transition: background 0.2s ease, color 0.2s ease, border-color 0.2s ease;
-  border: 1px solid transparent;
-
-  &--primary {
-    background: #e67e22;
-    color: #ffffff;
-
-    &:hover {
-      background: #cf6d15;
+    @include up(sm) {
+      flex-direction: row;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 0.6rem;
     }
   }
 
-  &--secondary {
-    background: #ffffff;
-    color: #1f2937;
-    border-color: #d1d5db;
+  &__btn {
+    width: 100%;
+    padding: 10px 20px;
+    font-size: 0.9375rem;
 
-    &:hover {
-      border-color: #9ca3af;
-      background: #f9fafb;
+    @include up(sm) {
+      width: auto;
+      flex: 0 0 auto;
     }
   }
 
-  &--text {
+  &__settings-btn {
     background: transparent;
-    color: #6b7280;
+    border: none;
+    padding: 0.5rem;
+    font-family: $font-ui;
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: $text-secondary;
     text-decoration: underline;
-    padding-left: 0.5rem;
-    padding-right: 0.5rem;
+    text-underline-offset: 2px;
+    cursor: pointer;
+    transition: color 0.2s ease;
 
     &:hover {
-      color: #1f2937;
+      color: $brand-ink;
     }
-  }
 
-  &:focus-visible {
-    outline: 2px solid #e67e22;
-    outline-offset: 2px;
+    &:focus-visible {
+      outline: 2px solid $brand;
+      outline-offset: 2px;
+      border-radius: 4px;
+    }
   }
 }
 
@@ -299,23 +312,35 @@ onMounted(() => {
   position: fixed;
   inset: 0;
   z-index: 10002;
-  background: rgba(17, 24, 39, 0.55);
+  background: rgba(47, 58, 42, 0.45);
   display: flex;
-  align-items: center;
+  align-items: flex-end;
   justify-content: center;
-  padding: 1rem;
+
+  @include up(sm) {
+    align-items: center;
+    padding: 1rem;
+  }
 }
 
 .cookie-modal {
-  background: #ffffff;
-  border-radius: 16px;
+  background: $bg-card;
+  border-radius: 16px 16px 0 0;
   width: 100%;
-  max-width: 520px;
-  max-height: 90vh;
+  max-height: 88dvh;
   overflow-y: auto;
-  padding: 1.5rem;
-  font-family: "Inter", sans-serif;
+  padding: 1.25rem 1rem calc(1.25rem + env(safe-area-inset-bottom, 0));
+  font-family: $font-ui;
   outline: none;
+
+  @include up(sm) {
+    border: 1px solid $border-base;
+    border-radius: 16px;
+    max-width: 520px;
+    max-height: 90vh;
+    padding: 1.5rem;
+    box-shadow: 0 16px 48px $shadow-med;
+  }
 
   &__header {
     display: flex;
@@ -326,51 +351,83 @@ onMounted(() => {
 
   &__title {
     margin: 0;
-    font-size: 18px;
-    font-weight: 700;
-    color: #1f2937;
+    font-family: $font-heading;
+    font-size: 1.125rem;
+    font-weight: 600;
+    color: $brand-ink;
   }
 
   &__close {
     background: transparent;
-    border: none;
-    font-size: 16px;
-    color: #6b7280;
+    border: 1px solid $border-base;
+    border-radius: 999px;
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.875rem;
+    color: $brand-ink;
     cursor: pointer;
-    padding: 0.25rem 0.5rem;
-    border-radius: 8px;
+    transition: all 0.2s ease;
+    flex-shrink: 0;
 
     &:hover {
-      background: #f3f4f6;
-      color: #1f2937;
+      background: $brand;
+      border-color: $brand;
+    }
+
+    &:focus-visible {
+      outline: 2px solid $brand;
+      outline-offset: 2px;
     }
   }
 
   &__intro {
     margin: 0 0 1.25rem;
-    font-size: 13.5px;
+    font-size: 0.845rem;
     line-height: 1.55;
-    color: #4b5563;
+    color: $text-secondary;
   }
 
   &__categories {
     display: flex;
     flex-direction: column;
-    gap: 1rem;
+    gap: 0.75rem;
+
+    @include up(sm) {
+      gap: 1rem;
+    }
   }
 
   &__actions {
     display: flex;
-    flex-wrap: wrap;
-    gap: 0.6rem;
+    flex-direction: column;
+    gap: 0.5rem;
     margin-top: 1.5rem;
+
+    @include up(sm) {
+      flex-direction: row;
+      gap: 0.6rem;
+    }
+  }
+
+  &__btn {
+    width: 100%;
+    padding: 10px 20px;
+    font-size: 0.9375rem;
+
+    @include up(sm) {
+      width: auto;
+    }
   }
 }
 
 .cookie-category {
-  border: 1px solid #e5e7eb;
+  background: $bg-page;
+  border: 1px solid $border-base;
   border-radius: 12px;
-  padding: 1rem;
+  padding: 0.875rem 1rem;
 
   &__header {
     display: flex;
@@ -381,23 +438,23 @@ onMounted(() => {
 
   &__name {
     margin: 0;
-    font-size: 15px;
+    font-size: 0.9375rem;
     font-weight: 600;
-    color: #1f2937;
+    color: $brand-ink;
   }
 
   &__status {
     margin: 0.1rem 0 0;
-    font-size: 12px;
+    font-size: 0.75rem;
     font-weight: 600;
-    color: #10b981;
+    color: $success;
   }
 
   &__description {
     margin: 0.6rem 0 0;
-    font-size: 13px;
+    font-size: 0.8125rem;
     line-height: 1.5;
-    color: #6b7280;
+    color: $text-secondary;
   }
 }
 
@@ -414,7 +471,7 @@ onMounted(() => {
     height: 0;
 
     &:checked + .cookie-toggle__slider {
-      background: #e67e22;
+      background: $color-sage-deep;
 
       &::before {
         transform: translateX(20px);
@@ -422,7 +479,7 @@ onMounted(() => {
     }
 
     &:focus-visible + .cookie-toggle__slider {
-      outline: 2px solid #e67e22;
+      outline: 2px solid $brand;
       outline-offset: 2px;
     }
   }
@@ -430,7 +487,7 @@ onMounted(() => {
   &__slider {
     position: absolute;
     inset: 0;
-    background: #d1d5db;
+    background: $border-base;
     border-radius: 24px;
     cursor: pointer;
     transition: background 0.2s ease;
@@ -442,16 +499,17 @@ onMounted(() => {
       height: 18px;
       left: 3px;
       top: 3px;
-      background: #ffffff;
+      background: $color-white;
       border-radius: 50%;
+      box-shadow: 0 1px 3px $shadow-med;
       transition: transform 0.2s ease;
     }
   }
 
   &--locked .cookie-toggle__slider {
     cursor: not-allowed;
-    opacity: 0.7;
-    background: #10b981;
+    opacity: 0.85;
+    background: $success;
 
     &::before {
       transform: translateX(20px);
@@ -467,7 +525,7 @@ onMounted(() => {
 
 .cookie-slide-enter-from,
 .cookie-slide-leave-to {
-  transform: translateY(20px);
+  transform: translateY(24px);
   opacity: 0;
 }
 
@@ -479,18 +537,5 @@ onMounted(() => {
 .cookie-fade-enter-from,
 .cookie-fade-leave-to {
   opacity: 0;
-}
-
-@media (max-width: 480px) {
-  .cookie-banner {
-    left: 0.5rem;
-    right: 0.5rem;
-    bottom: 0.5rem;
-
-    &__actions .cookie-btn {
-      flex: 1 1 100%;
-      text-align: center;
-    }
-  }
 }
 </style>
