@@ -310,9 +310,10 @@ export default defineNuxtConfig({
       apiBase: process.env.NUXT_PUBLIC_API_BASE || "http://localhost:3030",
       frontendUrl: process.env.NUXT_PUBLIC_FRONTEND_URL || "http://localhost:3000",
       gtagId: process.env.NUXT_PUBLIC_GTAG_ID || "",
-      // Christmas mode: set to false to disable holiday decorations
-      // Or use NUXT_PUBLIC_CHRISTMAS_MODE=false in .env
-      christmasMode: process.env.NUXT_PUBLIC_CHRISTMAS_MODE !== "false",
+      // Christmas mode: "auto" shows decorations only in the holiday season
+      // (December - January 6). Set NUXT_PUBLIC_CHRISTMAS_MODE=true/false
+      // in .env to force decorations on or off.
+      christmasMode: process.env.NUXT_PUBLIC_CHRISTMAS_MODE || "auto",
     },
   },
 

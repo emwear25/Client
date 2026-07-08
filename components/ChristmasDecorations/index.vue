@@ -18,14 +18,17 @@
 const config = useRuntimeConfig();
 
 // Check if Christmas mode is enabled
+// "false"/"true" (or booleans) force the decorations off/on;
+// anything else ("auto") shows them only during the holiday season
 const isChristmasMode = computed(() => {
-  if (config.public.christmasMode === false) return false;
-  if (config.public.christmasMode === true) return true;
-  
+  const mode = config.public.christmasMode;
+  if (mode === false || mode === "false") return false;
+  if (mode === true || mode === "true") return true;
+
   const now = new Date();
   const month = now.getMonth();
   const day = now.getDate();
-  
+
   return (month === 11) || (month === 0 && day <= 6);
 });
 
