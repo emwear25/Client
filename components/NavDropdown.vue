@@ -31,7 +31,10 @@ const emit = defineEmits<{
   position: absolute;
   top: 100%;
   left: 0;
-  width: 260px;
+  // Grow with the longest item, wrap only if it gets very long
+  min-width: 260px;
+  width: max-content;
+  max-width: 360px;
   margin: 0;
   padding: 0;
   background: #fff;
@@ -56,7 +59,7 @@ const emit = defineEmits<{
 
 .nav-dropdown__item {
   padding: 8px 24px;
-  white-space: nowrap;
+  white-space: normal;
 
   a {
     display: block;

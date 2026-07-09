@@ -136,6 +136,12 @@ const categories: CategoryPromo[] = [
     image: "/img/banners/banner4.jpg",
     link: "/products?category=towels-personalized",
   },
+  {
+    id: 5,
+    title: "Персонализирани муселинови одеяла",
+    image: "/img/banners/banner5.jpg",
+    link: "/category/kids-blankets",
+  },
 ];
 </script>
 
@@ -166,14 +172,15 @@ const categories: CategoryPromo[] = [
     @media (min-width: 768px) {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
-      grid-template-rows: repeat(2, 1fr);
+      grid-template-rows: repeat(2, 1fr) 340px;
       gap: 1.5rem;
-      height: 600px;
+      height: 940px;
     }
 
     @media (min-width: 1024px) {
       gap: 2rem;
-      height: 650px;
+      grid-template-rows: repeat(2, 1fr) 380px;
+      height: 1030px;
     }
   }
 
@@ -246,6 +253,14 @@ const categories: CategoryPromo[] = [
       @media (min-width: 768px) {
         grid-column: 3 / 4;
         grid-row: 2;
+      }
+    }
+
+    // Full-width promo row (muslin blankets)
+    &--5 {
+      @media (min-width: 768px) {
+        grid-column: 1 / 4;
+        grid-row: 3;
       }
     }
   }

@@ -50,6 +50,12 @@ useHead({
       href: "/img/banners/banner4.jpg",
       fetchpriority: "high",
     },
+    {
+      rel: "preload",
+      as: "image",
+      href: "/img/banners/banner5.jpg",
+      fetchpriority: "high",
+    },
   ],
 });
 </script>
