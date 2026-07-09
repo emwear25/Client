@@ -293,6 +293,7 @@
                     >
                       <label class="pdp-custom__field-label">
                         {{ field.label }}
+                        <span v-if="field.price" class="pdp-custom__checkbox-price">+{{ field.price.toFixed(2) }} €</span>
                         <span v-if="field.required" class="pdp-custom__required">*</span>
                       </label>
                       
@@ -778,16 +779,24 @@ const embroideryNotes = ref(""); // General notes/instructions field
 const customFields = ref<Record<string, string | boolean>>({}); // Category-specific fields (e.g., birth details, checkbox options)
 const customFieldErrors = ref<Record<string, string>>({});
 
-// Computed: Total price of checked priced options (checkboxes with price)
+// A priced field counts when it is used: checkbox checked, or any
+// other type filled in with a non-empty value
+const isPricedFieldUsed = (field: any) => {
+  if (!field.price) return false;
+  const value = customFields.value[field.name];
+  return field.type === 'checkbox' ? value === true : value != null && String(value).trim() !== '';
+};
+
+// Computed: Total price of used priced options (any field type can carry a price)
 const pricedOptionsTotal = computed(() => {
   let total = 0;
   for (const field of personalizationFields.value) {
-    if (field.type === 'checkbox' && field.price && customFields.value[field.name] === true) {
+    if (isPricedFieldUsed(field)) {
       total += field.price;
     }
   }
   return total;
-}); // Validation errors for custom fields
+});
 
 // Computed: Get personalization fields from category
 const personalizationFields = computed(() => {
@@ -1297,9 +1306,9 @@ const addToCart = () => {
   // Calculate final price (use variant price or base price + priced options)
   const finalPrice = currentPrice.value + pricedOptionsTotal.value;
 
-  // Build priced options array for checked checkboxes with prices
+  // Build priced options array from used priced fields (any type)
   const pricedOptions = personalizationFields.value
-    .filter((f: any) => f.type === 'checkbox' && f.price && customFields.value[f.name] === true)
+    .filter((f: any) => isPricedFieldUsed(f))
     .map((f: any) => ({ name: f.name, label: f.label, price: f.price }));
 
   // Prepare embroidery data if enabled
