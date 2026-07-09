@@ -36,6 +36,29 @@
         </div>
       </div>
 
+      <!-- Desktop: Full-width muslin blankets banner below the grid -->
+      <div class="category-promos__card category-promos__banner">
+        <div class="category-promos__card-inner">
+          <div class="category-promos__image-wrapper">
+            <img
+              :src="blanketsPromo.image"
+              :alt="blanketsPromo.title"
+              class="category-promos__image"
+              width="1822"
+              height="863"
+              loading="lazy"
+            />
+            <div class="category-promos__overlay"/>
+          </div>
+          <div class="category-promos__content">
+            <h3 class="category-promos__title">{{ blanketsPromo.title }}</h3>
+            <NuxtLink :to="blanketsPromo.link" class="category-promos__button">
+              {{ "Купи сега" }}
+            </NuxtLink>
+          </div>
+        </div>
+      </div>
+
       <!-- Mobile: Slider -->
       <div class="category-promos__slider">
         <Swiper
@@ -57,7 +80,7 @@
           class="category-promos__swiper"
         >
           <SwiperSlide
-            v-for="category in categories"
+            v-for="category in [...categories, blanketsPromo]"
             :key="category.id"
             class="category-promos__slide"
           >
@@ -137,6 +160,14 @@ const categories: CategoryPromo[] = [
     link: "/products?category=towels-personalized",
   },
 ];
+
+// Full-width banner below the grid (5th slide in the mobile slider)
+const blanketsPromo: CategoryPromo = {
+  id: 5,
+  title: "Персонализирани муселинови одеяла",
+  image: "/img/banners/blankets-promo.jpg",
+  link: "/category/kids-blankets",
+};
 </script>
 
 <style lang="scss" scoped>
@@ -174,6 +205,22 @@ const categories: CategoryPromo[] = [
     @media (min-width: 1024px) {
       gap: 2rem;
       height: 650px;
+    }
+  }
+
+  // Full-width blankets banner (desktop only; part of the slider on mobile)
+  &__banner {
+    display: none;
+
+    @media (min-width: 768px) {
+      display: block;
+      margin-top: 1.5rem;
+      height: 480px;
+    }
+
+    @media (min-width: 1024px) {
+      margin-top: 2rem;
+      height: 560px;
     }
   }
 
