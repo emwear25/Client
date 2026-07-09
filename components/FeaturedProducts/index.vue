@@ -33,6 +33,8 @@
                 :src="product.images?.[0]?.url || '/img/placeholder-product.jpg'"
                 :alt="product.name"
                 class="featured-products__image"
+                width="400"
+                height="400"
                 loading="lazy"
               />
               <div v-if="product.discount" class="featured-products__badge">

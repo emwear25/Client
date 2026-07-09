@@ -217,6 +217,7 @@ onMounted(() => {
 useHead({
   title: "Вход",
   meta: [
+    { name: "robots", content: "noindex, nofollow" },
     {
       name: "description",
       content: "Влезте в профила си в emWear за да управлявате поръчките си.",

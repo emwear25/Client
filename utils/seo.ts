@@ -20,24 +20,37 @@ export function generateSEOTitle(
   category?: string | null,
   customTitle?: string | null
 ): string {
+  const SUFFIX = " | emWear";
+  const MAX_LENGTH = 60;
+
   // Use custom title if provided
   if (customTitle) {
-    return customTitle.length > 60 ? customTitle.substring(0, 57) + "..." : customTitle;
+    return truncateAtWord(customTitle, MAX_LENGTH);
   }
 
-  // Build title
-  let title = productName;
-  if (category) {
-    title = `${productName} - ${category}`;
+  // Prefer "Name - Category | emWear"; drop the category (never cut
+  // mid-word or lose the brand suffix) when it doesn't fit
+  if (category && `${productName} - ${category}${SUFFIX}`.length <= MAX_LENGTH) {
+    return `${productName} - ${category}${SUFFIX}`;
   }
-  title = `${title} | emWear`;
-
-  // Ensure max 60 characters
-  if (title.length > 60) {
-    title = title.substring(0, 57) + "...";
+  if (`${productName}${SUFFIX}`.length <= MAX_LENGTH) {
+    return `${productName}${SUFFIX}`;
   }
 
-  return title;
+  return `${truncateAtWord(productName, MAX_LENGTH - SUFFIX.length)}${SUFFIX}`;
+}
+
+/**
+ * Truncate a string at a word boundary (no mid-word cuts)
+ */
+function truncateAtWord(text: string, maxLength: number): string {
+  if (text.length <= maxLength) return text;
+  const cut = text.substring(0, maxLength + 1);
+  const lastSpace = cut.lastIndexOf(" ");
+  return (lastSpace > 0 ? cut.substring(0, lastSpace) : cut.substring(0, maxLength)).replace(
+    /[\s\-–,]+$/,
+    ""
+  );
 }
 
 /**
@@ -91,7 +104,7 @@ export function generateImageAlt(
  */
 export function getFullUrl(path: string): string {
   const config = useRuntimeConfig();
-  const baseUrl = config.public.frontendUrl || "https://emwear.bg";
+  const baseUrl = config.public.frontendUrl || "https://www.emwear.bg";
   const cleanPath = path.startsWith("/") ? path : `/${path}`;
   return `${baseUrl}${cleanPath}`;
 }
@@ -113,7 +126,7 @@ export const SITE_METADATA = {
   description: "Персонализирани подаръци с качествена бродерия. Детски раници, торби, чанти с име. Безплатна доставка над €60 (~117 лв).",
   tagline: "Персонализирани подаръци с грижа и стил",
   locale: "bg_BG",
-  siteUrl: "https://emwear.bg",
+  siteUrl: "https://www.emwear.bg",
 };
 
 

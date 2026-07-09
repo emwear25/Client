@@ -927,8 +927,14 @@ if (productData.value) {
     };
   }
 } else if (fetchError.value) {
-  error.value = fetchError.value.message || 'Product not found';
-  isLoading.value = false;
+  // Return a real HTTP error status so missing products are not
+  // indexed as soft-404s (200 + "not found" text)
+  const status = (fetchError.value as any).statusCode || (fetchError.value as any).status;
+  throw createError({
+    statusCode: status && status >= 500 ? 503 : 404,
+    statusMessage: 'Продуктът не е намерен',
+    fatal: true,
+  });
 }
 
 // ===== FACEBOOK PIXEL TRACKING =====
@@ -1451,67 +1457,9 @@ watchEffect(() => {
   useBreadcrumbs(breadcrumbItems);
 });
 
-// ===== FAQ SCHEMA =====
-// SEO Benefit: FAQ rich results in Google for product questions
-const faqSchema = computed(() => {
-  if (!product.value) return null;
-
-  // Common FAQ questions for personalized products
-  const faqItems = [
-    {
-      "@type": "Question",
-      name: "Колко време отнема изработката на персонализиран продукт?",
-      acceptedAnswer: {
-        "@type": "Answer",
-        text: "Изработката на персонализиран продукт с бродерия обикновено отнема 1-2 работни дни. След това доставката е в рамките на 1-3 работни дни в зависимост от избрания куриер."
-      }
-    },
-    {
-      "@type": "Question",
-      name: "Мога ли да избера свой собствен шрифт за бродерията?",
-      acceptedAnswer: {
-        "@type": "Answer",
-        text: "Предлагаме богат избор от шрифтове за бродерия, от които можете да изберете. При поръчка ще имате възможност да видите как изглежда вашият текст в различни стилове."
-      }
-    },
-    {
-      "@type": "Question",
-      name: "Как да се грижа за продукта с бродерия?",
-      acceptedAnswer: {
-        "@type": "Answer",
-        text: "Препоръчваме пране при 30-40°C на деликатен режим. Избягвайте използването на белина и сушене в сушилня. Бродерията е издръжлива и запазва качеството си при правилна грижа."
-      }
-    },
-    {
-      "@type": "Question",
-      name: "Предлагате ли безплатна доставка?",
-      acceptedAnswer: {
-        "@type": "Answer",
-        text: "Да, предлагаме безплатна доставка за поръчки над €60 (~117 лв). За поръчки под тази сума, доставката се заплаща според тарифите на избрания куриер."
-      }
-    }
-  ];
-
-  return {
-    "@context": "https://schema.org",
-    "@type": "FAQPage",
-    mainEntity: faqItems
-  };
-});
-
-// Inject FAQ schema
-watchEffect(() => {
-  if (!faqSchema.value) return;
-
-  useHead({
-    script: [
-      {
-        type: 'application/ld+json',
-        innerHTML: JSON.stringify(faqSchema.value),
-      },
-    ],
-  });
-});
+// NOTE: FAQPage schema was removed from product pages - identical
+// boilerplate FAQ markup on every product risks a rich-results penalty.
+// The real FAQ page (/faq) is the right place for FAQ schema.
 
 // Handle review events
 const handleRatingFilter = (_rating: number) => {

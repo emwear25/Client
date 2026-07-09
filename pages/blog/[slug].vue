@@ -32,6 +32,9 @@
         <img
           :src="article.featuredImage.url"
           :alt="article.featuredImage.alt || article.title"
+          width="1200"
+          height="630"
+          loading="eager"
         />
       </div>
 
@@ -80,6 +83,9 @@
                   :src="related.featuredImage.url"
                   :alt="related.title"
                   class="related-card__image"
+                  width="400"
+                  height="225"
+                  loading="lazy"
                 />
                 <div v-else class="related-card__placeholder">📝</div>
               </div>
@@ -109,11 +115,12 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, computed } from "vue";
+import { ref, computed } from "vue";
 import { useRoute } from "vue-router";
 import { usePageSEO } from "~/composables/useSEO";
 
 const route = useRoute();
+const { apiBase } = useApi();
 
 interface Article {
   _id: string;
@@ -151,27 +158,43 @@ const linkCopied = ref(false);
 
 const articleUrl = computed(() => {
   if (!article.value) return "";
-  return `https://emwear.bg/blog/${article.value.slug}`;
+  return `https://www.emwear.bg/blog/${article.value.slug}`;
 });
 
-const fetchArticle = async () => {
-  loading.value = true;
-  try {
-    const response = await $fetch(`/api/articles/${route.params.slug}`);
-    if (response.success) {
-      article.value = response.data.article;
-      relatedArticles.value = response.data.relatedArticles || [];
+// ===== SERVER-SIDE DATA =====
+// Fetch the article during SSR so crawlers receive the real content,
+// and return a genuine 404 for missing articles (no soft-404s)
+const { data: articleData, error: fetchError } = await useAsyncData(
+  `article-${route.params.slug}`,
+  () => $fetch<any>(`${apiBase}/articles/${route.params.slug}`),
+  { server: true, lazy: false }
+);
 
-      // Set SEO
-      usePageSEO({
-        title: article.value.seo?.metaTitle || article.value.title,
-        description: article.value.seo?.metaDescription || article.value.excerpt,
-        type: "article",
-        image: article.value.seo?.ogImage || article.value.featuredImage?.url,
-      });
+if (articleData.value?.success && articleData.value.data?.article) {
+  article.value = articleData.value.data.article;
+  relatedArticles.value = articleData.value.data.relatedArticles || [];
+  loading.value = false;
+} else {
+  const status =
+    (fetchError.value as any)?.statusCode || (fetchError.value as any)?.status;
+  throw createError({
+    statusCode: status && status >= 500 ? 503 : 404,
+    statusMessage: "Статията не е намерена",
+    fatal: true,
+  });
+}
 
-      // Add BlogPosting structured data
-      useHead({
+// Set SEO and structured data (runs in setup so it is server-rendered)
+if (article.value) {
+  usePageSEO({
+    title: article.value.seo?.metaTitle || article.value.title,
+    description: article.value.seo?.metaDescription || article.value.excerpt,
+    type: "article",
+    image: article.value.seo?.ogImage || article.value.featuredImage?.url,
+  });
+
+  // Add BlogPosting structured data
+  useHead({
         script: [
           {
             type: "application/ld+json",
@@ -191,7 +214,7 @@ const fetchArticle = async () => {
                 name: "emWear",
                 logo: {
                   "@type": "ImageObject",
-                  url: "https://emwear.bg/logo-dark.png",
+                  url: "https://www.emwear.bg/logo-dark.png",
                 },
               },
               description: article.value.excerpt,
@@ -211,13 +234,13 @@ const fetchArticle = async () => {
                   "@type": "ListItem",
                   position: 1,
                   name: "Начало",
-                  item: "https://emwear.bg",
+                  item: "https://www.emwear.bg",
                 },
                 {
                   "@type": "ListItem",
                   position: 2,
                   name: "Блог",
-                  item: "https://emwear.bg/blog",
+                  item: "https://www.emwear.bg/blog",
                 },
                 {
                   "@type": "ListItem",
@@ -230,13 +253,7 @@ const fetchArticle = async () => {
           },
         ],
       });
-    }
-  } catch (error) {
-    console.error("Error fetching article:", error);
-  } finally {
-    loading.value = false;
-  }
-};
+}
 
 const formatDate = (date: string) => {
   return new Date(date).toLocaleDateString("bg-BG", {
@@ -283,9 +300,6 @@ const copyLink = async () => {
   }
 };
 
-onMounted(() => {
-  fetchArticle();
-});
 </script>
 
 <style lang="scss" scoped>

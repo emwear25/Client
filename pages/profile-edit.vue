@@ -372,6 +372,7 @@ const setDefaultAddress = async (addressId: string) => {
 
 useHead({
   title: "Редактиране на профил",
+  meta: [{ name: "robots", content: "noindex, nofollow" }],
 });
 </script>
 

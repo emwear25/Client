@@ -16,6 +16,8 @@
                 :src="category.image"
                 :alt="category.title"
                 class="category-promos__image"
+                width="800"
+                height="600"
                 loading="eager"
                 fetchpriority="high"
               />
@@ -66,6 +68,8 @@
                 :src="category.image"
                 :alt="category.title"
                 class="category-promos__image"
+                width="800"
+                height="600"
                 loading="eager"
                 fetchpriority="high"
               />

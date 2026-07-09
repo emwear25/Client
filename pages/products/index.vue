@@ -310,9 +310,36 @@ useInfiniteScroll({
   rootMargin: "200px",
 });
 
+// ===== SERVER-SIDE INITIAL DATA =====
+// Fetch the first page of products during SSR so crawlers receive real
+// product links (previously the HTML was an empty skeleton because the
+// data loaded in onMounted). "Load more" pages stay client-side.
+const { data: initialData } = await useAsyncData(
+  "products-listing",
+  async () => {
+    const api = useApi();
+    const response = await api.get(`products?active=true&page=1&limit=12&sortBy=${sortBy.value}`);
+    return {
+      products: Array.isArray(response?.data) ? response.data : [],
+      page: response?.pagination?.page || 1,
+      pages: response?.pagination?.pages || 1,
+    };
+  },
+  { server: true, lazy: false }
+);
+
+if (initialData.value) {
+  products.value = initialData.value.products;
+  currentPage.value = initialData.value.page;
+  totalPages.value = initialData.value.pages;
+  isLoading.value = false;
+}
+
+// Retry client-side if the SSR fetch failed (e.g. API blip)
 onMounted(() => {
-  // Wishlist is already loaded in cart.client.ts plugin, no need to load again
-  fetchProducts();
+  if (!initialData.value) {
+    fetchProducts();
+  }
 });
 </script>
 

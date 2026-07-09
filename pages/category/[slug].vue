@@ -167,6 +167,68 @@ const categoryDisplayName = computed(() => {
   return category.value?.displayName || "Категория";
 });
 
+// Fetch category + first page of products as plain data (used for SSR)
+const fetchCategoryPage = async (currentSlug: string, page: number, sort: string) => {
+  const api = useApi();
+
+  const categoriesResponse = await api.get<{ success: boolean; data: Category[] }>(
+    "categories?active=true"
+  );
+  const foundCategory =
+    (categoriesResponse?.data || []).find((c) => c.slug === currentSlug) || null;
+
+  if (!foundCategory) {
+    return { category: null, products: [], page: 1, pages: 1 };
+  }
+
+  const productsResponse = await api.get(
+    `products?category=${foundCategory._id}&active=true&page=${page}&limit=12&sortBy=${sort}`
+  );
+  const productsData = Array.isArray(productsResponse?.data) ? productsResponse.data : [];
+
+  return {
+    category: foundCategory,
+    products: productsData,
+    page: productsResponse?.pagination?.page || page,
+    pages: productsResponse?.pagination?.pages || 1,
+  };
+};
+
+// ===== SERVER-SIDE INITIAL DATA =====
+// Fetch the category and the first page of products during SSR so
+// crawlers receive real product links (previously the HTML was an
+// empty skeleton because everything loaded in onMounted).
+// Must run BEFORE the SEO/schema watchers below - during SSR they
+// only fire on registration, not on later state changes.
+const { data: initialData } = await useAsyncData(
+  `category-${slug.value}`,
+  () => fetchCategoryPage(slug.value, 1, sortBy.value),
+  { server: true, lazy: false }
+);
+
+if (initialData.value) {
+  if (!initialData.value.category) {
+    // Real 404 instead of a soft-404 (200 + "not found" text)
+    throw createError({
+      statusCode: 404,
+      statusMessage: "Категорията не е намерена",
+      fatal: true,
+    });
+  }
+  category.value = initialData.value.category;
+  products.value = initialData.value.products;
+  currentPage.value = initialData.value.page;
+  totalPages.value = initialData.value.pages;
+  isLoading.value = false;
+}
+
+// Retry client-side if the SSR fetch failed (e.g. API blip)
+onMounted(() => {
+  if (!initialData.value) {
+    fetchProducts();
+  }
+});
+
 // Functions
 const fetchProducts = async (page = 1, append = false) => {
   if (append) {
@@ -181,9 +243,9 @@ const fetchProducts = async (page = 1, append = false) => {
 
     // Always get current slug from route (reactive)
     const currentSlug = slug.value;
-    
+
     console.log('[Category] Fetching for slug:', currentSlug);
-    
+
     // Fetch category - always refetch to ensure we have the right category
     const categoriesResponse = await api.get<{ success: boolean; data: Category[] }>(
       `categories?active=true&_nocache=${Date.now()}`
@@ -191,9 +253,9 @@ const fetchProducts = async (page = 1, append = false) => {
 
     const categories = categoriesResponse?.data || [];
     const foundCategory = categories.find((c) => c.slug === currentSlug) || null;
-    
+
     console.log('[Category] Found category:', foundCategory?.name, 'ID:', foundCategory?._id);
-    
+
     // Update category ref
     category.value = foundCategory;
 
@@ -282,37 +344,19 @@ useInfiniteScroll({
 });
 
 // SEO - watch for category changes
+// Canonical, og:url and twitter card are set by usePageSEO; the
+// CollectionPage + ItemList schema is emitted below (categorySchema)
 watch(
   () => category.value,
   (cat) => {
     if (cat) {
+      const name = cat.displayName || cat.name;
       usePageSEO({
-        title: cat.displayName || cat.name,
-        description: `Разгледайте нашите ${(cat.displayName || cat.name).toLowerCase()} - персонализирани бродирани изделия от emWear.`,
+        title: name,
+        description:
+          cat.description ||
+          `Персонализирани ${name.toLowerCase()} с бродирано име от emWear. Ръчна изработка в България, бърза доставка. Разгледайте колекцията и поръчайте онлайн.`,
         type: "website",
-      });
-
-      // Add canonical link and enhanced meta tags
-      useHead({
-        link: [
-          { rel: 'canonical', href: `https://emwear.bg/category/${cat.slug}` },
-        ],
-        meta: [
-          { property: 'og:url', content: `https://emwear.bg/category/${cat.slug}` },
-          { name: 'twitter:card', content: 'summary_large_image' },
-        ],
-        script: [
-          {
-            type: "application/ld+json",
-            children: JSON.stringify({
-              "@context": "https://schema.org",
-              "@type": "CollectionPage",
-              name: cat.displayName || cat.name,
-              url: `https://emwear.bg/category/${cat.slug}`,
-              description: `Разгледайте нашите ${(cat.displayName || cat.name).toLowerCase()} - персонализирани бродирани изделия`,
-            }),
-          },
-        ],
       });
     }
   },
@@ -356,7 +400,7 @@ const categorySchema = computed(() => {
     '@type': 'CollectionPage',
     name: category.value.name,
     description: category.value.description || `Разгледайте нашата колекция ${category.value.name}`,
-    url: `https://emwear.bg/category/${category.value.slug}`,
+    url: `https://www.emwear.bg/category/${category.value.slug}`,
     mainEntity: {
       '@type': 'ItemList',
       numberOfItems: products.value.length,
@@ -366,7 +410,7 @@ const categorySchema = computed(() => {
         item: {
           '@type': 'Product',
           name: product.name,
-          url: `https://emwear.bg/products/${product.slug || product._id}`,
+          url: `https://www.emwear.bg/products/${product.slug || product._id}`,
           image: product.images?.[0]?.url || '',
           offers: {
             '@type': 'Offer',
@@ -409,19 +453,19 @@ const breadcrumbSchema = computed(() => {
         "@type": "ListItem",
         position: 1,
         name: "Начало",
-        item: "https://emwear.bg"
+        item: "https://www.emwear.bg"
       },
       {
         "@type": "ListItem",
         position: 2,
         name: "Категории",
-        item: "https://emwear.bg/products"
+        item: "https://www.emwear.bg/products"
       },
       {
         "@type": "ListItem",
         position: 3,
         name: category.value.name,
-        item: `https://emwear.bg/category/${category.value.slug}`
+        item: `https://www.emwear.bg/category/${category.value.slug}`
       }
     ]
   };
@@ -441,10 +485,6 @@ watchEffect(() => {
   });
 });
 
-// Fetch on mount
-onMounted(() => {
-  fetchProducts();
-});
 </script>
 
 <style lang="scss" scoped>

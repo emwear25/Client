@@ -1,5 +1,18 @@
 {
   "regions": ["iad1"],
+  "redirects": [
+    {
+      "source": "/:path*",
+      "has": [{ "type": "host", "value": "emwear.bg" }],
+      "destination": "https://www.emwear.bg/:path*",
+      "permanent": true
+    },
+    {
+      "source": "/sitemap.xml",
+      "destination": "/sitemap_index.xml",
+      "permanent": true
+    }
+  ],
   "headers": [
     {
       "source": "/(.*)",

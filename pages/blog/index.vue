@@ -44,6 +44,9 @@
                 :src="article.featuredImage.url"
                 :alt="article.featuredImage.alt || article.title"
                 class="article-card__image"
+                width="400"
+                height="225"
+                loading="lazy"
               />
               <div v-else class="article-card__placeholder">
                 <span>📝</span>
@@ -113,6 +116,7 @@ import PageHero from "~/components/common/PageHero.vue";
 
 const route = useRoute();
 const router = useRouter();
+const { apiBase } = useApi();
 
 interface Article {
   _id: string;
@@ -168,7 +172,7 @@ useHead({
         "@type": "Blog",
         name: "emWear Блог",
         description: "Полезни статии за персонализирани подаръци и вдъхновение",
-        url: "https://emwear.bg/blog",
+        url: "https://www.emwear.bg/blog",
       }),
     },
   ],
@@ -184,7 +188,7 @@ const fetchArticles = async (page = 1) => {
       params.append("tag", selectedTag.value);
     }
 
-    const response = await $fetch(`/api/articles?${params.toString()}`);
+    const response = await $fetch<any>(`${apiBase}/articles?${params.toString()}`);
     if (response.success) {
       articles.value = response.data.articles;
       pagination.value = response.data.pagination;
@@ -198,7 +202,7 @@ const fetchArticles = async (page = 1) => {
 
 const fetchTags = async () => {
   try {
-    const response = await $fetch("/api/articles/tags");
+    const response = await $fetch<any>(`${apiBase}/articles/tags`);
     if (response.success) {
       tags.value = response.data;
     }
@@ -240,12 +244,36 @@ watch(
   }
 );
 
+// ===== SERVER-SIDE INITIAL DATA =====
+// Render the article list during SSR so blog content is crawlable
+selectedTag.value = route.query.tag ? String(route.query.tag) : null;
+const initialPage = parseInt(String(route.query.page || "1"));
+
+const { data: initialArticles } = await useAsyncData(
+  `blog-list-${initialPage}-${selectedTag.value || "all"}`,
+  async () => {
+    const params = new URLSearchParams();
+    params.append("page", String(initialPage));
+    params.append("limit", "9");
+    if (selectedTag.value) params.append("tag", selectedTag.value);
+    return $fetch<any>(`${apiBase}/articles?${params.toString()}`);
+  },
+  { server: true, lazy: false }
+);
+
+if (initialArticles.value?.success) {
+  articles.value = initialArticles.value.data.articles;
+  pagination.value = initialArticles.value.data.pagination;
+  loading.value = false;
+}
+
 onMounted(() => {
-  const page = parseInt(String(route.query.page || "1"));
-  const tag = route.query.tag ? String(route.query.tag) : null;
-  selectedTag.value = tag;
-  fetchArticles(page);
+  // Tags are presentational - load client-side only
   fetchTags();
+  // Retry client-side if the SSR fetch failed (e.g. API blip)
+  if (!initialArticles.value) {
+    fetchArticles(initialPage);
+  }
 });
 </script>
 

@@ -40,7 +40,7 @@ export function usePageSEO(options: PageSEO) {
   const currentUrl = getFullUrl(route.path);
 
   // Generate title
-  const title = options.title.includes("|") ? options.title : `${options.title} | emWear`;
+  const title = options.title.includes("| emWear") ? options.title : `${options.title} | emWear`;
 
   // Generate description
   const description =

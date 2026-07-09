@@ -139,6 +139,21 @@ export default defineNuxtConfig({
       link: [
         // Note: Canonical links are set per-page dynamically, not globally
         // See product/category/blog pages for canonical implementation
+        // Preload critical fonts (discovered late via CSS otherwise)
+        {
+          rel: "preload",
+          as: "font",
+          type: "font/ttf",
+          href: "/assets/fonts/Roboto-Regular.ttf",
+          crossorigin: "anonymous",
+        },
+        {
+          rel: "preload",
+          as: "font",
+          type: "font/ttf",
+          href: "/assets/fonts/Outfit-SemiBold.ttf",
+          crossorigin: "anonymous",
+        },
         // Favicons
         {
           rel: "icon",
@@ -178,12 +193,12 @@ export default defineNuxtConfig({
         {
           rel: "alternate",
           hreflang: "bg",
-          href: "https://emwear.bg",
+          href: "https://www.emwear.bg",
         },
         {
           rel: "alternate",
           hreflang: "x-default",
-          href: "https://emwear.bg",
+          href: "https://www.emwear.bg",
         },
       ],
     },

@@ -4,9 +4,6 @@
       <div class="footer__section">
         <FooterNav />
       </div>
-      <div class="footer__legal">
-        <FooterLegal />
-      </div>
       <div class="footer__bottom">
         <FooterBottom />
       </div>
@@ -16,7 +13,6 @@
 
 <script setup lang="ts">
 import FooterNav from "./FooterNav.vue";
-import FooterLegal from "./FooterLegal.vue";
 import FooterBottom from "./FooterBottom.vue";
 </script>
 
@@ -59,11 +55,6 @@ import FooterBottom from "./FooterBottom.vue";
     @include up(md) {
       margin-bottom: 3rem;
     }
-  }
-
-  &__legal {
-    border-top: 1px solid rgba(255, 255, 255, 0.15);
-    padding: 1.5rem 0;
   }
 
   &__bottom {

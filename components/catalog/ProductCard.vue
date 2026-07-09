@@ -1,6 +1,6 @@
 <template>
   <article class="product-card">
-    <div class="product-card__media" @click="goToPDP">
+    <NuxtLink :to="productUrl" class="product-card__media">
       <NuxtImg
         :src="product.images?.[0]?.url || '/img/placeholder.png'"
         :alt="product.name"
@@ -15,7 +15,7 @@
       />
 
       <!-- Quick View Button -->
-      <button class="product-card__quick" @click.stop="$emit('quick-view', product)">
+      <button class="product-card__quick" @click.stop.prevent="$emit('quick-view', product)">
         <span class="product-card__quick-text">Бърз Преглед</span>
         <svg
           class="product-card__quick-icon"
@@ -55,10 +55,12 @@
       <div v-if="isOutOfStock" class="product-card__out-of-stock">
         <div class="product-card__out-of-stock-badge">Не е Налично</div>
       </div>
-    </div>
+    </NuxtLink>
 
     <div class="product-card__body">
-      <h3 class="product-card__title">{{ product.name }}</h3>
+      <NuxtLink :to="productUrl" class="product-card__title-link">
+        <h3 class="product-card__title">{{ product.name }}</h3>
+      </NuxtLink>
       <!-- Ratings -->
       <div
         v-if="product.reviewStats && product.reviewStats.totalReviews > 0"
@@ -121,7 +123,6 @@
 
 <script setup lang="ts">
 import { computed } from "vue";
-import { useRouter } from "vue-router";
 import { useWishlist } from "~/stores/useWishlist";
 import { useCurrency } from "~/composables/useCurrency";
 
@@ -174,7 +175,6 @@ defineEmits<{
   "quick-view": [product: Product];
 }>();
 
-const router = useRouter();
 const wishlist = useWishlist();
 
 const isFav = computed(() => wishlist.ids.includes(props.product._id));
@@ -250,10 +250,8 @@ const formatPrice = (price?: number | null) => {
   return formatDualPrice(price);
 };
 
-const goToPDP = () => {
-  const slug = props.product.slug || props.product._id;
-  router.push(`/products/${slug}`);
-};
+// Real link (not JS navigation) so crawlers can discover product pages
+const productUrl = computed(() => `/products/${props.product.slug || props.product._id}`);
 
 // Color helpers
 const hasColors = computed(() => {
@@ -384,6 +382,7 @@ const getColorHexValue = (color: string | ColorObject | null | undefined): strin
   }
 
   &__media {
+    display: block;
     position: relative;
     width: 100%;
     aspect-ratio: 1 / 1; // Square image - same width and height
@@ -632,6 +631,12 @@ const getColorHexValue = (color: string | ColorObject | null | undefined): strin
     justify-content: space-between;
     gap: 12px;
     margin-top: auto;
+  }
+
+  &__title-link {
+    text-decoration: none;
+    color: inherit;
+    display: block;
   }
 
   &__title {

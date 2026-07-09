@@ -315,6 +315,7 @@ const formatFieldLabel = (fieldName: string): string => {
 useHead({
   title: "Количка",
   meta: [
+    { name: "robots", content: "noindex, nofollow" },
     {
       name: "description",
       content: "Прегледайте вашата количка и завършете поръчката си от emWear.",

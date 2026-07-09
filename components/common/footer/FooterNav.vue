@@ -50,15 +50,38 @@
           </li>
         </ul>
       </div>
+      <div class="footer-nav__section">
+        <h3 class="footer-nav__heading">Правна информация</h3>
+        <ul class="footer-nav__list">
+          <li v-for="link in legalLinks" :key="link.path" class="footer-nav__item">
+            <NuxtLink :to="link.path" class="footer-nav__link">
+              {{ link.name }}
+            </NuxtLink>
+          </li>
+          <li class="footer-nav__item">
+            <button
+              type="button"
+              class="footer-nav__link footer-nav__link--button"
+              @click="openSettings"
+            >
+              Настройки на бисквитките
+            </button>
+          </li>
+        </ul>
+      </div>
     </div>
   </nav>
 </template>
 
 <script setup lang="ts">
+import { useCookieConsent } from "~/composables/useCookieConsent";
+
 interface NavigationLink {
   name: string;
   path: string;
 }
+
+const { openSettings } = useCookieConsent();
 
 const collectionLinks: NavigationLink[] = [
   { name: "Продукти", path: "/products" },
@@ -71,6 +94,9 @@ const companyLinks: NavigationLink[] = [
   { name: "Контакти", path: "/contact" },
   { name: "Често Задавани Въпроси", path: "/faq" },
   { name: "Доставка и връщане", path: "/shipping" },
+];
+
+const legalLinks: NavigationLink[] = [
   { name: "Политика за поверителност", path: "/privacy-policy" },
   { name: "Общи условия", path: "/terms" },
 ];
@@ -88,12 +114,12 @@ const companyLinks: NavigationLink[] = [
     gap: 2rem;
 
     @include up(md) {
-      grid-template-columns: 1fr 1fr;
+      grid-template-columns: 1fr 1fr 1fr;
       gap: 3rem;
     }
 
     @include up(lg) {
-      grid-template-columns: 2fr 1fr 1fr;
+      grid-template-columns: 2fr 1fr 1fr 1fr;
       gap: 4rem;
     }
   }
@@ -235,6 +261,14 @@ const companyLinks: NavigationLink[] = [
     &:focus-visible {
       outline: 2px solid $brand;
       outline-offset: 2px;
+    }
+
+    &--button {
+      background: none;
+      border: none;
+      padding: 0;
+      cursor: pointer;
+      text-align: left;
     }
   }
 }

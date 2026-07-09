@@ -327,6 +327,7 @@ const handleGoogleLogin = async () => {
 useHead({
   title: "Регистрация",
   meta: [
+    { name: "robots", content: "noindex, nofollow" },
     {
       name: "description",
       content:

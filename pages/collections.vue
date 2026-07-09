@@ -37,6 +37,14 @@
 
 <script setup lang="ts">
 import { useApi } from "~/composables/useApi";
+import { usePageSEO } from "~/composables/useSEO";
+
+usePageSEO({
+  title: "Колекции",
+  description:
+    "Разгледайте всички колекции на emWear - персонализирани детски халати, раници, кърпи и гергефи с бродирано име. Ръчна изработка в България.",
+  type: "website",
+});
 
 // Set page background to white
 useHead({

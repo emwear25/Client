@@ -59,9 +59,11 @@ const handleEsc = (e: KeyboardEvent) => {
 };
 
 // Prevent body scroll when modal is open
+// (document only exists in the browser - guard so SSR doesn't crash)
 watch(
   () => props.open,
   (isOpen) => {
+    if (!import.meta.client) return;
     if (isOpen) {
       document.body.style.overflow = "hidden";
     } else {

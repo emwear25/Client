@@ -47,7 +47,10 @@ export default defineSitemapEventHandler(async () => {
             }
         }
     } catch (error) {
+        // Fail the request instead of silently publishing an EMPTY categories
+        // sitemap - search engines keep their last good copy on errors
         console.error('[Sitemap Categories] Failed to fetch categories:', error);
+        throw createError({ statusCode: 503, statusMessage: 'Categories sitemap source unavailable' });
     }
 
     return urls;

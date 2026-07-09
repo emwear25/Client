@@ -138,6 +138,7 @@ const closeQuickView = () => {
 useHead({
   title: "Моите Любими",
   meta: [
+    { name: "robots", content: "noindex, nofollow" },
     {
       name: "description",
       content: "Разгледайте и управлявайте любимите си продукти в emWear.",

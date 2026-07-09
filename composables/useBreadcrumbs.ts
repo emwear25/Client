@@ -13,7 +13,7 @@ export interface BreadcrumbItem {
  */
 export function useBreadcrumbs(items: BreadcrumbItem[]) {
   const config = useRuntimeConfig();
-  const siteUrl = config.public.frontendUrl || "https://emwear.bg";
+  const siteUrl = config.public.frontendUrl || "https://www.emwear.bg";
 
   const breadcrumbList = {
     "@context": "https://schema.org",

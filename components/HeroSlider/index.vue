@@ -179,12 +179,12 @@
             class="hero-slider__content hero-slider__content--style-1 hero-slider__content--align-right"
           >
             <div class="hero-slider__label">Персонализация</div>
-            <h1 class="hero-slider__title hero-slider__title--large">
+            <h2 class="hero-slider__title hero-slider__title--large">
               <span class="hero-slider__title-word">Създайте</span>
               <span class="hero-slider__title-word hero-slider__title-word--accent"
                 >уникален дизайн</span
               >
-            </h1>
+            </h2>
             <p class="hero-slider__subtitle">Уникални бродерии за всеки<br >стил и случай</p>
 
             <!-- Decorative stitches -->
@@ -301,12 +301,12 @@
 
           <div class="hero-slider__content hero-slider__content--style-1">
             <div class="hero-slider__label">Прецизна машинна бродерия</div>
-            <h1 class="hero-slider__title hero-slider__title--large">
+            <h2 class="hero-slider__title hero-slider__title--large">
               <span class="hero-slider__title-word">Бродирани халати</span>
               <span class="hero-slider__title-word hero-slider__title-word--accent"
                 >с герои и имена</span
               >
-            </h1>
+            </h2>
             <p class="hero-slider__subtitle">Персонализирани халати с<br >любими герои и имена</p>
 
             <!-- Decorative stitches -->
@@ -408,10 +408,10 @@
             class="hero-slider__content hero-slider__content--style-1 hero-slider__content--align-right"
           >
             <div class="hero-slider__label">Прецизна машинна бродерия</div>
-            <h1 class="hero-slider__title hero-slider__title--large">
+            <h2 class="hero-slider__title hero-slider__title--large">
               <span class="hero-slider__title-word">Персонализирани кърпи</span>
               <span class="hero-slider__title-word hero-slider__title-word--accent">с ушички</span>
-            </h1>
+            </h2>
             <p class="hero-slider__subtitle">С любими герои и<br >имена</p>
 
             <!-- Decorative stitches -->

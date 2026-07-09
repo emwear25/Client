@@ -21,12 +21,12 @@ useHead({
           // Organization schema - helps with brand panels
           {
             '@type': 'Organization',
-            '@id': 'https://emwear.bg/#organization',
+            '@id': 'https://www.emwear.bg/#organization',
             name: 'emWear',
-            url: 'https://emwear.bg',
+            url: 'https://www.emwear.bg',
             logo: {
               '@type': 'ImageObject',
-              url: 'https://emwear.bg/logo-dark.png',
+              url: 'https://www.emwear.bg/logo-dark.png',
               width: 200,
               height: 60,
             },
@@ -34,7 +34,8 @@ useHead({
             contactPoint: {
               '@type': 'ContactPoint',
               contactType: 'customer service',
-              email: 'contact@emwear.bg',
+              email: 'info@emwear.bg',
+              telephone: '+359890927520',
               availableLanguage: 'Bulgarian',
             },
             sameAs: [
@@ -50,12 +51,12 @@ useHead({
           // WebSite schema with SearchAction for sitelinks
           {
             '@type': 'WebSite',
-            '@id': 'https://emwear.bg/#website',
-            url: 'https://emwear.bg',
+            '@id': 'https://www.emwear.bg/#website',
+            url: 'https://www.emwear.bg',
             name: 'emWear',
             description: 'Персонализирани детски изделия с бродерия - халати, раници, кърпи и гергефи. Ръчно изработено в България.',
             publisher: {
-              '@id': 'https://emwear.bg/#organization',
+              '@id': 'https://www.emwear.bg/#organization',
             },
             inLanguage: 'bg-BG',
             // SearchAction enables sitelinks searchbox in Google
@@ -63,7 +64,7 @@ useHead({
               '@type': 'SearchAction',
               target: {
                 '@type': 'EntryPoint',
-                urlTemplate: 'https://emwear.bg/products?search={search_term_string}',
+                urlTemplate: 'https://www.emwear.bg/products?search={search_term_string}',
               },
               'query-input': 'required name=search_term_string',
             },

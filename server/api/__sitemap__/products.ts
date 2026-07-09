@@ -54,7 +54,10 @@ export default defineSitemapEventHandler(async () => {
             }
         }
     } catch (error) {
+        // Fail the request instead of silently publishing an EMPTY products
+        // sitemap - search engines keep their last good copy on errors
         console.error('[Sitemap Products] Failed to fetch products:', error);
+        throw createError({ statusCode: 503, statusMessage: 'Products sitemap source unavailable' });
     }
 
     return urls;

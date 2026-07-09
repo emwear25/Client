@@ -190,6 +190,7 @@ onMounted(() => {
 
 useHead({
   title: "Моите Поръчки",
+  meta: [{ name: "robots", content: "noindex, nofollow" }],
 });
 </script>
 

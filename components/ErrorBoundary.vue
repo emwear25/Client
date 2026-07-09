@@ -41,6 +41,13 @@ const router = useRouter();
 
 // Capture errors from child components
 onErrorCaptured((err: Error, instance, info) => {
+  // Let HTTP errors (createError 404/503 from pages) propagate to Nuxt so
+  // the response gets the real status code - swallowing them here would
+  // serve soft-404s (200 + error text) that search engines index
+  if ((err as any)?.statusCode || import.meta.server) {
+    return true;
+  }
+
   error.value = err;
   errorInfo.value = {
     componentStack: info,
