@@ -172,15 +172,17 @@ const categories: CategoryPromo[] = [
     @media (min-width: 768px) {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
-      grid-template-rows: repeat(2, 1fr) 340px;
+      // Third row sized close to the banner image ratio (~2.1:1)
+      // so the muslin blankets photo is barely cropped
+      grid-template-rows: repeat(2, 1fr) 480px;
       gap: 1.5rem;
-      height: 940px;
+      height: 1080px;
     }
 
     @media (min-width: 1024px) {
       gap: 2rem;
-      grid-template-rows: repeat(2, 1fr) 380px;
-      height: 1030px;
+      grid-template-rows: repeat(2, 1fr) 560px;
+      height: 1210px;
     }
   }
 
