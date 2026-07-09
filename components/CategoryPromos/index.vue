@@ -151,13 +151,13 @@ const categories: CategoryPromo[] = [
     id: 3,
     title: "Кърпи с ушички",
     image: "/img/banners/banner3.jpg",
-    link: "/products?category=towels",
+    link: "/category/kids-towels",
   },
   {
     id: 4,
     title: "Персонализирани Гергефи",
     image: "/img/banners/banner4.jpg",
-    link: "/products?category=towels-personalized",
+    link: "/category/personalizirani-gergefi",
   },
 ];
 
