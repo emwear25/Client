@@ -486,6 +486,119 @@
         </div>
       </SwiperSlide>
 
+      <!-- Slide 5: Muslin Blankets - Diagonal Split Left -->
+      <SwiperSlide class="hero-slider__slide hero-slider__slide--diagonal-left">
+        <!-- Mobile: Full width image background -->
+        <div
+          class="hero-slider__mobile-bg"
+          :style="{ backgroundImage: `url(${slides[4].image})` }"
+        />
+
+        <!-- Desktop: Diagonal split image -->
+        <div class="hero-slider__image-container hero-slider__image-container--diagonal-left">
+          <div
+            class="hero-slider__image"
+            :style="{ backgroundImage: `url(${slides[4].image})` }"
+          />
+        </div>
+
+        <div class="hero-slider__content-zone hero-slider__content-zone--right">
+          <!-- Animated embroidery thread -->
+          <svg
+            class="hero-slider__thread-path hero-slider__thread-path--5"
+            viewBox="0 0 400 600"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              id="thread-5"
+              d="M 50,50 Q 200,150 100,300 T 250,500"
+              stroke="url(#thread-gradient-5)"
+              fill="none"
+              stroke-width="3"
+              stroke-dasharray="1000"
+              stroke-dashoffset="1000"
+            />
+            <defs>
+              <linearGradient id="thread-gradient-5" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" style="stop-color: #e8b8b1; stop-opacity: 0.6" />
+                <stop offset="100%" style="stop-color: #b9c6aa; stop-opacity: 0.8" />
+              </linearGradient>
+            </defs>
+          </svg>
+
+          <div class="hero-slider__content hero-slider__content--style-1">
+            <div class="hero-slider__label">Нова колекция</div>
+            <h2 class="hero-slider__title hero-slider__title--large">
+              <span class="hero-slider__title-word">Муселинови одеяла</span>
+              <span class="hero-slider__title-word hero-slider__title-word--accent"
+                >с бродирано име</span
+              >
+            </h2>
+            <p class="hero-slider__subtitle">Мек муселин с име и любим герой —<br >уютен спомен за вашето бебе</p>
+
+            <!-- Decorative stitches -->
+            <svg
+              class="hero-slider__stitch-decoration"
+              viewBox="0 0 200 4"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <line
+                x1="0"
+                y1="2"
+                x2="200"
+                y2="2"
+                stroke="#E8B8B1"
+                stroke-width="2"
+                stroke-dasharray="8,4"
+                class="hero-slider__stitch-line"
+              />
+            </svg>
+
+            <NuxtLink to="/category/kids-blankets" class="hero-slider__cta hero-slider__cta--primary">
+              <span class="hero-slider__cta-text">Разгледай колекцията</span>
+              <svg
+                class="hero-slider__cta-arrow"
+                viewBox="0 0 24 24"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M5 12h14M12 5l7 7-7 7"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  fill="none"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                />
+              </svg>
+            </NuxtLink>
+          </div>
+
+          <!-- Morphing blob decoration -->
+          <svg
+            class="hero-slider__blob hero-slider__blob--5"
+            viewBox="0 0 200 200"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path fill="url(#blob-gradient-5)" opacity="0.15">
+              <animate
+                attributeName="d"
+                dur="8s"
+                repeatCount="indefinite"
+                values="M45,-65C58,-55,68,-43,72,-29C76,-15,73,2,67,17C61,32,52,45,40,54C28,63,13,68,-3,73C-19,78,-38,83,-51,77C-64,71,-71,54,-73,37C-75,20,-72,3,-68,-13C-64,-29,-59,-44,-49,-55C-39,-66,-19,-73,-2,-70C15,-67,31,-54,45,-65Z;
+                         M39,-58C50,-48,58,-36,62,-23C66,-10,66,4,62,17C58,30,50,42,39,50C28,58,14,62,-1,64C-16,66,-32,66,-44,58C-56,50,-64,34,-67,17C-70,0,-68,-18,-61,-33C-54,-48,-42,-60,-28,-66C-14,-72,2,-72,18,-68C34,-64,51,-56,39,-58Z;
+                         M45,-65C58,-55,68,-43,72,-29C76,-15,73,2,67,17C61,32,52,45,40,54C28,63,13,68,-3,73C-19,78,-38,83,-51,77C-64,71,-71,54,-73,37C-75,20,-72,3,-68,-13C-64,-29,-59,-44,-49,-55C-39,-66,-19,-73,-2,-70C15,-67,31,-54,45,-65Z"
+              />
+            </path>
+            <defs>
+              <radialGradient id="blob-gradient-5">
+                <stop offset="0%" style="stop-color: #e8b8b1" />
+                <stop offset="100%" style="stop-color: #b9c6aa" />
+              </radialGradient>
+            </defs>
+          </svg>
+        </div>
+      </SwiperSlide>
+
       <!-- Custom Navigation -->
       <button class="hero-slider__nav hero-slider__nav--prev" aria-label="Previous slide">
         <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
@@ -551,6 +664,10 @@ const slides = ref([
   {
     id: 4,
     image: "/img/slider/towels.jpg",
+  },
+  {
+    id: 5,
+    image: "/img/slider/blankets.jpg",
   },
 ]);
 
