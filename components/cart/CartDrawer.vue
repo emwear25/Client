@@ -93,7 +93,7 @@
                         :key="option.name"
                         class="cart-item__attr cart-item__attr--priced"
                       >
-                        ✅ {{ option.label }} <span class="cart-item__option-price">+{{ option.price.toFixed(2) }} лв.</span>
+                        ✅ {{ option.label }} <span class="cart-item__option-price">+{{ formatDualPrice(option.price) }}</span>
                       </span>
                     </template>
                     <span v-if="item.embroidery.notes" class="cart-item__attr cart-item__attr--notes">

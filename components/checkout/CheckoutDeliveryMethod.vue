@@ -308,6 +308,9 @@
 
 <script setup lang="ts">
 import { computed } from "vue";
+import { useCurrency } from "~/composables/useCurrency";
+
+const { formatDualPrice } = useCurrency();
 
 interface DeliveryValue {
   provider: "econt" | "speedy";

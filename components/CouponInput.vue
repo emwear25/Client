@@ -107,9 +107,9 @@ const formatDiscountValue = (discount: any) => {
   if (discount.type === "percentage") {
     return `${discount.value}%`;
   } else if (discount.type === "fixed_amount") {
-    return `${discount.value.toFixed(2)} лв.`;
+    return `€${discount.value.toFixed(2)}`;
   }
-  return discount.amount.toFixed(2) + " лв.";
+  return "€" + discount.amount.toFixed(2);
 };
 </script>
 

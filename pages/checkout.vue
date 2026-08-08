@@ -174,8 +174,8 @@
                 Изчисляване на цена за доставка...
               </div>
               <div v-else-if="econtShippingCost > 0" class="checkout__shipping-info">
-                💰 Цена за доставка:
-                <strong>{{ econtShippingCost.toFixed(2) }} лв</strong>
+                💰 Цена за доставка (при получаване):
+                <strong>{{ formatDualPrice(econtShippingCost) }}</strong>
                 <span style="display: block; font-size: 0.8125rem; margin-top: 0.5rem; color: #666">
                   * Окончателната цена може да бъде по-ниска при потвърждаване
                 </span>
@@ -229,6 +229,7 @@ import { useApi } from "~/composables/useApi";
 import { useCheckoutValidation } from "~/composables/useCheckoutValidation";
 import { useDebounce } from "~/composables/useDebounce";
 import { useShippingCalculation } from "~/composables/useShippingCalculation";
+import { useCurrency } from "~/composables/useCurrency";
 import { nextTick, computed, watch, onUnmounted } from "vue";
 import CheckoutDeliveryMethod from "~/components/checkout/CheckoutDeliveryMethod.vue";
 import CheckoutGuestForm from "~/components/checkout/CheckoutGuestForm.vue";
@@ -252,6 +253,7 @@ const { validationErrors, handleBlur, handleInput } = useCheckoutValidation();
 // Use debounce composable
 const { debounceAsync } = useDebounce();
 const { calculateShipping, getShippingSummary } = useShippingCalculation();
+const { formatDualPrice } = useCurrency();
 
 // State
 const isGuest = ref(!authStore.isAuthenticated); // Start in guest mode if not authenticated

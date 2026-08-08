@@ -181,7 +181,7 @@
                     class="pdp-price__badge"
                   >
                     Спести
-                    {{ saveAmount.toFixed(2) }} лв
+                    {{ formatDualPrice(saveAmount) }}
                   </span>
                 </div>
               </div>

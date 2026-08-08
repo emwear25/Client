@@ -50,7 +50,7 @@
                 :key="option.name"
                 class="checkout-order-summary__priced-option"
               >
-                ✅ {{ option.label }} <span class="checkout-order-summary__option-price">+{{ option.price.toFixed(2) }} лв.</span>
+                ✅ {{ option.label }} <span class="checkout-order-summary__option-price">+{{ formatDualPrice(option.price) }}</span>
               </span>
             </template>
             <span v-if="item.embroidery.notes" class="checkout-order-summary__notes">

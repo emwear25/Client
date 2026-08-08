@@ -104,7 +104,7 @@
                         :key="option.name"
                         class="cart-item__emb-item cart-item__emb-option"
                       >
-                        ✅ {{ option.label }} <span class="cart-item__emb-price">+{{ option.price.toFixed(2) }} лв.</span>
+                        ✅ {{ option.label }} <span class="cart-item__emb-price">+{{ formatPrice(option.price) }}</span>
                       </span>
                     </template>
                     <span v-if="item.embroidery.notes" class="cart-item__emb-item cart-item__emb-notes">
@@ -112,7 +112,10 @@
                     </span>
                   </div>
 
-                  <div class="cart-item__price">{{ formatPrice(item.price) }}</div>
+                  <!-- Unit price - only useful when quantity > 1 (Сума column shows the total) -->
+                  <div v-if="item.quantity > 1" class="cart-item__price">
+                    {{ formatPrice(item.price) }} / бр.
+                  </div>
                 </div>
 
                 <!-- Quantity Controls -->
@@ -203,7 +206,7 @@
                 <div class="order-summary__row order-summary__total">
                   <span class="order-summary__label">Общо</span>
                   <span class="order-summary__value"
-                    >{{ formatPrice(cartStore.totalPrice) }} лв.</span
+                    >{{ formatPrice(cartStore.totalPrice) }}</span
                   >
                 </div>
 

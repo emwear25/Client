@@ -40,7 +40,7 @@ const badgeText = computed(() => {
     if (props.discount.type === "percentage") {
       return `-${props.discount.value}%`;
     } else if (props.discount.type === "fixed_amount") {
-      return `-${props.discount.value.toFixed(2)} лв.`;
+      return `-€${props.discount.value.toFixed(2)}`;
     }
   }
 
