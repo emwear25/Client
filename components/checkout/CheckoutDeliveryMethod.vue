@@ -217,8 +217,8 @@
             >
           </p>
           <p v-if="econtShippingCost > 0" class="checkout-delivery-method__office-price">
-            💰 Цена за доставка:
-            <strong>{{ econtShippingCost.toFixed(2) }} лв</strong>
+            💰 Цена за доставка (при получаване):
+            <strong>{{ formatDualPrice(econtShippingCost) }}</strong>
           </p>
         </div>
         <button
@@ -277,8 +277,8 @@
             >
           </p>
           <p v-if="speedyShippingCost > 0" class="checkout-delivery-method__office-price">
-            💰 Цена за доставка:
-            <strong>{{ speedyShippingCost.toFixed(2) }} лв</strong>
+            💰 Цена за доставка (при получаване):
+            <strong>{{ formatDualPrice(speedyShippingCost) }}</strong>
           </p>
         </div>
         <button
