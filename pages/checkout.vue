@@ -523,14 +523,15 @@ const calculateEcontShipping = async () => {
     const isCOD = selectedPaymentMethod.value === "cod";
 
     const requestData: any = {
-      weight: shippingCalc.chargeableWeight,
+      // Send ACTUAL weight - Econt computes volumetric weight itself from
+      // the dimensions, and parcels under 60cm are charged by actual weight.
+      // Sending chargeableWeight here inflated the price vs the real label.
+      weight: shippingCalc.actualWeight,
       dimensions: shippingCalc.dimensions,
       receiverCityName: cityName,
       receiverPostCode: postCode || "1000",
       receiverName: `${shippingForm.value.firstName} ${shippingForm.value.lastName}`,
       receiverPhone: shippingForm.value.phone || "0888000000",
-      // COD: receiver pays shipping; Card: sender pays shipping
-      paymentSide: isCOD ? "RECEIVER" : "SENDER",
     };
 
     // Only add COD service if payment method is cash on delivery
