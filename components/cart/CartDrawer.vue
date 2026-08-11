@@ -72,7 +72,7 @@
                   <!-- Embroidery Info -->
                   <template v-if="item.embroidery">
                     <span v-if="item.embroidery.name" class="cart-item__attr cart-item__attr--embroidery">
-                      🧵 Бродерия: {{ item.embroidery.name }}
+                      🧵 {{ item.embroidery.methodLabel || (item.embroidery.method === 'print' ? 'Печат' : 'Бродерия') }}: {{ item.embroidery.name }}
                     </span>
                     <!-- Custom Fields (skip boolean values - those are checkbox options) -->
                     <template v-if="item.embroidery.customFields">

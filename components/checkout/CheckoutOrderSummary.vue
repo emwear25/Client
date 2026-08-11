@@ -31,7 +31,7 @@
           </p>
           <!-- Embroidery Details -->
           <div v-if="item.embroidery" class="checkout-order-summary__embroidery">
-            <span v-if="item.embroidery.name">🧵 Бродерия: {{ item.embroidery.name }}</span>
+            <span v-if="item.embroidery.name">🧵 {{ item.embroidery.methodLabel || (item.embroidery.method === 'print' ? 'Печат' : 'Бродерия') }}: {{ item.embroidery.name }}</span>
             <!-- Custom fields (skip boolean values - those are checkbox options) -->
             <template v-if="item.embroidery.customFields">
               <span 

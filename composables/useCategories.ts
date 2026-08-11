@@ -51,10 +51,46 @@ export const useCategories = () => {
     return loadPromise.value;
   };
 
+  // Nested category tree (roots with `children`) for the two-level navigation
+  const categoryTree = useState<any[]>("categories-tree", () => []);
+  const treeLoaded = useState<boolean>("categories-tree-loaded", () => false);
+  const treePromise = useState<Promise<any> | null>("categories-tree-promise", () => null);
+
+  const fetchCategoryTree = async () => {
+    if (treeLoaded.value && categoryTree.value.length > 0) {
+      return categoryTree.value;
+    }
+    if (treePromise.value) {
+      return treePromise.value;
+    }
+
+    const api = useApi();
+    treePromise.value = (async () => {
+      try {
+        const response = await api.get<{ success: boolean; data: any[] }>("categories/tree");
+        if (response && response.success) {
+          categoryTree.value = response.data || [];
+          treeLoaded.value = true;
+          return categoryTree.value;
+        }
+        return [];
+      } catch (err) {
+        console.error("Error fetching category tree:", err);
+        return [];
+      } finally {
+        treePromise.value = null;
+      }
+    })();
+
+    return treePromise.value;
+  };
+
   return {
     categories: readonly(categories),
+    categoryTree: readonly(categoryTree),
     isLoading: readonly(isLoading),
     fetchCategories,
+    fetchCategoryTree,
   };
 };
 

@@ -1449,11 +1449,16 @@ const handleSubmit = async () => {
       color: item.color,
         // Send selected priced option names - server resolves prices from the category
         pricedOptions: item.embroidery?.pricedOptions?.map((o) => o.name) || undefined,
+        // Chosen personalization method - the surcharge is priced server-side
+        personalizationMethod: item.embroidery?.method || undefined,
         customization: item.embroidery
           ? (() => {
               // Standard embroidery fields
               const parts = [];
-              if (item.embroidery.name) parts.push(`Бродерия: ${item.embroidery.name}`);
+              const methodLabel =
+                item.embroidery.methodLabel ||
+                (item.embroidery.method === "print" ? "Печат" : "Бродерия");
+              if (item.embroidery.name) parts.push(`${methodLabel}: ${item.embroidery.name}`);
               if (item.embroidery.color) parts.push(`Цвят: ${item.embroidery.color}`);
               if (item.embroidery.font) parts.push(`Шрифт: ${item.embroidery.font}`);
 

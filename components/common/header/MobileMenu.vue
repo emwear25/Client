@@ -44,22 +44,36 @@
             Колекции
           </NuxtLink>
         </li>
-        <li
-          v-for="category in categoriesWithProducts"
-          :key="category._id"
-          class="mobile-menu__nav-item mobile-menu__nav-item--indent"
-        >
-          <NuxtLink
-            :to="`/category/${category.slug}`"
-            class="mobile-menu__nav-link mobile-menu__nav-link--sub"
-            :class="{
-              'mobile-menu__nav-link--active': route.path === `/category/${category.slug}`,
-            }"
-            @click="emit('close')"
+        <template v-for="entry in menuCategories" :key="entry._id">
+          <li class="mobile-menu__nav-item mobile-menu__nav-item--indent">
+            <NuxtLink
+              :to="`/category/${entry.slug}`"
+              class="mobile-menu__nav-link mobile-menu__nav-link--sub"
+              :class="{
+                'mobile-menu__nav-link--active': route.path === `/category/${entry.slug}`,
+              }"
+              @click="emit('close')"
+            >
+              {{ entry.displayName }}
+            </NuxtLink>
+          </li>
+          <li
+            v-for="child in entry.children || []"
+            :key="child._id"
+            class="mobile-menu__nav-item mobile-menu__nav-item--indent mobile-menu__nav-item--indent-deep"
           >
-            {{ category.displayName }}
-          </NuxtLink>
-        </li>
+            <NuxtLink
+              :to="`/category/${child.slug}`"
+              class="mobile-menu__nav-link mobile-menu__nav-link--sub"
+              :class="{
+                'mobile-menu__nav-link--active': route.path === `/category/${child.slug}`,
+              }"
+              @click="emit('close')"
+            >
+              {{ child.displayName }}
+            </NuxtLink>
+          </li>
+        </template>
         <li class="mobile-menu__nav-item">
           <NuxtLink
             to="/sales"
@@ -152,11 +166,18 @@ const emit = defineEmits<{
 const route = useRoute();
 
 // Use shared categories composable to prevent duplicate requests
-const { categories: categoriesWithProducts, fetchCategories } = useCategories();
+const { categories: categoriesWithProducts, fetchCategories, categoryTree, fetchCategoryTree } =
+  useCategories();
+
+// Two-level tree when available, flat list otherwise
+const menuCategories = computed(() =>
+  categoryTree.value.length > 0 ? categoryTree.value : categoriesWithProducts.value
+);
 
 // Fetch on mount
 onMounted(() => {
   fetchCategories(true);
+  fetchCategoryTree();
 });
 </script>
 
