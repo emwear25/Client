@@ -21,6 +21,9 @@ export interface CartItem {
     };
   };
   embroidery?: {
+    method?: "embroidery" | "print";
+    methodLabel?: string;
+    methodPrice?: number;
     name?: string;
     color?: string | null;
     font?: string | null;
@@ -117,6 +120,7 @@ export const useCartStore = defineStore("cart", () => {
     const getEmbroideryKey = (emb: CartItem['embroidery']) => {
       if (!emb) return '';
       return JSON.stringify({
+        method: emb.method || 'embroidery',
         name: emb.name || '',
         customFields: emb.customFields || {},
         pricedOptions: emb.pricedOptions?.map(o => o.name).sort() || [],

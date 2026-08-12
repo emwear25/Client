@@ -113,7 +113,8 @@ const route = useRoute();
 const isProductsOpen = ref(false);
 
 // Use shared categories composable to prevent duplicate requests
-const { categories: categoriesWithProducts, fetchCategories } = useCategories();
+const { categories: categoriesWithProducts, fetchCategories, categoryTree, fetchCategoryTree } =
+  useCategories();
 
 // Toggle dropdown on mobile/touch devices
 const toggleProductsOnMobile = (event: MouseEvent) => {
@@ -128,19 +129,40 @@ const closeDropdown = () => {
   isProductsOpen.value = false;
 };
 
-// Computed dropdown items
-const dropdownItems = computed(() => [
-  { label: "Всички продукти", to: "/products" },
-  { label: "Колекции", to: "/collections" },
-  ...categoriesWithProducts.value.map((c) => ({
-    label: c.displayName,
-    to: `/category/${c.slug}`,
-  })),
-]);
+// Computed dropdown items - two-level tree when available, flat list otherwise
+const dropdownItems = computed(() => {
+  const staticItems = [
+    { label: "Всички продукти", to: "/products" },
+    { label: "Колекции", to: "/collections" },
+  ];
+
+  if (categoryTree.value.length > 0) {
+    return [
+      ...staticItems,
+      ...categoryTree.value.map((root: any) => ({
+        label: root.displayName,
+        to: `/category/${root.slug}`,
+        children: (root.children || []).map((child: any) => ({
+          label: child.displayName,
+          to: `/category/${child.slug}`,
+        })),
+      })),
+    ];
+  }
+
+  return [
+    ...staticItems,
+    ...categoriesWithProducts.value.map((c) => ({
+      label: c.displayName,
+      to: `/category/${c.slug}`,
+    })),
+  ];
+});
 
 // Fetch on mount
 onMounted(() => {
   fetchCategories(true);
+  fetchCategoryTree();
 });
 </script>
 

@@ -12,6 +12,18 @@
 
     <!-- Toolbar (Sort only) -->
     <div class="container products-toolbar">
+      <div class="products-toolbar__gender">
+        <button
+          v-for="option in genderOptions"
+          :key="option.value"
+          type="button"
+          class="products-toolbar__gender-chip"
+          :class="{ 'products-toolbar__gender-chip--active': selectedGender === option.value }"
+          @click="setGender(option.value)"
+        >
+          {{ option.label }}
+        </button>
+      </div>
       <div class="products-toolbar__spacer" />
       <div class="products-toolbar__sort">
         <label class="sr-only" for="sort">Подреди</label>
@@ -97,6 +109,8 @@ import { usePageSEO } from "~/composables/useSEO";
 import { useInfiniteScroll } from "~/composables/useInfiniteScroll";
 
 const route = useRoute();
+const router = useRouter();
+
 // Make slug reactive so it updates on client-side navigation
 const slug = computed(() => route.params.slug as string);
 
@@ -150,6 +164,9 @@ const isLoading = ref(true);
 const isLoadingMore = ref(false);
 const error = ref<string | null>(null);
 const sortBy = ref<"newest" | "price-asc" | "price-desc" | "name-asc">("newest");
+
+// Gender filter (unisex products always match) - synced with the URL query
+const selectedGender = ref<string>((route.query.gender as string) || "");
 const drawerOpen = ref(false);
 const activeProduct = ref<Product | null>(null);
 
@@ -168,6 +185,30 @@ const categoryDisplayName = computed(() => {
 });
 
 // Fetch category + first page of products as plain data (used for SSR)
+const genderQuery = computed(() =>
+  selectedGender.value ? `&gender=${selectedGender.value}` : ""
+);
+
+const genderOptions = [
+  { value: "", label: "Всички" },
+  { value: "girl", label: "За момиче" },
+  { value: "boy", label: "За момче" },
+];
+
+const setGender = (value: string) => {
+  if (selectedGender.value === value) return;
+  selectedGender.value = value;
+  // Keep the URL shareable
+  const query = { ...route.query } as Record<string, any>;
+  if (value) {
+    query.gender = value;
+  } else {
+    delete query.gender;
+  }
+  router.replace({ query });
+  fetchProducts(1, false);
+};
+
 const fetchCategoryPage = async (currentSlug: string, page: number, sort: string) => {
   const api = useApi();
 
@@ -182,7 +223,7 @@ const fetchCategoryPage = async (currentSlug: string, page: number, sort: string
   }
 
   const productsResponse = await api.get(
-    `products?category=${foundCategory._id}&active=true&page=${page}&limit=12&sortBy=${sort}`
+    `products?category=${foundCategory._id}&active=true&page=${page}&limit=12&sortBy=${sort}${genderQuery.value}`
   );
   const productsData = Array.isArray(productsResponse?.data) ? productsResponse.data : [];
 
@@ -269,7 +310,7 @@ const fetchProducts = async (page = 1, append = false) => {
     // Use multiple cache-busting params to prevent any caching
     const timestamp = Date.now();
     const randomId = Math.random().toString(36).substring(7);
-    const productUrl = `products?category=${category.value._id}&active=true&page=${page}&limit=12&sortBy=${sortBy.value}&_t=${timestamp}&_r=${randomId}`;
+    const productUrl = `products?category=${category.value._id}&active=true&page=${page}&limit=12&sortBy=${sortBy.value}${genderQuery.value}&_t=${timestamp}&_r=${randomId}`;
     
     console.log('[Category] Fetching products:', productUrl);
     
@@ -738,6 +779,33 @@ watchEffect(() => {
     to {
       transform: rotate(360deg);
     }
+  }
+}
+
+.products-toolbar__gender {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.products-toolbar__gender-chip {
+  padding: 7px 16px;
+  border-radius: 999px;
+  border: 1px solid #ddd;
+  background: #fff;
+  font-size: 14px;
+  color: #444;
+  cursor: pointer;
+  transition: all 0.15s ease;
+
+  &:hover {
+    border-color: #999;
+  }
+
+  &--active {
+    background: #111;
+    border-color: #111;
+    color: #fff;
   }
 }
 </style>

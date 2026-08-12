@@ -40,7 +40,7 @@
             <div class="pdp-gallery">
               <div class="pdp-gallery__main">
                 <NuxtImg
-                  :src="selectedImage?.url || product.images?.[0]?.url || '/img/placeholder.png'"
+                  :src="selectedImage?.url || displayImages[0]?.url || '/img/placeholder.png'"
                   :alt="product.name"
                   class="pdp-gallery__img"
                   format="webp"
@@ -52,9 +52,9 @@
                   placeholder
                 />
               </div>
-              <div v-if="product.images && product.images.length > 1" class="pdp-gallery__thumbs">
+              <div v-if="displayImages.length > 1" class="pdp-gallery__thumbs">
                 <button
-                  v-for="(img, index) in product.images"
+                  v-for="(img, index) in displayImages"
                   :key="index"
                   class="pdp-gallery__thumb"
                   :class="{
@@ -246,7 +246,7 @@
               </div>
 
               <!-- Embroidery Customization -->
-              <div v-if="product.customEmbroidery" class="pdp-custom">
+              <div v-if="personalizationMethods.length > 0" class="pdp-custom">
                 <div class="pdp-custom__item">
                   <input
                     id="embroidery-enable"
@@ -255,12 +255,30 @@
                     class="pdp-custom__checkbox"
                   />
                   <label for="embroidery-enable" class="pdp-custom__label">
-                    <img src="/img/embroidered.svg" alt="Бродерия" class="pdp-custom__icon" />
-                    Добави име за бродерия
+                    <img src="/img/embroidered.svg" alt="Персонализация" class="pdp-custom__icon" />
+                    {{ personalizationMethods.length > 1 ? "Добави персонализирано име" : `Добави ${personalizationMethods[0].label.toLowerCase()}` }}
+                    <span v-if="personalizationMethods.length === 1 && personalizationMethods[0].price > 0" class="pdp-custom__method-price">
+                      {{ formatMethodPrice(personalizationMethods[0].price) }}
+                    </span>
                   </label>
                 </div>
 
                 <div v-if="embroideryEnabled" class="pdp-custom__fields">
+                  <!-- Method choice: embroidery vs print -->
+                  <div v-if="personalizationMethods.length > 1" class="pdp-custom__methods">
+                    <button
+                      v-for="method in personalizationMethods"
+                      :key="method.type"
+                      type="button"
+                      class="pdp-custom__method"
+                      :class="{ 'pdp-custom__method--active': activeMethod?.type === method.type }"
+                      @click="selectedMethod = method.type"
+                    >
+                      <span class="pdp-custom__method-label">{{ method.label }}</span>
+                      <span class="pdp-custom__method-price">{{ formatMethodPrice(method.price) }}</span>
+                    </button>
+                  </div>
+
                   <p class="pdp-custom__note">
                     Забележка: Персонализираните артикули се нуждаят от допълнително време за
                     обработка.
@@ -749,8 +767,19 @@ interface Product {
   customEmbroidery?: boolean;
   embroideryFonts?: string[];
   embroideryColors?: EmbroideryColor[];
+  gender?: "boy" | "girl" | "unisex";
+  colorImages?: { color: string; images: ProductImage[] }[];
+  personalizationOptions?: PersonalizationOption[];
   reviewStats?: ReviewStats;
   createdAt: string;
+}
+
+interface PersonalizationOption {
+  type: "embroidery" | "print";
+  label: string;
+  price: number;
+  fonts: string[];
+  colors: EmbroideryColor[];
 }
 
 const route = useRoute();
@@ -771,6 +800,44 @@ const selectedSize = ref<string>("");
 
 // Embroidery state
 const embroideryEnabled = ref(false);
+const selectedMethod = ref<string>("");
+
+// Personalization methods resolved by the server (embroidery / print with
+// prices). Falls back to the legacy free-embroidery behavior for products
+// the server hasn't attached options to.
+const personalizationMethods = computed<PersonalizationOption[]>(() => {
+  if (product.value?.personalizationOptions?.length) {
+    return product.value.personalizationOptions;
+  }
+  if (product.value?.customEmbroidery) {
+    return [
+      {
+        type: "embroidery",
+        label: "Бродирано име",
+        price: 0,
+        fonts: product.value.embroideryFonts || [],
+        colors: product.value.embroideryColors || [],
+      },
+    ];
+  }
+  return [];
+});
+
+const activeMethod = computed<PersonalizationOption | null>(() => {
+  if (personalizationMethods.value.length === 0) return null;
+  return (
+    personalizationMethods.value.find((m) => m.type === selectedMethod.value) ||
+    personalizationMethods.value[0]
+  );
+});
+
+// Surcharge of the chosen personalization method (0 = included in the price)
+const methodPrice = computed(() =>
+  embroideryEnabled.value && activeMethod.value ? activeMethod.value.price || 0 : 0
+);
+
+const formatMethodPrice = (price: number) =>
+  price > 0 ? `+${price.toFixed(2).replace(".", ",")} €` : "включено в цената";
 const embroideryName = ref("");
 const embroideryColor = ref("");
 const embroideryFont = ref("");
@@ -916,6 +983,11 @@ if (productData.value) {
     selectedSize.value = product.value.sizes[0];
   }
 
+  // Default personalization method (first offered)
+  if (personalizationMethods.value.length > 0) {
+    selectedMethod.value = personalizationMethods.value[0].type;
+  }
+
   // Set default embroidery options
   if (product.value.embroideryFonts && product.value.embroideryFonts.length > 0) {
     embroideryFont.value = product.value.embroideryFonts[0] || '';
@@ -1024,10 +1096,26 @@ const parsedDescription = computed(() => {
   return parseMarkdown(product.value.description);
 });
 
+// Gallery images for the currently selected color: the color's own gallery
+// when one is uploaded, otherwise the product's shared images
+const displayImages = computed<ProductImage[]>(() => {
+  const shared = product.value?.images || [];
+  if (!selectedColor.value || !product.value?.colorImages?.length) {
+    return shared;
+  }
+  const entry = product.value.colorImages.find((ci) => ci.color === selectedColor.value);
+  return entry && entry.images.length > 0 ? entry.images : shared;
+});
+
+// Reset the gallery position when the color (and its gallery) changes
+watch(displayImages, () => {
+  selectedImageIndex.value = 0;
+});
+
 // Computed
 const selectedImage = computed(() => {
-  if (!product.value?.images) return null;
-  return product.value.images[selectedImageIndex.value];
+  if (!displayImages.value.length) return null;
+  return displayImages.value[selectedImageIndex.value] || displayImages.value[0];
 });
 
 // Get current variant price based on selected size and color
@@ -1304,7 +1392,7 @@ const addToCart = () => {
   }
 
   // Calculate final price (use variant price or base price + priced options)
-  const finalPrice = currentPrice.value + pricedOptionsTotal.value;
+  const finalPrice = currentPrice.value + pricedOptionsTotal.value + methodPrice.value;
 
   // Build priced options array from used priced fields (any type)
   const pricedOptions = personalizationFields.value
@@ -1314,6 +1402,9 @@ const addToCart = () => {
   // Prepare embroidery data if enabled
   const embroidery = embroideryEnabled.value
     ? {
+        method: activeMethod.value?.type || "embroidery",
+        methodLabel: activeMethod.value?.label || undefined,
+        methodPrice: methodPrice.value > 0 ? methodPrice.value : undefined,
         name: embroideryName.value.trim() || undefined,
         color: embroideryColor.value || undefined,
         font: embroideryFont.value || undefined,
@@ -1346,7 +1437,7 @@ const addToCart = () => {
       id: product.value._id,
       name: product.value.name,
       price: finalPrice,
-      image: product.value.images?.[0]?.url,
+      image: displayImages.value[0]?.url || product.value.images?.[0]?.url,
       size: selectedSize.value || undefined,
       color: colorForCart,
       weight: product.value.weight || 0.5, // Include weight for shipping calculation
@@ -2677,5 +2768,47 @@ const handleStatsUpdated = (stats?: ReviewStats) => {
   to {
     transform: rotate(360deg);
   }
+}
+
+.pdp-custom__methods {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 14px;
+  flex-wrap: wrap;
+}
+
+.pdp-custom__method {
+  flex: 1 1 140px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 2px;
+  padding: 10px 14px;
+  border: 1.5px solid #ddd;
+  border-radius: 8px;
+  background: #fff;
+  cursor: pointer;
+  transition: border-color 0.15s ease, background 0.15s ease;
+  text-align: left;
+
+  &:hover {
+    border-color: #999;
+  }
+
+  &--active {
+    border-color: #111;
+    background: #f8f8f8;
+  }
+}
+
+.pdp-custom__method-label {
+  font-size: 14px;
+  font-weight: 600;
+  color: #222;
+}
+
+.pdp-custom__method-price {
+  font-size: 12.5px;
+  color: #777;
 }
 </style>

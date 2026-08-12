@@ -1,11 +1,22 @@
 <template>
   <div class="nav-dropdown" :class="{ 'nav-dropdown--open': isOpen }">
     <ul class="nav-dropdown__list">
-      <li v-for="item in items" :key="item.to" class="nav-dropdown__item">
-        <NuxtLink :to="item.to" @click="emit('itemClick')">
-          {{ item.label }}
-        </NuxtLink>
-      </li>
+      <template v-for="item in items" :key="item.to">
+        <li class="nav-dropdown__item">
+          <NuxtLink :to="item.to" @click="emit('itemClick')">
+            {{ item.label }}
+          </NuxtLink>
+        </li>
+        <li
+          v-for="child in item.children || []"
+          :key="child.to"
+          class="nav-dropdown__item nav-dropdown__item--child"
+        >
+          <NuxtLink :to="child.to" @click="emit('itemClick')">
+            {{ child.label }}
+          </NuxtLink>
+        </li>
+      </template>
     </ul>
   </div>
 </template>
@@ -14,6 +25,7 @@
 interface DropdownItem {
   label: string;
   to: string;
+  children?: { label: string; to: string }[];
 }
 
 defineProps<{
@@ -83,6 +95,13 @@ const emit = defineEmits<{
     outline-offset: -2px;
   }
 }
+
+.nav-dropdown__item--child {
+  padding-left: 40px;
+
+  a {
+    font-size: 14.5px;
+    color: #555;
+  }
+}
 </style>
-
-
