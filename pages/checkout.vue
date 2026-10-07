@@ -175,7 +175,7 @@
               </div>
               <div v-else-if="econtShippingCost > 0" class="checkout__shipping-info">
                 💰 Цена за доставка (при получаване):
-                <strong>{{ formatDualPrice(econtShippingCost) }}</strong>
+                <strong>{{ formatMoney(econtShippingCost) }}</strong>
                 <span style="display: block; font-size: 0.8125rem; margin-top: 0.5rem; color: #666">
                   * Окончателната цена може да бъде по-ниска при потвърждаване
                 </span>
@@ -253,7 +253,7 @@ const { validationErrors, handleBlur, handleInput } = useCheckoutValidation();
 // Use debounce composable
 const { debounceAsync } = useDebounce();
 const { calculateShipping, getShippingSummary } = useShippingCalculation();
-const { formatDualPrice } = useCurrency();
+const { formatMoney } = useCurrency();
 
 // State
 const isGuest = ref(!authStore.isAuthenticated); // Start in guest mode if not authenticated

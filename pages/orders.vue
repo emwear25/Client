@@ -56,14 +56,14 @@
                   <span> • Количество: {{ item.quantity }}</span>
                 </p>
               </div>
-              <div class="order-item__price">{{ formatDualPrice(item.price * item.quantity) }}</div>
+              <div class="order-item__price">{{ formatMoney(item.price * item.quantity) }}</div>
             </div>
           </div>
 
           <div class="order-card__summary">
             <div class="order-card__row">
               <span>Общо:</span>
-              <span>{{ formatDualPrice(order.total) }}</span>
+              <span>{{ formatMoney(order.total) }}</span>
             </div>
           </div>
         </div>
@@ -78,7 +78,7 @@ import { useToast } from "~/composables/useToast";
 import { useApi } from "~/composables/useApi";
 import { useCurrency } from "~/composables/useCurrency";
 
-const { formatDualPrice } = useCurrency();
+const { formatMoney } = useCurrency();
 
 console.log("[Orders Page] Component loading...");
 

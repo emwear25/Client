@@ -37,7 +37,7 @@
             >
               <span class="order-success__detail-label">Стойност на продуктите:</span>
               <span class="order-success__detail-value"
-                >{{ formatDualPrice(order.subtotalBeforeDiscount || 0) }}</span
+                >{{ formatMoney(order.subtotalBeforeDiscount || 0) }}</span
               >
             </div>
             <div
@@ -48,24 +48,24 @@
                 >Отстъпка{{ order.couponCode ? ` (${order.couponCode})` : "" }}:</span
               >
               <span class="order-success__detail-value" style="color: #e74c3c"
-                >-{{ formatDualPrice(order.discountTotal || 0) }}</span
+                >-{{ formatMoney(order.discountTotal || 0) }}</span
               >
             </div>
             <div class="order-success__detail-row">
               <span class="order-success__detail-label">Стойност на продуктите:</span>
               <span class="order-success__detail-value order-success__paid-amount"
-                >{{ formatDualPrice(order.subtotal || 0) }}</span
+                >{{ formatMoney(order.subtotal || 0) }}</span
               >
             </div>
             <div class="order-success__detail-row">
               <span class="order-success__detail-label">Доставка (при получаване):</span>
               <span class="order-success__detail-value"
-                >{{ formatDualPrice(order.shippingCost || 0) }}</span
+                >{{ formatMoney(order.shippingCost || 0) }}</span
               >
             </div>
             <div class="order-success__detail-row order-success__total-row">
               <span class="order-success__detail-label">Обща стойност (вкл. ДДС):</span>
-              <span class="order-success__detail-value">{{ formatDualPrice(order.total || 0) }}</span>
+              <span class="order-success__detail-value">{{ formatMoney(order.total || 0) }}</span>
             </div>
           </template>
 
@@ -77,7 +77,7 @@
             >
               <span class="order-success__detail-label">Стойност на продуктите:</span>
               <span class="order-success__detail-value"
-                >{{ formatDualPrice(order.subtotalBeforeDiscount || 0) }}</span
+                >{{ formatMoney(order.subtotalBeforeDiscount || 0) }}</span
               >
             </div>
             <div
@@ -88,24 +88,24 @@
                 >Отстъпка{{ order.couponCode ? ` (${order.couponCode})` : "" }}:</span
               >
               <span class="order-success__detail-value" style="color: #e74c3c"
-                >-{{ formatDualPrice(order.discountTotal || 0) }}</span
+                >-{{ formatMoney(order.discountTotal || 0) }}</span
               >
             </div>
             <div class="order-success__detail-row">
               <span class="order-success__detail-label">Стойност на продуктите:</span>
               <span class="order-success__detail-value"
-                >{{ formatDualPrice(order.subtotal || 0) }}</span
+                >{{ formatMoney(order.subtotal || 0) }}</span
               >
             </div>
             <div class="order-success__detail-row">
               <span class="order-success__detail-label">Доставка (при получаване):</span>
               <span class="order-success__detail-value"
-                >{{ formatDualPrice(order.shippingCost || 0) }}</span
+                >{{ formatMoney(order.shippingCost || 0) }}</span
               >
             </div>
             <div class="order-success__detail-row order-success__total-row">
               <span class="order-success__detail-label">Обща сума (вкл. ДДС):</span>
-              <span class="order-success__detail-value">{{ formatDualPrice(order.total || 0) }}</span>
+              <span class="order-success__detail-value">{{ formatMoney(order.total || 0) }}</span>
             </div>
           </template>
 
@@ -228,7 +228,7 @@ import { useApi } from "~/composables/useApi";
 import { useCurrency } from "~/composables/useCurrency";
 import { useFacebookPixel } from "~/composables/useFacebookPixel";
 
-const { formatDualPrice } = useCurrency();
+const { formatMoney } = useCurrency();
 
 // No auth middleware - support both guest and authenticated users
 

@@ -93,7 +93,7 @@
                         :key="option.name"
                         class="cart-item__attr cart-item__attr--priced"
                       >
-                        ✅ {{ option.label }} <span class="cart-item__option-price">+{{ formatDualPrice(option.price) }}</span>
+                        ✅ {{ option.label }} <span class="cart-item__option-price">+{{ formatMoney(option.price) }}</span>
                       </span>
                     </template>
                     <span v-if="item.embroidery.notes" class="cart-item__attr cart-item__attr--notes">
@@ -147,7 +147,7 @@
           <button class="btn btn--primary cart-drawer__cta" @click="goToCheckout">
             Към плащане
           </button>
-          <p class="cart-drawer__shipping">Безплатна доставка над €60 (~117 лв)</p>
+          <p class="cart-drawer__shipping">Безплатна доставка над €60</p>
         </div>
       </aside>
     </div>
@@ -161,7 +161,7 @@ import { useRouter } from "vue-router";
 import { useToast } from "~/composables/useToast";
 import { useCurrency } from "~/composables/useCurrency";
 
-const { formatDualPrice } = useCurrency();
+const { formatMoney } = useCurrency();
 
 const cartStore = useCartStore();
 const router = useRouter();
@@ -174,7 +174,7 @@ const closeCart = () => {
 };
 
 const formatPrice = (price: number) => {
-  return formatDualPrice(price);
+  return formatMoney(price);
 };
 
 // Color translation map: English to Bulgarian

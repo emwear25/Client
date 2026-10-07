@@ -44,7 +44,7 @@
               </div>
 
               <div class="product-card__footer">
-                <span class="product-card__price">{{ formatDualPrice(product.price) }}</span>
+                <span class="product-card__price">{{ formatMoney(product.price) }}</span>
                 <span v-if="product.stock > 0" class="badge badge--in-stock"> На Склад </span>
               </div>
             </div>
@@ -65,7 +65,7 @@ import { ref, onMounted } from "vue";
 import { useApi } from "~/composables/useApi";
 import { useCurrency } from "~/composables/useCurrency";
 
-const { formatDualPrice } = useCurrency();
+const { formatMoney } = useCurrency();
 
 interface ProductImage {
   url: string;

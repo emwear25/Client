@@ -218,7 +218,7 @@
           </p>
           <p v-if="econtShippingCost > 0" class="checkout-delivery-method__office-price">
             💰 Цена за доставка (при получаване):
-            <strong>{{ formatDualPrice(econtShippingCost) }}</strong>
+            <strong>{{ formatMoney(econtShippingCost) }}</strong>
           </p>
         </div>
         <button
@@ -278,7 +278,7 @@
           </p>
           <p v-if="speedyShippingCost > 0" class="checkout-delivery-method__office-price">
             💰 Цена за доставка (при получаване):
-            <strong>{{ formatDualPrice(speedyShippingCost) }}</strong>
+            <strong>{{ formatMoney(speedyShippingCost) }}</strong>
           </p>
         </div>
         <button
@@ -310,7 +310,7 @@
 import { computed } from "vue";
 import { useCurrency } from "~/composables/useCurrency";
 
-const { formatDualPrice } = useCurrency();
+const { formatMoney } = useCurrency();
 
 interface DeliveryValue {
   provider: "econt" | "speedy";

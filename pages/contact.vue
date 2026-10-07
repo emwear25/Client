@@ -211,7 +211,7 @@ useHead({
         telephone: "+359890927520",
         email: "info@emwear.bg",
         priceRange: "€€",
-        currenciesAccepted: "EUR, BGN",
+        currenciesAccepted: "EUR",
         paymentAccepted: "Cash, Credit Card, Bank Transfer",
         areaServed: {
           "@type": "Country",
