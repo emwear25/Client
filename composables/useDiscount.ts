@@ -128,7 +128,7 @@ export const useDiscount = () => {
       case "percentage":
         return `${discount.value}% отстъпка`;
       case "fixed_amount":
-        return `${discount.value.toFixed(2)} лв. отстъпка`;
+        return `€${discount.value.toFixed(2)} отстъпка`;
       case "free_shipping":
         return "Безплатна доставка";
       case "buy_x_get_y":

@@ -53,7 +53,7 @@ export const useAnalytics = () => {
     const trackViewItem = (product: AnalyticsProduct) => {
         try {
             gtag('event', 'view_item', {
-                currency: product.currency || 'BGN',
+                currency: product.currency || 'EUR',
                 value: product.price * product.quantity,
                 items: [product],
             });
@@ -72,7 +72,7 @@ export const useAnalytics = () => {
             const value = items.reduce((sum, item) => sum + (item.price * item.quantity), 0);
 
             gtag('event', 'add_to_cart', {
-                currency: items[0]?.currency || 'BGN',
+                currency: items[0]?.currency || 'EUR',
                 value,
                 items,
             });
@@ -110,7 +110,7 @@ export const useAnalytics = () => {
             const value = data.value || data.items.reduce((sum, item) => sum + (item.price * item.quantity), 0);
 
             gtag('event', 'begin_checkout', {
-                currency: data.currency || 'BGN',
+                currency: data.currency || 'EUR',
                 value,
                 items: data.items,
             });
@@ -129,7 +129,7 @@ export const useAnalytics = () => {
             const value = items.reduce((sum, item) => sum + (item.price * item.quantity), 0);
 
             gtag('event', 'remove_from_cart', {
-                currency: items[0]?.currency || 'BGN',
+                currency: items[0]?.currency || 'EUR',
                 value,
                 items,
             });
@@ -147,7 +147,7 @@ export const useAnalytics = () => {
             const value = data.value || data.items.reduce((sum, item) => sum + (item.price * item.quantity), 0);
 
             gtag('event', 'view_cart', {
-                currency: data.currency || 'BGN',
+                currency: data.currency || 'EUR',
                 value,
                 items: data.items,
             });

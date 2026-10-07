@@ -237,7 +237,7 @@ import { useRouter } from "vue-router";
 import { useToast } from "~/composables/useToast";
 import { useCurrency } from "~/composables/useCurrency";
 
-const { formatDualPrice, FREE_SHIPPING_EUR } = useCurrency();
+const { formatMoney, FREE_SHIPPING_EUR } = useCurrency();
 
 const cartStore = useCartStore();
 const router = useRouter();
@@ -271,9 +271,9 @@ const _totalWithShipping = computed(() => {
   return cartStore.totalPrice + shippingCost.value;
 });
 
-// Format price to dual currency (EUR + BGN)
+// Format price in EUR
 const formatPrice = (price: number): string => {
-  return formatDualPrice(price);
+  return formatMoney(price);
 };
 
 // Quantity controls

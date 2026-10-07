@@ -195,7 +195,7 @@
 
           <!-- USP List -->
           <ul class="qv__usp">
-            <li>✓ Безплатна доставка над €60 (~117 лв)</li>
+            <li>✓ Безплатна доставка над €60</li>
             <li>✓ Лесно връщане до 30 дни</li>
             <li>✓ Безопасни материали</li>
           </ul>
@@ -393,11 +393,11 @@ const validateEmbroidery = () => {
   return isValid;
 };
 
-const { formatDualPrice } = useCurrency();
+const { formatMoney } = useCurrency();
 
 const formatPrice = (price?: number | null) => {
   if (price == null) return "";
-  return formatDualPrice(price);
+  return formatMoney(price);
 };
 
 // Helper functions for color handling

@@ -181,7 +181,7 @@
                     class="pdp-price__badge"
                   >
                     Спести
-                    {{ formatDualPrice(saveAmount) }}
+                    {{ formatMoney(saveAmount) }}
                   </span>
                 </div>
               </div>
@@ -461,7 +461,7 @@
                     <circle cx="5.5" cy="18.5" r="2.5" />
                     <circle cx="18.5" cy="18.5" r="2.5" />
                   </svg>
-                  <span>Безплатна доставка над €60 (~117 лв)</span>
+                  <span>Безплатна доставка над €60</span>
                 </div>
                 <div class="pdp-trust__item">
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -592,7 +592,7 @@
               <div class="pdp-shipping">
                 <div class="pdp-shipping__item">
                   <strong>Безплатна доставка</strong>
-                  <p>За поръчки над €60 (~117 лв) с Еконт или Спиди</p>
+                  <p>За поръчки над €60 с Еконт или Спиди</p>
                 </div>
                 <div class="pdp-shipping__item">
                   <strong>Време за доставка</strong>
@@ -702,7 +702,7 @@ import RelatedProducts from "~/components/products/RelatedProducts.vue";
 import Modal from "~/components/common/Modal.vue";
 import { useFacebookPixel } from "~/composables/useFacebookPixel";
 
-const { formatDualPrice, formatEur } = useCurrency();
+const { formatMoney, formatEur } = useCurrency();
 
 interface ProductImage {
   url: string;
@@ -1173,7 +1173,7 @@ const selectImage = (index: number) => {
 
 const formatPrice = (price?: number | null) => {
   if (price == null) return "";
-  return formatDualPrice(price);
+  return formatMoney(price);
 };
 
 // Sort sizes in correct order: months first, then years

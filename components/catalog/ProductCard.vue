@@ -226,7 +226,7 @@ const savePercent = computed(() => {
   return Math.round(100 - (props.product.price / originalPrice) * 100);
 });
 
-const { formatDualPrice } = useCurrency();
+const { formatMoney } = useCurrency();
 
 // Get display price - use variant prices if available, otherwise base price
 const displayPrice = computed(() => {
@@ -247,7 +247,7 @@ const displayPrice = computed(() => {
 
 const formatPrice = (price?: number | null) => {
   if (price == null) return "";
-  return formatDualPrice(price);
+  return formatMoney(price);
 };
 
 // Real link (not JS navigation) so crawlers can discover product pages

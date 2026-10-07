@@ -45,7 +45,7 @@
               <h3 class="featured-products__product-name">{{ product.name }}</h3>
               <div class="featured-products__price-row">
                 <span v-if="product.discount" class="featured-products__original-price">
-                  {{ formatPrice(product.price) }} лв.
+                  {{ formatPrice(product.price) }}
                 </span>
                 <span class="featured-products__price">
                   {{ formatPrice(getDiscountedPrice(product)) }}
@@ -96,10 +96,10 @@
                   <h3 class="featured-products__product-name">{{ product.name }}</h3>
                   <div class="featured-products__price-row">
                     <span v-if="product.discount" class="featured-products__original-price">
-                      {{ formatPrice(product.price) }} лв.
+                      {{ formatPrice(product.price) }}
                     </span>
                     <span class="featured-products__price">
-                      {{ formatPrice(getDiscountedPrice(product)) }} лв.
+                      {{ formatPrice(getDiscountedPrice(product)) }}
                     </span>
                   </div>
                 </div>
@@ -131,7 +131,7 @@ import "swiper/css/pagination";
 import { useCurrency } from "~/composables/useCurrency";
 
 const modules = [Pagination];
-const { formatDualPrice } = useCurrency();
+const { formatMoney } = useCurrency();
 
 interface Product {
   _id: string;
@@ -219,7 +219,7 @@ const getCategoryName = (category: Product["category"]) => {
 };
 
 const formatPrice = (price: number) => {
-  return formatDualPrice(price);
+  return formatMoney(price);
 };
 
 const getDiscountedPrice = (product: Product) => {

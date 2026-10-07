@@ -30,7 +30,7 @@
         <div class="promo-banner__gift-icon">🚚</div>
         <div class="promo-banner__gift-text">
           <span class="promo-banner__gift-title">Безплатна доставка</span>
-          <span class="promo-banner__gift-sub">при поръчка над €60 (~117 лв)</span>
+          <span class="promo-banner__gift-sub">при поръчка над €60</span>
         </div>
       </div>
     </div>

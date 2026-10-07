@@ -1,25 +1,12 @@
 /**
- * Currency formatting composable for dual EUR/BGN display
- * Bulgaria Euro adoption regulation compliance (January 1, 2026)
+ * Currency formatting composable.
  *
- * Since Bulgaria adopted EUR, database now stores prices in EUR directly.
- * BGN is shown alongside for the regulatory transition period.
- * Fixed conversion rate: 1 EUR = 1.95583 BGN
+ * Bulgaria uses the euro since January 1, 2026: prices are stored and shown
+ * in EUR only.
  */
-
-// Fixed conversion rate (official Bulgarian Euro adoption rate)
-export const EUR_TO_BGN_RATE = 1.95583;
 
 // Free shipping threshold in EUR
 export const FREE_SHIPPING_EUR = 60;
-export const FREE_SHIPPING_BGN = FREE_SHIPPING_EUR * EUR_TO_BGN_RATE;
-
-/**
- * Convert EUR to BGN
- */
-export const eurToBgn = (eur: number): number => {
-    return eur * EUR_TO_BGN_RATE;
-};
 
 /**
  * Format a number as EUR currency
@@ -29,40 +16,13 @@ export const formatEur = (amount: number): string => {
 };
 
 /**
- * Format a number as BGN currency
+ * Format a price in EUR, tolerating missing values
  */
-export const formatBgn = (amount: number): string => {
-    return `${amount.toFixed(2)} лв`;
-};
-
-/**
- * Format price in dual currency (EUR primary, BGN secondary)
- * Input is now in EUR (as stored in DB since January 1, 2026)
- *
- * @param priceInEur - The price in EUR
- * @param compact - If true, returns multiline format for compact spaces
- * @returns Formatted dual currency string
- */
-export const formatDualPrice = (priceInEur: number, compact = false): string => {
+export const formatMoney = (priceInEur: number): string => {
     if (priceInEur === null || priceInEur === undefined || isNaN(priceInEur)) {
-        return '€0.00 (0.00 лв)';
+        return formatEur(0);
     }
-
-    const eurFormatted = formatEur(priceInEur);
-    const bgnFormatted = formatBgn(eurToBgn(priceInEur));
-
-    if (compact) {
-        return `${eurFormatted}\n(${bgnFormatted})`;
-    }
-
-    return `${eurFormatted} (${bgnFormatted})`;
-};
-
-/**
- * Format the free shipping threshold in dual currency
- */
-export const formatFreeShippingThreshold = (): string => {
-    return formatDualPrice(FREE_SHIPPING_EUR);
+    return formatEur(priceInEur);
 };
 
 /**
@@ -70,14 +30,9 @@ export const formatFreeShippingThreshold = (): string => {
  */
 export const useCurrency = () => {
     return {
-        EUR_TO_BGN_RATE,
         FREE_SHIPPING_EUR,
-        FREE_SHIPPING_BGN,
-        eurToBgn,
         formatEur,
-        formatBgn,
-        formatDualPrice,
-        formatFreeShippingThreshold,
+        formatMoney,
     };
 };
 

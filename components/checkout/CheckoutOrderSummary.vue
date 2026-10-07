@@ -50,7 +50,7 @@
                 :key="option.name"
                 class="checkout-order-summary__priced-option"
               >
-                ✅ {{ option.label }} <span class="checkout-order-summary__option-price">+{{ formatDualPrice(option.price) }}</span>
+                ✅ {{ option.label }} <span class="checkout-order-summary__option-price">+{{ formatMoney(option.price) }}</span>
               </span>
             </template>
             <span v-if="item.embroidery.notes" class="checkout-order-summary__notes">
@@ -60,7 +60,7 @@
           <p class="checkout-order-summary__item-quantity">Количество: {{ item.quantity }}</p>
         </div>
         <div class="checkout-order-summary__item-price">
-          {{ formatDualPrice((item.price || 0) * (item.quantity || 0)) }}
+          {{ formatMoney((item.price || 0) * (item.quantity || 0)) }}
         </div>
       </div>
     </div>
@@ -80,7 +80,7 @@
         }"
       >
         <span>Стойност на продуктите:</span>
-        <span>{{ formatDualPrice(subtotalBeforeDiscount || 0) }}</span>
+        <span>{{ formatMoney(subtotalBeforeDiscount || 0) }}</span>
       </div>
 
       <!-- Coupon discount row -->
@@ -90,7 +90,7 @@
       >
         <span> Отстъпка ({{ appliedCoupon }}) </span>
         <span class="checkout-order-summary__discount-amount"
-          >-{{ formatDualPrice(discountTotal || 0) }}</span
+          >-{{ formatMoney(discountTotal || 0) }}</span
         >
       </div>
 
@@ -100,7 +100,7 @@
         class="checkout-order-summary__total-row checkout-order-summary__total-row--highlighted"
       >
         <span>Нова цена:</span>
-        <span class="checkout-order-summary__new-price">{{ formatDualPrice(totalPrice || 0) }}</span>
+        <span class="checkout-order-summary__new-price">{{ formatMoney(totalPrice || 0) }}</span>
       </div>
 
       <!-- Shipping (informational only - paid on delivery) -->
@@ -110,14 +110,14 @@
       >
         <span>Доставка (плаща се при получаване):</span>
         <span class="checkout-order-summary__info-price"
-          >{{ formatDualPrice(shippingCost || 0) }}</span
+          >{{ formatMoney(shippingCost || 0) }}</span
         >
       </div>
 
       <!-- Final Total (with VAT included note) -->
       <div class="checkout-order-summary__total-row checkout-order-summary__total-row--final">
         <span>Обща сума (вкл. ДДС):</span>
-        <span>{{ formatDualPrice(finalTotal) }}</span>
+        <span>{{ formatMoney(finalTotal) }}</span>
       </div>
     </div>
 
@@ -142,7 +142,7 @@
 import { computed } from "vue";
 import { useCurrency } from "~/composables/useCurrency";
 
-const { formatDualPrice } = useCurrency();
+const { formatMoney } = useCurrency();
 
 interface CartItem {
   id: string;
