@@ -238,6 +238,7 @@ import CheckoutSavedAddresses from "~/components/checkout/CheckoutSavedAddresses
 import CheckoutPaymentMethod from "~/components/checkout/CheckoutPaymentMethod.vue";
 import CheckoutOrderSummary from "~/components/checkout/CheckoutOrderSummary.vue";
 import { useFacebookPixel } from "~/composables/useFacebookPixel";
+import { getAttribution } from "~/utils/attribution";
 
 // No middleware - checkout supports both guest and authenticated users
 
@@ -1491,6 +1492,8 @@ const handleSubmit = async () => {
     econtCustomerInfoId: econtCustomerInfoId.value || null, // Add Econt customer info ID
     // Include coupon code if applied
     couponCode: cartStore.appliedCoupon || null,
+    // Campaign attribution (UTM of first/last visit, only with analytics consent)
+    attribution: getAttribution(),
     isGuest: isGuest.value && !authStore.isAuthenticated, // Add guest flag
     guestInfo:
       isGuest.value && !authStore.isAuthenticated
