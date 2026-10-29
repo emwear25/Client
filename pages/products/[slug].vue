@@ -452,6 +452,9 @@
                 </button>
               </div>
 
+              <!-- Suggested add-on (compact cross-sell, e.g. a keychain) -->
+              <ProductAddOnSuggestion v-if="product" :product-id="product._id" />
+
               <!-- Trust Badges -->
               <div class="pdp-trust">
                 <div class="pdp-trust__item">
@@ -669,9 +672,6 @@
         </div>
       </section>
 
-      <!-- Suggested add-ons ("goes well with" - hand-picked cross-sell) -->
-      <SuggestedAddOns v-if="product" :product-id="product._id" :limit="8" />
-
       <!-- Related Products -->
       <RelatedProducts v-if="product" :product-id="product._id" :limit="4" />
     </div>
@@ -702,7 +702,7 @@ import ReviewStats from "~/components/reviews/ReviewStats.vue";
 import ProductReviews from "~/components/reviews/ProductReviews.vue";
 import ReviewForm from "~/components/reviews/ReviewForm.vue";
 import RelatedProducts from "~/components/products/RelatedProducts.vue";
-import SuggestedAddOns from "~/components/products/SuggestedAddOns.vue";
+import ProductAddOnSuggestion from "~/components/products/ProductAddOnSuggestion.vue";
 import Modal from "~/components/common/Modal.vue";
 import { useFacebookPixel } from "~/composables/useFacebookPixel";
 
