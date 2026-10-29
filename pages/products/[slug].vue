@@ -402,6 +402,24 @@
                 </div>
               </div>
 
+              <!-- Suggested add-ons as checkboxes: checking one adds it to the
+                   cart together with this product (e.g. a keychain for a bag) -->
+              <div v-if="addOnSuggestions.length > 0" class="pdp-addon">
+                <div v-for="a in addOnSuggestions" :key="a._id" class="pdp-addon__item">
+                  <input
+                    :id="`addon-${a._id}`"
+                    v-model="selectedAddOns[a._id]"
+                    type="checkbox"
+                    class="pdp-addon__checkbox"
+                  />
+                  <label :for="`addon-${a._id}`" class="pdp-addon__label">
+                    <img :src="addOnImage(a)" :alt="a.name" class="pdp-addon__img" />
+                    <span class="pdp-addon__text">Добави {{ a.name }}</span>
+                    <span class="pdp-addon__price">+{{ formatMoney(a.price) }}</span>
+                  </label>
+                </div>
+              </div>
+
               <!-- Custom Design Notice -->
               <div v-if="product.customEmbroidery" class="pdp-custom-notice">
                 <div class="pdp-custom-notice__icon">
@@ -451,9 +469,6 @@
                   </svg>
                 </button>
               </div>
-
-              <!-- Suggested add-on (compact cross-sell, e.g. a keychain) -->
-              <ProductAddOnSuggestion v-if="product" :product-id="product._id" />
 
               <!-- Trust Badges -->
               <div class="pdp-trust">
@@ -702,7 +717,6 @@ import ReviewStats from "~/components/reviews/ReviewStats.vue";
 import ProductReviews from "~/components/reviews/ProductReviews.vue";
 import ReviewForm from "~/components/reviews/ReviewForm.vue";
 import RelatedProducts from "~/components/products/RelatedProducts.vue";
-import ProductAddOnSuggestion from "~/components/products/ProductAddOnSuggestion.vue";
 import Modal from "~/components/common/Modal.vue";
 import { useFacebookPixel } from "~/composables/useFacebookPixel";
 
@@ -794,6 +808,32 @@ const { parseMarkdown, isReady } = useMarkdown();
 
 // State
 const product = ref<Product | null>(null);
+
+// Suggested add-ons (hand-picked cross-sell). Shown as checkboxes under the
+// personalization box; checking one adds it to the cart with this product.
+const addOnSuggestions = ref<any[]>([]);
+const selectedAddOns = ref<Record<string, boolean>>({});
+
+const addOnImage = (a: any): string =>
+  a?.images?.[0]?.url || a?.colorImages?.[0]?.images?.[0]?.url || "/img/placeholder.png";
+
+const fetchAddOnSuggestions = async (id: string) => {
+  try {
+    const api = useApi();
+    const res = await api.get(`products/${id}/suggested?limit=3`);
+    addOnSuggestions.value =
+      res?.success && res.data ? res.data.filter((p: any) => (p.stock ?? 0) > 0) : [];
+    selectedAddOns.value = {};
+  } catch {
+    addOnSuggestions.value = [];
+  }
+};
+
+// Fetch on the client whenever the product changes (handles slug navigation)
+watchEffect(() => {
+  const id = product.value?._id;
+  if (id && import.meta.client) fetchAddOnSuggestions(id);
+});
 const isLoading = ref(true);
 const error = ref<string | null>(null);
 
@@ -1450,6 +1490,21 @@ const addToCart = () => {
     },
     1
   );
+
+  // Add any checked suggested add-ons (e.g. a keychain) alongside this product
+  for (const a of addOnSuggestions.value) {
+    if (!selectedAddOns.value[a._id]) continue;
+    cartStore.addItem(
+      {
+        id: a._id,
+        name: a.name,
+        price: a.price,
+        image: addOnImage(a),
+        category: a.category && typeof a.category === "object" ? a.category : undefined,
+      },
+      1,
+    );
+  }
 
   // Track AddToCart event for Facebook Pixel
   fbTrackAddToCart({
@@ -2242,6 +2297,72 @@ const handleStatsUpdated = (stats?: ReviewStats) => {
 }
 
 /* Action Buttons */
+.pdp-addon {
+  margin-top: 0.75rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+
+  &__item {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.7rem 0.9rem;
+    border: 1px solid $border-base;
+    border-radius: 12px;
+    background: $bg-page;
+    transition: border-color 0.2s ease;
+
+    &:hover {
+      border-color: $brand;
+    }
+  }
+
+  &__checkbox {
+    width: 18px;
+    height: 18px;
+    accent-color: $brand;
+    cursor: pointer;
+    flex-shrink: 0;
+  }
+
+  &__label {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    flex: 1;
+    min-width: 0;
+    cursor: pointer;
+  }
+
+  &__img {
+    width: 40px;
+    height: 40px;
+    object-fit: cover;
+    border-radius: 8px;
+    border: 1px solid $border-base;
+    background: $color-white;
+    flex-shrink: 0;
+  }
+
+  &__text {
+    flex: 1;
+    min-width: 0;
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: $brand-ink;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  &__price {
+    font-size: 0.9rem;
+    font-weight: 700;
+    color: $brand;
+    white-space: nowrap;
+  }
+}
+
 .pdp-actions {
   display: flex;
   gap: 0.75rem;
