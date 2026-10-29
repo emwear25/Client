@@ -140,6 +140,36 @@
 
         <!-- Footer -->
         <div v-if="!cartStore.isEmpty" class="cart-drawer__footer">
+          <!-- Suggested add-ons (hand-picked cross-sell, e.g. keychains for a bag) -->
+          <div v-if="addOns.length > 0" class="cart-addons">
+            <h3 class="cart-addons__title">Добавете към поръчката</h3>
+            <div class="cart-addons__list">
+              <div v-for="addOn in addOns" :key="addOn._id" class="cart-addon">
+                <NuxtImg
+                  :src="addOnImage(addOn)"
+                  :alt="addOn.name"
+                  class="cart-addon__img"
+                  format="webp"
+                  quality="75"
+                  width="48"
+                  height="48"
+                  loading="lazy"
+                />
+                <div class="cart-addon__info">
+                  <span class="cart-addon__name">{{ addOn.name }}</span>
+                  <span class="cart-addon__price">{{ formatPrice(addOn.price) }}</span>
+                </div>
+                <button
+                  class="cart-addon__add"
+                  :aria-label="`Добави ${addOn.name}`"
+                  @click="addAddOn(addOn)"
+                >
+                  +
+                </button>
+              </div>
+            </div>
+          </div>
+
           <div class="cart-drawer__total">
             <span class="cart-drawer__total-label">Общо:</span>
             <span class="cart-drawer__total-price">{{ formatPrice(cartStore.totalPrice) }}</span>
@@ -155,19 +185,99 @@
 </template>
 
 <script setup lang="ts">
+import { ref, computed, watch } from "vue";
 import { useCartStore } from "~/stores/cart";
 import { useAuthStore } from "~/stores/auth";
 import { useRouter } from "vue-router";
 import { useToast } from "~/composables/useToast";
 import { useCurrency } from "~/composables/useCurrency";
+import { useApi } from "~/composables/useApi";
 
 const { formatMoney } = useCurrency();
 
 const cartStore = useCartStore();
 const router = useRouter();
 const toast = useToast();
+const api = useApi();
 
 const isOpen = computed(() => cartStore.isOpen);
+
+// ── Suggested add-ons (cross-sell upsell) ────────────────────────────────
+// For each product in the cart, fetch its hand-picked add-ons, then merge,
+// drop anything already in the cart or out of stock, and show a few.
+const addOns = ref<any[]>([]);
+
+const addOnImage = (p: any): string =>
+  p?.images?.[0]?.url || p?.colorImages?.[0]?.images?.[0]?.url || "/img/placeholder.png";
+
+const fetchAddOns = async () => {
+  const cartItems = cartStore.items;
+  if (cartItems.length === 0) {
+    addOns.value = [];
+    return;
+  }
+
+  const inCart = new Set(cartItems.map((i) => i.id));
+  const distinctIds = [...inCart];
+
+  try {
+    const lists = await Promise.all(
+      distinctIds.map((id) =>
+        api
+          .get(`products/${id}/suggested?limit=4`)
+          .then((r: any) => (r?.success && r.data ? r.data : []))
+          .catch(() => []),
+      ),
+    );
+
+    const merged: any[] = [];
+    const seen = new Set<string>();
+    for (const list of lists) {
+      for (const p of list) {
+        if (inCart.has(p._id) || seen.has(p._id)) continue;
+        if ((p.stock ?? 0) <= 0) continue; // never suggest something out of stock
+        seen.add(p._id);
+        merged.push(p);
+      }
+    }
+    addOns.value = merged.slice(0, 4);
+  } catch {
+    addOns.value = [];
+  }
+};
+
+// Refetch when the drawer opens or the cart contents change
+watch(
+  () => [cartStore.isOpen, cartStore.items.map((i) => i.id).join(",")],
+  () => {
+    if (cartStore.isOpen) fetchAddOns();
+  },
+  { immediate: true },
+);
+
+const addAddOn = (p: any) => {
+  const category =
+    p.category && typeof p.category === "object"
+      ? {
+          _id: p.category._id,
+          name: p.category.name,
+          defaultWeight: p.category.defaultWeight,
+          defaultDimensions: p.category.defaultDimensions,
+        }
+      : undefined;
+
+  cartStore.addItem(
+    {
+      id: p._id,
+      name: p.name,
+      price: p.price,
+      image: addOnImage(p),
+      category,
+    },
+    1,
+  );
+  toast.success(`${p.name} е добавен в количката`);
+};
 
 const closeCart = () => {
   cartStore.closeCart();
@@ -422,6 +532,89 @@ const goToCheckout = () => {
     font-size: 0.8125rem;
     color: $text-secondary;
     margin: 0.75rem 0 0;
+  }
+}
+
+// ═══════════════════════════════════════════════════
+// CART ADD-ONS (cross-sell upsell)
+// ═══════════════════════════════════════════════════
+
+.cart-addons {
+  margin-bottom: 1rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px dashed $border-base;
+
+  &__title {
+    font-family: $font-body;
+    font-size: 0.8125rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: $text-secondary;
+    margin: 0 0 0.6rem;
+  }
+
+  &__list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+}
+
+.cart-addon {
+  display: grid;
+  grid-template-columns: 48px 1fr auto;
+  gap: 10px;
+  align-items: center;
+
+  &__img {
+    width: 48px;
+    height: 48px;
+    object-fit: cover;
+    border-radius: 6px;
+    border: 1px solid $border-base;
+  }
+
+  &__info {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    min-width: 0;
+  }
+
+  &__name {
+    font-size: 0.8125rem;
+    font-weight: 600;
+    color: $brand-ink;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  &__price {
+    font-size: 0.8125rem;
+    color: $text-secondary;
+  }
+
+  &__add {
+    width: 30px;
+    height: 30px;
+    border-radius: 999px;
+    border: 1px solid $brand;
+    background: $color-white;
+    color: $brand;
+    font-size: 1.25rem;
+    line-height: 1;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+
+    &:hover {
+      background: $brand;
+      color: $color-white;
+    }
   }
 }
 
