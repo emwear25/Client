@@ -479,7 +479,7 @@
                     <circle cx="5.5" cy="18.5" r="2.5" />
                     <circle cx="18.5" cy="18.5" r="2.5" />
                   </svg>
-                  <span>Безплатна доставка над €60</span>
+                  <span>Безплатна доставка над €90</span>
                 </div>
                 <div class="pdp-trust__item">
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -610,7 +610,7 @@
               <div class="pdp-shipping">
                 <div class="pdp-shipping__item">
                   <strong>Безплатна доставка</strong>
-                  <p>За поръчки над €60 с Еконт или Спиди</p>
+                  <p>За поръчки над €90 с Еконт или Спиди</p>
                 </div>
                 <div class="pdp-shipping__item">
                   <strong>Време за доставка</strong>

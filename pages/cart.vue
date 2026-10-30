@@ -262,7 +262,7 @@ const goToCheckout = () => {
   router.push("/checkout");
 };
 
-// Shipping calculation (free shipping over 60 EUR)
+// Shipping calculation (free shipping over 90 EUR)
 const shippingCost = computed(() => {
   return cartStore.totalPrice >= FREE_SHIPPING_EUR ? 0 : 5.99;
 });
