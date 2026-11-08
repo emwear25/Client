@@ -21,7 +21,7 @@ export const productMenuGroups: ProductMenuGroup[] = [
     ],
   },
   {
-    title: "Текстил за баня",
+    title: "Баня и сън",
     items: [
       { label: "Детски халати", to: "/category/kid-bathrobes", image: "/img/menu/bathrobes.jpg" },
       { label: "Кърпи за лице", to: "/category/personalizirani-kurpi-za-lice", image: "/img/menu/face-towels.jpg" },

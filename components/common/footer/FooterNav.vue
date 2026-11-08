@@ -90,7 +90,7 @@ const collectionLinks: NavigationLink[] = [
 ];
 
 const companyLinks: NavigationLink[] = [
-  { name: "За Нас", path: "/about" },
+  { name: "За нас", path: "/about" },
   { name: "Контакти", path: "/contact" },
   { name: "Често Задавани Въпроси", path: "/faq" },
   { name: "Доставка и връщане", path: "/shipping" },

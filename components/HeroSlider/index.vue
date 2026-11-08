@@ -41,7 +41,7 @@
         <div class="hero-slider__image-container hero-slider__image-container--diagonal-left">
           <div
             class="hero-slider__image"
-            :style="{ backgroundImage: `url(${slides[0].image})` }"
+            :style="{ backgroundImage: `url(${slides[0].image})`, '--hero-bg-pos': slides[0].bgPosition || 'center' }"
           />
         </div>
 
@@ -650,6 +650,7 @@ const slides = ref([
     id: 1,
     image: "/img/slider/bags-kids.webp",
     mobileImage: "/img/slider/bags-kids-mobile.webp",
+    bgPosition: "35% center",
   },
   {
     id: 2,
@@ -792,21 +793,20 @@ const renderCustomBullet = (index: number, className: string) => {
     height: 100%;
     background-size: cover;
     background-position: center;
-    filter: brightness(0.92);
+    filter: brightness(0.85);
     z-index: 0;
 
-    // Gradient scrim: image stays clear at the top (product visible),
-    // darkens toward the bottom where the text sits.
+    // Soft scrim, darkest in the center where the (centered) text sits,
+    // so copy reads clearly without over-darkening the whole photo.
     &::after {
       content: "";
       position: absolute;
       inset: 0;
-      background: linear-gradient(
-        to top,
-        rgba(24, 26, 22, 0.78) 0%,
-        rgba(24, 26, 22, 0.5) 32%,
-        rgba(24, 26, 22, 0.12) 58%,
-        rgba(24, 26, 22, 0) 82%
+      background: radial-gradient(
+        ellipse 120% 70% at center,
+        rgba(24, 26, 22, 0.55) 0%,
+        rgba(24, 26, 22, 0.34) 55%,
+        rgba(24, 26, 22, 0.12) 100%
       );
       pointer-events: none;
     }
@@ -894,7 +894,7 @@ const renderCustomBullet = (index: number, className: string) => {
     height: 100%;
     min-height: 100%;
     background-size: cover;
-    background-position: center;
+    background-position: var(--hero-bg-pos, center);
     background-repeat: no-repeat;
     transition: transform 8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
     display: block;
@@ -910,19 +910,19 @@ const renderCustomBullet = (index: number, className: string) => {
       visibility: visible !important;
       opacity: 1 !important;
       background-size: cover !important;
-      background-position: center !important;
+      background-position: var(--hero-bg-pos, center) !important;
       background-repeat: no-repeat !important;
     }
 
     .swiper-slide-active & {
-      transform: scale(1.1);
+      transform: scale(1.04);
     }
 
     &--parallax {
-      transform: scale(1.2);
+      transform: scale(1.1);
 
       .swiper-slide-active & {
-        transform: scale(1.1);
+        transform: scale(1.04);
       }
     }
 
@@ -947,9 +947,9 @@ const renderCustomBullet = (index: number, className: string) => {
     width: 100%;
 
     @media (max-width: 767px) {
-      padding: 2.5rem 1.5rem 3.75rem;
+      padding: 2.5rem 1.5rem 2rem;
       align-items: center;
-      justify-content: flex-end;
+      justify-content: center;
       flex-direction: column;
     }
 

@@ -63,7 +63,7 @@
 
     @media (max-width: 767px) {
       background-size: cover;
-      background-position: 70% center;
+      background-position: center;
       height: 100%;
       min-height: 500px;
     }
@@ -77,8 +77,23 @@
     width: 100%;
     max-width: 1610px;
     height: 100%;
-    background: rgba(0, 0, 0, 0.4);
+    // Darker behind the text (left), clearer over the product (right)
+    background: linear-gradient(
+      to right,
+      rgba(0, 0, 0, 0.62) 0%,
+      rgba(0, 0, 0, 0.45) 45%,
+      rgba(0, 0, 0, 0.2) 100%
+    );
     z-index: 2;
+
+    @media (max-width: 767px) {
+      background: linear-gradient(
+        to bottom,
+        rgba(0, 0, 0, 0.62) 0%,
+        rgba(0, 0, 0, 0.45) 50%,
+        rgba(0, 0, 0, 0.3) 100%
+      );
+    }
   }
 
   &__container {

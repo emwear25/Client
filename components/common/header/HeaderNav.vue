@@ -76,7 +76,7 @@
             'site-header__nav-link--active': route.path === '/about',
           }"
         >
-          За Нас
+          За нас
         </NuxtLink>
       </li>
       <li class="site-header__nav-item">

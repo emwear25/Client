@@ -89,7 +89,7 @@
             }"
             @click="emit('close')"
           >
-            За Нас
+            За нас
           </NuxtLink>
         </li>
         <li class="mobile-menu__nav-item">
