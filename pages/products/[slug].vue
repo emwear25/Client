@@ -210,9 +210,9 @@
                   >⚡ BLACK FRIDAY</span
                 >
                 <span style="color: rgba(255, 255, 255, 0.9); font-size: 0.8rem">
-                  Комплект халат + кърпа <strong style="color: #e7c873">−20%</strong> · Раница +
-                  ключодържател <strong style="color: #e7c873">−10%</strong> — автоматично в
-                  количката
+                  Халат + една кърпа <strong style="color: #e7c873">−15%</strong>, с двете кърпи
+                  <strong style="color: #e7c873">−20%</strong> · Раница + ключодържател
+                  <strong style="color: #e7c873">−10%</strong> — автоматично в количката
                 </span>
               </div>
 

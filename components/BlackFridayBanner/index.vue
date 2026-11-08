@@ -3,12 +3,15 @@
     <div class="bf__inner">
       <span class="bf__eyebrow">⚡ Black Friday в emWear</span>
       <h2 class="bf__title">Комплектни оферти</h2>
-      <p class="bf__sub">Събери комплекта и спести — автоматично в количката.</p>
+      <p class="bf__sub">
+        Халат + една кърпа <strong>−15%</strong>, с двете кърпи <strong>−20%</strong> — автоматично в
+        количката.
+      </p>
 
       <div class="bf__deals">
         <div class="bf__deal">
-          <span class="bf__pct">−20%</span>
-          <span class="bf__label">Халат + кърпа</span>
+          <span class="bf__pct">до −20%</span>
+          <span class="bf__label">Халат + кърпи</span>
         </div>
         <div class="bf__deal">
           <span class="bf__pct">−10%</span>
@@ -72,6 +75,11 @@
     font-size: 1rem;
     color: rgba(255, 255, 255, 0.8);
     margin: 0 0 2rem;
+
+    strong {
+      color: #e7c873;
+      font-weight: 700;
+    }
   }
 
   &__deals {

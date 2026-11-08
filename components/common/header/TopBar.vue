@@ -3,7 +3,7 @@
     <div class="topbar__container">
       <span class="topbar__bf">⚡ BLACK FRIDAY</span>
       <span class="topbar__deals">
-        Комплект халат + кърпа <strong>−20%</strong>
+        Комплект баня до <strong>−20%</strong>
         <span class="topbar__dot">·</span>
         Раница + ключодържател <strong>−10%</strong>
         <span class="topbar__dot">·</span>
