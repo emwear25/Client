@@ -122,8 +122,8 @@ const emit = defineEmits<{ itemClick: [] }>();
 
   &__thumb {
     flex-shrink: 0;
-    width: 44px;
-    height: 44px;
+    width: 52px;
+    height: 52px;
     border-radius: 9px;
     overflow: hidden;
     background: #f3f5f0;

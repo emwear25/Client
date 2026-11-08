@@ -280,8 +280,8 @@ const route = useRoute();
 
   &__thumb {
     flex-shrink: 0;
-    width: 36px;
-    height: 36px;
+    width: 48px;
+    height: 48px;
     border-radius: 8px;
     overflow: hidden;
     background: rgba($brand, 0.08);
