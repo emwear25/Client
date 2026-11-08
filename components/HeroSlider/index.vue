@@ -649,6 +649,7 @@ const slides = ref([
   {
     id: 1,
     image: "/img/slider/bags-kids.webp",
+    mobileImage: "/img/slider/bags-kids-mobile.webp",
   },
   {
     id: 2,
