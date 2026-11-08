@@ -47,7 +47,7 @@ const categories: CategoryPromo[] = [
   { id: 2, title: "Детски халати", image: "/img/banners/banner2.jpg", link: "/category/kid-bathrobes" },
   { id: 3, title: "Кърпи с ушички", image: "/img/banners/banner3.jpg", link: "/category/kids-towels" },
   { id: 4, title: "Кърпи за лице", image: "/img/home/face-towels.webp", link: "/category/personalizirani-kurpi-za-lice" },
-  { id: 5, title: "Ключодържатели", image: "/img/home/keychains.webp", link: "/category/keychains" },
+  { id: 5, title: "Ключодържатели", image: "/img/home/keychains-card.webp", link: "/category/keychains" },
   { id: 6, title: "Плюшени играчки", image: "/img/home/plush-toys.webp", link: "/category/personalizirani-plusheni-igrachki" },
   { id: 7, title: "Персонализирани гергефи", image: "/img/banners/banner4.jpg", link: "/category/personalizirani-gergefi" },
   { id: 8, title: "Муселинови одеяла", image: "/img/banners/blankets-promo.jpg", link: "/category/kids-blankets" },
