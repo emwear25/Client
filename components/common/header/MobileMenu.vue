@@ -65,7 +65,7 @@
             }"
             @click="emit('close')"
           >
-            Намаления
+            Промоции
           </NuxtLink>
         </li>
         <li class="mobile-menu__nav-item">

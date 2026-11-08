@@ -20,7 +20,7 @@
         Всички продукти →
       </NuxtLink>
       <NuxtLink to="/sales" class="mega__foot-link mega__foot-link--sale" @click="emit('itemClick')">
-        Намаления
+        Промоции
       </NuxtLink>
     </div>
   </div>

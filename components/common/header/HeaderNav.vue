@@ -54,7 +54,7 @@
             'site-header__nav-link--active': route.path.startsWith('/sales'),
           }"
         >
-          Намаления
+          Промоции
         </NuxtLink>
       </li>
       <li class="site-header__nav-item">

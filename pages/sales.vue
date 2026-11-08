@@ -3,12 +3,15 @@
     <!-- Hero Section - FULL WIDTH -->
     <div class="hero-sales">
       <div class="container">
-        <h1 class="hero-sales__title">Намаления</h1>
+        <h1 class="hero-sales__title">Промоции</h1>
         <p class="hero-sales__subtitle">
           Открийте най-добрите оферти на наши персонализирани бродирани изделия
         </p>
       </div>
     </div>
+
+    <!-- Black Friday bundle offers -->
+    <BlackFridayBanner />
 
     <!-- Toolbar (Sort only) -->
     <div class="container sales-toolbar">
@@ -127,7 +130,7 @@ import { usePageSEO } from "~/composables/useSEO";
 import { useInfiniteScroll } from "~/composables/useInfiniteScroll";
 
 usePageSEO({
-  title: "Намаления",
+  title: "Промоции",
   description:
     "Открийте най-добрите оферти на наши персонализирани бродирани изделия с отстъпки. Специални цени за ограничено време!",
   type: "website",
