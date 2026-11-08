@@ -50,7 +50,7 @@ const categories: CategoryPromo[] = [
   { id: 5, title: "Ключодържатели", image: "/img/home/keychains-card.webp", link: "/category/keychains" },
   { id: 6, title: "Плюшени играчки", image: "/img/home/plush-toys.webp", link: "/category/personalizirani-plusheni-igrachki" },
   { id: 7, title: "Персонализирани гергефи", image: "/img/banners/banner4.jpg", link: "/category/personalizirani-gergefi" },
-  { id: 8, title: "Муселинови одеяла", image: "/img/banners/blankets-promo.jpg", link: "/category/kids-blankets" },
+  { id: 8, title: "Муселинови одеяла", image: "/img/home/blankets-card.webp", link: "/category/kids-blankets" },
 ];
 </script>
 
