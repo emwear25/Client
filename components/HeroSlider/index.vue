@@ -10,10 +10,7 @@
         disableOnInteraction: false,
         pauseOnMouseEnter: true,
       }"
-      :pagination="{
-        clickable: true,
-        renderBullet: renderCustomBullet,
-      }"
+      :pagination="false"
       :navigation="{
         nextEl: '.hero-slider__nav--next',
         prevEl: '.hero-slider__nav--prev',
@@ -37,7 +34,7 @@
         <!-- Mobile: Full width image background -->
         <div
           class="hero-slider__mobile-bg"
-          :style="{ backgroundImage: `url(${slides[0].image})` }"
+          :style="{ backgroundImage: `url(${slides[0].mobileImage || slides[0].image})` }"
         />
 
         <!-- Desktop: Diagonal split image -->
@@ -148,7 +145,7 @@
         <!-- Mobile: Full width image background -->
         <div
           class="hero-slider__mobile-bg"
-          :style="{ backgroundImage: `url(${slides[1].image})` }"
+          :style="{ backgroundImage: `url(${slides[1].mobileImage || slides[1].image})` }"
         />
 
         <div class="hero-slider__content-zone hero-slider__content-zone--left">
@@ -264,7 +261,7 @@
         <!-- Mobile: Full width image background -->
         <div
           class="hero-slider__mobile-bg"
-          :style="{ backgroundImage: `url(${slides[2].image})` }"
+          :style="{ backgroundImage: `url(${slides[2].mobileImage || slides[2].image})` }"
         />
 
         <!-- Desktop: Diagonal split image -->
@@ -377,7 +374,7 @@
         <!-- Mobile: Full width image background -->
         <div
           class="hero-slider__mobile-bg"
-          :style="{ backgroundImage: `url(${slides[3].image})` }"
+          :style="{ backgroundImage: `url(${slides[3].mobileImage || slides[3].image})` }"
         />
 
         <div class="hero-slider__content-zone hero-slider__content-zone--left">
@@ -491,7 +488,7 @@
         <!-- Mobile: Full width image background -->
         <div
           class="hero-slider__mobile-bg"
-          :style="{ backgroundImage: `url(${slides[4].image})` }"
+          :style="{ backgroundImage: `url(${slides[4].mobileImage || slides[4].image})` }"
         />
 
         <!-- Desktop: Diagonal split image -->
