@@ -62,24 +62,30 @@ button {
   line-height: 1.2;
   text-decoration: none;
   border: 1px solid transparent;
+  letter-spacing: 0.03em;
 
   &--primary {
     background: $brand;
     color: $brand-ink;
-    border-color: $border-base;
-    box-shadow: 0 2px 8px $shadow-soft;
+    border-color: transparent;
+    box-shadow: 0 4px 14px rgba(47, 58, 42, 0.1);
 
     &:hover {
       background: $brand-hover;
+      box-shadow: 0 8px 20px rgba(47, 58, 42, 0.16);
+      transform: translateY(-2px);
     }
 
     &:active {
-      transform: translateY(1px);
+      transform: translateY(0);
+      box-shadow: 0 2px 8px rgba(47, 58, 42, 0.12);
     }
 
     &:disabled {
       opacity: 0.5;
       cursor: not-allowed;
+      box-shadow: none;
+      transform: none;
     }
   }
 

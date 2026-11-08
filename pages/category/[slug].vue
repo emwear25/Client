@@ -3,6 +3,7 @@
     <!-- Hero Section -->
     <div class="hero-category">
       <div class="container">
+        <span class="hero-category__eyebrow">Колекция</span>
         <h1 class="hero-category__title">{{ categoryDisplayName }}</h1>
         <p v-if="category" class="hero-category__subtitle">
           Разгледайте нашите {{ category.displayName.toLowerCase() }}
@@ -551,14 +552,25 @@ watchEffect(() => {
     padding: 4rem 0;
   }
 
+  &__eyebrow {
+    display: block;
+    font-family: "Inter", sans-serif;
+    font-size: 12px;
+    font-weight: 500;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: $brand-hover;
+    margin-bottom: 0.9rem;
+  }
+
   &__title {
     font-family: "Outfit", sans-serif;
-    font-size: 56px;
+    font-size: clamp(32px, 7vw, 56px);
     font-weight: 300;
     color: $brand-ink;
     margin: 0 0 0.75rem;
-    letter-spacing: 0.01em;
-    line-height: 60px;
+    letter-spacing: -0.01em;
+    line-height: 1.08;
   }
 
   &__subtitle {

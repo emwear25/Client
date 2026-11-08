@@ -366,10 +366,12 @@ const getColorHexValue = (color: string | ColorObject | null | undefined): strin
   width: 100%;
 
   &:hover {
-    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 10px 28px rgba(47, 58, 42, 0.1);
+    border-color: rgba(185, 198, 170, 0.6);
+    transform: translateY(-3px);
 
     .product-card__img {
-      transform: scale(1.02);
+      transform: scale(1.04);
     }
 
     // Show quick view button on hover (desktop only)
@@ -618,7 +620,7 @@ const getColorHexValue = (color: string | ColorObject | null | undefined): strin
   }
 
   &__body {
-    padding: 12px 8px;
+    padding: 16px 12px 14px;
     flex: 1;
     display: flex;
     flex-direction: column;
