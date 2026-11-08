@@ -24,7 +24,7 @@
 @use "~/assets/styles/fonts" as *;
 
 .topbar {
-  background: #6c8474;
+  background: #5f7467;
   border-bottom: none;
   font-family: $font-body;
   font-size: 0.875rem;
@@ -90,8 +90,10 @@
 
   &__info {
     color: white;
-    font-weight: 500;
+    font-family: $font-ui;
+    font-weight: 400;
     font-size: 0.8125rem;
+    letter-spacing: 0.08em;
 
     @media (max-width: 767px) {
       font-size: 0.75rem;
@@ -100,13 +102,13 @@
 
   &__promo {
     color: white;
-    font-weight: 500;
-    font-family: $font-heading;
-    font-size: 0.9375rem;
-    letter-spacing: 0.01em;
+    font-weight: 400;
+    font-family: $font-ui;
+    font-size: 0.8125rem;
+    letter-spacing: 0.08em;
 
     @media (max-width: 767px) {
-      font-size: 0.875rem;
+      font-size: 0.75rem;
     }
   }
 

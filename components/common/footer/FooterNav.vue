@@ -222,14 +222,14 @@ const legalLinks: NavigationLink[] = [
   }
 
   &__heading {
-    font-family: $font-body;
-    font-weight: 700;
-    font-size: 13px;
+    font-family: $font-ui;
+    font-weight: 500;
+    font-size: 12px;
     line-height: 16px;
-    color: rgb(255, 255, 255);
-    margin: 0 0 1.5rem 0;
+    color: rgba(185, 198, 170, 0.95);
+    margin: 0 0 1.4rem 0;
     text-transform: uppercase;
-    letter-spacing: 0.05em;
+    letter-spacing: 0.18em;
   }
 
   &__list {

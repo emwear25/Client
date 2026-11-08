@@ -42,12 +42,12 @@ const closeMenu = () => {
   position: sticky;
   top: 0;
   z-index: 100;
-  box-shadow: 0 4px 12px $shadow-soft;
+  box-shadow: 0 1px 10px rgba(0, 0, 0, 0.04);
 }
 
 .site-header {
   background: $color-white;
-  border-bottom: 2px solid $brand;
+  border-bottom: 1px solid rgba(185, 198, 170, 0.45);
   height: 78px;
 
   @include up(md) {
