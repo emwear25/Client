@@ -13,7 +13,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from "vue";
+import { ref, watch, onBeforeUnmount } from "vue";
 import TopBar from "./TopBar.vue";
 import HeaderLogo from "./HeaderLogo.vue";
 import HeaderNav from "./HeaderNav.vue";
@@ -22,6 +22,15 @@ import MobileMenu from "./MobileMenu.vue";
 
 // Mobile menu state
 const menuOpen = ref(false);
+
+// Lock the page behind the menu so only the menu scrolls while it's open.
+const setBodyLock = (locked: boolean) => {
+  if (!import.meta.client) return;
+  document.body.style.overflow = locked ? "hidden" : "";
+};
+
+watch(menuOpen, (open) => setBodyLock(open));
+onBeforeUnmount(() => setBodyLock(false));
 
 // Toggle mobile menu
 const toggleMenu = () => {

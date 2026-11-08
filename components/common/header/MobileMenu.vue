@@ -151,6 +151,7 @@ const route = useRoute();
   top: 0;
   right: 0;
   height: 100vh;
+  height: 100dvh;
   width: 100%;
   max-width: 320px;
   background: $bg-card;
@@ -160,6 +161,8 @@ const route = useRoute();
   visibility: hidden;
   transition: all 0.3s ease;
   box-shadow: -4px 0 20px $shadow-med;
+  display: flex;
+  flex-direction: column;
 
   @media (min-width: 768px) {
     display: none;
@@ -176,6 +179,7 @@ const route = useRoute();
     border-bottom: 2px solid $brand;
     display: flex;
     justify-content: flex-end;
+    flex-shrink: 0;
   }
 
   &__close {
@@ -207,6 +211,11 @@ const route = useRoute();
 
   &__nav {
     padding: 1rem 0;
+    flex: 1 1 auto;
+    min-height: 0;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior: contain;
 
     &-list {
       list-style: none;
@@ -298,6 +307,7 @@ const route = useRoute();
     padding: 1rem;
     border-top: 1px solid $border-base;
     margin-top: auto;
+    flex-shrink: 0;
   }
 
   &__action-link {
