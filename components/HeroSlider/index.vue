@@ -651,7 +651,7 @@ const contentCard = ref<HTMLElement | null>(null);
 const slides = ref([
   {
     id: 1,
-    image: "/img/slider/bags.png",
+    image: "/img/slider/bags-kids.webp",
   },
   {
     id: 2,
