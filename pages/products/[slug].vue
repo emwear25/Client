@@ -186,43 +186,6 @@
                 </div>
               </div>
 
-              <!-- Black Friday note — only the bundle relevant to this product -->
-              <div
-                v-if="bfDeal"
-                style="
-                  margin: 0.75rem 0;
-                  padding: 0.6rem 0.9rem;
-                  border: 1px solid rgba(231, 200, 115, 0.5);
-                  background: linear-gradient(90deg, #2f3a2a, #1b2119);
-                  border-radius: 10px;
-                  display: flex;
-                  flex-wrap: wrap;
-                  align-items: center;
-                  gap: 6px 10px;
-                "
-              >
-                <span
-                  style="
-                    color: #e7c873;
-                    font-weight: 800;
-                    font-size: 0.72rem;
-                    letter-spacing: 0.1em;
-                  "
-                  >⚡ BLACK FRIDAY</span
-                >
-                <span
-                  v-if="bfDeal === 'bath'"
-                  style="color: rgba(255, 255, 255, 0.9); font-size: 0.8rem"
-                >
-                  Халат + една кърпа <strong style="color: #e7c873">−15%</strong>, с двете кърпи
-                  <strong style="color: #e7c873">−20%</strong> — автоматично в количката
-                </span>
-                <span v-else style="color: rgba(255, 255, 255, 0.9); font-size: 0.8rem">
-                  Раница + ключодържател <strong style="color: #e7c873">−10%</strong> — автоматично в
-                  количката
-                </span>
-              </div>
-
               <!-- Stock Status -->
               <div v-if="currentStock > 0" class="pdp-stock pdp-stock--in">Налично</div>
               <div v-else class="pdp-stock pdp-stock--out">Не е Налично</div>
@@ -516,7 +479,7 @@
                     <circle cx="5.5" cy="18.5" r="2.5" />
                     <circle cx="18.5" cy="18.5" r="2.5" />
                   </svg>
-                  <span>Безплатна доставка над €60</span>
+                  <span>Безплатна доставка над €80</span>
                 </div>
                 <div class="pdp-trust__item">
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -647,7 +610,7 @@
               <div class="pdp-shipping">
                 <div class="pdp-shipping__item">
                   <strong>Безплатна доставка</strong>
-                  <p>За поръчки над €60 с Еконт или Спиди</p>
+                  <p>За поръчки над €80 с Еконт или Спиди</p>
                 </div>
                 <div class="pdp-shipping__item">
                   <strong>Време за доставка</strong>
@@ -944,19 +907,6 @@ const pricedOptionsTotal = computed(() => {
     }
   }
   return total;
-});
-
-// Black Friday: which bundle note (if any) is relevant to this product's category.
-const bfDeal = computed(() => {
-  const cat = product.value?.category as any;
-  const slug = cat && typeof cat === "object" ? cat.slug : "";
-  if (["kid-bathrobes", "kids-towels", "personalizirani-kurpi-za-lice"].includes(slug)) {
-    return "bath";
-  }
-  if (["kids-bags", "keychains"].includes(slug)) {
-    return "bag";
-  }
-  return null;
 });
 
 // Computed: Get personalization fields from category

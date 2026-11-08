@@ -10,9 +10,6 @@
       </div>
     </div>
 
-    <!-- Black Friday bundle offers -->
-    <BlackFridayBanner />
-
     <!-- Toolbar (Sort only) -->
     <div class="container sales-toolbar">
       <div class="sales-toolbar__spacer" />
