@@ -4,7 +4,18 @@
       <div class="newsletter__content">
         <div class="newsletter__visual">
           <div class="newsletter__icon-wrapper">
-            <Icon name="mdi:email-heart-outline" class="newsletter__icon" />
+            <svg
+              class="newsletter__icon"
+              viewBox="0 0 24 24"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+              aria-hidden="true"
+            >
+              <path
+                d="M12 21s-7.2-4.5-9.6-9C1 9 2.5 5.5 6 5.5c2 0 3.2 1.1 4 2.3.8-1.2 2-2.3 4-2.3 3.5 0 5 3.5 3.6 6.5C19.2 16.5 12 21 12 21z"
+                fill="currentColor"
+              />
+            </svg>
           </div>
         </div>
         <div class="newsletter__text">

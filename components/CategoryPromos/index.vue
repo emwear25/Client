@@ -1,130 +1,40 @@
 <template>
   <section class="category-promos">
     <div class="category-promos__container">
-      <!-- Desktop: Grid Layout -->
-      <div class="category-promos__grid">
-        <div
-          v-for="(category, index) in categories"
-          :key="category.id"
-          class="category-promos__card"
-          :class="`category-promos__card--${index + 1}`"
-        >
-          <div class="category-promos__card-inner">
-            <!-- Background Image -->
-            <div class="category-promos__image-wrapper">
-              <img
-                :src="category.image"
-                :alt="category.title"
-                class="category-promos__image"
-                width="800"
-                height="600"
-                loading="eager"
-                fetchpriority="high"
-              />
-              <!-- Dark Overlay -->
-              <div class="category-promos__overlay"/>
-            </div>
-
-            <!-- Content -->
-            <div class="category-promos__content" :class="`category-promos__content--${index + 1}`">
-              <h3 class="category-promos__title">{{ category.title }}</h3>
-              <NuxtLink :to="category.link" class="category-promos__button">
-                {{ "Купи сега" }}
-              </NuxtLink>
-            </div>
-          </div>
-        </div>
+      <div class="category-promos__header">
+        <h2 class="category-promos__heading">Разгледай по категория</h2>
+        <p class="category-promos__sub">Персонализирани с име и любим герой</p>
       </div>
 
-      <!-- Desktop: Full-width muslin blankets banner below the grid -->
-      <div class="category-promos__card category-promos__banner">
-        <div class="category-promos__card-inner">
+      <div class="category-promos__grid">
+        <NuxtLink
+          v-for="category in categories"
+          :key="category.id"
+          :to="category.link"
+          class="category-promos__card"
+        >
           <div class="category-promos__image-wrapper">
             <img
-              :src="blanketsPromo.image"
-              :alt="blanketsPromo.title"
+              :src="category.image"
+              :alt="category.title"
               class="category-promos__image"
-              width="1822"
-              height="863"
+              width="800"
+              height="600"
               loading="lazy"
             />
-            <div class="category-promos__overlay"/>
+            <div class="category-promos__overlay" />
           </div>
           <div class="category-promos__content">
-            <h3 class="category-promos__title">{{ blanketsPromo.title }}</h3>
-            <NuxtLink :to="blanketsPromo.link" class="category-promos__button">
-              {{ "Купи сега" }}
-            </NuxtLink>
+            <h3 class="category-promos__title">{{ category.title }}</h3>
+            <span class="category-promos__button">Купи сега</span>
           </div>
-        </div>
-      </div>
-
-      <!-- Mobile: Slider -->
-      <div class="category-promos__slider">
-        <Swiper
-          :modules="modules"
-          :slides-per-view="1.2"
-          :space-between="16"
-          :loop="false"
-          :grab-cursor="true"
-          :breakpoints="{
-            480: {
-              slidesPerView: 1.5,
-              spaceBetween: 20,
-            },
-            640: {
-              slidesPerView: 2,
-              spaceBetween: 24,
-            },
-          }"
-          class="category-promos__swiper"
-        >
-          <SwiperSlide
-            v-for="category in [...categories, blanketsPromo]"
-            :key="category.id"
-            class="category-promos__slide"
-          >
-            <div class="category-promos__card-inner">
-              <!-- Background Image -->
-              <div class="category-promos__image-wrapper">
-                <img
-                :src="category.image"
-                :alt="category.title"
-                class="category-promos__image"
-                width="800"
-                height="600"
-                loading="eager"
-                fetchpriority="high"
-              />
-                <!-- Dark Overlay -->
-                <div class="category-promos__overlay"/>
-              </div>
-
-              <!-- Content -->
-              <div
-                class="category-promos__content"
-                :class="`category-promos__content--${category.id}`"
-              >
-                <h3 class="category-promos__title">{{ category.title }}</h3>
-                <NuxtLink :to="category.link" class="category-promos__button">
-                  {{ category.id === 1 || category.id === 2 ? "Купи сега" : "Shop Now" }}
-                </NuxtLink>
-              </div>
-            </div>
-          </SwiperSlide>
-        </Swiper>
+        </NuxtLink>
       </div>
     </div>
   </section>
 </template>
 
 <script setup lang="ts">
-import { Swiper, SwiperSlide } from "swiper/vue";
-import { Navigation, Pagination, Autoplay } from "swiper/modules";
-import "swiper/css";
-import "swiper/css/navigation";
-import "swiper/css/pagination";
-
 interface CategoryPromo {
   id: number;
   title: string;
@@ -132,42 +42,16 @@ interface CategoryPromo {
   link: string;
 }
 
-const modules = [Navigation, Pagination, Autoplay];
-
 const categories: CategoryPromo[] = [
-  {
-    id: 1,
-    title: "Детски ранички",
-    image: "/img/banners/banner1.jpg",
-    link: "/category/kids-bags",
-  },
-  {
-    id: 2,
-    title: "Халати",
-    image: "/img/banners/banner2.jpg",
-    link: "/category/kid-bathrobes",
-  },
-  {
-    id: 3,
-    title: "Кърпи с ушички",
-    image: "/img/banners/banner3.jpg",
-    link: "/category/kids-towels",
-  },
-  {
-    id: 4,
-    title: "Персонализирани Гергефи",
-    image: "/img/banners/banner4.jpg",
-    link: "/category/personalizirani-gergefi",
-  },
+  { id: 1, title: "Детски раници", image: "/img/banners/banner1.jpg", link: "/category/kids-bags" },
+  { id: 2, title: "Детски халати", image: "/img/banners/banner2.jpg", link: "/category/kid-bathrobes" },
+  { id: 3, title: "Кърпи с ушички", image: "/img/banners/banner3.jpg", link: "/category/kids-towels" },
+  { id: 4, title: "Кърпи за лице", image: "/img/home/face-towels.webp", link: "/category/personalizirani-kurpi-za-lice" },
+  { id: 5, title: "Ключодържатели", image: "/img/home/keychains.webp", link: "/category/keychains" },
+  { id: 6, title: "Плюшени играчки", image: "/img/home/plush-toys.webp", link: "/category/personalizirani-plusheni-igrachki" },
+  { id: 7, title: "Персонализирани гергефи", image: "/img/banners/banner4.jpg", link: "/category/personalizirani-gergefi" },
+  { id: 8, title: "Муселинови одеяла", image: "/img/banners/blankets-promo.jpg", link: "/category/kids-blankets" },
 ];
-
-// Full-width banner below the grid (5th slide in the mobile slider)
-const blanketsPromo: CategoryPromo = {
-  id: 5,
-  title: "Персонализирани муселинови одеяла",
-  image: "/img/banners/blankets-promo.jpg",
-  link: "/category/kids-blankets",
-};
 </script>
 
 <style lang="scss" scoped>
@@ -190,131 +74,70 @@ const blanketsPromo: CategoryPromo = {
     }
   }
 
-  // Desktop Grid
+  &__header {
+    text-align: center;
+    margin-bottom: 2rem;
+  }
+
+  &__heading {
+    font-family: "Outfit", sans-serif;
+    font-size: clamp(26px, 4vw, 38px);
+    font-weight: 300;
+    color: #2f3a2a;
+    margin: 0 0 0.4rem;
+  }
+
+  &__sub {
+    font-size: 15px;
+    color: #7a7a7a;
+    margin: 0;
+  }
+
   &__grid {
-    display: none;
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1.25rem;
 
-    @media (min-width: 768px) {
-      display: grid;
+    @media (min-width: 560px) {
+      grid-template-columns: repeat(2, 1fr);
+    }
+
+    @media (min-width: 992px) {
       grid-template-columns: repeat(3, 1fr);
-      grid-template-rows: repeat(2, 1fr);
-      gap: 1.5rem;
-      height: 600px;
-    }
-
-    @media (min-width: 1024px) {
-      gap: 2rem;
-      height: 650px;
+      gap: 1.75rem;
     }
   }
 
-  // Full-width blankets banner (desktop only; part of the slider on mobile)
-  &__banner {
-    display: none;
-
-    @media (min-width: 768px) {
-      display: block;
-      margin-top: 1.5rem;
-      height: 480px;
-    }
-
-    @media (min-width: 1024px) {
-      margin-top: 2rem;
-      height: 560px;
-    }
-  }
-
-  // Mobile Slider
-  &__slider {
-    display: block;
-    width: 100%;
-
-    @media (min-width: 768px) {
-      display: none;
-    }
-  }
-
-  &__swiper {
-    padding: 0.5rem 0 2rem;
-    overflow: visible;
-  }
-
-  &__slide {
-    height: auto;
-  }
-
-  // Card Styles
   &__card {
     position: relative;
+    display: block;
     overflow: hidden;
-    cursor: pointer;
-    width: 100%;
-    transition:
-      transform 0.3s ease,
-      box-shadow 0.3s ease;
+    border-radius: 14px;
+    aspect-ratio: 4 / 3;
+    text-decoration: none;
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.06);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
 
     &:hover {
       transform: translateY(-4px);
-      box-shadow: 0 12px 32px rgba(0, 0, 0, 0.15);
+      box-shadow: 0 14px 34px rgba(0, 0, 0, 0.14);
 
       .category-promos__overlay {
-        background: rgba(0, 0, 0, 0.55);
+        background: rgba(0, 0, 0, 0.42);
       }
-
+      .category-promos__image {
+        transform: scale(1.05);
+      }
       .category-promos__button {
         background: #2f3a2a;
-        transform: translateY(-2px);
+        color: #fff;
       }
-    }
-
-    // Grid positioning: Row 1 - 1/3 and 2/3, Row 2 - 2/3 and 1/3
-    &--1 {
-      @media (min-width: 768px) {
-        grid-column: 1 / 2;
-        grid-row: 1;
-      }
-    }
-
-    &--2 {
-      @media (min-width: 768px) {
-        grid-column: 2 / 4;
-        grid-row: 1;
-      }
-    }
-
-    &--3 {
-      @media (min-width: 768px) {
-        grid-column: 1 / 3;
-        grid-row: 2;
-      }
-    }
-
-    &--4 {
-      @media (min-width: 768px) {
-        grid-column: 3 / 4;
-        grid-row: 2;
-      }
-    }
-  }
-
-  &__card-inner {
-    position: relative;
-    width: 100%;
-    height: 100%;
-    min-height: 280px;
-    overflow: hidden;
-
-    @media (min-width: 768px) {
-      min-height: 100%;
     }
   }
 
   &__image-wrapper {
     position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
+    inset: 0;
     z-index: 1;
   }
 
@@ -323,86 +146,52 @@ const blanketsPromo: CategoryPromo = {
     height: 100%;
     object-fit: cover;
     display: block;
-    // Ensure images load immediately
-    opacity: 1;
-    transition: opacity 0.3s ease;
-    
-    // Fallback if image fails to load
-    &[src=""],
-    &:not([src]) {
-      opacity: 0;
-    }
+    transition: transform 0.5s ease;
   }
 
   &__overlay {
     position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0, 0, 0, 0.5);
+    inset: 0;
     z-index: 2;
+    background: linear-gradient(to top, rgba(0, 0, 0, 0.55) 0%, rgba(0, 0, 0, 0.12) 55%, rgba(0, 0, 0, 0.05) 100%);
     transition: background 0.3s ease;
   }
 
   &__content {
     position: absolute;
-    bottom: 2rem;
-    right: 2rem;
+    left: 0;
+    right: 0;
+    bottom: 1.25rem;
     z-index: 3;
     display: flex;
     flex-direction: column;
-    align-items: flex-end;
-    gap: 1rem;
-    width: auto;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0 1rem;
   }
 
   &__title {
     font-family: "Outfit", sans-serif;
-    font-size: 30px;
-    font-weight: 300;
-    color: #fefefe;
+    font-size: clamp(20px, 2.4vw, 26px);
+    font-weight: 400;
+    color: #fff;
     margin: 0;
-    padding: 0;
-    text-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
-    line-height: 1.2;
+    text-align: center;
+    text-shadow: 0 2px 10px rgba(0, 0, 0, 0.35);
   }
 
   &__button {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    padding: 0.75rem 1.5rem;
-    background: #2e2e2e;
-    color: #ffffff;
-    font-family:
-      system-ui,
-      -apple-system,
-      "Segoe UI",
-      "Roboto",
-      "Helvetica Neue",
-      "Noto Sans",
-      "Liberation Sans",
-      Arial,
-      sans-serif;
+    padding: 0.6rem 1.4rem;
+    background: rgba(255, 255, 255, 0.95);
+    color: #2f3a2a;
+    font-family: system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
     font-size: 13px;
-    font-weight: 400;
-    text-decoration: none;
-    text-align: center;
+    font-weight: 600;
+    border-radius: 999px;
     transition: all 0.3s ease;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
-    margin: 0;
-    width: auto;
-
-    &:hover {
-      background: #1a1a1a;
-      transform: translateY(-2px);
-      box-shadow: 0 6px 16px rgba(0, 0, 0, 0.3);
-    }
-
-    &:active {
-      transform: translateY(0);
-    }
   }
 }
 </style>

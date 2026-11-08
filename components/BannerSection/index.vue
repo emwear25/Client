@@ -2,17 +2,17 @@
   <section class="banner-section">
     <div
       class="banner-section__background"
-      :style="{ backgroundImage: `url('/img/banners/banner5.jpg')` }"
+      :style="{ backgroundImage: `url('/img/home/bag-keychain-set.webp')` }"
     />
     <div class="banner-section__overlay" />
     <div class="banner-section__container">
       <div class="banner-section__content">
-        <h2 class="banner-section__title">Дрехи с бродерия и без бродерия</h2>
+        <h2 class="banner-section__title">Раница + ключодържател в комплект</h2>
         <p class="banner-section__subtitle">
-          Изберете между персонализирани бродирани дрехи или класически модели без бродерия. Всички
-          наши продукти са изработени с внимание към детайла и качеството.
+          Към всяка раничка добавете подходящ персонализиран ключодържател с името на детето –
+          малкото допълнение, което прави подаръка завършен.
         </p>
-        <NuxtLink to="/products" class="banner-section__button"> Разгледай колекцията </NuxtLink>
+        <NuxtLink to="/category/keychains" class="banner-section__button"> Виж ключодържателите </NuxtLink>
       </div>
     </div>
   </section>

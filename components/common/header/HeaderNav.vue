@@ -44,7 +44,7 @@
           </svg>
         </button>
 
-        <NavDropdown :is-open="isProductsOpen" :items="dropdownItems" @item-click="closeDropdown" />
+        <NavDropdown :is-open="isProductsOpen" :groups="productGroups" @item-click="closeDropdown" />
       </li>
       <li class="site-header__nav-item">
         <NuxtLink
@@ -96,25 +96,12 @@
 
 <script setup lang="ts">
 import { useRoute } from "vue-router";
-import { useApi } from "~/composables/useApi";
-
-interface Category {
-  _id: string;
-  name: string;
-  slug: string;
-  displayName: string;
-  productCount?: number;
-}
 
 // Get current route for active link highlighting
 const route = useRoute();
 
 // Dropdown state
 const isProductsOpen = ref(false);
-
-// Use shared categories composable to prevent duplicate requests
-const { categories: categoriesWithProducts, fetchCategories, categoryTree, fetchCategoryTree } =
-  useCategories();
 
 // Toggle dropdown on mobile/touch devices
 const toggleProductsOnMobile = (event: MouseEvent) => {
@@ -129,41 +116,32 @@ const closeDropdown = () => {
   isProductsOpen.value = false;
 };
 
-// Computed dropdown items - two-level tree when available, flat list otherwise
-const dropdownItems = computed(() => {
-  const staticItems = [
-    { label: "Всички продукти", to: "/products" },
-    { label: "Колекции", to: "/collections" },
-  ];
-
-  if (categoryTree.value.length > 0) {
-    return [
-      ...staticItems,
-      ...categoryTree.value.map((root: any) => ({
-        label: root.displayName,
-        to: `/category/${root.slug}`,
-        children: (root.children || []).map((child: any) => ({
-          label: child.displayName,
-          to: `/category/${child.slug}`,
-        })),
-      })),
-    ];
-  }
-
-  return [
-    ...staticItems,
-    ...categoriesWithProducts.value.map((c) => ({
-      label: c.displayName,
-      to: `/category/${c.slug}`,
-    })),
-  ];
-});
-
-// Fetch on mount
-onMounted(() => {
-  fetchCategories(true);
-  fetchCategoryTree();
-});
+// Curated mega-menu groups with thumbnails (excludes empty categories)
+const productGroups = [
+  {
+    title: "Раници",
+    items: [
+      { label: "Детски раници", to: "/category/kids-bags", image: "/img/banners/banner1.jpg" },
+    ],
+  },
+  {
+    title: "Текстил за баня",
+    items: [
+      { label: "Детски халати", to: "/category/kid-bathrobes", image: "/img/banners/banner2.jpg" },
+      { label: "Кърпи за лице", to: "/category/personalizirani-kurpi-za-lice", image: "/img/home/face-towels.webp" },
+      { label: "Кърпи с ушички", to: "/category/kids-towels", image: "/img/banners/banner3.jpg" },
+      { label: "Муселинови одеяла", to: "/category/kids-blankets", image: "/img/banners/blankets-promo.jpg" },
+    ],
+  },
+  {
+    title: "Аксесоари и подаръци",
+    items: [
+      { label: "Ключодържатели", to: "/category/keychains", image: "/img/home/keychains.webp" },
+      { label: "Плюшени играчки", to: "/category/personalizirani-plusheni-igrachki", image: "/img/home/plush-toys.webp" },
+      { label: "Гергефи", to: "/category/personalizirani-gergefi", image: "/img/banners/banner4.jpg" },
+    ],
+  },
+];
 </script>
 
 <style scoped lang="scss">
