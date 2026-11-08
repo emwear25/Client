@@ -1,6 +1,7 @@
 <template>
   <div class="home-page">
     <HeroSlider />
+    <BlackFridayBanner />
     <PromoBanner />
     <CategoryPromos />
     <FeaturedProducts />

@@ -186,6 +186,36 @@
                 </div>
               </div>
 
+              <!-- Black Friday bundle note -->
+              <div
+                style="
+                  margin: 0.75rem 0;
+                  padding: 0.6rem 0.9rem;
+                  border: 1px solid rgba(231, 200, 115, 0.5);
+                  background: linear-gradient(90deg, #2f3a2a, #1b2119);
+                  border-radius: 10px;
+                  display: flex;
+                  flex-wrap: wrap;
+                  align-items: center;
+                  gap: 6px 10px;
+                "
+              >
+                <span
+                  style="
+                    color: #e7c873;
+                    font-weight: 800;
+                    font-size: 0.72rem;
+                    letter-spacing: 0.1em;
+                  "
+                  >⚡ BLACK FRIDAY</span
+                >
+                <span style="color: rgba(255, 255, 255, 0.9); font-size: 0.8rem">
+                  Комплект халат + кърпа <strong style="color: #e7c873">−20%</strong> · Раница +
+                  ключодържател <strong style="color: #e7c873">−10%</strong> — автоматично в
+                  количката
+                </span>
+              </div>
+
               <!-- Stock Status -->
               <div v-if="currentStock > 0" class="pdp-stock pdp-stock--in">Налично</div>
               <div v-else class="pdp-stock pdp-stock--out">Не е Налично</div>

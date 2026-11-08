@@ -1,21 +1,20 @@
 <template>
   <div class="topbar">
     <div class="topbar__container">
-      <!-- Left side - Shipping info -->
-      <div class="topbar__left">
-        <span class="topbar__info"> Безплатна доставка над €60 </span>
-      </div>
-
-      <!-- Center - Main promotional text -->
-      <div class="topbar__center">
-        <span class="topbar__promo"> Персонализирани бродирани изделия с любов ✨ </span>
-      </div>
+      <span class="topbar__bf">⚡ BLACK FRIDAY</span>
+      <span class="topbar__deals">
+        Комплект халат + кърпа <strong>−20%</strong>
+        <span class="topbar__dot">·</span>
+        Раница + ключодържател <strong>−10%</strong>
+        <span class="topbar__dot">·</span>
+        Безплатна доставка над <strong>€60</strong>
+      </span>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-// No props or logic needed for this static component
+// Black Friday announcement bar (shows on every page).
 </script>
 
 <style scoped lang="scss">
@@ -24,97 +23,60 @@
 @use "~/assets/styles/fonts" as *;
 
 .topbar {
-  background: #5f7467;
-  border-bottom: none;
-  font-family: $font-body;
-  font-size: 0.875rem;
-  color: white;
+  background: linear-gradient(90deg, #1b2119 0%, #2f3a2a 100%);
+  color: #fff;
+  font-family: $font-ui;
 
   &__container {
     width: 100%;
     margin-inline: auto;
-    padding-inline: 16px;
+    padding: 8px 16px;
     display: flex;
     align-items: center;
-    justify-content: space-between;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 6px 12px;
     min-height: 40px;
+    text-align: center;
 
     @include up(md) {
-      max-width: 1104px;
-      padding-inline: 20px;
-    }
-    @include up(lg) {
       max-width: 1472px;
       padding-inline: 24px;
     }
-    @include up(xl) {
-      max-width: 1656px;
-      padding-inline: 32px;
-    }
   }
 
-  &__content {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    width: 100%;
-    gap: 1rem;
-
-    @media (max-width: 767px) {
-      flex-direction: column;
-      justify-content: center;
-    }
-  }
-
-  &__left {
-    flex: 0 0 auto;
-
-    @media (max-width: 767px) {
-      display: none;
-    }
-  }
-
-  &__center {
-    flex: 0 0 auto;
-    margin-left: auto;
-    text-align: right;
-
-    @media (max-width: 767px) {
-      margin-left: 0;
-    }
-  }
-
-  &__right {
-    display: none;
-  }
-
-  &__info {
-    color: white;
-    font-family: $font-ui;
-    font-weight: 400;
+  &__bf {
+    font-weight: 800;
     font-size: 0.8125rem;
-    letter-spacing: 0.08em;
+    letter-spacing: 0.1em;
+    color: #e7c873;
+    white-space: nowrap;
 
     @media (max-width: 767px) {
       font-size: 0.75rem;
     }
   }
 
-  &__promo {
-    color: white;
+  &__deals {
     font-weight: 400;
-    font-family: $font-ui;
     font-size: 0.8125rem;
-    letter-spacing: 0.08em;
+    letter-spacing: 0.03em;
+    color: rgba(255, 255, 255, 0.92);
+
+    strong {
+      color: #e7c873;
+      font-weight: 700;
+    }
 
     @media (max-width: 767px) {
-      font-size: 0.75rem;
+      font-size: 0.6875rem;
+      line-height: 1.5;
     }
   }
 
-  &__contact {
-    color: $text-secondary;
-    font-size: 0.8125rem;
+  &__dot {
+    color: rgba(255, 255, 255, 0.4);
+    margin: 0 2px;
   }
 }
 </style>
