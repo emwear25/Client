@@ -226,28 +226,30 @@ const testimonials: Testimonial[] = [
 
   &__eyebrow {
     display: inline-block;
-    font-family: $font-body;
-    font-size: 0.875rem;
-    font-weight: 600;
-    color: $brand;
-    margin-bottom: 1rem;
-    letter-spacing: 0.1em;
+    font-family: $font-ui;
+    font-size: 12px;
+    font-weight: 500;
+    color: $brand-hover;
+    margin-bottom: 0.9rem;
+    letter-spacing: 0.22em;
     text-transform: uppercase;
   }
 
   &__heading {
     font-family: $font-heading;
-    font-weight: 700;
-    font-size: clamp(2rem, 5vw, 2.75rem);
+    font-weight: 300;
+    font-size: clamp(28px, 4.4vw, 44px);
     color: $brand-ink;
-    margin: 0 0 1rem 0;
-    line-height: 1.2;
-    letter-spacing: 0.02em;
+    margin: 0 0 0.6rem 0;
+    line-height: 1.15;
+    letter-spacing: -0.01em;
   }
 
   &__intro {
     font-family: $font-body;
     font-size: 1.0625rem;
+    font-weight: 300;
+    letter-spacing: 0.01em;
     color: $text-secondary;
     line-height: 1.7;
     margin: 0;

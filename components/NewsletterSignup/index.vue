@@ -19,6 +19,7 @@
           </div>
         </div>
         <div class="newsletter__text">
+          <span class="newsletter__eyebrow">Останете близо</span>
           <h2 class="newsletter__heading">Присъединете се към нашето семейство</h2>
           <p class="newsletter__subtext">
             Бъдете първи, които научават за нови колекции, специални оферти и ексклузивни дизайни
@@ -173,20 +174,32 @@ const handleSubmit = async () => {
     }
   }
 
+  &__eyebrow {
+    display: block;
+    font-family: $font-ui;
+    font-size: 12px;
+    font-weight: 500;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: $brand-hover;
+    margin-bottom: 0.9rem;
+  }
+
   &__heading {
     font-family: $font-heading;
-    font-weight: 700;
-    font-size: clamp(1.75rem, 5vw, 2.5rem);
+    font-weight: 300;
+    font-size: clamp(28px, 5vw, 44px);
     color: $brand-ink;
-    margin: 0 0 1rem 0;
-    letter-spacing: 0.02em;
-    line-height: 1.2;
+    margin: 0 0 0.9rem 0;
+    letter-spacing: -0.01em;
+    line-height: 1.15;
   }
 
   &__subtext {
     font-family: $font-body;
-    font-weight: 400;
+    font-weight: 300;
     font-size: 1rem;
+    letter-spacing: 0.01em;
     color: $text-secondary;
     line-height: 1.7;
     max-width: 644px;

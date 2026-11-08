@@ -2,6 +2,7 @@
   <section class="category-promos">
     <div class="category-promos__container">
       <div class="category-promos__header">
+        <span class="category-promos__eyebrow">Нашите колекции</span>
         <h2 class="category-promos__heading">Разгледай по категория</h2>
         <p class="category-promos__sub">Персонализирани с име и любим герой</p>
       </div>
@@ -76,19 +77,39 @@ const categories: CategoryPromo[] = [
 
   &__header {
     text-align: center;
-    margin-bottom: 2rem;
+    margin-bottom: 2.75rem;
+
+    @media (min-width: 768px) {
+      margin-bottom: 3.5rem;
+    }
+  }
+
+  &__eyebrow {
+    display: block;
+    font-family: "Inter", sans-serif;
+    font-size: 12px;
+    font-weight: 500;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: #9eb291;
+    margin-bottom: 0.9rem;
   }
 
   &__heading {
     font-family: "Outfit", sans-serif;
-    font-size: clamp(26px, 4vw, 38px);
+    font-size: clamp(28px, 4.4vw, 44px);
     font-weight: 300;
+    letter-spacing: -0.01em;
+    line-height: 1.15;
     color: #2f3a2a;
-    margin: 0 0 0.4rem;
+    margin: 0 0 0.6rem;
   }
 
   &__sub {
+    font-family: "Roboto", sans-serif;
     font-size: 15px;
+    font-weight: 300;
+    letter-spacing: 0.01em;
     color: #7a7a7a;
     margin: 0;
   }
@@ -184,12 +205,14 @@ const categories: CategoryPromo[] = [
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    padding: 0.6rem 1.4rem;
+    padding: 0.7rem 1.7rem;
     background: rgba(255, 255, 255, 0.95);
     color: #2f3a2a;
-    font-family: system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
-    font-size: 13px;
+    font-family: "Inter", sans-serif;
+    font-size: 12px;
     font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
     border-radius: 999px;
     transition: all 0.3s ease;
   }

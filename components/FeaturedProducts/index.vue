@@ -3,6 +3,7 @@
     <div class="featured-products__container">
       <!-- Section Header -->
       <div class="featured-products__header">
+        <span class="featured-products__eyebrow">Любими на клиентите</span>
         <h2 class="featured-products__title">
           <span class="featured-products__title-accent">Най-търсени</span>
           продукти
@@ -278,26 +279,38 @@ onMounted(() => {
 
   &__header {
     text-align: center;
-    margin-bottom: 2.5rem;
+    margin-bottom: 2.75rem;
 
     @include up(md) {
-      margin-bottom: 3rem;
+      margin-bottom: 3.5rem;
     }
+  }
+
+  &__eyebrow {
+    display: block;
+    font-family: $font-ui;
+    font-size: 12px;
+    font-weight: 500;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: $brand-hover;
+    margin-bottom: 0.9rem;
   }
 
   &__title {
     font-family: $font-heading;
-    font-size: clamp(1.75rem, 4vw, 2.5rem);
-    font-weight: 600;
+    font-size: clamp(28px, 4.4vw, 44px);
+    font-weight: 300;
+    letter-spacing: -0.01em;
     color: $brand-ink;
-    margin: 0 0 0.75rem;
-    line-height: 1.2;
+    margin: 0 0 0.6rem;
+    line-height: 1.15;
   }
 
   &__title-accent {
     color: $brand;
     display: block;
-    font-size: 0.9em;
+    font-weight: 400;
 
     @include up(md) {
       display: inline;
@@ -306,14 +319,16 @@ onMounted(() => {
   }
 
   &__subtitle {
+    font-family: $font-body;
     font-size: 1rem;
+    font-weight: 300;
+    letter-spacing: 0.01em;
     color: $text-secondary;
-    margin: 0;
-    max-width: 400px;
     margin: 0 auto;
+    max-width: 440px;
 
     @include up(md) {
-      font-size: 1.125rem;
+      font-size: 1.0625rem;
     }
   }
 

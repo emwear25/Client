@@ -211,9 +211,9 @@ const features = ref([
     display: flex;
     align-items: center;
     justify-content: center;
-    border: 2px dashed rgba(185, 198, 170, 0.6);
+    border: 1px solid rgba(158, 178, 145, 0.35);
     border-radius: 50%;
-    background: transparent;
+    background: rgba(185, 198, 170, 0.14);
 
     @include up(md) {
       width: 70px;
@@ -228,7 +228,7 @@ const features = ref([
 
   &__icon {
     font-size: 1.5rem;
-    color: rgba(185, 198, 170, 0.8);
+    color: #6e7a6d;
     width: 1em;
     height: 1em;
 
