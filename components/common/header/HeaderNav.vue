@@ -44,7 +44,7 @@
           </svg>
         </button>
 
-        <NavDropdown :is-open="isProductsOpen" :groups="productGroups" @item-click="closeDropdown" />
+        <NavDropdown :is-open="isProductsOpen" :groups="productMenuGroups" @item-click="closeDropdown" />
       </li>
       <li class="site-header__nav-item">
         <NuxtLink
@@ -116,32 +116,8 @@ const closeDropdown = () => {
   isProductsOpen.value = false;
 };
 
-// Curated mega-menu groups with thumbnails (excludes empty categories)
-const productGroups = [
-  {
-    title: "Раници",
-    items: [
-      { label: "Детски раници", to: "/category/kids-bags", image: "/img/banners/banner1.jpg" },
-    ],
-  },
-  {
-    title: "Текстил за баня",
-    items: [
-      { label: "Детски халати", to: "/category/kid-bathrobes", image: "/img/banners/banner2.jpg" },
-      { label: "Кърпи за лице", to: "/category/personalizirani-kurpi-za-lice", image: "/img/home/face-towels.webp" },
-      { label: "Кърпи с ушички", to: "/category/kids-towels", image: "/img/banners/banner3.jpg" },
-      { label: "Муселинови одеяла", to: "/category/kids-blankets", image: "/img/banners/blankets-promo.jpg" },
-    ],
-  },
-  {
-    title: "Аксесоари и подаръци",
-    items: [
-      { label: "Ключодържатели", to: "/category/keychains", image: "/img/home/keychains.webp" },
-      { label: "Плюшени играчки", to: "/category/personalizirani-plusheni-igrachki", image: "/img/home/plush-toys.webp" },
-      { label: "Гергефи", to: "/category/personalizirani-gergefi", image: "/img/banners/banner4.jpg" },
-    ],
-  },
-];
+// Curated mega-menu groups shared with the mobile menu (see ~/utils/productMenu).
+// productMenuGroups is auto-imported by Nuxt from the utils directory.
 </script>
 
 <style scoped lang="scss">

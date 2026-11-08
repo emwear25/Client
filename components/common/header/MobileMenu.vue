@@ -32,45 +32,27 @@
             Продукти
           </NuxtLink>
         </li>
-        <li class="mobile-menu__nav-item mobile-menu__nav-item--indent">
-          <NuxtLink
-            to="/collections"
-            class="mobile-menu__nav-link mobile-menu__nav-link--sub"
-            :class="{
-              'mobile-menu__nav-link--active': route.path === '/collections',
-            }"
-            @click="emit('close')"
-          >
-            Колекции
-          </NuxtLink>
-        </li>
-        <template v-for="entry in menuCategories" :key="entry._id">
-          <li class="mobile-menu__nav-item mobile-menu__nav-item--indent">
-            <NuxtLink
-              :to="`/category/${entry.slug}`"
-              class="mobile-menu__nav-link mobile-menu__nav-link--sub"
-              :class="{
-                'mobile-menu__nav-link--active': route.path === `/category/${entry.slug}`,
-              }"
-              @click="emit('close')"
-            >
-              {{ entry.displayName }}
-            </NuxtLink>
+        <template v-for="group in productMenuGroups" :key="group.title">
+          <li class="mobile-menu__nav-item mobile-menu__nav-item--indent mobile-menu__group-title">
+            {{ group.title }}
           </li>
           <li
-            v-for="child in entry.children || []"
-            :key="child._id"
-            class="mobile-menu__nav-item mobile-menu__nav-item--indent mobile-menu__nav-item--indent-deep"
+            v-for="item in group.items"
+            :key="item.to"
+            class="mobile-menu__nav-item mobile-menu__nav-item--indent"
           >
             <NuxtLink
-              :to="`/category/${child.slug}`"
-              class="mobile-menu__nav-link mobile-menu__nav-link--sub"
+              :to="item.to"
+              class="mobile-menu__nav-link mobile-menu__nav-link--sub mobile-menu__nav-link--thumb"
               :class="{
-                'mobile-menu__nav-link--active': route.path === `/category/${child.slug}`,
+                'mobile-menu__nav-link--active': route.path === item.to,
               }"
               @click="emit('close')"
             >
-              {{ child.displayName }}
+              <span class="mobile-menu__thumb">
+                <img :src="item.image" :alt="item.label" loading="lazy" />
+              </span>
+              <span>{{ item.label }}</span>
             </NuxtLink>
           </li>
         </template>
@@ -142,15 +124,6 @@
 
 <script setup lang="ts">
 import { useRoute } from "vue-router";
-import { useApi } from "~/composables/useApi";
-
-interface Category {
-  _id: string;
-  name: string;
-  slug: string;
-  displayName: string;
-  productCount?: number;
-}
 
 // Define props
 defineProps<{
@@ -165,20 +138,8 @@ const emit = defineEmits<{
 // Get current route for active link highlighting
 const route = useRoute();
 
-// Use shared categories composable to prevent duplicate requests
-const { categories: categoriesWithProducts, fetchCategories, categoryTree, fetchCategoryTree } =
-  useCategories();
-
-// Two-level tree when available, flat list otherwise
-const menuCategories = computed(() =>
-  categoryTree.value.length > 0 ? categoryTree.value : categoriesWithProducts.value
-);
-
-// Fetch on mount
-onMounted(() => {
-  fetchCategories(true);
-  fetchCategoryTree();
-});
+// Curated product groups shared with the desktop mega-menu (see ~/utils/productMenu).
+// productMenuGroups is auto-imported by Nuxt from the utils directory.
 </script>
 
 <style scoped lang="scss">
@@ -281,6 +242,13 @@ onMounted(() => {
         font-weight: 400;
       }
 
+      &--thumb {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        padding-left: 1.5rem;
+      }
+
       &:hover {
         color: $brand;
         background: rgba($brand, 0.08);
@@ -296,6 +264,33 @@ onMounted(() => {
         outline: 2px solid $brand;
         outline-offset: -2px;
       }
+    }
+  }
+
+  &__group-title {
+    padding: 0.75rem 1.5rem 0.4rem;
+    font-family: $font-body;
+    font-size: 0.6875rem;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: $text-secondary;
+    background: rgba($brand, 0.03);
+  }
+
+  &__thumb {
+    flex-shrink: 0;
+    width: 36px;
+    height: 36px;
+    border-radius: 8px;
+    overflow: hidden;
+    background: rgba($brand, 0.08);
+
+    img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
     }
   }
 
