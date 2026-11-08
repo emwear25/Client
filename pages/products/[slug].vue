@@ -186,8 +186,9 @@
                 </div>
               </div>
 
-              <!-- Black Friday bundle note -->
+              <!-- Black Friday note — only the bundle relevant to this product -->
               <div
+                v-if="bfDeal"
                 style="
                   margin: 0.75rem 0;
                   padding: 0.6rem 0.9rem;
@@ -209,10 +210,16 @@
                   "
                   >⚡ BLACK FRIDAY</span
                 >
-                <span style="color: rgba(255, 255, 255, 0.9); font-size: 0.8rem">
+                <span
+                  v-if="bfDeal === 'bath'"
+                  style="color: rgba(255, 255, 255, 0.9); font-size: 0.8rem"
+                >
                   Халат + една кърпа <strong style="color: #e7c873">−15%</strong>, с двете кърпи
-                  <strong style="color: #e7c873">−20%</strong> · Раница + ключодържател
-                  <strong style="color: #e7c873">−10%</strong> — автоматично в количката
+                  <strong style="color: #e7c873">−20%</strong> — автоматично в количката
+                </span>
+                <span v-else style="color: rgba(255, 255, 255, 0.9); font-size: 0.8rem">
+                  Раница + ключодържател <strong style="color: #e7c873">−10%</strong> — автоматично в
+                  количката
                 </span>
               </div>
 
@@ -937,6 +944,19 @@ const pricedOptionsTotal = computed(() => {
     }
   }
   return total;
+});
+
+// Black Friday: which bundle note (if any) is relevant to this product's category.
+const bfDeal = computed(() => {
+  const cat = product.value?.category as any;
+  const slug = cat && typeof cat === "object" ? cat.slug : "";
+  if (["kid-bathrobes", "kids-towels", "personalizirani-kurpi-za-lice"].includes(slug)) {
+    return "bath";
+  }
+  if (["kids-bags", "keychains"].includes(slug)) {
+    return "bag";
+  }
+  return null;
 });
 
 // Computed: Get personalization fields from category
