@@ -6,7 +6,7 @@
  */
 
 // Free shipping threshold in EUR
-export const FREE_SHIPPING_EUR = 90;
+export const FREE_SHIPPING_EUR = 60;
 
 /**
  * Format a number as EUR currency
