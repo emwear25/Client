@@ -794,8 +794,24 @@ const renderCustomBullet = (index: number, className: string) => {
     height: 100%;
     background-size: cover;
     background-position: center;
-    filter: brightness(0.6);
+    filter: brightness(0.92);
     z-index: 0;
+
+    // Gradient scrim: image stays clear at the top (product visible),
+    // darkens toward the bottom where the text sits.
+    &::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(
+        to top,
+        rgba(24, 26, 22, 0.78) 0%,
+        rgba(24, 26, 22, 0.5) 32%,
+        rgba(24, 26, 22, 0.12) 58%,
+        rgba(24, 26, 22, 0) 82%
+      );
+      pointer-events: none;
+    }
 
     @include up(md) {
       display: none !important;
@@ -933,9 +949,9 @@ const renderCustomBullet = (index: number, className: string) => {
     width: 100%;
 
     @media (max-width: 767px) {
-      padding: 2.5rem 1.25rem 2rem;
+      padding: 2.5rem 1.5rem 3.75rem;
       align-items: center;
-      justify-content: center;
+      justify-content: flex-end;
       flex-direction: column;
     }
 
