@@ -667,7 +667,7 @@ const slides = ref([
   },
   {
     id: 5,
-    image: "/img/slider/blankets.jpg",
+    image: "/img/slider/blankets-hero.webp",
   },
 ]);
 
