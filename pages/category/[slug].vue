@@ -13,18 +13,6 @@
 
     <!-- Toolbar (Sort only) -->
     <div class="container products-toolbar">
-      <div class="products-toolbar__gender">
-        <button
-          v-for="option in genderOptions"
-          :key="option.value"
-          type="button"
-          class="products-toolbar__gender-chip"
-          :class="{ 'products-toolbar__gender-chip--active': selectedGender === option.value }"
-          @click="setGender(option.value)"
-        >
-          {{ option.label }}
-        </button>
-      </div>
       <div class="products-toolbar__spacer" />
       <div class="products-toolbar__sort">
         <label class="sr-only" for="sort">Подреди</label>
@@ -110,7 +98,6 @@ import { usePageSEO } from "~/composables/useSEO";
 import { useInfiniteScroll } from "~/composables/useInfiniteScroll";
 
 const route = useRoute();
-const router = useRouter();
 
 // Make slug reactive so it updates on client-side navigation
 const slug = computed(() => route.params.slug as string);
@@ -189,26 +176,6 @@ const categoryDisplayName = computed(() => {
 const genderQuery = computed(() =>
   selectedGender.value ? `&gender=${selectedGender.value}` : ""
 );
-
-const genderOptions = [
-  { value: "", label: "Всички" },
-  { value: "girl", label: "За момиче" },
-  { value: "boy", label: "За момче" },
-];
-
-const setGender = (value: string) => {
-  if (selectedGender.value === value) return;
-  selectedGender.value = value;
-  // Keep the URL shareable
-  const query = { ...route.query } as Record<string, any>;
-  if (value) {
-    query.gender = value;
-  } else {
-    delete query.gender;
-  }
-  router.replace({ query });
-  fetchProducts(1, false);
-};
 
 const fetchCategoryPage = async (currentSlug: string, page: number, sort: string) => {
   const api = useApi();
