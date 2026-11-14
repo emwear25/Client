@@ -68,6 +68,8 @@
 import { z } from "zod";
 import { useApi } from "~/composables/useApi";
 
+const { $posthog } = useNuxtApp();
+
 // Form validation schema
 const contactSchema = z.object({
   name: z.string().min(2, "Името трябва да е поне 2 символа"),
@@ -109,6 +111,7 @@ const handleSubmit = async () => {
     // Call contact API endpoint
     const api = useApi();
     await api.post("contact", formData);
+    $posthog?.capture("contact_form_submitted");
 
     // Show success message
     showSuccess.value = true;

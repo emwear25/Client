@@ -150,6 +150,7 @@ import { useToast } from "~/composables/useToast";
 const authStore = useAuthStore();
 const toast = useToast();
 const route = useRoute();
+const { $posthog } = useNuxtApp();
 
 // Form state
 const email = ref("");
@@ -166,6 +167,7 @@ const handleLogin = async () => {
   try {
     await authStore.login(email.value, password.value);
 
+    $posthog?.capture("user_signed_in", { method: "password" });
     toast.success("Успешно влизане!");
 
     // Wait a bit for state to update

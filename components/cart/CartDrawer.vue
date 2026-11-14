@@ -199,6 +199,7 @@ const cartStore = useCartStore();
 const router = useRouter();
 const toast = useToast();
 const api = useApi();
+const { $posthog } = useNuxtApp();
 
 const isOpen = computed(() => cartStore.isOpen);
 
@@ -276,6 +277,13 @@ const addAddOn = (p: any) => {
     },
     1,
   );
+  $posthog?.capture("product_added_to_cart", {
+    product_id: p._id,
+    quantity: 1,
+    price: p.price,
+    currency: "EUR",
+    source: "cart_cross_sell",
+  });
   toast.success(`${p.name} е добавен в количката`);
 };
 
@@ -361,6 +369,13 @@ const goToCheckout = () => {
     toast.error("Количката е празна. Добавете продукти преди да продължите.");
     return;
   }
+
+  $posthog?.capture("checkout_started", {
+    source: "cart_drawer",
+    item_count: cartStore.itemCount,
+    value: cartStore.totalPrice,
+    currency: "EUR",
+  });
 
   // Navigate to checkout (no auth required - supports guest checkout)
   router.push("/checkout");

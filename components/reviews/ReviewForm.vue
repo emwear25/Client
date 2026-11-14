@@ -184,6 +184,7 @@ const emit = defineEmits<{
 const api = useApi();
 const toast = useToast();
 const authStore = useAuthStore();
+const { $posthog } = useNuxtApp();
 
 const isAuthenticated = computed(() => authStore.isAuthenticated);
 const hoveredRating = ref(0);
@@ -289,6 +290,11 @@ const handleSubmit = async () => {
     const response = await api.post("reviews", reviewPayload);
 
     if (response.success) {
+      $posthog?.capture("review_submitted", {
+        product_id: props.productId,
+        rating: formData.rating,
+        is_verified_purchase: Boolean(formData.orderId),
+      });
       showSuccess.value = true;
       toast.success("Отзивът е изпратен успешно! Ще бъде прегледан преди публикуване.");
 

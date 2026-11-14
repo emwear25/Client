@@ -271,6 +271,7 @@ const emit = defineEmits<{
 
 const cartStore = useCartStore();
 const toast = useToast();
+const { $posthog } = useNuxtApp();
 
 // Selection state
 const selectedColor = ref<string>("");
@@ -561,6 +562,15 @@ const addToCart = () => {
     },
     1
   );
+
+  $posthog?.capture("product_added_to_cart", {
+    product_id: props.product._id,
+    quantity: 1,
+    price: finalPrice,
+    currency: "EUR",
+    source: "quick_view",
+    has_personalization: embroideryEnabled.value,
+  });
 
   // Track AddToCart event for Facebook Pixel
   const { trackAddToCart } = useFacebookPixel();

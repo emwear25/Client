@@ -247,6 +247,7 @@ const authStore = useAuthStore();
 const router = useRouter();
 const toast = useToast();
 const api = useApi();
+const { $posthog } = useNuxtApp();
 
 // Use validation composable
 const { validationErrors, handleBlur, handleInput } = useCheckoutValidation();
@@ -1287,6 +1288,14 @@ const handleStripeCheckout = async (orderData: any) => {
     if (response.success && response.data.sessionUrl) {
       console.log("[Checkout] Stripe session created:", response.data.sessionId);
       console.log("[Checkout] Redirecting to Stripe Checkout...");
+      $posthog?.capture("payment_checkout_started", {
+        item_count: cartStore.itemCount,
+        value: cartStore.totalPrice,
+        currency: "EUR",
+        delivery_method: deliveryMethod.value,
+        delivery_provider: deliveryProvider.value,
+        is_guest: isGuest.value && !authStore.isAuthenticated,
+      });
 
       // Redirect to Stripe Checkout
       window.location.href = response.data.sessionUrl;
@@ -1548,6 +1557,16 @@ const handleSubmit = async () => {
 
     if (response.success) {
       console.log("[Checkout] Order created successfully!");
+      $posthog?.capture("order_placed", {
+        item_count: cartStore.itemCount,
+        value: cartStore.totalPrice,
+        currency: "EUR",
+        payment_method: "cash_on_delivery",
+        delivery_method: deliveryMethod.value,
+        delivery_provider: deliveryProvider.value,
+        is_guest: isGuest.value && !authStore.isAuthenticated,
+        has_coupon: Boolean(cartStore.appliedCoupon),
+      });
 
       // Always save/update user profile info
       const needsProfileUpdate =

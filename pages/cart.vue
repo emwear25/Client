@@ -242,6 +242,7 @@ const { formatMoney, FREE_SHIPPING_EUR } = useCurrency();
 const cartStore = useCartStore();
 const router = useRouter();
 const toast = useToast();
+const { $posthog } = useNuxtApp();
 
 // Debug: Log cart items on mount
 onMounted(() => {
@@ -257,6 +258,13 @@ const goToCheckout = () => {
     toast.error("Количката е празна. Добавете продукти преди да продължите.");
     return;
   }
+
+  $posthog?.capture("checkout_started", {
+    source: "cart_page",
+    item_count: cartStore.itemCount,
+    value: cartStore.totalPrice,
+    currency: "EUR",
+  });
 
   // Navigate to checkout (no auth required - supports guest checkout)
   router.push("/checkout");
@@ -296,6 +304,12 @@ const updateQuantityInput = (event: Event, item: any) => {
 const removeItem = (item: any) => {
   if (confirm(`Сигурни ли сте, че искате да премахнете "${item.name}" от количката?`)) {
     cartStore.removeItem(item.id, item.size, item.color);
+    $posthog?.capture("cart_item_removed", {
+      product_id: item.id,
+      quantity: item.quantity,
+      price: item.price,
+      currency: "EUR",
+    });
   }
 };
 

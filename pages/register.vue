@@ -196,6 +196,7 @@ import { useToast } from "~/composables/useToast";
 const authStore = useAuthStore();
 const toast = useToast();
 const router = useRouter();
+const { $posthog } = useNuxtApp();
 
 // Form state
 const email = ref("");
@@ -303,6 +304,7 @@ const handleRegister = async () => {
   try {
     await authStore.register(email.value, password.value);
 
+    $posthog?.capture("user_registered", { method: "password" });
     toast.success("Успешна регистрация! Добре дошли!");
 
     // Redirect to home

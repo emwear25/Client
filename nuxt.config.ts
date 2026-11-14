@@ -1,4 +1,18 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
+if (process.env.NODE_ENV !== "production") {
+  const missingPostHogVariable = !process.env.NUXT_PUBLIC_POSTHOG_PROJECT_TOKEN
+    ? "NUXT_PUBLIC_POSTHOG_PROJECT_TOKEN"
+    : !process.env.NUXT_PUBLIC_POSTHOG_HOST
+      ? "NUXT_PUBLIC_POSTHOG_HOST"
+      : undefined;
+
+  if (missingPostHogVariable) {
+    console.warn(
+      `${missingPostHogVariable} variable required by PostHog is missing or un-configured, this causes events to be silently missed. This error stops appearing once ${missingPostHogVariable} is configured`,
+    );
+  }
+}
+
 export default defineNuxtConfig({
   compatibilityDate: "2025-05-15",
 
@@ -342,6 +356,10 @@ export default defineNuxtConfig({
       apiBase: process.env.NUXT_PUBLIC_API_BASE || "http://localhost:3030",
       frontendUrl: process.env.NUXT_PUBLIC_FRONTEND_URL || "http://localhost:3000",
       gtagId: process.env.NUXT_PUBLIC_GTAG_ID || "",
+      posthog: {
+        projectToken: process.env.NUXT_PUBLIC_POSTHOG_PROJECT_TOKEN,
+        host: process.env.NUXT_PUBLIC_POSTHOG_HOST,
+      },
       // Christmas mode: "auto" shows decorations only in the holiday season
       // (December - January 6). Set NUXT_PUBLIC_CHRISTMAS_MODE=true/false
       // in .env to force decorations on or off.

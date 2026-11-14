@@ -804,6 +804,7 @@ const route = useRoute();
 const router = useRouter();
 const cartStore = useCartStore();
 const wishlistStore = useWishlist();
+const { $posthog } = useNuxtApp();
 const { parseMarkdown, isReady } = useMarkdown();
 
 // State
@@ -1507,6 +1508,16 @@ const addToCart = () => {
       1,
     );
   }
+
+  $posthog?.capture("product_added_to_cart", {
+    product_id: product.value._id,
+    quantity: 1,
+    price: finalPrice,
+    currency: "EUR",
+    source: "product_page",
+    has_personalization: embroideryEnabled.value,
+    add_on_count: Object.values(selectedAddOns.value).filter(Boolean).length,
+  });
 
   // Track AddToCart event for Facebook Pixel
   fbTrackAddToCart({

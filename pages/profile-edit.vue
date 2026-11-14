@@ -227,6 +227,7 @@ definePageMeta({
 const authStore = useAuthStore();
 const toast = useToast();
 const api = useApi();
+const { $posthog } = useNuxtApp();
 
 // Form state
 const form = ref({
@@ -260,6 +261,7 @@ const handleSubmit = async () => {
       phone: form.value.phone,
     });
 
+    $posthog?.capture("profile_updated");
     toast.success("Профилът е обновен успешно!");
   } catch (error: any) {
     toast.error(error.message || "Грешка при обновяване на профила");

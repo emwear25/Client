@@ -43,6 +43,7 @@ import { ref, computed } from "vue";
 import { useCartStore } from "~/stores/cart";
 
 const cartStore = useCartStore();
+const { $posthog } = useNuxtApp();
 
 const couponCode = ref("");
 const loading = ref(false);
@@ -65,6 +66,10 @@ const handleApply = async () => {
 
   try {
     await cartStore.applyCoupon(couponCode.value);
+    $posthog?.capture("coupon_applied", {
+      discount_type: appliedDiscount.value?.type,
+      discount_value: appliedDiscount.value?.value,
+    });
     successMessage.value = "Кодът за отстъпка е приложен успешно!";
 
     // Clear success message after 3 seconds

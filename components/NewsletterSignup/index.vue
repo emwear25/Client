@@ -61,6 +61,7 @@ import { useToast } from "~/composables/useToast";
 const email = ref("");
 const isLoading = ref(false);
 const toast = useToast();
+const { $posthog } = useNuxtApp();
 
 const handleSubmit = async () => {
   if (!email.value || isLoading.value) return;
@@ -74,6 +75,7 @@ const handleSubmit = async () => {
     });
 
     if (response && response.success) {
+      $posthog?.capture("newsletter_subscribed");
       toast.success(response.message || "Успешно се абонирахте за нашия бюлетин!");
       email.value = "";
     }

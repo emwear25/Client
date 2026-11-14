@@ -1,3 +1,5 @@
+import { emitPostHogLog } from "../utils/posthog-logs";
+
 /**
  * Redirect product ID URLs to slug URLs for SEO
  * This catches URLs like /products/6935e7d01c5ea21253090319 and redirects to /products/product-slug
@@ -31,11 +33,20 @@ export default defineEventHandler(async (event) => {
             // 301 Permanent Redirect to the slug URL
             const redirectUrl = `/products/${response.data.slug}`;
             console.log(`[SEO] Redirecting ${path} -> ${redirectUrl}`);
+            emitPostHogLog({
+                severityText: "INFO",
+                body: "Legacy product redirect resolved",
+                attributes: { redirect_status: 301 },
+            });
 
             return sendRedirect(event, redirectUrl, 301);
         }
     } catch (error) {
         // Product not found or API error - let the page handle the 404
         console.error('[SEO] Redirect lookup failed:', error);
+        emitPostHogLog({
+            severityText: "WARN",
+            body: "Legacy product redirect lookup failed",
+        });
     }
 });

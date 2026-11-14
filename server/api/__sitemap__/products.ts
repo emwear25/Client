@@ -1,5 +1,6 @@
 import { defineSitemapEventHandler } from '#imports';
 import type { SitemapUrlInput } from '@nuxtjs/sitemap/dist/runtime/types';
+import { emitPostHogLog } from '../../utils/posthog-logs';
 
 interface ProductImage {
     url: string;
@@ -57,8 +58,18 @@ export default defineSitemapEventHandler(async () => {
         // Fail the request instead of silently publishing an EMPTY products
         // sitemap - search engines keep their last good copy on errors
         console.error('[Sitemap Products] Failed to fetch products:', error);
+        emitPostHogLog({
+            severityText: "ERROR",
+            body: "Product sitemap source unavailable",
+        });
         throw createError({ statusCode: 503, statusMessage: 'Products sitemap source unavailable' });
     }
+
+    emitPostHogLog({
+        severityText: "INFO",
+        body: "Product sitemap generated",
+        attributes: { sitemap_entry_count: urls.length },
+    });
 
     return urls;
 });
