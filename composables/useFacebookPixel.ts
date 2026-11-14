@@ -4,7 +4,16 @@
  */
 
 export const useFacebookPixel = () => {
-    const { $fbq, $fbqCustom } = useNuxtApp();
+    const { $fbq, $fbqCustom, $posthog } = useNuxtApp();
+
+    // Mirror shop events to PostHog (runs for all visitors - see plugins/posthog.client.ts)
+    const ph = (event: string, props: Record<string, unknown>) => {
+        try {
+            $posthog?.capture(event, { currency: 'EUR', ...props });
+        } catch {
+            // analytics must never break the shop
+        }
+    };
 
     /**
      * Track ViewContent event (Product Detail Page)
@@ -15,6 +24,7 @@ export const useFacebookPixel = () => {
         price: number;
         category?: string;
     }) => {
+        ph('Product Viewed', { product_id: product.id, name: product.name, price: product.price, category: product.category || '' });
         $fbq('ViewContent', {
             content_ids: [product.id],
             content_name: product.name,
@@ -34,6 +44,7 @@ export const useFacebookPixel = () => {
         price: number;
         quantity?: number;
     }) => {
+        ph('Product Added', { product_id: product.id, name: product.name, price: product.price, quantity: product.quantity || 1, value: product.price * (product.quantity || 1) });
         $fbq('AddToCart', {
             content_ids: [product.id],
             content_name: product.name,
@@ -50,6 +61,7 @@ export const useFacebookPixel = () => {
         value: number;
         items: Array<{ id: string; quantity: number }>;
     }) => {
+        ph('Checkout Started', { value: data.value, products: data.items.map((i) => ({ product_id: i.id, quantity: i.quantity })) });
         $fbq('InitiateCheckout', {
             content_ids: data.items.map((item) => item.id),
             num_items: data.items.reduce((sum, item) => sum + item.quantity, 0),
@@ -66,6 +78,7 @@ export const useFacebookPixel = () => {
         total: number;
         items: Array<{ id: string; quantity: number; price: number }>;
     }) => {
+        ph('Order Completed', { order_id: order.orderId, revenue: order.total, value: order.total, products: order.items.map((i) => ({ product_id: i.id, quantity: i.quantity, price: i.price })) });
         $fbq('Purchase', {
             content_ids: order.items.map((item) => item.id),
             content_type: 'product',
@@ -79,6 +92,7 @@ export const useFacebookPixel = () => {
      * Track Search event
      */
     const trackSearch = (searchQuery: string) => {
+        ph('Products Searched', { query: searchQuery });
         $fbq('Search', {
             search_string: searchQuery,
         });
@@ -92,6 +106,7 @@ export const useFacebookPixel = () => {
         name: string;
         price: number;
     }) => {
+        ph('Product Added to Wishlist', { product_id: product.id, name: product.name, price: product.price });
         $fbq('AddToWishlist', {
             content_ids: [product.id],
             content_name: product.name,
