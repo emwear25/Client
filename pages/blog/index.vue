@@ -155,19 +155,22 @@ const pagination = ref<Pagination>({
 });
 
 // SEO
-usePageSEO({
-  title: selectedTag.value ? `Блог - ${selectedTag.value}` : "Блог",
+usePageSEO(() => ({
+  title: selectedTag.value ? `Блог - ${selectedTag.value}` : "Блог – идеи за подаръци и съвети",
   description:
     "Полезни статии за персонализирани подаръци, идеи за подаръци, съвети за избор и вдъхновение от emWear.",
   type: "website",
-});
+  // An empty listing is thin content - keep it out of the index until
+  // the first article is published (links are still followed)
+  noindex: articles.value.length === 0,
+}));
 
 // Add Blog structured data
 useHead({
   script: [
     {
       type: "application/ld+json",
-      children: JSON.stringify({
+      innerHTML: JSON.stringify({
         "@context": "https://schema.org",
         "@type": "Blog",
         name: "emWear Блог",

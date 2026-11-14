@@ -1,9 +1,23 @@
 /**
  * SEO Composable
- * Provides SEO utilities and default meta tags
+ *
+ * All head entries are keyed and driven by computed values, so calling
+ * these composables once per page (with a getter for async data) keeps the
+ * tags in sync without duplicating them. Do NOT call them inside
+ * watch/watchEffect - every call creates a new head entry.
  */
 
-import { generateSEOTitle, generateMetaDescription, getFullUrl, SOCIAL_LINKS, SITE_METADATA } from "~/utils/seo";
+import type { MaybeRefOrGetter } from "vue";
+import { cloudinaryUrl } from "~/utils/image";
+import { toValue } from "vue";
+import {
+  generateSEOTitle,
+  generateMetaDescription,
+  toPlainText,
+  truncateAtWord,
+  SOCIAL_LINKS,
+  SITE_METADATA,
+} from "~/utils/seo";
 
 export interface ProductSEO {
   name: string;
@@ -12,10 +26,13 @@ export interface ProductSEO {
   price?: number;
   priceCurrency?: string;
   stock?: number;
-  category?: string | { name: string };
+  category?: string | { name: string; displayName?: string; slug?: string };
   seoTitle?: string | null;
   metaDescription?: string | null;
   slug?: string;
+  sku?: string;
+  /** true when the item is made to order with the customer's text */
+  personalized?: boolean;
   reviewStats?: {
     averageRating?: number;
     totalReviews?: number;
@@ -28,345 +45,225 @@ export interface PageSEO {
   image?: string;
   type?: "website" | "product" | "article";
   noindex?: boolean;
+  /** override the canonical path (defaults to the current route path) */
+  path?: string;
+}
+
+const BRAND_SUFFIX = " | emWear";
+
+/**
+ * Resolve the site origin ONCE during setup. Head getters/computeds run
+ * later, outside the Nuxt context, where useRuntimeConfig() throws.
+ */
+function useSiteUrl(): string {
+  const config = useRuntimeConfig();
+  return ((config.public.frontendUrl as string) || SITE_METADATA.siteUrl).replace(/\/$/, "");
+}
+
+function absoluteUrl(siteUrl: string, url?: string | null): string | undefined {
+  if (!url) return undefined;
+  if (url.startsWith("http")) return url;
+  return url.startsWith("/") ? `${siteUrl}${url}` : `${siteUrl}/${url}`;
+}
+
+/** Self-referencing canonical + hreflang (single-language site) */
+function canonicalLinks(url: string) {
+  return [
+    { key: "canonical", rel: "canonical", href: url },
+    { key: "hreflang-bg", rel: "alternate", hreflang: "bg", href: url },
+    { key: "hreflang-x-default", rel: "alternate", hreflang: "x-default", href: url },
+  ];
 }
 
 /**
- * Set SEO meta tags for a page
+ * Set SEO meta tags for a page.
+ * Accepts a plain object or a getter/computed for data loaded asynchronously.
  */
-export function usePageSEO(options: PageSEO) {
+export function usePageSEO(input: MaybeRefOrGetter<PageSEO | null | undefined>) {
   const route = useRoute();
-  const config = useRuntimeConfig();
-  const siteUrl = config.public.frontendUrl || SITE_METADATA.siteUrl;
-  const currentUrl = getFullUrl(route.path);
+  const siteUrl = useSiteUrl();
 
-  // Generate title
-  const title = options.title.includes("| emWear") ? options.title : `${options.title} | emWear`;
+  const data = computed(() => {
+    const options = toValue(input);
+    if (!options) return null;
 
-  // Generate description
-  const description =
-    options.description.length > 160
-      ? options.description.substring(0, 157) + "..."
-      : options.description;
-
-  // Default image - handle both relative and absolute URLs
-  let ogImage = options.image || `${siteUrl}/logo-dark.png`;
-  if (options.image && !options.image.startsWith("http")) {
-    ogImage = options.image.startsWith("/") ? `${siteUrl}${options.image}` : `${siteUrl}/${options.image}`;
-  }
-
-  // Set meta tags
-  useHead({
-    title,
-    // Title already contains the "| emWear" suffix - disable the global
-    // titleTemplate so the brand is not appended a second time
-    titleTemplate: null,
-    meta: [
-      // Basic meta
-      {
-        name: "description",
-        content: description,
-      },
-      {
-        name: "robots",
-        content: options.noindex ? "noindex, nofollow" : "index, follow",
-      },
-
-      // Open Graph
-      {
-        property: "og:title",
-        content: title,
-      },
-      {
-        property: "og:description",
-        content: description,
-      },
-      {
-        property: "og:image",
-        content: ogImage,
-      },
-      {
-        property: "og:image:width",
-        content: "1200",
-      },
-      {
-        property: "og:image:height",
-        content: "630",
-      },
-      {
-        property: "og:url",
-        content: currentUrl,
-      },
-      {
-        property: "og:type",
-        content: options.type || "website",
-      },
-      {
-        property: "og:site_name",
-        content: SITE_METADATA.name,
-      },
-      {
-        property: "og:locale",
-        content: SITE_METADATA.locale,
-      },
-      // Social media links
-      {
-        property: "og:see_also",
-        content: SOCIAL_LINKS.facebook,
-      },
-      {
-        property: "article:author",
-        content: SOCIAL_LINKS.facebook,
-      },
-
-      // Twitter Card
-      {
-        name: "twitter:card",
-        content: "summary_large_image",
-      },
-      {
-        name: "twitter:title",
-        content: title,
-      },
-      {
-        name: "twitter:description",
-        content: description,
-      },
-      {
-        name: "twitter:image",
-        content: ogImage,
-      },
-      {
-        name: "twitter:site",
-        content: "@emwear",
-      },
-    ],
-
-    link: [
-      {
-        rel: "canonical",
-        href: currentUrl,
-      },
-      {
-        rel: "alternate",
-        hreflang: "bg",
-        href: currentUrl,
-      },
-      {
-        rel: "alternate",
-        hreflang: "x-default",
-        href: currentUrl,
-      },
-    ],
-  });
-}
-
-/**
- * Set SEO meta tags for a product page
- */
-export function useProductSEO(product: ProductSEO) {
-  const route = useRoute();
-  const config = useRuntimeConfig();
-  const siteUrl = config.public.frontendUrl || SITE_METADATA.siteUrl;
-  const priceCurrency = product.priceCurrency || "EUR";
-
-  // Get category name
-  const categoryName =
-    typeof product.category === "object" ? product.category?.name : product.category;
-
-  const cleanDescription = product.description
-    ? product.description.replace(/<[^>]*>/g, "").replace(/\s+/g, " ").trim()
-    : "";
-
-  // Generate SEO data
-  const seoTitle = generateSEOTitle(product.name, categoryName, product.seoTitle || null);
-  const metaDescription = generateMetaDescription(cleanDescription, product.metaDescription || null);
-
-  // Product URL
-  const routeSlug = route.params.slug || route.params.id;
-  const resolvedRouteSlug = Array.isArray(routeSlug) ? routeSlug[0] : routeSlug;
-  const productSlug = product.slug || resolvedRouteSlug || "";
-  const productUrl = getFullUrl(`/products/${productSlug}`);
-
-  // Product image - handle both relative and absolute URLs (Cloudinary)
-  let productImage = `${siteUrl}/logo-dark.png`;
-  if (product.images?.[0]?.url) {
-    productImage = product.images[0].url.startsWith("http")
-      ? product.images[0].url
-      : product.images[0].url.startsWith("/")
-        ? `${siteUrl}${product.images[0].url}`
-        : `${siteUrl}/${product.images[0].url}`;
-  }
-
-  // Set meta tags
-  useHead({
-    title: seoTitle,
-    // generateSEOTitle already appends "| emWear" - disable the global
-    // titleTemplate so the brand is not appended a second time
-    titleTemplate: null,
-    meta: [
-      {
-        name: "description",
-        content: metaDescription,
-      },
-      {
-        property: "og:title",
-        content: seoTitle,
-      },
-      {
-        property: "og:description",
-        content: metaDescription,
-      },
-      {
-        property: "og:image",
-        content: productImage,
-      },
-      {
-        property: "og:image:width",
-        content: "1200",
-      },
-      {
-        property: "og:image:height",
-        content: "630",
-      },
-      {
-        property: "og:url",
-        content: productUrl,
-      },
-      {
-        property: "og:type",
-        content: "product",
-      },
-      {
-        property: "og:site_name",
-        content: SITE_METADATA.name,
-      },
-      {
-        property: "product:price:amount",
-        content: product.price?.toString() || "",
-      },
-      {
-        property: "product:price:currency",
-        content: priceCurrency,
-      },
-      {
-        name: "twitter:card",
-        content: "summary_large_image",
-      },
-      {
-        name: "twitter:title",
-        content: seoTitle,
-      },
-      {
-        name: "twitter:description",
-        content: metaDescription,
-      },
-      {
-        name: "twitter:image",
-        content: productImage,
-      },
-      {
-        name: "twitter:site",
-        content: "@emwear",
-      },
-    ],
-    link: [
-      {
-        rel: "canonical",
-        href: productUrl,
-      },
-      {
-        rel: "alternate",
-        hreflang: "bg",
-        href: productUrl,
-      },
-      {
-        rel: "alternate",
-        hreflang: "x-default",
-        href: productUrl,
-      },
-    ],
+    const title = options.title.includes("emWear") ? options.title : `${options.title}${BRAND_SUFFIX}`;
+    const description = truncateAtWord(toPlainText(options.description), 160, "…");
+    const url = `${siteUrl}${options.path || route.path}`;
+    const image =
+      cloudinaryUrl(absoluteUrl(siteUrl, options.image), { width: 1200, format: "jpg" }) ||
+      `${siteUrl}/emwear-front-page.png`;
+    return { ...options, title, description, url, image };
   });
 
-  // Add structured data (JSON-LD)
-  const availability =
-    typeof product.stock === "number"
-      ? product.stock > 0
-        ? "https://schema.org/InStock"
-        : "https://schema.org/OutOfStock"
-      : product.price && product.price > 0
-        ? "https://schema.org/InStock"
-        : "https://schema.org/OutOfStock";
-
-  const schemaDescription = cleanDescription
-    ? cleanDescription.substring(0, 500).trim()
-    : `Персонализиран ${product.name} от emWear`;
-
-  const structuredData: any = {
-    "@context": "https://schema.org",
-    "@type": "Product",
-    name: product.name,
-    description: schemaDescription,
-    image:
-      product.images?.map((img) => {
-        // Handle both relative and absolute URLs
-        if (img.url.startsWith("http")) return img.url;
-        return img.url.startsWith("/") ? `${siteUrl}${img.url}` : `${siteUrl}/${img.url}`;
-      }) || [productImage],
-    brand: {
-      "@type": "Brand",
-      name: "emWear",
-    },
-    offers: {
-      "@type": "Offer",
-      price: product.price || 0,
-      priceCurrency,
-      availability,
-      url: productUrl,
-      seller: {
-        "@type": "Organization",
-        name: "emWear",
-        url: siteUrl,
-      },
-      priceValidUntil: new Date(new Date().setFullYear(new Date().getFullYear() + 1)).toISOString().split('T')[0],
-      itemCondition: "https://schema.org/NewCondition",
-      hasMerchantReturnPolicy: {
-        "@type": "MerchantReturnPolicy",
-        applicableCountry: "BG",
-        returnPolicyCategory: "https://schema.org/MerchantReturnFiniteReturnWindow",
-        merchantReturnDays: 14,
-        returnMethod: "https://schema.org/ReturnByMail",
-        returnFees: "https://schema.org/FreeReturn",
-      },
-    },
-  };
-
-  // Add category if available
-  if (categoryName) {
-    structuredData.category = categoryName;
-  }
-
-  // Add reviews if available
-  if (product.reviewStats && product.reviewStats.totalReviews && product.reviewStats.totalReviews > 0) {
-    structuredData.aggregateRating = {
-      "@type": "AggregateRating",
-      ratingValue: product.reviewStats.averageRating,
-      reviewCount: product.reviewStats.totalReviews,
+  useHead(() => {
+    const d = data.value;
+    if (!d) return {};
+    return {
+      title: d.title,
+      // Title already contains the brand - disable the global titleTemplate
+      titleTemplate: null,
+      meta: [
+        { key: "description", name: "description", content: d.description },
+        {
+          key: "robots",
+          name: "robots",
+          content: d.noindex ? "noindex, follow" : "index, follow, max-image-preview:large",
+        },
+        { key: "og:title", property: "og:title", content: d.title },
+        { key: "og:description", property: "og:description", content: d.description },
+        { key: "og:image", property: "og:image", content: d.image },
+        { key: "og:url", property: "og:url", content: d.url },
+        { key: "og:type", property: "og:type", content: d.type || "website" },
+        { key: "og:site_name", property: "og:site_name", content: SITE_METADATA.name },
+        { key: "og:locale", property: "og:locale", content: SITE_METADATA.locale },
+        { key: "twitter:card", name: "twitter:card", content: "summary_large_image" },
+        { key: "twitter:title", name: "twitter:title", content: d.title },
+        { key: "twitter:description", name: "twitter:description", content: d.description },
+        { key: "twitter:image", name: "twitter:image", content: d.image },
+        ...(d.type === "article"
+          ? [{ key: "article:publisher", property: "article:publisher", content: SOCIAL_LINKS.facebook }]
+          : []),
+      ],
+      link: canonicalLinks(d.url),
     };
-  }
+  });
+}
 
-  useHead({
-    script: [
-      {
-        type: "application/ld+json",
-        innerHTML: JSON.stringify(structuredData),
+/**
+ * Set SEO meta tags + Product JSON-LD for a product page.
+ * Pass a getter so price/stock/reviews stay in sync with the selected variant.
+ */
+export function useProductSEO(input: MaybeRefOrGetter<ProductSEO | null | undefined>) {
+  const route = useRoute();
+  const siteUrl = useSiteUrl();
+
+  const data = computed(() => {
+    const product = toValue(input);
+    if (!product) return null;
+
+    const priceCurrency = product.priceCurrency || "EUR";
+    const category = product.category;
+    const categoryName =
+      typeof category === "object" && category
+        ? category.displayName || category.name
+        : category || undefined;
+
+    const cleanDescription = toPlainText(product.description);
+    const title = generateSEOTitle(product.name, categoryName, product.seoTitle || null);
+    const description = generateMetaDescription(cleanDescription, product.metaDescription || null, product.name);
+
+    const routeSlug = route.params.slug || route.params.id;
+    const slug = product.slug || (Array.isArray(routeSlug) ? routeSlug[0] : routeSlug) || "";
+    const url = `${siteUrl}/products/${slug}`;
+
+    const images = (product.images || [])
+      .map((img) => absoluteUrl(siteUrl, img.url))
+      .filter((u): u is string => Boolean(u));
+    // Social previews: 1200px JPG (not every crawler accepts AVIF/WebP);
+    // the originals are ~800 KB PNGs
+    const image = images[0] ? cloudinaryUrl(images[0], { width: 1200, format: "jpg" }) : `${siteUrl}/emwear-front-page.png`;
+
+    const inStock =
+      typeof product.stock === "number" ? product.stock > 0 : Boolean(product.price && product.price > 0);
+    const availability = inStock ? "https://schema.org/InStock" : "https://schema.org/OutOfStock";
+
+    // Matches /shipping: personalised items can't be returned (only
+    // defects / our mistakes are replaced); other items: 14 days, paid
+    // by the customer.
+    const returnPolicy = product.personalized !== false
+      ? {
+          "@type": "MerchantReturnPolicy",
+          applicableCountry: "BG",
+          returnPolicyCategory: "https://schema.org/MerchantReturnNotPermitted",
+        }
+      : {
+          "@type": "MerchantReturnPolicy",
+          applicableCountry: "BG",
+          returnPolicyCategory: "https://schema.org/MerchantReturnFiniteReturnWindow",
+          merchantReturnDays: 14,
+          returnMethod: "https://schema.org/ReturnByMail",
+          returnFees: "https://schema.org/ReturnFeesCustomerResponsibility",
+        };
+
+    const nextYear = new Date();
+    nextYear.setFullYear(nextYear.getFullYear() + 1);
+
+    const structuredData: Record<string, unknown> = {
+      "@context": "https://schema.org",
+      "@type": "Product",
+      "@id": `${url}#product`,
+      name: product.name,
+      description: truncateAtWord(cleanDescription, 500) || `Персонализиран ${product.name} от emWear`,
+      image: images.length ? images.map((u) => cloudinaryUrl(u, { width: 1600, format: "jpg" })) : [image],
+      url,
+      brand: { "@type": "Brand", name: "emWear" },
+      ...(product.sku ? { sku: product.sku } : {}),
+      ...(categoryName ? { category: categoryName } : {}),
+      offers: {
+        "@type": "Offer",
+        url,
+        price: Number((product.price || 0).toFixed(2)),
+        priceCurrency,
+        availability,
+        itemCondition: "https://schema.org/NewCondition",
+        priceValidUntil: nextYear.toISOString().split("T")[0],
+        seller: { "@id": `${siteUrl}/#organization` },
+        hasMerchantReturnPolicy: returnPolicy,
       },
-    ],
+    };
+
+    const reviews = product.reviewStats;
+    if (reviews?.totalReviews && reviews.totalReviews > 0 && reviews.averageRating) {
+      structuredData.aggregateRating = {
+        "@type": "AggregateRating",
+        ratingValue: Number(reviews.averageRating.toFixed(1)),
+        reviewCount: reviews.totalReviews,
+        bestRating: 5,
+        worstRating: 1,
+      };
+    }
+
+    return { title, description, url, image, priceCurrency, product, structuredData };
+  });
+
+  useHead(() => {
+    const d = data.value;
+    if (!d) return {};
+    return {
+      title: d.title,
+      titleTemplate: null,
+      meta: [
+        { key: "description", name: "description", content: d.description },
+        { key: "robots", name: "robots", content: "index, follow, max-image-preview:large" },
+        { key: "og:title", property: "og:title", content: d.title },
+        { key: "og:description", property: "og:description", content: d.description },
+        { key: "og:image", property: "og:image", content: d.image },
+        { key: "og:url", property: "og:url", content: d.url },
+        { key: "og:type", property: "og:type", content: "product" },
+        { key: "og:site_name", property: "og:site_name", content: SITE_METADATA.name },
+        { key: "og:locale", property: "og:locale", content: SITE_METADATA.locale },
+        { key: "product:price:amount", property: "product:price:amount", content: (d.product.price || 0).toFixed(2) },
+        { key: "product:price:currency", property: "product:price:currency", content: d.priceCurrency },
+        { key: "twitter:card", name: "twitter:card", content: "summary_large_image" },
+        { key: "twitter:title", name: "twitter:title", content: d.title },
+        { key: "twitter:description", name: "twitter:description", content: d.description },
+        { key: "twitter:image", name: "twitter:image", content: d.image },
+      ],
+      link: canonicalLinks(d.url),
+      script: [
+        {
+          key: "ld-product",
+          type: "application/ld+json",
+          innerHTML: JSON.stringify(d.structuredData),
+        },
+      ],
+    };
   });
 }
 
 /**
  * Set default site-wide SEO (non-overriding)
- * This sets base meta that won't conflict with page-specific SEO
  */
 export function useDefaultSEO() {
   useHead({
@@ -374,17 +271,9 @@ export function useDefaultSEO() {
       lang: "bg",
     },
     meta: [
-      {
-        charset: "utf-8",
-      },
-      {
-        name: "viewport",
-        content: "width=device-width, initial-scale=1",
-      },
-      {
-        name: "format-detection",
-        content: "telephone=no",
-      },
+      { charset: "utf-8" },
+      { name: "viewport", content: "width=device-width, initial-scale=1" },
+      { name: "format-detection", content: "telephone=no" },
     ],
   });
 }

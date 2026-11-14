@@ -85,6 +85,8 @@ const { openSettings } = useCookieConsent();
 
 const collectionLinks: NavigationLink[] = [
   { name: "Продукти", path: "/products" },
+  { name: "Подаръци по повод", path: "/podaratsi" },
+  { name: "Коледни подаръци", path: "/podaratsi/koledni-podaratsi-s-ime" },
   { name: "Промоции", path: "/sales" },
   { name: "Блог", path: "/blog" },
 ];

@@ -126,11 +126,14 @@ import { useErrorHandler } from "~/composables/useErrorHandler";
 import { usePageSEO } from "~/composables/useSEO";
 import { useInfiniteScroll } from "~/composables/useInfiniteScroll";
 
+// Products load client-side and the page is often empty between
+// campaigns - keep it out of the index (links are still followed).
 usePageSEO({
   title: "Промоции",
   description:
     "Открийте най-добрите оферти на наши персонализирани бродирани изделия с отстъпки. Специални цени за ограничено време!",
   type: "website",
+  noindex: true,
 });
 
 interface ProductImage {

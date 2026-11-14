@@ -5,6 +5,8 @@ interface Category {
     _id: string;
     slug: string;
     name: string;
+    displayName?: string;
+    isActive?: boolean;
     description?: string;
     updatedAt?: string;
     image?: string;
@@ -20,12 +22,13 @@ export default defineSitemapEventHandler(async () => {
     try {
         // Fetch all categories with images
         const response = await $fetch<{ success: boolean; data: Category[] }>(
-            `${apiBase}/api/categories?fields=slug,name,description,updatedAt,image`
+            `${apiBase}/api/categories?active=true`
         );
 
         if (response?.data && Array.isArray(response.data)) {
             for (const category of response.data) {
-                if (category.slug) {
+                // Inactive categories 404 on the storefront - keep them out
+                if (category.slug && category.isActive !== false) {
                     const entry: SitemapUrlInput = {
                         loc: `/category/${category.slug}`,
                         lastmod: category.updatedAt ? new Date(category.updatedAt).toISOString() : undefined,
@@ -37,8 +40,8 @@ export default defineSitemapEventHandler(async () => {
                     if (category.image) {
                         entry.images = [{
                             loc: category.image,
-                            title: category.name,
-                            caption: category.description?.substring(0, 200) || `${category.name} - колекция персонализирани детски продукти с бродерия`,
+                            title: category.displayName || category.name,
+                            caption: category.description?.substring(0, 200) || `${category.displayName || category.name} - колекция персонализирани детски продукти с бродерия`,
                         }];
                     }
 

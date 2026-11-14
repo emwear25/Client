@@ -202,13 +202,13 @@ if (article.value) {
               "@context": "https://schema.org",
               "@type": "BlogPosting",
               headline: article.value.title,
-              image: article.value.featuredImage?.url,
+              image: article.value.featuredImage?.url || "https://www.emwear.bg/emwear-front-page.png",
               datePublished: article.value.publishedAt,
-              dateModified: article.value.publishedAt,
-              author: {
-                "@type": "Person",
-                name: article.value.author?.name || "emWear",
-              },
+              dateModified: (article.value as any).updatedAt || article.value.publishedAt,
+              author:
+                !article.value.author?.name || article.value.author.name === "emWear"
+                  ? { "@type": "Organization", name: "emWear", url: "https://www.emwear.bg" }
+                  : { "@type": "Person", name: article.value.author.name },
               publisher: {
                 "@type": "Organization",
                 name: "emWear",

@@ -13,76 +13,106 @@ export interface SEOData {
 }
 
 /**
- * Generate SEO title from product name
+ * Strip HTML and Markdown from free text (product descriptions are
+ * authored in the dashboard and may contain **bold**, _italics_, lists...)
+ */
+export function toPlainText(text: string | null | undefined): string {
+  if (!text) return "";
+  return text
+    .replace(/<[^>]*>/g, " ")
+    .replace(/!?\[([^\]]*)\]\([^)]*\)/g, "$1") // [label](url) / images
+    .replace(/(\*\*|__|\*|_|~~|`)(?=\S)([\s\S]*?\S)\1/g, "$2") // **bold** _it_ `code`
+    .replace(/^\s{0,3}(#{1,6}|>|[-*+]|\d+\.)\s+/gm, "") // headings, quotes, list markers
+    .replace(/[*_`#]{2,}/g, "")
+    .replace(/&nbsp;/g, " ")
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
+/**
+ * Truncate at a word boundary and append an ellipsis (never cut mid-word)
+ */
+export function truncateAtWord(text: string, maxLength: number, ellipsis = ""): string {
+  if (text.length <= maxLength) return text;
+  const limit = maxLength - ellipsis.length;
+  const cut = text.substring(0, limit + 1);
+  const lastSpace = cut.lastIndexOf(" ");
+  const base = lastSpace > limit * 0.6 ? cut.substring(0, lastSpace) : cut.substring(0, limit);
+  return base.replace(/[\s\-–—,;:.!?(]+$/, "") + ellipsis;
+}
+
+/**
+ * Generate SEO title for a product.
+ *
+ * "Хавлия с ушички – Еднорог с бродирано име | emWear": the product name
+ * plus the main search modifier ("с име") when the name doesn't already
+ * say it's personalised and it fits in 60 chars. The category is NOT
+ * appended - it used to leak the English slug ("- kids-towels").
  */
 export function generateSEOTitle(
   productName: string,
-  category?: string | null,
+  _category?: string | null,
   customTitle?: string | null
 ): string {
   const SUFFIX = " | emWear";
   const MAX_LENGTH = 60;
 
-  // Use custom title if provided
   if (customTitle) {
-    return truncateAtWord(customTitle, MAX_LENGTH);
+    const t = customTitle.includes("emWear") ? customTitle : `${customTitle}${SUFFIX}`;
+    return t.length <= MAX_LENGTH ? t : `${truncateAtWord(customTitle, MAX_LENGTH - SUFFIX.length)}${SUFFIX}`;
   }
 
-  // Prefer "Name - Category | emWear"; drop the category (never cut
-  // mid-word or lose the brand suffix) when it doesn't fit
-  if (category && `${productName} - ${category}${SUFFIX}`.length <= MAX_LENGTH) {
-    return `${productName} - ${category}${SUFFIX}`;
-  }
-  if (`${productName}${SUFFIX}`.length <= MAX_LENGTH) {
-    return `${productName}${SUFFIX}`;
-  }
+  const name = productName.trim();
+  const fits = (t: string) => `${t}${SUFFIX}`.length <= MAX_LENGTH;
+  const isPersonal = (t: string) => /(име|персонализ|надпис)/i.test(t);
 
-  return `${truncateAtWord(productName, MAX_LENGTH - SUFFIX.length)}${SUFFIX}`;
+  // The distinguishing part of a name is at the END ("… (оранжев)"), so
+  // when it's too long drop the generic "Персонализиран(а/о)" prefix
+  // instead of cutting the end (that produced duplicate titles).
+  const stripped = name.replace(/^персонализиран[аио]?\s+/i, "");
+  const short = stripped.charAt(0).toUpperCase() + stripped.slice(1);
+
+  const candidates: string[] = [];
+  for (const base of short === name ? [name] : [name, short]) {
+    if (!isPersonal(base)) candidates.push(`${base} с бродирано име`, `${base} с име`);
+    candidates.push(base);
+  }
+  const chosen = candidates.find(fits);
+  if (chosen) return `${chosen}${SUFFIX}`;
+  return `${truncateAtWord(short, MAX_LENGTH - SUFFIX.length)}${SUFFIX}`;
 }
 
 /**
- * Truncate a string at a word boundary (no mid-word cuts)
- */
-function truncateAtWord(text: string, maxLength: number): string {
-  if (text.length <= maxLength) return text;
-  const cut = text.substring(0, maxLength + 1);
-  const lastSpace = cut.lastIndexOf(" ");
-  return (lastSpace > 0 ? cut.substring(0, lastSpace) : cut.substring(0, maxLength)).replace(
-    /[\s\-–,]+$/,
-    ""
-  );
-}
-
-/**
- * Generate meta description from product description
+ * Generate meta description (≤160 chars, plain text, word-boundary cut)
  */
 export function generateMetaDescription(
   description: string,
-  customDescription?: string | null
+  customDescription?: string | null,
+  productName?: string | null
 ): string {
-  // Use custom description if provided
-  if (customDescription) {
-    return customDescription.length > 160
-      ? customDescription.substring(0, 157) + "..."
-      : customDescription;
+  const MAX = 160;
+  const custom = toPlainText(customDescription);
+  if (custom) return truncateAtWord(custom, MAX, "…");
+
+  let metaDesc = toPlainText(description);
+
+  // Colour/variant products often share one description. Lead with the
+  // variant part of the name ("Кученце (сиво)") when the text doesn't
+  // mention it, so every page gets a unique snippet.
+  const variant = productName?.split(/\s[–—-]\s/).slice(1).join(" – ").trim();
+  if (metaDesc && variant && !metaDesc.toLowerCase().includes(variant.toLowerCase())) {
+    metaDesc = `${variant} – ${metaDesc}`;
+  }
+  if (!metaDesc) {
+    return "Персонализирано изделие с бродирано име от emWear. Изработка за 1–2 работни дни, доставка в цяла България.";
   }
 
-  // Auto-generate from description
-  let metaDesc = description.substring(0, 155).trim();
-
-  // If description is too short, add key info
-  if (metaDesc.length < 100) {
-    metaDesc += " Безплатна доставка над €80.";
+  // Pad short descriptions with the key selling points
+  if (metaDesc.length < 110) {
+    metaDesc = `${metaDesc.replace(/[.!]?$/, ".")} Изработка за 1–2 дни, доставка в цяла България.`;
   }
 
-  metaDesc += " | emWear";
-
-  // Ensure max 160 characters
-  if (metaDesc.length > 160) {
-    metaDesc = metaDesc.substring(0, 157) + "...";
-  }
-
-  return metaDesc;
+  return truncateAtWord(metaDesc, MAX, "…");
 }
 
 /**

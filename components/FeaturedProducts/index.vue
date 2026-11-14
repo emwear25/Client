@@ -31,7 +31,7 @@
           >
             <div class="featured-products__image-wrapper">
               <img
-                :src="product.images?.[0]?.url || '/img/placeholder-product.jpg'"
+                :src="cloudinaryUrl(product.images?.[0]?.url, { width: 600 }) || '/img/placeholder-product.jpg'"
                 :alt="product.name"
                 class="featured-products__image"
                 width="400"
@@ -84,7 +84,7 @@
               >
                 <div class="featured-products__image-wrapper">
                   <img
-                    :src="product.images?.[0]?.url || '/img/placeholder-product.jpg'"
+                    :src="cloudinaryUrl(product.images?.[0]?.url, { width: 600 }) || '/img/placeholder-product.jpg'"
                     :alt="product.name"
                     class="featured-products__image"
                     loading="lazy"
@@ -130,6 +130,7 @@ import { Pagination } from "swiper/modules";
 import "swiper/css";
 import "swiper/css/pagination";
 import { useCurrency } from "~/composables/useCurrency";
+import { cloudinaryUrl } from "~/utils/image";
 
 const modules = [Pagination];
 const { formatMoney } = useCurrency();
