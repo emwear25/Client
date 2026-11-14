@@ -341,6 +341,9 @@ export default defineNuxtConfig({
     public: {
       apiBase: process.env.NUXT_PUBLIC_API_BASE || "http://localhost:3030",
       frontendUrl: process.env.NUXT_PUBLIC_FRONTEND_URL || "http://localhost:3000",
+      // PostHog project API key is public by design (it only allows sending events)
+      posthogKey: process.env.NUXT_PUBLIC_POSTHOG_KEY || "phc_ptfWuTjgthhXdKGJfxFEY6a789o2EKcQPdNcfbDDvfYE",
+      posthogHost: process.env.NUXT_PUBLIC_POSTHOG_HOST || "https://eu.i.posthog.com",
       gtagId: process.env.NUXT_PUBLIC_GTAG_ID || "",
       // Christmas mode: "auto" shows decorations only in the holiday season
       // (December - January 6). Set NUXT_PUBLIC_CHRISTMAS_MODE=true/false
