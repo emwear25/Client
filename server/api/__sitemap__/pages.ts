@@ -1,5 +1,6 @@
 import { defineSitemapEventHandler } from '#imports';
 import type { SitemapUrlInput } from '@nuxtjs/sitemap/dist/runtime/types';
+import { LANDING_PAGES } from '../../../utils/seoContent';
 
 // Static pages sitemap source
 export default defineSitemapEventHandler(async () => {
@@ -18,10 +19,15 @@ export default defineSitemapEventHandler(async () => {
         },
         // Sale page - high priority for promotions
         {
-            loc: '/sales',
-            changefreq: 'daily',
-            priority: 0.9,
+            loc: '/podaratsi',
+            changefreq: 'monthly',
+            priority: 0.8,
         },
+        ...LANDING_PAGES.map((page) => ({
+            loc: `/podaratsi/${page.slug}`,
+            changefreq: 'weekly' as const,
+            priority: 0.8,
+        })),
         // About us page
         {
             loc: '/about',

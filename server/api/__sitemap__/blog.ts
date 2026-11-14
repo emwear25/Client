@@ -27,17 +27,10 @@ export default defineSitemapEventHandler(async () => {
 
     const urls: SitemapUrlInput[] = [];
 
-    // Add main blog page
-    urls.push({
-        loc: '/blog',
-        changefreq: 'weekly',
-        priority: 0.8,
-    });
-
     try {
         // Fetch all published articles for sitemap
         const response = await $fetch<ArticlesResponse>(
-            `${apiBase}/articles`
+            `${apiBase}/articles?limit=1000`
         );
 
         if (response?.data?.articles) {
@@ -65,6 +58,12 @@ export default defineSitemapEventHandler(async () => {
         }
     } catch (error) {
         console.error('[Sitemap Blog] Failed to fetch articles:', error);
+    }
+
+    // Only list the blog index once there is something to read (an empty
+    // listing page is thin content)
+    if (urls.length > 0) {
+        urls.unshift({ loc: '/blog', changefreq: 'weekly', priority: 0.7 });
     }
 
     return urls;

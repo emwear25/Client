@@ -14,7 +14,7 @@
           <NuxtLink :to="`/products/${product.slug || product._id}`" class="product-card__link">
             <div class="product-card__media">
               <NuxtImg
-                :src="product.images?.[0]?.url || '/img/placeholder.png'"
+                :src="cloudinaryUrl(product.images?.[0]?.url, { width: 600 }) || '/img/placeholder.png'"
                 :alt="product.name"
                 class="product-card__img"
                 format="webp"
@@ -64,6 +64,7 @@
 import { ref, onMounted } from "vue";
 import { useApi } from "~/composables/useApi";
 import { useCurrency } from "~/composables/useCurrency";
+import { cloudinaryUrl } from "~/utils/image";
 
 const { formatMoney } = useCurrency();
 

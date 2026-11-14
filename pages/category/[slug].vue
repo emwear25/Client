@@ -4,8 +4,9 @@
     <div class="hero-category">
       <div class="container">
         <span class="hero-category__eyebrow">Колекция</span>
-        <h1 class="hero-category__title">{{ categoryDisplayName }}</h1>
-        <p v-if="category" class="hero-category__subtitle">
+        <h1 class="hero-category__title">{{ seoContent?.h1 || categoryDisplayName }}</h1>
+        <p v-if="seoContent" class="hero-category__subtitle">{{ seoContent.intro }}</p>
+        <p v-else-if="category" class="hero-category__subtitle">
           Разгледайте нашите {{ category.displayName.toLowerCase() }}
         </p>
       </div>
@@ -82,6 +83,14 @@
       </div>
     </div>
 
+    <!-- SEO copy + FAQ + occasion links (static content, utils/seoContent.ts) -->
+    <SeoContent
+      v-if="seoContent"
+      :sections="seoContent.sections"
+      :faq="seoContent.faq"
+      :related="seoContent.related"
+    />
+
     <!-- Quick View Drawer -->
     <CatalogQuickViewDrawer
       :open="drawerOpen"
@@ -96,6 +105,9 @@ import { nextTick } from 'vue';
 import { useApi } from "~/composables/useApi";
 import { usePageSEO } from "~/composables/useSEO";
 import { useInfiniteScroll } from "~/composables/useInfiniteScroll";
+import { useBreadcrumbs } from "~/composables/useBreadcrumbs";
+import { CATEGORY_SEO } from "~/utils/seoContent";
+import SeoContent from "~/components/common/sections/SeoContent.vue";
 
 const route = useRoute();
 
@@ -107,6 +119,7 @@ interface Category {
   name: string;
   slug: string;
   displayName: string;
+  description?: string;
 }
 
 interface ProductImage {
@@ -168,6 +181,8 @@ const loadMoreTrigger = ref<HTMLElement | null>(null);
 
 
 // Computed
+const seoContent = computed(() => CATEGORY_SEO[slug.value] || null);
+
 const categoryDisplayName = computed(() => {
   return category.value?.displayName || "Категория";
 });
@@ -352,25 +367,68 @@ useInfiniteScroll({
   rootMargin: "200px",
 });
 
-// SEO - watch for category changes
-// Canonical, og:url and twitter card are set by usePageSEO; the
-// CollectionPage + ItemList schema is emitted below (categorySchema)
-watch(
-  () => category.value,
-  (cat) => {
-    if (cat) {
-      const name = cat.displayName || cat.name;
-      usePageSEO({
-        title: name,
-        description:
-          cat.description ||
-          `Персонализирани ${name.toLowerCase()} с бродирано име от emWear. Ръчна изработка в България, бърза доставка. Разгледайте колекцията и поръчайте онлайн.`,
-        type: "website",
-      });
-    }
-  },
-  { immediate: true }
-);
+// ===== SEO =====
+// Registered once with getters (no useHead inside watchers - that stacked
+// duplicate head entries on every navigation).
+usePageSEO(() => {
+  const cat = category.value;
+  if (!cat) return null;
+  const name = cat.displayName || cat.name;
+  const content = CATEGORY_SEO[cat.slug];
+  return {
+    title: content?.title || `${name} с бродирано име`,
+    description:
+      content?.description ||
+      cat.description ||
+      `${name} с бродирано име от emWear. Изработка за 1–2 работни дни, доставка в цяла България. Разгледайте колекцията и поръчайте онлайн.`,
+    image: products.value[0]?.images?.[0]?.url,
+    path: `/category/${cat.slug}`,
+    type: "website",
+  };
+});
+
+useBreadcrumbs(() => {
+  const cat = category.value;
+  if (!cat) return null;
+  return [
+    { name: "Начало", url: "/" },
+    { name: "Продукти", url: "/products" },
+    { name: cat.displayName || cat.name, url: `/category/${cat.slug}` },
+  ];
+});
+
+// CollectionPage + ItemList schema
+useHead(() => {
+  const cat = category.value;
+  if (!cat || !products.value?.length) return {};
+  const url = `https://www.emwear.bg/category/${cat.slug}`;
+  const name = cat.displayName || cat.name;
+  return {
+    script: [
+      {
+        key: "ld-collection",
+        type: "application/ld+json",
+        innerHTML: JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "CollectionPage",
+          name,
+          description: CATEGORY_SEO[cat.slug]?.description || cat.description || `Колекция ${name} от emWear`,
+          url,
+          mainEntity: {
+            "@type": "ItemList",
+            numberOfItems: products.value.length,
+            itemListElement: products.value.slice(0, 12).map((product: any, index: number) => ({
+              "@type": "ListItem",
+              position: index + 1,
+              url: `https://www.emwear.bg/products/${product.slug || product._id}`,
+              name: product.name,
+            })),
+          },
+        }),
+      },
+    ],
+  };
+});
 
 // Watch for route changes (when navigating between categories)
 watch(
@@ -398,101 +456,6 @@ watch(
   },
   { flush: 'sync' } // Use sync to ensure immediate execution
 );
-
-// ===== CATEGORY PAGE ITEMLIST SCHEMA =====
-// SEO Benefit: Category pages appear as collections in Google
-const categorySchema = computed(() => {
-  if (!category.value || !products.value || products.value.length === 0) return null;
-
-  return {
-    '@context': 'https://schema.org',
-    '@type': 'CollectionPage',
-    name: category.value.name,
-    description: category.value.description || `Разгледайте нашата колекция ${category.value.name}`,
-    url: `https://www.emwear.bg/category/${category.value.slug}`,
-    mainEntity: {
-      '@type': 'ItemList',
-      numberOfItems: products.value.length,
-      itemListElement: products.value.slice(0, 10).map((product: any, index: number) => ({
-        '@type': 'ListItem',
-        position: index + 1,
-        item: {
-          '@type': 'Product',
-          name: product.name,
-          url: `https://www.emwear.bg/products/${product.slug || product._id}`,
-          image: product.images?.[0]?.url || '',
-          offers: {
-            '@type': 'Offer',
-            price: product.price?.toFixed(2) || '0.00',
-            priceCurrency: 'EUR',
-            availability: product.stock > 0 
-              ? 'https://schema.org/InStock' 
-              : 'https://schema.org/OutOfStock',
-          },
-        },
-      })),
-    },
-  };
-});
-
-// Inject category schema
-watchEffect(() => {
-  if (!categorySchema.value) return;
-
-  useHead({
-    script: [
-      {
-        type: 'application/ld+json',
-        innerHTML: JSON.stringify(categorySchema.value),
-      },
-    ],
-  });
-});
-
-// ===== BREADCRUMB SCHEMA =====
-// SEO Benefit: Shows navigation path in Google search results
-const breadcrumbSchema = computed(() => {
-  if (!category.value) return null;
-
-  return {
-    "@context": "https://schema.org",
-    "@type": "BreadcrumbList",
-    itemListElement: [
-      {
-        "@type": "ListItem",
-        position: 1,
-        name: "Начало",
-        item: "https://www.emwear.bg"
-      },
-      {
-        "@type": "ListItem",
-        position: 2,
-        name: "Категории",
-        item: "https://www.emwear.bg/products"
-      },
-      {
-        "@type": "ListItem",
-        position: 3,
-        name: category.value.name,
-        item: `https://www.emwear.bg/category/${category.value.slug}`
-      }
-    ]
-  };
-});
-
-// Inject breadcrumb schema
-watchEffect(() => {
-  if (!breadcrumbSchema.value) return;
-
-  useHead({
-    script: [
-      {
-        type: 'application/ld+json',
-        innerHTML: JSON.stringify(breadcrumbSchema.value),
-      },
-    ],
-  });
-});
 
 </script>
 

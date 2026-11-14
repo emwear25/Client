@@ -71,10 +71,10 @@
 
           <div class="hero-slider__content hero-slider__content--style-1">
             <div class="hero-slider__label">Нова колекция</div>
-            <h1 class="hero-slider__title hero-slider__title--large">
+            <h2 class="hero-slider__title hero-slider__title--large">
               <span class="hero-slider__title-word">Персонализирани</span>
               <span class="hero-slider__title-word hero-slider__title-word--accent">раници</span>
-            </h1>
+            </h2>
             <p class="hero-slider__subtitle">Стилни и функционални раници<br >за всеки ден</p>
 
             <!-- Decorative stitches -->
@@ -654,7 +654,7 @@ const slides = ref([
   },
   {
     id: 2,
-    image: "/img/slider/slide-2.png",
+    image: "/img/slider/slide-2.webp",
   },
   {
     id: 3,

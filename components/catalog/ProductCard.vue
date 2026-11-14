@@ -9,9 +9,8 @@
         quality="75"
         width="400"
         height="400"
+        sizes="50vw md:33vw lg:300px"
         loading="lazy"
-        placeholder
-        placeholder-class="bg-gray-200 animate-pulse"
       />
 
       <!-- Quick View Button -->

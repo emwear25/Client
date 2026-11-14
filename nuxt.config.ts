@@ -189,25 +189,25 @@ export default defineNuxtConfig({
           sizes: "512x512",
           href: "/android-chrome-512x512.png",
         },
-        // hreflang for Bulgarian language site
-        {
-          rel: "alternate",
-          hreflang: "bg",
-          href: "https://www.emwear.bg",
-        },
-        {
-          rel: "alternate",
-          hreflang: "x-default",
-          href: "https://www.emwear.bg",
-        },
+        // NOTE: hreflang/canonical are emitted per page by composables/useSEO.ts.
+        // A global hreflang here pointed EVERY page at the homepage.
       ],
     },
   },
 
   // Image optimization configuration for ecommerce
   image: {
-    // Use ipx provider (works with any URL, including Cloudinary)
-    provider: "ipx",
+    // Custom provider: Cloudinary URLs are resized/optimised by Cloudinary
+    // (f_auto,q_auto,w_*); local files are served as-is. The previous
+    // "ipx" provider passed Cloudinary URLs through untouched (~800 KB PNGs).
+    provider: "emwear",
+    providers: {
+      emwear: {
+        provider: "~/providers/emwear.ts",
+      },
+    },
+    // 1x + 2x srcset for fixed-size images (sharp on retina screens)
+    densities: [1, 2],
     // Quality settings
     quality: 80,
     format: ["webp"],
@@ -369,6 +369,8 @@ export default defineNuxtConfig({
     // Dynamic product pages - SSR for SEO (shorter cache)
     "/products/**": { ssr: true, isr: 300, headers: { "Cache-Control": "public, s-maxage=300, stale-while-revalidate=600" } },
     "/category/**": { ssr: true, isr: 300, headers: { "Cache-Control": "public, s-maxage=300, stale-while-revalidate=600" } },
+    "/podaratsi": { ssr: true, isr: 3600, headers: { "Cache-Control": "public, s-maxage=3600, stale-while-revalidate=86400" } },
+    "/podaratsi/**": { ssr: true, isr: 300, headers: { "Cache-Control": "public, s-maxage=300, stale-while-revalidate=600" } },
     // Private pages - no cache + noindex for search engines
     "/checkout": { prerender: false, headers: { "Cache-Control": "no-cache, no-store, must-revalidate", "X-Robots-Tag": "noindex, nofollow" } },
     "/checkout/**": { prerender: false, headers: { "Cache-Control": "no-cache, no-store, must-revalidate", "X-Robots-Tag": "noindex, nofollow" } },

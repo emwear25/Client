@@ -47,9 +47,9 @@
                   quality="85"
                   width="800"
                   height="800"
-                  sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 800px"
+                  sizes="100vw md:50vw lg:600px"
                   loading="eager"
-                  placeholder
+                  fetchpriority="high"
                 />
               </div>
               <div v-if="displayImages.length > 1" class="pdp-gallery__thumbs">
@@ -70,7 +70,6 @@
                     width="100"
                     height="100"
                     loading="lazy"
-                    placeholder
                   />
                 </button>
               </div>
@@ -413,7 +412,7 @@
                     class="pdp-addon__checkbox"
                   />
                   <label :for="`addon-${a._id}`" class="pdp-addon__label">
-                    <img :src="addOnImage(a)" :alt="a.name" class="pdp-addon__img" />
+                    <img :src="cloudinaryUrl(addOnImage(a), { width: 160 })" :alt="a.name" class="pdp-addon__img" />
                     <span class="pdp-addon__text">Добави {{ a.name }}</span>
                     <span class="pdp-addon__price">+{{ formatMoney(a.price) }}</span>
                   </label>
@@ -711,6 +710,7 @@ import { useWishlist } from "~/stores/useWishlist";
 import { useApi } from "~/composables/useApi";
 import { useProductSEO } from "~/composables/useSEO";
 import { useBreadcrumbs } from "~/composables/useBreadcrumbs";
+import { cloudinaryUrl } from "~/utils/image";
 import { useMarkdown } from "~/composables/useMarkdown";
 import { useCurrency } from "~/composables/useCurrency";
 import ReviewStats from "~/components/reviews/ReviewStats.vue";
@@ -1252,9 +1252,11 @@ const sortedSizes = computed(() => {
   });
 });
 
-const formatCategory = (category: string | { name: string } | undefined) => {
+const formatCategory = (category: string | { name: string; displayName?: string } | undefined) => {
   if (!category) return "";
-  const categoryName = typeof category === "string" ? category : category.name;
+  // Prefer the Bulgarian displayName - `name` is the English slug for most
+  // categories (e.g. "kids-towels")
+  const categoryName = typeof category === "string" ? category : category.displayName || category.name;
   const map: Record<string, string> = {
     "t-shirts": "Тениски",
     hoodies: "Суитчъри",
@@ -1549,71 +1551,69 @@ const fetchReviewStats = async (productId: string) => {
   }
 };
 
-// ===== FACEBOOK CATALOG META TAGS =====
-watchEffect(() => {
-  if (!product.value) return;
-
-  useProductSEO({
-    name: product.value.name,
-    description: product.value.description || "",
-    images: product.value.images,
+// ===== SEO: meta tags, Product + Breadcrumb JSON-LD, FB catalog tags =====
+// Registered once with getters (reactive to variant/price/stock changes).
+// Previously useHead() was called inside watchEffect, which stacked a new
+// head entry on every change.
+useProductSEO(() => {
+  if (!product.value) return null;
+  const p = product.value as any;
+  return {
+    name: p.name,
+    description: p.description || "",
+    images: p.images,
     price: currentPrice.value,
     priceCurrency: "EUR",
     stock: currentStock.value,
-    category: product.value.category,
-    seoTitle: product.value.seoTitle || null,
-    metaDescription: product.value.metaDescription || null,
-    slug: product.value.slug,
-    reviewStats: {
-      averageRating: reviewStats.value.averageRating,
-      totalReviews: reviewStats.value.totalReviews,
-    },
-  });
+    category: p.category,
+    seoTitle: p.seoTitle || null,
+    metaDescription: p.metaDescription || null,
+    slug: p.slug,
+    sku: p._id,
+    personalized: Boolean(p.customEmbroidery || p.personalizationMethods?.length || p.personalizationOptions),
+    // reviewStats comes with the product (SSR) - the client-side stats
+    // fetch only refreshes it
+    reviewStats: reviewStats.value.totalReviews ? reviewStats.value : p.reviewStats,
+  };
+});
 
-  const availability = currentStock.value > 0 ? 'in stock' : 'out of stock';
-
-  useHead({
+useHead(() => {
+  if (!product.value) return {};
+  const p = product.value as any;
+  return {
     meta: [
       // Open Graph Product Price (og: prefix for wider compatibility)
-      { property: 'og:price:amount', content: currentPrice.value.toFixed(2) },
-      { property: 'og:price:currency', content: 'EUR' },
-      
+      { key: 'og:price:amount', property: 'og:price:amount', content: currentPrice.value.toFixed(2) },
+      { key: 'og:price:currency', property: 'og:price:currency', content: 'EUR' },
       // Facebook Product Catalog - Critical Tags
-      { property: 'product:brand', content: 'emWear' },
-      { property: 'product:availability', content: availability },
-      { property: 'product:condition', content: 'new' },
-      { property: 'product:retailer_item_id', content: product.value._id },
-      { property: 'product:category', content: formatCategory(product.value.category) },
-      // Google Product Category for Facebook Product Catalog
-      ...(typeof product.value.category === 'object' && (product.value.category as any).googleProductCategory
-        ? [{ property: 'product:google_product_category', content: (product.value.category as any).googleProductCategory }]
+      { key: 'product:brand', property: 'product:brand', content: 'emWear' },
+      { key: 'product:availability', property: 'product:availability', content: currentStock.value > 0 ? 'in stock' : 'out of stock' },
+      { key: 'product:condition', property: 'product:condition', content: 'new' },
+      { key: 'product:retailer_item_id', property: 'product:retailer_item_id', content: p._id },
+      { key: 'product:category', property: 'product:category', content: formatCategory(p.category) },
+      ...(typeof p.category === 'object' && p.category?.googleProductCategory
+        ? [{ key: 'product:google_product_category', property: 'product:google_product_category', content: p.category.googleProductCategory }]
         : []),
-      { property: 'og:image:alt', content: product.value.name },
-      { name: 'twitter:image:alt', content: product.value.name },
+      { key: 'og:image:alt', property: 'og:image:alt', content: p.name },
+      { key: 'twitter:image:alt', name: 'twitter:image:alt', content: p.name },
     ],
-  });
+  };
+});
 
-  // Set breadcrumbs
-  const categoryName = formatCategory(product.value.category);
-  const categorySlug = typeof product.value.category === 'object' 
-    ? (product.value.category as any).slug 
-    : undefined;
-
-  const breadcrumbItems = [
+useBreadcrumbs(() => {
+  if (!product.value) return null;
+  const p = product.value as any;
+  const categoryName = formatCategory(p.category);
+  const categorySlug = typeof p.category === 'object' ? p.category?.slug : undefined;
+  const items = [
     { name: 'Начало', url: '/' },
     { name: 'Продукти', url: '/products' },
   ];
-
-  if (categoryName !== 'Продукти' && categorySlug) {
-    breadcrumbItems.push({ name: categoryName, url: `/category/${categorySlug}` });
+  if (categoryName && categorySlug) {
+    items.push({ name: categoryName, url: `/category/${categorySlug}` });
   }
-
-  breadcrumbItems.push({
-    name: product.value.name,
-    url: `/products/${product.value.slug || product.value._id}`,
-  });
-
-  useBreadcrumbs(breadcrumbItems);
+  items.push({ name: p.name, url: `/products/${p.slug || p._id}` });
+  return items;
 });
 
 // NOTE: FAQPage schema was removed from product pages - identical
