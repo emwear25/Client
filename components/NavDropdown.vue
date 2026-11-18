@@ -52,7 +52,7 @@ const emit = defineEmits<{ itemClick: [] }>();
   left: 50%;
   transform: translateX(-50%) translateY(8px);
   width: max-content;
-  max-width: min(860px, 94vw);
+  max-width: min(1060px, 94vw);
   background: #fff;
   border-radius: 14px;
   box-shadow: 0 24px 50px rgba(0, 0, 0, 0.12);
@@ -72,11 +72,15 @@ const emit = defineEmits<{ itemClick: [] }>();
 
   &__inner {
     display: grid;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: 1.75rem;
+    // Four groups -> four columns in one row. Using an odd column count with an
+    // even group count (or vice-versa) wraps the last group onto a lopsided
+    // second row, so jump straight from 4 to 2 columns.
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 1.5rem;
+    align-items: start;
 
-    @media (max-width: 700px) {
-      grid-template-columns: repeat(2, 1fr);
+    @media (max-width: 760px) {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
     }
   }
 
