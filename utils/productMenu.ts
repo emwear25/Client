@@ -15,6 +15,17 @@ export interface ProductMenuGroup {
 
 export const productMenuGroups: ProductMenuGroup[] = [
   {
+    title: "Коледа",
+    items: [
+      {
+        label: "Коледни орнаменти",
+        to: "/category/personalizirani-koledni-ornamenti",
+        image:
+          "https://res.cloudinary.com/dynggmi04/image/upload/v1794996495/emwear/products/kkxxaqm2acaay1irua16.png",
+      },
+    ],
+  },
+  {
     title: "Раници",
     items: [
       { label: "Детски раници", to: "/category/kids-bags", image: "/img/menu/kids-bags.jpg" },
