@@ -240,7 +240,7 @@
                 class="pdp-option"
               >
                 <label class="pdp-option__label"
-                  >Име за бродерия: <strong>{{ embroideryName.trim() }}</strong></label
+                  >{{ nameFieldLabel }}: <strong>{{ embroideryName.trim() }}</strong></label
                 >
               </div>
 
@@ -255,7 +255,7 @@
                   />
                   <label for="embroidery-enable" class="pdp-custom__label">
                     <img src="/img/embroidered.svg" alt="Персонализация" class="pdp-custom__icon" />
-                    {{ personalizationMethods.length > 1 ? "Добави персонализирано име" : `Добави ${personalizationMethods[0].label.toLowerCase()}` }}
+                    {{ personalizationMethods.length > 1 ? "Добави персонализирано име" : `Добави ${personalizationNoun.toLowerCase()}` }}
                     <span v-if="personalizationMethods.length === 1 && personalizationMethods[0].price > 0" class="pdp-custom__method-price">
                       {{ formatMethodPrice(personalizationMethods[0].price) }}
                     </span>
@@ -285,7 +285,7 @@
                   
                   <!-- Standard Name Field (shows if no NON-checkbox category-specific fields) -->
                   <div v-if="personalizationFields.filter(f => f.type !== 'checkbox').length === 0" class="pdp-custom__field">
-                    <label class="pdp-custom__field-label">Име за бродерия</label>
+                    <label class="pdp-custom__field-label">{{ nameFieldLabel }}</label>
                     <input
                       v-model="embroideryName"
                       type="text"
@@ -845,6 +845,17 @@ const selectedSize = ref<string>("");
 // Embroidery state
 const embroideryEnabled = ref(false);
 const selectedMethod = ref<string>("");
+
+// Non-embroidery categories (printed / 3D-raised name, NOT stitched):
+// use "Име" wording instead of "Бродирано име".
+const NON_EMBROIDERY_CATS = ["keychains", "personalizirani-koledni-ornamenti"];
+const isEmbroideryProduct = computed(() => {
+  const cat = product.value?.category as any;
+  const slug = cat && typeof cat === "object" ? cat.slug : "";
+  return !NON_EMBROIDERY_CATS.includes(slug);
+});
+const personalizationNoun = computed(() => (isEmbroideryProduct.value ? "Бродирано име" : "Име"));
+const nameFieldLabel = computed(() => (isEmbroideryProduct.value ? "Име за бродерия" : "Име"));
 
 // Personalization methods resolved by the server (embroidery / print with
 // prices). Falls back to the legacy free-embroidery behavior for products

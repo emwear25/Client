@@ -79,8 +79,8 @@
                 class="qv__custom-checkbox"
               />
               <label for="qv-embroidery-enable" class="qv__custom-label">
-                <img src="/img/embroidered.svg" alt="Бродерия" class="qv__custom-icon" />
-                Добави име за бродерия
+                <img src="/img/embroidered.svg" alt="Персонализация" class="qv__custom-icon" />
+                {{ addNameLabel }}
               </label>
             </div>
 
@@ -91,7 +91,7 @@
               
               <!-- Standard Name Field (shows if no NON-checkbox category-specific fields) -->
               <div v-if="personalizationFields.filter(f => f.type !== 'checkbox').length === 0" class="qv__custom-field">
-                <label class="qv__custom-field-label">Име за бродерия <span class="qv__custom-required">*</span></label>
+                <label class="qv__custom-field-label">{{ nameFieldLabel }} <span class="qv__custom-required">*</span></label>
                 <input
                   v-model="embroideryName"
                   type="text"
@@ -249,6 +249,7 @@ interface Product {
   category?: {
     _id?: string;
     name?: string;
+    slug?: string;
     personalizationFields?: {
       name: string;
       label: string;
@@ -308,6 +309,16 @@ const personalizationFields = computed(() => {
   if (!props.product?.category || typeof props.product.category !== 'object') return [];
   return props.product.category.personalizationFields || [];
 });
+
+// Non-embroidery categories (printed / 3D-raised name): use "Име" wording.
+const NON_EMBROIDERY_CATS = ["keychains", "personalizirani-koledni-ornamenti"];
+const isEmbroideryProduct = computed(() => {
+  const cat = props.product?.category;
+  const slug = cat && typeof cat === "object" ? cat.slug : "";
+  return !NON_EMBROIDERY_CATS.includes(slug || "");
+});
+const nameFieldLabel = computed(() => (isEmbroideryProduct.value ? "Име за бродерия" : "Име"));
+const addNameLabel = computed(() => (isEmbroideryProduct.value ? "Добави име за бродерия" : "Добави име"));
 
 // Auto-select first color/size when product changes
 watch(
