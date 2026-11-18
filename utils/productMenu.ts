@@ -21,7 +21,7 @@ export const productMenuGroups: ProductMenuGroup[] = [
         label: "Коледни орнаменти",
         to: "/category/personalizirani-koledni-ornamenti",
         image:
-          "https://res.cloudinary.com/dynggmi04/image/upload/v1794996495/emwear/products/kkxxaqm2acaay1irua16.png",
+          "https://res.cloudinary.com/dynggmi04/image/upload/v1795000279/emwear/products/szpyxn4iel56guzvrqwq.png",
       },
     ],
   },
