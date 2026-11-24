@@ -41,7 +41,7 @@
               <div class="pdp-gallery__main">
                 <NuxtImg
                   :src="selectedImage?.url || displayImages[0]?.url || '/img/placeholder.png'"
-                  :alt="product.name"
+                  :alt="product.customEmbroidery ? `${product.name}, с бродирано име по избор` : product.name"
                   class="pdp-gallery__img"
                   format="webp"
                   quality="85"
@@ -64,7 +64,7 @@
                 >
                   <NuxtImg
                     :src="img.url"
-                    :alt="`${product.name} - ${index + 1}`"
+                    :alt="`${product.name}${product.customEmbroidery ? ' с име' : ''} – снимка ${index + 1}`"
                     format="webp"
                     quality="70"
                     width="100"

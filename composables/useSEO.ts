@@ -195,7 +195,7 @@ export function useProductSEO(input: MaybeRefOrGetter<ProductSEO | null | undefi
       "@id": `${url}#product`,
       name: product.name,
       description: truncateAtWord(cleanDescription, 500) || `Персонализиран ${product.name} от emWear`,
-      image: images.length ? images.map((u) => cloudinaryUrl(u, { width: 1600, format: "jpg" })) : [image],
+      image: images.length ? images.map((u) => cloudinaryUrl(u, { width: 1200 })) : [image],
       url,
       brand: { "@type": "Brand", name: "emWear" },
       ...(product.sku ? { sku: product.sku } : {}),

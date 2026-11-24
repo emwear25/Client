@@ -1,5 +1,6 @@
 import { defineSitemapEventHandler } from '#imports';
 import type { SitemapUrlInput } from '@nuxtjs/sitemap/dist/runtime/types';
+import { cloudinaryUrl } from '../../../utils/image';
 
 interface ProductImage {
     url: string;
@@ -41,7 +42,8 @@ export default defineSitemapEventHandler(async () => {
                     // Add product images for image sitemap
                     if (product.images && product.images.length > 0) {
                         entry.images = product.images.map((img, index) => ({
-                            loc: img.url,
+                            // Same URL the product page renders, so Google sees one image, not several copies
+                            loc: cloudinaryUrl(img.url, { width: 1200 }),
                             title: img.alt || product.name,
                             caption: index === 0
                                 ? (product.description?.substring(0, 200) || `${product.name} - персонализиран детски продукт с бродерия от emWear`)
