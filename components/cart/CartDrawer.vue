@@ -170,6 +170,10 @@
             </div>
           </div>
 
+          <div v-if="cartStore.discountTotal > 0" class="cart-drawer__gift">
+            <span>🎁 Подарък (безплатен ключодържател)</span>
+            <span>-{{ formatPrice(cartStore.discountTotal) }}</span>
+          </div>
           <div class="cart-drawer__total">
             <span class="cart-drawer__total-label">Общо:</span>
             <span class="cart-drawer__total-price">{{ formatPrice(cartStore.totalPrice) }}</span>
@@ -500,6 +504,17 @@ const goToCheckout = () => {
     padding: 18px;
     border-top: 1px solid $border-base;
     background: $bg-page;
+  }
+
+  &__gift {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 0.5rem;
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: #1f7a3d;
   }
 
   &__total {

@@ -197,7 +197,17 @@
                 <div class="order-summary__row">
                   <span class="order-summary__label">Междинна сума</span>
                   <span class="order-summary__value"
-                    >{{ formatPrice(cartStore.totalPrice) }}</span
+                    >{{ formatPrice(cartStore.subtotalBeforeDiscount) }}</span
+                  >
+                </div>
+
+                <div
+                  v-if="cartStore.discountTotal > 0"
+                  class="order-summary__row order-summary__row--discount"
+                >
+                  <span class="order-summary__label">🎁 Подарък (безплатен ключодържател)</span>
+                  <span class="order-summary__value"
+                    >-{{ formatPrice(cartStore.discountTotal) }}</span
                   >
                 </div>
 
@@ -840,6 +850,14 @@ useHead({
   &__value {
     color: $text-primary;
     font-weight: 600;
+  }
+
+  &__row--discount {
+    .order-summary__label,
+    .order-summary__value {
+      color: #1f7a3d;
+      font-weight: 600;
+    }
   }
 
   &__divider {
