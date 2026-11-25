@@ -31,9 +31,8 @@ export const useDiscount = () => {
     error.value = null;
 
     try {
-      const response: any = await $fetch(`/api/coupons/validate/${code}`, {
-        method: "GET",
-      });
+      const api = useApi();
+      const response: any = await api.get(`coupons/validate/${code}`);
 
       if (response.success && response.data) {
         return {
@@ -70,19 +69,14 @@ export const useDiscount = () => {
     error.value = null;
 
     try {
-      const response = await $fetch("/api/discounts/calculate", {
-        method: "POST",
-        body: {
-          items,
-          couponCode,
-        },
-      });
+      const api = useApi();
+      const response: any = await api.post("discounts/calculate", { items, couponCode });
 
-      if (response.success) {
+      if (response?.success) {
         return response.data;
       }
 
-      throw new Error(response.message || "Failed to calculate discounts");
+      throw new Error(response?.message || "Failed to calculate discounts");
     } catch (err: any) {
       const message = err.data?.message || "Failed to calculate discounts";
       error.value = message;
@@ -101,12 +95,11 @@ export const useDiscount = () => {
     error.value = null;
 
     try {
+      const api = useApi();
       const params = scope ? { scope } : {};
-      const response = await $fetch("/api/discounts/active", {
-        params,
-      });
+      const response: any = await api.get("discounts/active", { params });
 
-      if (response.success) {
+      if (response?.success) {
         return response.data;
       }
 

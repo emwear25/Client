@@ -889,6 +889,10 @@ onMounted(async () => {
     return;
   }
 
+  // Ensure server-computed discounts (e.g. the Black Friday keychain gift) are
+  // up to date for the totals and the payment amount on this page.
+  await cartStore.calculateDiscounts();
+
   // ===== FACEBOOK PIXEL INITIATE CHECKOUT TRACKING =====
   // Track InitiateCheckout event when user enters checkout page
   const { trackInitiateCheckout } = useFacebookPixel();
