@@ -404,6 +404,10 @@
               <!-- Suggested add-ons as checkboxes: checking one adds it to the
                    cart together with this product (e.g. a keychain for a bag) -->
               <div v-if="addOnSuggestions.length > 0" class="pdp-addon">
+                <p v-if="keychainGiftActive" class="pdp-addon__gift-note">
+                  🎁 <strong>Подарък към раницата:</strong> първият ключодържател е безплатен —
+                  отстъпката се прилага автоматично в количката.
+                </p>
                 <div v-for="a in addOnSuggestions" :key="a._id" class="pdp-addon__item">
                   <input
                     :id="`addon-${a._id}`"
@@ -414,7 +418,11 @@
                   <label :for="`addon-${a._id}`" class="pdp-addon__label">
                     <img :src="cloudinaryUrl(addOnImage(a), { width: 160 })" :alt="a.name" class="pdp-addon__img" />
                     <span class="pdp-addon__text">Добави {{ a.name }}</span>
-                    <span class="pdp-addon__price">+{{ formatMoney(a.price) }}</span>
+                    <span v-if="keychainGiftActive" class="pdp-addon__price pdp-addon__price--gift">
+                      <s>+{{ formatMoney(a.price) }}</s>
+                      <span class="pdp-addon__gift-tag">🎁 Подарък</span>
+                    </span>
+                    <span v-else class="pdp-addon__price">+{{ formatMoney(a.price) }}</span>
                   </label>
                 </div>
               </div>
@@ -712,6 +720,7 @@ import { useProductSEO } from "~/composables/useSEO";
 import { useBreadcrumbs } from "~/composables/useBreadcrumbs";
 import { cloudinaryUrl } from "~/utils/image";
 import { useMarkdown } from "~/composables/useMarkdown";
+import { BLACK_FRIDAY_ACTIVE } from "~/utils/blackFriday";
 import { useCurrency } from "~/composables/useCurrency";
 import ReviewStats from "~/components/reviews/ReviewStats.vue";
 import ProductReviews from "~/components/reviews/ProductReviews.vue";
@@ -856,6 +865,16 @@ const isEmbroideryProduct = computed(() => {
 });
 const personalizationNoun = computed(() => (isEmbroideryProduct.value ? "Бродирано име" : "Име"));
 const nameFieldLabel = computed(() => (isEmbroideryProduct.value ? "Име за бродерия" : "Име"));
+
+// Black Friday: a backpack page offers a free keychain gift (one per backpack).
+const isBackpackProduct = computed(() => {
+  const cat = product.value?.category as any;
+  const slug = cat && typeof cat === "object" ? cat.slug : "";
+  return slug === "kids-bags";
+});
+const keychainGiftActive = computed(
+  () => BLACK_FRIDAY_ACTIVE && isBackpackProduct.value && addOnSuggestions.value.length > 0,
+);
 
 // Personalization methods resolved by the server (embroidery / print with
 // prices). Falls back to the legacy free-embroidery behavior for products
@@ -1134,6 +1153,7 @@ const badges = computed(() => {
   const arr: Array<{ key: string; label: string }> = [];
   if (isNew.value) arr.push({ key: "new", label: "Ново" });
   if (product.value?.customEmbroidery) arr.push({ key: "personal", label: "Персонализация" });
+  if (BLACK_FRIDAY_ACTIVE && isSale.value) arr.push({ key: "bf", label: "⚡ Black Friday" });
   if (isSale.value) arr.push({ key: "sale", label: `${savePercent.value}% Отстъпка` });
   return arr;
 });
@@ -1848,6 +1868,11 @@ const handleStatsUpdated = (stats?: ReviewStats) => {
     background: #dc4f3e;
     color: $color-white;
   }
+
+  &--bf {
+    background: #111;
+    color: #fff;
+  }
 }
 
 /* Social Share */
@@ -2371,6 +2396,42 @@ const handleStatsUpdated = (stats?: ReviewStats) => {
     font-weight: 700;
     color: $brand;
     white-space: nowrap;
+
+    &--gift {
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+
+      s {
+        color: #9a9a9a;
+        font-weight: 600;
+      }
+    }
+  }
+
+  &__gift-tag {
+    background: #1f7a3d;
+    color: #fff;
+    font-size: 0.7rem;
+    font-weight: 700;
+    padding: 2px 8px;
+    border-radius: 999px;
+    white-space: nowrap;
+  }
+
+  &__gift-note {
+    margin: 0;
+    padding: 0.6rem 0.8rem;
+    background: #eef7f0;
+    border: 1px solid #cfe8d6;
+    border-radius: 10px;
+    font-size: 0.85rem;
+    line-height: 1.35;
+    color: #1f5130;
+
+    strong {
+      color: #14361f;
+    }
   }
 }
 

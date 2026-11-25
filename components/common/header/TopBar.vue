@@ -1,5 +1,5 @@
 <template>
-  <div class="topbar">
+  <div class="topbar" :class="{ 'topbar--bf': BLACK_FRIDAY_ACTIVE }">
     <div class="topbar__container">
       <!-- Left side - Shipping info -->
       <div class="topbar__left">
@@ -30,6 +30,15 @@ import { BLACK_FRIDAY_ACTIVE } from "~/utils/blackFriday";
   font-family: $font-body;
   font-size: 0.875rem;
   color: white;
+
+  &--bf {
+    background: #111;
+
+    .topbar__promo {
+      font-weight: 700;
+      letter-spacing: 0.01em;
+    }
+  }
 
   &__container {
     width: 100%;
