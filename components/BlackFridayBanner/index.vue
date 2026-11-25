@@ -1,24 +1,25 @@
 <template>
-  <section class="bf">
+  <section v-if="BLACK_FRIDAY_ACTIVE" class="bf">
     <div class="bf__inner">
       <span class="bf__eyebrow">⚡ Black Friday в emWear</span>
-      <h2 class="bf__title">Комплектни оферти</h2>
+      <h2 class="bf__title">−15% на всичко</h2>
       <p class="bf__sub">
-        Халат + една кърпа <strong>−15%</strong>, с двете кърпи <strong>−20%</strong> — автоматично в
-        количката.
+        <strong>−15%</strong> на всички продукти, раниците <strong>−10%</strong> и
+        <strong>подарък ключодържател</strong> към всяка раница. Цените вече са намалени —
+        отстъпката важи автоматично.
       </p>
 
       <div class="bf__deals">
         <div class="bf__deal">
-          <span class="bf__pct">до −20%</span>
-          <span class="bf__label">Халат + кърпи</span>
+          <span class="bf__pct">−15%</span>
+          <span class="bf__label">На всички продукти</span>
         </div>
         <div class="bf__deal">
-          <span class="bf__pct">−10%</span>
-          <span class="bf__label">Раница + ключодържател</span>
+          <span class="bf__pct">−10% + 🎁</span>
+          <span class="bf__label">Раница + подарък ключодържател</span>
         </div>
         <div class="bf__deal">
-          <span class="bf__pct">€60</span>
+          <span class="bf__pct">€80</span>
           <span class="bf__label">Безплатна доставка над</span>
         </div>
       </div>
@@ -29,7 +30,9 @@
 </template>
 
 <script setup lang="ts">
-// Black Friday promo banner for the homepage.
+// Black Friday promo banner for the homepage. Hidden when BLACK_FRIDAY_ACTIVE
+// is false (see utils/blackFriday.ts).
+import { BLACK_FRIDAY_ACTIVE } from "~/utils/blackFriday";
 </script>
 
 <style scoped lang="scss">

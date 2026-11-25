@@ -1,5 +1,5 @@
 import { defineStore } from "pinia";
-import { ref, computed } from "vue";
+import { ref, computed, watch } from "vue";
 
 export interface CartItem {
   id: string;
@@ -276,6 +276,23 @@ export const useCartStore = defineStore("cart", () => {
       isCalculatingDiscounts.value = false;
     }
   };
+
+  // Keep server-computed discounts (e.g. the Black Friday keychain gift) in
+  // sync with the cart. Client-only; recalculates when the items or the applied
+  // coupon change, debounced so rapid quantity edits fire a single request.
+  if (import.meta.client) {
+    let discountTimer: ReturnType<typeof setTimeout> | null = null;
+    watch(
+      [items, appliedCoupon],
+      () => {
+        if (discountTimer) clearTimeout(discountTimer);
+        discountTimer = setTimeout(() => {
+          calculateDiscounts();
+        }, 250);
+      },
+      { deep: true, immediate: true },
+    );
+  }
 
   return {
     // State

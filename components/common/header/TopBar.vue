@@ -8,14 +8,15 @@
 
       <!-- Center - Main promotional text -->
       <div class="topbar__center">
-        <span class="topbar__promo"> Персонализирани бродирани изделия с любов ✨ </span>
+        <span v-if="BLACK_FRIDAY_ACTIVE" class="topbar__promo"> ⚡ Black Friday: −15% на всичко · раници −10% + подарък ключодържател </span>
+        <span v-else class="topbar__promo"> Персонализирани бродирани изделия с любов ✨ </span>
       </div>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-// No props or logic needed for this static component
+import { BLACK_FRIDAY_ACTIVE } from "~/utils/blackFriday";
 </script>
 
 <style scoped lang="scss">

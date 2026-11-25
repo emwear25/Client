@@ -103,6 +103,17 @@
         <span class="checkout-order-summary__new-price">{{ formatMoney(totalPrice || 0) }}</span>
       </div>
 
+      <!-- Black Friday gift (free keychain with a backpack) -->
+      <div
+        v-if="!hasCoupon && discountTotal > 0"
+        class="checkout-order-summary__total-row checkout-order-summary__total-row--discount"
+      >
+        <span>🎁 Подарък (безплатен ключодържател)</span>
+        <span class="checkout-order-summary__discount-amount"
+          >-{{ formatMoney(discountTotal || 0) }}</span
+        >
+      </div>
+
       <!-- Shipping (informational only - paid on delivery) -->
       <div
         v-if="shippingCost > 0"
